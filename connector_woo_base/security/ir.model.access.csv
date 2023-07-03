@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+connector_woo_base.access_woo_backend,access_woo_backend,connector_woo_base.model_woo_backend,base.group_user,1,1,1,1
+connector_woo_base.access_woo_res_partner,access_woo_res_partner,connector_woo_base.model_woo_res_partner,base.group_user,1,1,1,1
+access_woo_res_partner_connector_manager,access_woo_res_partner_connector_manager,model_woo_res_partner,connector.group_connector_manager,1,1,1,1
+connector_woo_base.access_woo_address,access_woo_address,connector_woo_base.model_woo_address,base.group_user,1,1,1,1
+

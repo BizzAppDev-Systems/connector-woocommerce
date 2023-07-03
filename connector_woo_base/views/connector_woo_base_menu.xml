@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <menuitem
+        id="menu_woo_root"
+        parent="connector.menu_connector_root"
+        name="Woo"
+        groups="connector.group_connector_manager"
+    />
+    <menuitem
+        id="menu_woo_backend"
+        name="Woo Backends"
+        parent="menu_woo_root"
+        action="action_woo_backend"
+    />
+</odoo>
