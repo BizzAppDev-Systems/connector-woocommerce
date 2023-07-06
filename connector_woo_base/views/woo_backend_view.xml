@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <!-- Added Woo backed  -->
+    <!-- Form view Woo Backend -->
     <record id="view_woo_backend_form" model="ir.ui.view">
         <field name="name">woo.backend.form</field>
         <field name="model">woo.backend</field>
@@ -35,7 +35,7 @@
                     </div>
                     <widget
                         name="web_ribbon"
-                        title="Woo"
+                        title="Test"
                         bg_color="bg-warning"
                         attrs="{'invisible': [('test_mode', '=', False)]}"
                     />
@@ -104,57 +104,66 @@
                                     By clicking on the buttons,
                                 you will initiate the synchronizations
                                 with Woo.
-                                Note that the import or exports
+                                Note that the import
                                 won't be done directly,
                                 they will create 'Jobs'
                                 executed as soon as possible.
                                 </p>
-                                <div>
-                                    <group>
-                                        <div>
-                                            <label
-                                                for="import_partners"
-                                                string="Import Partners(Woo)"
-                                                class="oe_inline"
-                                            />
+                                <group>
+                                    <label
+                                        for="import_partners"
+                                        string="Import Partners(Woo)"
+                                    />
+                                    <div class="row">
+                                        <div class="col-md-3">
                                             <field
                                                 name="import_partner_from_date"
-                                                class="oe_inline"
                                                 nolabel="1"
                                             />
                                         </div>
-                                        <button
-                                            name="import_partners"
-                                            type="object"
-                                            class="oe_highlight"
-                                            string="Import Partners"
-                                        />
-                                    </group>
-                                </div>
-                            </page>
-                            <page name="export" string="Exports" >
-                                <div>
-                                    <group>
-                                        <div>
-                                            <label
-                                                for="export_partners"
-                                                string="Export Partners(Woo)"
-                                                class="oe_inline"
+                                        <div class="col-md-3">
+                                            <button
+                                                name="import_partners"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Import Partners"
                                             />
+                                        </div>
+                                    </div>
+                                </group>
+                            </page>
+                            <page name="export" string="Exports">
+                                <p class="oe_grey oe_inline">
+                                    By clicking on the buttons,
+                                you will initiate the synchronizations
+                                with Woo.
+                                Note that the exports
+                                won't be done directly,
+                                they will create 'Jobs'
+                                executed as soon as possible.
+                                </p>
+                                <group>
+                                    <label
+                                        for="export_partners"
+                                        string="Export Partners(Woo)"
+                                    />
+                                    <div class="row">
+                                        <div class="col-md-3">
                                             <field
                                                 name="export_partner_from_date"
-                                                class="oe_inline"
                                                 nolabel="1"
                                             />
                                         </div>
-                                        <button
-                                            name="export_partners"
-                                            type="object"
-                                            class="oe_highlight"
-                                            string="Export Partners"
-                                        />
-                                    </group>
-                                </div>
+                                        <div class="col-md-3">
+                                            <button
+                                                name="export_partners"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Export Partners"
+                                            />
+                                        </div>
+                                    </div>
+                                </group>
                             </page>
                             <page
                                 name="advanced_configuration"
@@ -170,7 +179,7 @@
             </form>
         </field>
     </record>
-    <!-- Added tree view for woo.backend -->
+    <!-- Added tree view for Woo backend -->
     <record id="view_woo_backend_tree" model="ir.ui.view">
         <field name="name">woo.backend.tree</field>
         <field name="model">woo.backend</field>
@@ -185,7 +194,7 @@
             </tree>
         </field>
     </record>
-    <!-- Main Action view for woo.backend -->
+    <!-- Main Action view for Woo backend -->
     <record id="action_woo_backend" model="ir.actions.act_window">
         <field name="name">Woo Backends</field>
         <field name="res_model">woo.backend</field>

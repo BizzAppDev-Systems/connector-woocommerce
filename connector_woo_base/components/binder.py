@@ -2,8 +2,8 @@ from odoo.addons.component.core import Component
 
 
 class WooModelBinder(Component):
-    """Bind records and give odoo/woo ids correspondence
-
+    """
+    Bind records and give odoo/woo ids correspondence
     Binding models are models called ``woo.{normal_model}``,
     like ``woo.res.partner``.
     They are ``_inherits`` of the normal models and contains

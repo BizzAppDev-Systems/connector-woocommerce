@@ -1,70 +1,83 @@
-import logging
-from urllib.parse import urljoin
-from datetime import datetime
-from odoo.addons.queue_job.exception import RetryableJobError
-import socket
-from odoo.addons.component.core import AbstractComponent
-import urllib
-from odoo.addons.connector.exception import NetworkRetryableError, InvalidDataError
-import requests
 import json
+import logging
+import socket
+import urllib
+from datetime import datetime
+from urllib.parse import urljoin
+
+import requests
 from requests.auth import HTTPBasicAuth
-from simplejson.errors import JSONDecodeError
+
+from odoo.addons.component.core import AbstractComponent
+from odoo.addons.connector.exception import (
+    InvalidDataError,
+    NetworkRetryableError,
+    RetryableJobError,
+)
 
 _logger = logging.getLogger(__name__)
 
 
-class WooAPI(object):
-    def __init__(self, location, client_id, client_secret, version):
-        self.location = location
+class WooLocation(object):
+    """The Class is used to set Location"""
+
+    def __init__(self, location, client_id, client_secret, version, test_mode):
+        self._location = location
         self.client_id = client_id
         self.client_secret = client_secret
         self.version = version
+        self.test_mode = test_mode
 
-    def __enter__(self):
-        """We do nothing, api is lazy"""
-        return self
+    @property
+    def location(self):
+        location = "{location}/wp-json/wc/{version}/".format(
+            location=self._location, version=self.version
+        )
+        return location
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        """Trace-back of API"""
-        pass
 
-    def api_call(self, resource_path, arguments, http_method=None):
-        """Do requests"""
-        url = urljoin(self.location, resource_path.format(version=self.version))
-        auth = None
+class WooClient(object):
+    def __init__(self, location, client_id, client_secret, version, test_mode):
+        """
+        :param location: Woocommerce location for data
+        :type location: :class:`WooLocation`
+        """
+        self._location = location
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self._version = version
+        self._test_mode = test_mode
+
+    def get_header(self):
+        """Headers for the woo api"""
         headers = {}
-        params = {}
-        data = {}
+        return headers
+
+    def call(self, resource_path, arguments, http_method=None, headers=None):
+        """send/get request/response to/from remote system"""
+        if resource_path is None:
+            _logger.exception("Remote System API called without resource path")
+            raise NotImplementedError
+        url = urljoin(self._location, resource_path)
+        auth = None
+        default_headers = self.get_header()
+        kwargs = {"headers": default_headers}
         if self.client_id and self.client_secret:
             if http_method == "post":
-                params["email"] = arguments.get("email")
+                kwargs["params"] = arguments
                 data = json.dumps(arguments)
+                kwargs["data"] = data
             auth = HTTPBasicAuth(self.client_id, self.client_secret)
-        response = requests.request(
-            method=http_method,
-            url=url,
-            auth=auth,
-            data=data,
-            headers=headers,
-            params=params,
-            timeout=5,
-        )
-        return response
-
-    def call(self, resource_path, arguments, http_method=None):
-        """send/get request/response to/from remote system"""
-        result = self.api_call(
-            resource_path=resource_path,
-            arguments=arguments,
-            http_method=http_method,
-        )
-        status_code = result.status_code
-        json_data = result.json()
+        function = getattr(requests, http_method)
+        response = function(url, **kwargs, auth=auth)
+        status_code = response.status_code
+        json_data = response.json()
 
         if status_code == 201:
-            return result
+            # Partners created in woocommerce
+            return response
         elif status_code == 200:
+            # Partners are imported from woocommerce
             return json_data
         elif status_code == 400 or status_code == 401 or status_code == 404:
             # From Woo on invalid data we get a 400 error
@@ -77,7 +90,7 @@ class WooAPI(object):
                 "Result:%s\n"
                 "Code: %s\n"
                 "Reason: %s\n"
-                "name: %s\n" % (result, status_code, result._content, __name__)
+                "name: %s\n" % (response, status_code, response._content, __name__)
             )
         elif status_code == 500:
             # In case Server Error/Network Error
@@ -86,9 +99,86 @@ class WooAPI(object):
                 "Result:%s\n"
                 "Code: %s\n"
                 "Reason: %s\n"
-                "name: %s\n" % (result, status_code, result._content, __name__)
+                "name: %s\n" % (response, status_code, response._content, __name__)
             )
-        result.raise_for_status()
+        response.raise_for_status()
+
+
+class WooAPI(object):
+    def __init__(self, location):
+        """
+        :param location: Remote location
+        :type location: :class:`GenericLocation`
+        """
+        self._location = location
+        self._api = None
+
+    @property
+    def api(self):
+        if self._api is None:
+            remote_client = WooClient(
+                self._location.location,
+                self._location.client_id,
+                self._location.client_secret,
+                self._location.test_mode,
+                self._location.version,
+            )
+            self._api = remote_client
+        return self._api
+
+    def api_call(self, resource_path, arguments, http_method=None, headers=None):
+        """Adjust available arguments per API"""
+        if not self.api:
+            return self.api
+        return self.api.call(resource_path, arguments, http_method=http_method)
+
+    def __enter__(self):
+        # we do nothing, api is lazy
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if self._api is not None and hasattr(self._api, "__exit__"):
+            self._api.__exit__(exc_type, exc_value, traceback)
+
+    def call(self, resource_path, arguments, http_method=None, headers=None):
+        try:
+            if isinstance(arguments, list):
+                while arguments and arguments[-1] is None:
+                    arguments.pop()
+            start = datetime.now()
+            try:
+                result = self.api_call(
+                    resource_path, arguments, http_method=http_method, headers=headers
+                )
+            except Exception:
+                _logger.error("api.call('%s', %s) failed", resource_path, arguments)
+                raise
+            else:
+                _logger.debug(
+                    "api.call('%s', %s) returned %s in %s seconds",
+                    resource_path,
+                    arguments,
+                    result,
+                    (datetime.now() - start).seconds,
+                )
+            # Uncomment to record requests/responses in ``recorder``
+            # record(method, arguments, result)
+            return result
+        except (socket.gaierror, socket.error, socket.timeout) as err:
+            raise NetworkRetryableError(
+                "A network error caused the failure of the job: " "%s" % err
+            ) from err
+        except urllib.error.HTTPError as err:
+            if err.code in [502, 503, 504]:
+                # Origin Error
+                raise RetryableJobError(
+                    "HTTP Error:\n"
+                    "Code: %s\n"
+                    "Reason: %s\n"
+                    "Headers: %d\n" % (err.code, err.reason, err.headers)
+                ) from err
+            else:
+                raise
 
 
 class WooCRUDAdapter(AbstractComponent):
@@ -139,7 +229,7 @@ class WooCRUDAdapter(AbstractComponent):
                 "You must provide a woo_api attribute with a "
                 "WooAPI instance to be able to use the "
                 "Backend Adapter."
-            )
+            ) from None
         return woo_api.call(resource_path, arguments, http_method=http_method)
 
 
@@ -148,18 +238,16 @@ class GenericAdapter(AbstractComponent):
 
     _name = "woo.adapter"
     _inherit = "woo.crud.adapter"
+    _apply_on = "woo.backend"
 
     _woo_model = None
-    _woo_ext_id_key = None
-    _odoo_ext_id_key = None
-    _woo_fallback_ext_id_kay = None
-    _woo_model_type = "/wp-json/"
     _last_update_field = None
-    _apply_on = "woo.backend"
+    _woo_ext_id_key = "id"
+    _odoo_ext_id_key = "external_id"
 
     def search_read(self, filters=None, **kwargs):
         """Method to get the records from woo"""
-        resource_path = urljoin(self._woo_model_type, self._woo_model)
+        resource_path = self._woo_model
         result = self._call(
             resource_path=resource_path, arguments=filters, http_method="get"
         )
@@ -167,31 +255,25 @@ class GenericAdapter(AbstractComponent):
 
     def read(self, external_id=None, attributes=None):
         """Method to get a data for specified record"""
-        resource_path = urljoin(self._woo_model_type, self._woo_model)
-        resource_path = "{}/{}".format(resource_path, external_id)
+        resource_path = self._woo_model
         result = self._call(resource_path=resource_path, http_method="get")
         return result
 
     def create(self, data):
         """Creates the data in remote"""
-        resource_path = urljoin(self._woo_model_type, self._woo_model)
+        resource_path = self._woo_model
         result = self._call(resource_path, data, http_method="post")
         return result
 
     def write(self, external_id, data):
         """Update the data in remote"""
-        pass
-
-    # TODO : Support method as needed
-
-    def search(self, filters=None):
-        pass
+        raise NotImplementedError
 
     def delete(self, external_id):
-        pass
+        raise NotImplementedError
 
     def cancel(self, external_id):
-        pass
+        raise NotImplementedError
 
     def complete(self, external_id):
-        pass
+        raise NotImplementedError

@@ -16,6 +16,17 @@ class WooBinding(models.AbstractModel):
     )
     external_id = fields.Char(string="ID on woo")
 
+    def init(self):
+        """Unique index for Backend ID and External ID"""
+        if self._table == "woo_binding":
+            return
+        self.env.cr.execute(
+            "CREATE UNIQUE INDEX IF NOT EXISTS %s_unique_backend_external_id ON %s"
+            " (external_id, backend_id) WHERE external_id IS NOT NULL and"
+            " external_id != '' and external_id != 'False' and external_id != 'false'"
+            % (self._table, self._table)
+        )
+
     @api.model
     def import_batch(self, backend, filters=None, force=False):
         """Prepare the import of records modified on woo"""

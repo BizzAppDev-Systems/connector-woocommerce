@@ -7,7 +7,6 @@ from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.exception import NothingToDoJob
 from odoo.addons.queue_job.job import identity_exact
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -67,8 +66,8 @@ class WooImporter(AbstractComponent):
     def _import_dependency(
         self, external_id, binding_model, importer=None, always=False
     ):
-        """Import a dependency.
-
+        """
+        Import a dependency.
         The importer class is a class or subclass of
         :class:`GenericImporter`. A specific class can be defined.
 
@@ -103,8 +102,8 @@ class WooImporter(AbstractComponent):
                 )
 
     def _import_dependencies(self):
-        """Import the dependencies for the record
-
+        """
+        Import the dependencies for the record
         Import of dependencies can be done manually or by calling
         :meth:`_import_dependency` for each dependency.
         """
@@ -117,9 +116,9 @@ class WooImporter(AbstractComponent):
             self._import_dependency(external_id=external_id, binding_model=model)
 
     def _map_data(self):
-        """Returns an instance of
+        """
+        Returns an instance of
         :py:class:`~odoo.addons.connector.components.mapper.MapRecord`
-
         """
         return self.mapper.map_record(self.remote_record)
 
@@ -134,7 +133,8 @@ class WooImporter(AbstractComponent):
         return
 
     def _must_skip(self):
-        """Hook called right after we read the data from the backend.
+        """
+        Hook called right after we read the data from the backend.
 
         If the method returns a message giving a reason for the
         skipping, the import will be interrupted and the message
@@ -226,14 +226,9 @@ class WooImporter(AbstractComponent):
         self.binder.bind(self.external_id, binding)
 
 
-class WooImportMapChild(AbstractComponent):
-    _name = "woo.map.child.import"
-    _inherit = ["connector.woo.base", "base.map.child.import"]
-    _usage = "import.map.child"
-
-
 class WooBatchImporter(AbstractComponent):
-    """The role of a BatchImporter is to search for a list of
+    """
+    The role of a BatchImporter is to search for a list of
     items to import, then it can either import them directly or delay
     the import of each item separately.
     """
@@ -250,8 +245,8 @@ class WooBatchImporter(AbstractComponent):
             self._import_record(external_id, data=record, force=force)
 
     def _import_record(self, external_id, data=None):
-        """Import a record directly or delay the import of the record.
-
+        """
+        Import a record directly or delay the import of the record.
         Method to implement in sub-classes.
         """
         raise NotImplementedError

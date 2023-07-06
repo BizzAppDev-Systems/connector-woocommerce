@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+    <!-- Menu for the Woocommerce root  -->
     <menuitem
         id="menu_woo_root"
         parent="connector.menu_connector_root"
-        name="Woo"
+        name="WooCommerce"
         groups="connector.group_connector_manager"
     />
+    <!-- Menu for the Woocommerce backend -->
     <menuitem
         id="menu_woo_backend"
-        name="Woo Backends"
+        name="WooCommerce Backends"
         parent="menu_woo_root"
         action="action_woo_backend"
     />

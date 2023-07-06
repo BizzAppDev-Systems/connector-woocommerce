@@ -1,14 +1,11 @@
 import logging
-
 from contextlib import contextmanager
-
 from datetime import datetime, timedelta
-from ...components.backend_adapter import WooAPI
 
 from odoo import fields, models
-
 from odoo.osv import expression
-from odoo.addons.component.core import Component
+
+from ...components.backend_adapter import WooAPI, WooLocation
 
 _logger = logging.getLogger(__name__)
 
@@ -17,6 +14,8 @@ IMPORT_DELTA_BUFFER = 30  # seconds
 
 
 class WooBackend(models.Model):
+    """Backend for WooCommerce"""
+
     _name = "woo.backend"
     _description = "Woo Backend"
     _inherit = ["mail.thread", "connector.backend"]
@@ -45,6 +44,31 @@ class WooBackend(models.Model):
         """Test Mode"""
         for record in self:
             record.test_mode = not record.test_mode
+
+    @contextmanager
+    def work_on(self, model_name, **kwargs):
+        """Add the work on for woo."""
+        self.ensure_one()
+        location = self.test_location
+        version = self.version
+        client_id = self.test_client_id
+        client_secret = self.test_client_secret
+        if not self.test_mode:
+            location = self.location
+            client_id = self.client_id
+            client_secret = self.client_secret
+        woo_location = WooLocation(
+            location=location,
+            client_id=client_id,
+            client_secret=client_secret,
+            version=version,
+            test_mode=self.test_mode,
+        )
+        with WooAPI(woo_location) as woo_api:
+            _super = super(WooBackend, self)
+            # from the components we'll be able to do: self.work.woo_api
+            with _super.work_on(model_name, woo_api=woo_api, **kwargs) as work:
+                yield work
 
     def _import_from_date(
         self,
@@ -135,34 +159,3 @@ class WooBackend(models.Model):
                 priority=20,
                 filters=filters,
             )
-
-    @contextmanager
-    def work_on(self, model_name, **kwargs):
-        """Add the work on for woo."""
-        self.ensure_one()
-        location = self.test_location
-        version = self.version
-        client_id = self.test_client_id
-        client_secret = self.test_client_secret
-        api_endpoint = "https://woo-creatively-quality-moon.wpcomstaging.com/wp-json/wc/{}/customers".format(
-            version
-        )
-        if not self.test_mode:
-            location = self.location
-            client_id = self.client_id
-            client_secret = self.client_secret
-        with WooAPI(location, client_id, client_secret, version) as woo_api:
-            _super = super(WooBackend, self)
-            # from the components we'll be able to do: self.work.woo_api
-            with _super.work_on(model_name, woo_api=woo_api, **kwargs) as work:
-                yield work
-
-
-class WooCRUDAdapter(Component):
-    """External Records Adapter for Woo"""
-
-    # pylint: disable=method-required-super
-
-    _name = "woo.backend.adapter"
-    _inherit = "woo.adapter"
-    _apply_on = "woo.backend"

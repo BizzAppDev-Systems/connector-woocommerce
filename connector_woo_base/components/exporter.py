@@ -124,7 +124,7 @@ class WooExporter(AbstractComponent):
         binding_extra_vals=None,
     ):
         exporter = self.component(usage=component_usage, model_name=binding_model)
-        """Call importer if we need to import record in dependency """
+        # Call importer if we need to import record in dependency
         if component_usage == "record.importer":
             external_id = None
             if (
@@ -255,8 +255,8 @@ class WooExporter(AbstractComponent):
             res = self._create(record)
             # BAD start
             if isinstance(res, dict):
-                """add logger error in case of not getting proper data while exporting
-                products"""
+                # add logger error in case of not getting proper data while exporting
+                # products.
                 if self.backend_adapter._woo_ext_id_key not in res:
                     _logger.error("Error while exporting partner: %s", res)
                 else:
@@ -273,8 +273,9 @@ class WooExporter(AbstractComponent):
         return _("Record exported with ID %s on Backend.") % self.external_id
 
 
-class BatchExporter(AbstractComponent):
-    """The role of a BatchExporter is to search for a list of
+class WooBatchExporter(AbstractComponent):
+    """
+    The role of a BatchExporter is to search for a list of
     items to export, then it can either export them directly or delay
     the export of each item separately.
     """
@@ -290,14 +291,15 @@ class BatchExporter(AbstractComponent):
             self._export_record(record)
 
     def _export_record(self, record):
-        """Export a record directly or delay the export of the record.
+        """
+        Export a record directly or delay the export of the record.
 
         Method to implement in sub-classes.
         """
         self.model.export_record(self.backend_record, record)
 
 
-class DirectBatchExporter(AbstractComponent):
+class WooDirectBatchExporter(AbstractComponent):
     """Export the records directly, without delaying the jobs."""
 
     _name = "woo.direct.batch.exporter"
@@ -308,7 +310,7 @@ class DirectBatchExporter(AbstractComponent):
         self.model.export_record(self.backend_record, record)
 
 
-class DelayedBatchExporter(AbstractComponent):
+class WooDelayedBatchExporter(AbstractComponent):
     """Delay export of the records"""
 
     _name = "woo.delayed.batch.exporter"
