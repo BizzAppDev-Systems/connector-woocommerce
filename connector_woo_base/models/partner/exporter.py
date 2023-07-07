@@ -32,6 +32,51 @@ class WooResPartnerExporterMapper(Component):
         username = record.name or ""
         return {"username": username}
 
+    def get_address_1(self, record):
+        """Mapping for address"""
+        address = record.street or ""
+        return {"address_1": address}
+
+    def get_address_2(self, record):
+        """Mapping for address2"""
+        address2 = record.street2 or ""
+        return {"address_2": address2}
+
+    def get_city(self, record):
+        """Mappinf for City"""
+        city = record.city or ""
+        return {"city": city}
+
+    def get_phone(self, record):
+        """Mapping for Phone"""
+        phone = record.phone or ""
+        return {"phone": phone}
+
+    def get_state(self, record):
+        """Mapping for state"""
+        state = record.state_id.name or ""
+        return {"state": state}
+
+    def get_company(self, record):
+        """Mapping for company"""
+        company = record.company_id.name or ""
+        return {"company": company}
+
+    @mapping
+    def billing(self, move):
+        """Mapping for billing"""
+        fields_lst = [
+            "address_1",
+            "address_2",
+            "city",
+            "phone",
+            "company",
+        ]
+        data = {}
+        for field in fields_lst:
+            data.update(getattr(self, "get_%s" % (field))(move))
+        return {"billing": data}
+
 
 class WooResPartnerExporter(Component):
     """Exporter for Woocommerce Partner"""
@@ -55,7 +100,7 @@ class WooResPartnerBatchExporter(Component):
         if not domain:
             _logger.info(_("Moves: No record found to export(no domain found.)!!!"))
             return
-        moves = self.env["res.partner"].search(domain)
-        for move in moves:
-            self._export_record(move)
-            move.message_post(body=_("Partner Exported via Woo interface"))
+        partners = self.env["res.partner"].search(domain)
+        for partner in partners:
+            self._export_record(partner)
+            partner.message_post(body=_("Partner Exported via Woo interface"))

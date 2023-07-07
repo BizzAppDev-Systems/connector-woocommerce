@@ -17,8 +17,6 @@ class ResPartner(models.Model):
         copy=False,
     )
 
-    woo_id = fields.Char()
-
 
 class WooResPartner(models.Model):
     _name = "woo.res.partner"
@@ -45,4 +43,4 @@ class WooResPartnerAdapter(Component):
 
     _woo_model = "customers"
     _woo_key = "id"
-    _odoo_ext_id_key = "woo_id"
+    _odoo_ext_id_key = "id"

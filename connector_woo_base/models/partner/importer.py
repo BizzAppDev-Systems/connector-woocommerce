@@ -44,7 +44,7 @@ class WooResPartnerImportMapper(Component):
         woo_partner_id = (
             self.env["woo.res.partner"]
             .sudo()
-            .search([("woo_id", "=", record.get("id"))])
+            .search([("email", "=", record.get("email"))])
         )
         if woo_partner_id:
             return {"odoo_id": woo_partner_id.odoo_id.id}

@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 
 import requests
 from requests.auth import HTTPBasicAuth
+from simplejson.errors import JSONDecodeError
 
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import (
@@ -48,10 +49,10 @@ class WooClient(object):
         self._version = version
         self._test_mode = test_mode
 
-    def get_header(self):
-        """Headers for the woo api"""
-        headers = {}
-        return headers
+    def get_data(self, arguments):
+        """Data for the woo api"""
+        data = json.dumps(arguments)
+        return data
 
     def call(self, resource_path, arguments, http_method=None, headers=None):
         """send/get request/response to/from remote system"""
@@ -60,48 +61,47 @@ class WooClient(object):
             raise NotImplementedError
         url = urljoin(self._location, resource_path)
         auth = None
-        default_headers = self.get_header()
+        default_headers = {}
         kwargs = {"headers": default_headers}
-        if self.client_id and self.client_secret:
-            if http_method == "post":
-                kwargs["params"] = arguments
-                data = json.dumps(arguments)
-                kwargs["data"] = data
-            auth = HTTPBasicAuth(self.client_id, self.client_secret)
+        if http_method == "post":
+            kwargs["params"] = {"email": arguments.get("email")}
+            kwargs["data"] = self.get_data(arguments)
+        auth = HTTPBasicAuth(self.client_id, self.client_secret)
         function = getattr(requests, http_method)
         response = function(url, **kwargs, auth=auth)
         status_code = response.status_code
-        json_data = response.json()
-
         if status_code == 201:
             # Partners created in woocommerce
             return response
-        elif status_code == 200:
-            # Partners are imported from woocommerce
-            return json_data
-        elif status_code == 400 or status_code == 401 or status_code == 404:
-            # From Woo on invalid data we get a 400 error
-            # From Woo on Authentication or permission error we get a 401 error,
-            # e.g. incorrect API keys
-            # From Woo on record don't exist or are missing we get a 404 error
-            # but raise_for_status treats it as a network error (which is retryable)
-            raise InvalidDataError(
-                "HTTP Error:\n"
-                "Result:%s\n"
-                "Code: %s\n"
-                "Reason: %s\n"
-                "name: %s\n" % (response, status_code, response._content, __name__)
-            )
-        elif status_code == 500:
-            # In case Server Error/Network Error
-            raise NetworkRetryableError(
-                "HTTP Error:\n"
-                "Result:%s\n"
-                "Code: %s\n"
-                "Reason: %s\n"
-                "name: %s\n" % (response, status_code, response._content, __name__)
-            )
+        try:
+            if status_code == 200:
+                # Partners are imported from woocommerce
+                return response.json()
+        except JSONDecodeError:
+            if status_code == 400 or status_code == 401 or status_code == 404:
+                # From Woo on invalid data we get a 400 error
+                # From Woo on Authentication or permission error we get a 401 error,
+                # e.g. incorrect API keys
+                # From Woo on record don't exist or are missing we get a 404 error
+                # but raise_for_status treats it as a network error (which is retryable)
+                raise InvalidDataError(
+                    "HTTP Error:\n"
+                    "Result:%s\n"
+                    "Code: %s\n"
+                    "Reason: %s\n"
+                    "name: %s\n" % (response, status_code, response._content, __name__)
+                ) from None
+        except urllib.error.HTTPError as err:
+            if err.code == 500:
+                # Origin Error
+                raise NetworkRetryableError(
+                    "HTTP Error:\n"
+                    "Code: %s\n"
+                    "Reason: %s\n"
+                    "Headers: %d\n" % (err.code, err.reason, err.headers)
+                ) from err
         response.raise_for_status()
+        return response
 
 
 class WooAPI(object):

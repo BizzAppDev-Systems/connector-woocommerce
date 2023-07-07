@@ -124,7 +124,7 @@ class WooExporter(AbstractComponent):
         binding_extra_vals=None,
     ):
         exporter = self.component(usage=component_usage, model_name=binding_model)
-        # Call importer if we need to import record in dependency
+        # Call importer if we need to import record in dependency.
         if component_usage == "record.importer":
             external_id = None
             if (
