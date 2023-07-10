@@ -61,8 +61,7 @@ class WooClient(object):
             raise NotImplementedError
         url = urljoin(self._location, resource_path)
         auth = None
-        default_headers = {}
-        kwargs = {"headers": default_headers}
+        kwargs = {"headers": {}}
         if http_method == "post":
             kwargs["params"] = {"email": arguments.get("email")}
             kwargs["data"] = self.get_data(arguments)

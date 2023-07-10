@@ -18,7 +18,7 @@ class WooBackend(models.Model):
 
     _name = "woo.backend"
     _description = "Woo Backend"
-    _inherit = ["mail.thread", "connector.backend"]
+    _inherit = "connector.backend"
 
     name = fields.Char(string="Name", required=True)
     version = fields.Selection(

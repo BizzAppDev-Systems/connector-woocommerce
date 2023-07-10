@@ -63,7 +63,7 @@ class WooResPartnerExporterMapper(Component):
         return {"company": company}
 
     @mapping
-    def billing(self, move):
+    def billing(self, record):
         """Mapping for billing"""
         fields_lst = [
             "address_1",
@@ -74,7 +74,7 @@ class WooResPartnerExporterMapper(Component):
         ]
         data = {}
         for field in fields_lst:
-            data.update(getattr(self, "get_%s" % (field))(move))
+            data.update(getattr(self, "get_%s" % (field))(record))
         return {"billing": data}
 
 
