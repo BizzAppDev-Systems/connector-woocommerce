@@ -1,0 +1,17 @@
+{
+    "name": "Connector Woo Product",
+    "version": "16.0.1.0.0",
+    "category": "Connector",
+    "author": "BizzAppDev",
+    "website": "http://www.bizzappdev.com",
+    "depends": ["mail", "product", "connector_woo_base"],
+    "external_dependencies": {"python": ["requests", "simplejson"]},
+    "license": "LGPL-3",
+    "data": [
+        "data/queue_job_data.xml",
+        "data/ir_cron_data.xml",
+        "security/ir.model.access.csv",
+        "views/woo_backend_view.xml",
+        "views/product_views.xml",
+    ],
+}
