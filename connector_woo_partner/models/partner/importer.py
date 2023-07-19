@@ -15,13 +15,6 @@ class WooResPartnerBatchImporter(Component):
     _inherit = "woo.delayed.batch.importer"
     _apply_on = "woo.res.partner"
 
-    def run(self, filters=None, force=False, job_options=None):
-        """Override Method : Run the synchronization."""
-        records_list = self.backend_adapter.search_read(filters=filters)
-        for record in records_list:
-            external_id = record.get(self.backend_adapter._woo_ext_id_key)
-            self._import_record(external_id, job_options=job_options, data=record)
-
 
 class WooResPartnerImportMapper(Component):
     """Impoter Mapper for the WooCommerce Partner"""
@@ -29,6 +22,10 @@ class WooResPartnerImportMapper(Component):
     _name = "woo.res.partner.import.mapper"
     _inherit = "woo.import.mapper"
     _apply_on = "woo.res.partner"
+
+    _sql_constraints = [
+        ("woo_res_partner_email_unique", "UNIQUE(email)", "Email must be unique!")
+    ]
 
     @only_create
     @mapping
@@ -41,13 +38,20 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def odoo_id(self, record):
         """Will bind the partner to an existing one with the same code"""
-        woo_partner_id = (
-            self.env["woo.res.partner"]
-            .sudo()
-            .search([("email", "=", record.get("email"))])
-        )
-        if woo_partner_id:
-            return {"odoo_id": woo_partner_id.odoo_id.id}
+        binder = self.binder_for(model="woo.res.partner")
+        woo_partner = binder.to_internal(record.get("id"), unwrap=True)
+        if woo_partner:
+            return {"odoo_id": woo_partner.id}
+        else:
+            partner_name = record.get("name")
+            existing_partner = (
+                self.env["res.partner"]
+                .with_context(active_test=False)
+                .search([("name", "=", partner_name)], limit=1)
+            )
+            if existing_partner:
+                return {"odoo_id": existing_partner.id}
+        return {}
 
     @mapping
     def email(self, record):
@@ -74,27 +78,10 @@ class WooResPartnerImportMapper(Component):
         return {"city": city}
 
     @mapping
-    def phone(self, record):
-        """Mapping for phone"""
-        phone = record.get("billing", {}).get("phone") or ""
-        return {"phone": phone}
-
-    @mapping
-    def state_id(self, record):
-        """Mapping for state"""
-        state = record.get("billing", {}).get("state") or ""
-        return {"state_id": state}
-
-    @mapping
     def company_id(self, record):
         """Mapping for company"""
         company = record.get("billing", {}).get("company") or ""
         return {"company_id": company}
-
-    @mapping
-    def external_id(self, record):
-        """Return External ID"""
-        return {"external_id": record["id"]}
 
     @mapping
     def backend_id(self, record):

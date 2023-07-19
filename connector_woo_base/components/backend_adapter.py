@@ -23,6 +23,7 @@ class WooLocation(object):
     """The Class is used to set Location"""
 
     def __init__(self, location, client_id, client_secret, version, test_mode):
+        """Initialization to set location"""
         self._location = location
         self.client_id = client_id
         self.client_secret = client_secret
@@ -62,19 +63,20 @@ class WooClient(object):
         url = urljoin(self._location, resource_path)
         auth = None
         kwargs = {"headers": {}}
+        if http_method == "get":
+            kwargs["params"] = arguments
         if http_method == "post":
             kwargs["params"] = {"email": arguments.get("email")}
             kwargs["data"] = self.get_data(arguments)
         auth = HTTPBasicAuth(self.client_id, self.client_secret)
+        kwargs["auth"] = auth
         function = getattr(requests, http_method)
-        response = function(url, **kwargs, auth=auth)
+        response = function(url, **kwargs)
         status_code = response.status_code
         if status_code == 201:
-            # Partners created in woocommerce
             return response
         try:
             if status_code == 200:
-                # Partners are imported from woocommerce
                 return response.json()
         except JSONDecodeError:
             if status_code == 400 or status_code == 401 or status_code == 404:
@@ -260,19 +262,5 @@ class GenericAdapter(AbstractComponent):
 
     def create(self, data):
         """Creates the data in remote"""
-        resource_path = self._woo_model
-        result = self._call(resource_path, data, http_method="post")
+        result = self._call(self._woo_model, data, http_method="post")
         return result
-
-    def write(self, external_id, data):
-        """Update the data in remote"""
-        raise NotImplementedError
-
-    def delete(self, external_id):
-        raise NotImplementedError
-
-    def cancel(self, external_id):
-        raise NotImplementedError
-
-    def complete(self, external_id):
-        raise NotImplementedError

@@ -5,10 +5,11 @@
 ***************
 
 * Technical name: connector_woo_base.
-* Add Partner importer and Partner exporter through Woocommerce API.
 * Add new menu in Connectors > Woocommerce > Woocommerce Backends.
-* Required field to Import and Export the Partners are Location,Client Id,Client Secret.
-
+* Add new menu in Connectors > Configrations >Settings.
+* Add object woo.backend on submenu Connectors.
+* Required field are Location,Client Key,Client Secret.
+* 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
 
 **Author**
 **********
@@ -19,7 +20,7 @@
 **Used by**
 ***********
 
-* #N/A
+* BizzAppDev
 
 
 **Installation**
@@ -31,17 +32,14 @@
 **Configuration**
 *****************
 
-* Partner Import/Export:
-    - Go to Woocommerce Backends.
-    - Add Credentils to Import and Export Partners.
-    - Click 'Import Partners' button to Import the Partners from Woocommerce.
-    - Click 'Export Partners' button to Export the Partners and storing it in Woocommerce.
+* Odoo Backend:
+    - Add configuration details such as the Location, version, Client Key, and Client Secret to sync with the database.
 
 
 **Usage**
 *********
 
-* This module, 'Connector Woo Base,' acts as a connector or integration tool for facilitating interaction between the Woocommerce platform and Odoo. It provides import and export functionality specifically designed for managing customers in Woocommerce during the export process and for managing customers in Odoo during the import process.
+* This module, 'Connector Woo Base,' acts as a connector or integration tool for facilitating interaction between the Woocommerce platform and Odoo.
 
 
 **Known issues/Roadmap**

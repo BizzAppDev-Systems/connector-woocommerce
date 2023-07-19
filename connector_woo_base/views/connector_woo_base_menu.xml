@@ -14,4 +14,21 @@
         parent="menu_woo_root"
         action="action_woo_backend"
     />
+    <!-- Added Menu configuration -->
+    <menuitem
+        id="menu_action_connector_configuration"
+        name="Configuration"
+        active="True"
+        parent="connector.menu_connector_root"
+        sequence="1000"
+    />
+    <!-- Added Submenu settings -->
+    <menuitem
+        id="menu_action_connector_settings"
+        action="action_connector_settings"
+        name="Settings"
+        active="True"
+        parent="menu_action_connector_configuration"
+        sequence="0"
+    />
 </odoo>

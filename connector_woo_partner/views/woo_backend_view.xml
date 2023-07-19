@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherit Form view Woo Backend to add Imports page with button -->
+    <record id="view_woo_backend_partner_form" model="ir.ui.view">
+        <field name="name">woo.backend.partner.form</field>
+        <field name="model">woo.backend</field>
+        <field name="inherit_id" ref="connector_woo_base.view_woo_backend_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='advanced_configuration']" position="before">
+                <page name="import" string="Imports">
+                    <group>
+                        <group>
+                            <label
+                                for="import_partners"
+                                string="Import Partners(Woo)"
+                                style="font-weight:bold;"
+                                class="oe_inline"
+                            />
+                            <field
+                                name="import_partner_from_date"
+                                nolabel="1"
+                                class="oe_inline"
+                            />
+                            <field name="force_import_partner" />
+                        </group>
+                        <group>
+                            <div style="min-width: 300px; max-width: 300px;">
+                                <button
+                                    name="import_partners"
+                                    type="object"
+                                    class="oe_highlight"
+                                    string="Import Partners in Background"
+                                />
+                            </div>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

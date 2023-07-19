@@ -28,7 +28,7 @@ class WooExporter(AbstractComponent):
     _name = "woo.exporter"
     _inherit = ["generic.exporter", "connector.woo.base"]
     _usage = "record.exporter"
-    _default_binding_field = "woo_bind_ids"
+    # _default_binding_field = "woo_bind_ids"
 
     def __init__(self, work_context):
         super(WooExporter, self).__init__(work_context)
@@ -113,7 +113,7 @@ class WooExporter(AbstractComponent):
         return result
 
     def _after_export(self):
-        self.binding.external_id = self.binding.odoo_id.default_code
+        pass
 
     def _export_dependency(
         self,
@@ -124,7 +124,7 @@ class WooExporter(AbstractComponent):
         binding_extra_vals=None,
     ):
         exporter = self.component(usage=component_usage, model_name=binding_model)
-        # Call importer if we need to import record in dependency.
+        # Call importer if we need to import record in dependency
         if component_usage == "record.importer":
             external_id = None
             if (
@@ -184,12 +184,6 @@ class WooExporter(AbstractComponent):
             # depends.
             else:
                 # BAD customization: moved to create_get_binding
-                # bind_values = {
-                #     "backend_id": self.backend_record.id,
-                #     "odoo_id": relation.id,
-                # }
-                # if binding_extra_vals:
-                #     bind_values.update(binding_extra_vals)
                 with self._retry_unique_violation():
                     binding = exporter.create_get_binding(
                         record=relation, extra_data=binding_extra_vals
@@ -241,7 +235,6 @@ class WooExporter(AbstractComponent):
         # prevent other jobs to export the same record
         # will be released on commit (or rollback)
         # self._lock()
-        self.transform_value = None
         map_record = self._map_data()
         if self.external_id:
             record = self._update_data(map_record, fields=fields)
@@ -256,7 +249,7 @@ class WooExporter(AbstractComponent):
             # BAD start
             if isinstance(res, dict):
                 # add logger error in case of not getting proper data while exporting
-                # products.
+                # partners.
                 if self.backend_adapter._woo_ext_id_key not in res:
                     _logger.error("Error while exporting partner: %s", res)
                 else:
@@ -269,7 +262,6 @@ class WooExporter(AbstractComponent):
                     self.binding[self.backend_adapter._odoo_ext_id_key] or None
                 )
             # BAD end
-        self.transform_value = record
         return _("Record exported with ID %s on Backend.") % self.external_id
 
 
@@ -286,9 +278,15 @@ class WooBatchExporter(AbstractComponent):
 
     def run(self, filters=None):
         """Run the synchronization"""
-        records = self.backend_adapter.search(filters)
-        for record in records:
-            self._export_record(record)
+        filters = filters or {}
+        domain = filters.get("domain", [])
+        if not domain:
+            _logger.info(_("Moves: No record found to export(no domain found.)!!!"))
+            return
+        products = self.env["product.product"].search(domain)
+        for product in products:
+            self._export_record(product)
+            product.message_post(body=_("Product Exported via Woo interface"))
 
     def _export_record(self, record):
         """
