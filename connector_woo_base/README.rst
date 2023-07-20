@@ -6,7 +6,7 @@
 
 * Technical name: connector_woo_base.
 * Add new menu in Connectors > Woocommerce > Woocommerce Backends.
-* Add new menu in Connectors > Configrations >Settings.
+* Add new menu in Connectors > Configrations > Settings.
 * Add object woo.backend on submenu Connectors.
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
@@ -32,7 +32,7 @@
 **Configuration**
 *****************
 
-* Odoo Backend:
+* Woo Backend:
     - Add configuration details such as the Location, version, Client Key, and Client Secret to sync with the database.
 
 

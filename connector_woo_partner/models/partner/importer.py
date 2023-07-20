@@ -42,15 +42,6 @@ class WooResPartnerImportMapper(Component):
         woo_partner = binder.to_internal(record.get("id"), unwrap=True)
         if woo_partner:
             return {"odoo_id": woo_partner.id}
-        else:
-            partner_name = record.get("name")
-            existing_partner = (
-                self.env["res.partner"]
-                .with_context(active_test=False)
-                .search([("name", "=", partner_name)], limit=1)
-            )
-            if existing_partner:
-                return {"odoo_id": existing_partner.id}
         return {}
 
     @mapping

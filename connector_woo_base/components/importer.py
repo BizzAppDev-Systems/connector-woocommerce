@@ -242,7 +242,7 @@ class WooBatchImporter(AbstractComponent):
                 external_id = record.get(self.backend_adapter._woo_ext_id_key)
                 self._import_record(external_id, data=record, force=force)
             if records:
-                filters.update({"page": filters.get("page", 0) + 1})
+                filters.update({"page": filters.get("page", 1) + 1})
                 self.process_next_page(filters)
         except Exception as err:
             raise ValidationError(_("Error : %s") % err) from err

@@ -28,7 +28,7 @@ class WooExporter(AbstractComponent):
     _name = "woo.exporter"
     _inherit = ["generic.exporter", "connector.woo.base"]
     _usage = "record.exporter"
-    # _default_binding_field = "woo_bind_ids"
+    _default_binding_field = "woo_bind_ids"
 
     def __init__(self, work_context):
         super(WooExporter, self).__init__(work_context)
@@ -204,7 +204,8 @@ class WooExporter(AbstractComponent):
         pass
 
     def _export_dependencies(self):
-        """Import the dependencies for the record
+        """
+        Import the dependencies for the record
 
         Import of dependencies can be done manually or by calling
         :meth:`_import_dependency` for each dependency.
@@ -249,7 +250,7 @@ class WooExporter(AbstractComponent):
             # BAD start
             if isinstance(res, dict):
                 # add logger error in case of not getting proper data while exporting
-                # partners.
+                # partners
                 if self.backend_adapter._woo_ext_id_key not in res:
                     _logger.error("Error while exporting partner: %s", res)
                 else:
@@ -278,15 +279,9 @@ class WooBatchExporter(AbstractComponent):
 
     def run(self, filters=None):
         """Run the synchronization"""
-        filters = filters or {}
-        domain = filters.get("domain", [])
-        if not domain:
-            _logger.info(_("Moves: No record found to export(no domain found.)!!!"))
-            return
-        products = self.env["product.product"].search(domain)
-        for product in products:
-            self._export_record(product)
-            product.message_post(body=_("Product Exported via Woo interface"))
+        records = self.backend_adapter.search(filters)
+        for record in records:
+            self._export_record(record)
 
     def _export_record(self, record):
         """
