@@ -15,12 +15,9 @@ class TestImportProduct(WooTestCase):
         )
         external_id = "56"
         self.product_model = self.env["woo.product.product"]
-        self.woo_product = self.product_model.search(
-            [("external_id", "=", external_id)]
-        )
         product1 = self.product_model.search([("external_id", "=", external_id)])
         self.assertEqual(len(product1), 1)
-        self.assertTrue(self.woo_product, "Woo Product is not imported!")
+        self.assertTrue(product1, "Woo Product is not imported!")
         self.assertEqual(
             product1.external_id, external_id, "External ID is different!!"
         )

@@ -27,7 +27,6 @@ class WooBackend(models.Model):
     )
     default_limit = fields.Integer(string="Default Limit", default=10)
     company_id = fields.Many2one(comodel_name="res.company", string="Company")
-    export_partner_from_date = fields.Datetime(string="Export partner from date")
     import_partner_from_date = fields.Datetime(string="Import partner from date")
     location = fields.Char(string="Location (Live)")
     test_location = fields.Char(string="Location (Live)")

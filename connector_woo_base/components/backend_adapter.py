@@ -52,8 +52,10 @@ class WooClient(object):
 
     def get_data(self, arguments):
         """Data for the woo api"""
-        data = json.dumps(arguments)
-        return data
+        if arguments is not None:
+            data = json.dumps(arguments)
+            return data
+        return None
 
     def call(self, resource_path, arguments, http_method=None, headers=None):
         """send/get request/response to/from remote system"""
@@ -61,8 +63,7 @@ class WooClient(object):
             _logger.exception("Remote System API called without resource path")
             raise NotImplementedError
         url = urljoin(self._location, resource_path)
-        auth = None
-        kwargs = {"headers": {}}
+        kwargs = {"headers": {"content-type": "application/json"}}
         if http_method == "get":
             kwargs["params"] = arguments
         if http_method == "post":
@@ -102,7 +103,7 @@ class WooClient(object):
                     "Headers: %d\n" % (err.code, err.reason, err.headers)
                 ) from err
         response.raise_for_status()
-        return response
+        return response.json()
 
 
 class WooAPI(object):
@@ -248,16 +249,14 @@ class GenericAdapter(AbstractComponent):
 
     def search_read(self, filters=None, **kwargs):
         """Method to get the records from woo"""
-        resource_path = self._woo_model
         result = self._call(
-            resource_path=resource_path, arguments=filters, http_method="get"
+            resource_path=self._woo_model, arguments=filters, http_method="get"
         )
         return result
 
     def read(self, external_id=None, attributes=None):
         """Method to get a data for specified record"""
-        resource_path = self._woo_model
-        result = self._call(resource_path=resource_path, http_method="get")
+        result = self._call(resource_path=self._woo_model, http_method="get")
         return result
 
     def create(self, data):

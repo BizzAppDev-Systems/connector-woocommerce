@@ -37,15 +37,6 @@ class WooProductProductImportMapper(Component):
         woo_product = binder.to_internal(record.get("id"), unwrap=True)
         if woo_product:
             return {"odoo_id": woo_product.id}
-        else:
-            product_name = record.get("name")
-            existing_product = (
-                self.env["product.product"]
-                .with_context(active_test=False)
-                .search([("name", "=", product_name)], limit=1)
-            )
-            if existing_product:
-                return {"odoo_id": existing_product.id}
         return {}
 
     @mapping
@@ -55,15 +46,11 @@ class WooProductProductImportMapper(Component):
         return {"list_price": price}
 
     @mapping
-    def write_date(self, record):
-        """Mappinf for write_date"""
-        date_modified = record.get("date_modified")
-        return {"write_date": date_modified}
-
-    @mapping
     def default_code(self, record):
         """Mapped product default code."""
         default_code = record.get("sku")
+        if not default_code:
+            return {}
         return {"default_code": default_code}
 
     @mapping
@@ -75,24 +62,19 @@ class WooProductProductImportMapper(Component):
     @mapping
     def sale_ok(self, record):
         """Mapping for sale_ok"""
-        sale = record.get("on_sale")
+        sale = record.get("on_sale", False)
         return {"sale_ok": sale}
 
     @mapping
     def purchase_ok(self, record):
         """Mapping for purchase_ok"""
-        purchase = record.get("purchasable")
+        purchase = record.get("purchasable", False)
         return {"purchase_ok": purchase}
 
     @mapping
     def backend_id(self, record):
         """Return backend."""
         return {"backend_id": self.backend_record.id}
-
-    @mapping
-    def external_id(self, record):
-        """Mapping for external_id"""
-        return {"external_id": record.get("id")}
 
 
 class WooProductProductImporter(Component):

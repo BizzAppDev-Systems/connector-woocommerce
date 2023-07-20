@@ -279,15 +279,9 @@ class WooBatchExporter(AbstractComponent):
 
     def run(self, filters=None):
         """Run the synchronization"""
-        filters = filters or {}
-        domain = filters.get("domain", [])
-        if not domain:
-            _logger.info(_("Moves: No record found to export(no domain found.)!!!"))
-            return
-        products = self.env["product.product"].search(domain)
-        for product in products:
-            self._export_record(product)
-            product.message_post(body=_("Product Exported via Woo interface"))
+        records = self.backend_adapter.search(filters)
+        for record in records:
+            self._export_record(record)
 
     def _export_record(self, record):
         """
