@@ -5,4 +5,4 @@ class ResCompany(models.Model):
     _inherit = "res.company"
 
     # Added field
-    woo_backend_id = fields.Many2one("woo.backend", string="Odoo Backend")
+    woo_backend_id = fields.Many2one("woo.backend", string="Woo Backend")

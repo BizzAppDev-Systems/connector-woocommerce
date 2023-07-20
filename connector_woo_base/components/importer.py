@@ -201,11 +201,7 @@ class WooImporter(AbstractComponent):
         skip = self._must_skip()  # pylint: disable=assignment-from-none
         if skip:
             return skip
-
         binding = self._get_binding()
-
-        # if not force and not self._is_uptodate(binding):
-        #     return _("Already up-to-date.")
 
         # Keep a lock on this import until the transaction is committed
         # The lock is kept since we have detected that the information
@@ -223,7 +219,6 @@ class WooImporter(AbstractComponent):
         else:
             record = self._create_data(map_record)
             binding = self._create(record)
-
         self.binder.bind(self.external_id, binding)
 
 

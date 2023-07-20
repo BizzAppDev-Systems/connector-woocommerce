@@ -204,7 +204,8 @@ class WooExporter(AbstractComponent):
         pass
 
     def _export_dependencies(self):
-        """Import the dependencies for the record
+        """
+        Import the dependencies for the record
 
         Import of dependencies can be done manually or by calling
         :meth:`_import_dependency` for each dependency.
@@ -278,15 +279,9 @@ class WooBatchExporter(AbstractComponent):
 
     def run(self, filters=None):
         """Run the synchronization"""
-        filters = filters or {}
-        domain = filters.get("domain", [])
-        if not domain:
-            _logger.info(_("Moves: No record found to export(no domain found.)!!!"))
-            return
-        partners = self.env["res.partner"].search(domain)
-        for partner in partners:
-            self._export_record(partner)
-            partner.message_post(body=_("Partner Exported via Woo interface"))
+        records = self.backend_adapter.search(filters)
+        for record in records:
+            self._export_record(record)
 
     def _export_record(self, record):
         """
