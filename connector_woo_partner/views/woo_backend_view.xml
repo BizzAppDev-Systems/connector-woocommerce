@@ -6,29 +6,30 @@
         <field name="model">woo.backend</field>
         <field name="inherit_id" ref="connector_woo_base.view_woo_backend_form" />
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='advanced_configuration']" position="before">
-                <page name="import" string="Imports">
+            <xpath expr="//page[@name='import']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            <xpath expr="//page[@name='import']" position="inside">
+                <group>
                     <group>
-                        <group>
-                            <label
-                                for="import_partners"
-                                string="Import Partners(Woo)"
-                                style="font-weight:bold;"
-                                class="oe_inline"
-                            />
-                        </group>
-                        <group>
-                            <div style="min-width: 300px; max-width: 300px;">
-                                <button
-                                    name="import_partners"
-                                    type="object"
-                                    class="oe_highlight"
-                                    string="Import Partners in Background"
-                                />
-                            </div>
-                        </group>
+                        <label
+                            for="import_partners"
+                            string="Import Partners(Woo)"
+                            style="font-weight:bold;"
+                            class="oe_inline"
+                        />
                     </group>
-                </page>
+                    <group>
+                        <div style="min-width: 300px; max-width: 300px;">
+                            <button
+                                name="import_partners"
+                                type="object"
+                                class="oe_highlight"
+                                string="Import Partners in Background"
+                            />
+                        </div>
+                    </group>
+                </group>
             </xpath>
         </field>
     </record>

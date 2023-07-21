@@ -31,3 +31,8 @@ class TestImportPartner(WooTestCase):
             "siddhi.padiya@gmail.com",
             "Partner's Email is not matched with response!",
         )
+        self.assertEqual(
+            partner1.city,
+            "Mahuva",
+            "Partner's City is not matched with response!",
+        )
