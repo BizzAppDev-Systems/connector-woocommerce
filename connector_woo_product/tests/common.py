@@ -45,12 +45,7 @@ class WooTestCase(TransactionComponentCase):
         assert model_name.startswith("woo.")
         table_name = model_name.replace(".", "_")
         filename = "import_%s" % (table_name)
-
-        def run_import_record():
+        with self.recorder.use_cassette(filename):
             self.env[model_name].import_record(
                 backend=self.backend, external_id=external_id, data=data
             )
-
-        if cassette:
-            with self.recorder.use_cassette(filename):
-                run_import_record()

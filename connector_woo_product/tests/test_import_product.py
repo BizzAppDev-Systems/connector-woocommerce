@@ -26,3 +26,23 @@ class TestImportProduct(WooTestCase):
             "Product",
             "Product's name is not matched with response!",
         )
+        self.assertEqual(
+            product1.sale_ok,
+            False,
+            "Sale is not matched with response!",
+        )
+        self.assertEqual(
+            product1.purchase_ok,
+            False,
+            "Purchase is not matched with response!",
+        )
+        self.assertEqual(
+            product1.list_price,
+            50,
+            "List Price is not matched with response",
+        )
+        self.assertEqual(
+            product1.default_code,
+            "product_sku",
+            "default_code is not match with response",
+        )
