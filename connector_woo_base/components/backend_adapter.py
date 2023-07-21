@@ -103,7 +103,7 @@ class WooClient(object):
                     "Headers: %d\n" % (err.code, err.reason, err.headers)
                 ) from err
         response.raise_for_status()
-        return response.json()
+        return response
 
 
 class WooAPI(object):

@@ -110,6 +110,7 @@ class WooExporter(AbstractComponent):
         # record
         if not tools.config["test_enable"]:
             self.env.cr.commit()  # pylint: disable=E8102
+        self._after_export(self.binding)
         return result
 
     def _after_export(self):
