@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherit Form view Woo Backend to add Imports page with button -->
+    <record id="view_woo_backend_sale_order_form" model="ir.ui.view">
+        <field name="name">woo.backend.sale.order.form</field>
+        <field name="model">woo.backend</field>
+        <field name="inherit_id" ref="connector_woo_base.view_woo_backend_form" />
+        <field name="arch" type="xml">
+             <xpath expr="//page[@name='import']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+            <xpath expr="//page[@name='import']" position="inside">
+                <group>
+                    <group>
+                        <label
+                            for="import_sale_orders"
+                            string="Import Orders(Woo)"
+                            style="font-weight:bold;"
+                            class="oe_inline"
+                        />
+                    </group>
+                    <group>
+                        <div style="min-width: 300px; max-width: 300px;">
+                            <button
+                                name="import_sale_orders"
+                                type="object"
+                                class="oe_highlight"
+                                string="Import Orders in Background"
+                            />
+                         </div>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
