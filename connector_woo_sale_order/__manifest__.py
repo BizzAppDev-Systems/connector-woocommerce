@@ -1,10 +1,10 @@
 {
     "name": "Connector Woo Sale Order",
     "version": "16.0.1.0.0",
-    "category": "Connector",
+    "category": "Sale",
     "author": "BizzAppDev",
     "website": "http://www.bizzappdev.com",
-    "depends": ["connector_woo_products", "connector_woo_partners"],
+    "depends": ["sale_management", "connector_woo_product", "connector_woo_partner"],
     "external_dependencies": {"python": ["requests", "simplejson"]},
     "license": "LGPL-3",
     "data": [
@@ -12,6 +12,6 @@
         "data/ir_cron_data.xml",
         "security/ir.model.access.csv",
         "views/woo_backend_view.xml",
-        "views/product_views.xml",
+        "views/sale_order_view.xml",
     ],
 }

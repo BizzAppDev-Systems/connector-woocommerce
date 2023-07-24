@@ -25,5 +25,28 @@
             <field name="method">import_batch</field>
             <field name="channel_id" ref="connector_woo_base.channel_woo" />
         </record>
+
+        <record
+            id="job_function_woo_import_sale_order_line_import_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="connector_woo_sale_order.model_woo_sale_order_line"
+            />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+        </record>
+        <record
+            id="job_function_woo_sale_order_line_import_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="connector_woo_sale_order.model_woo_sale_order_line"
+            />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+        </record>
     </data>
 </odoo>

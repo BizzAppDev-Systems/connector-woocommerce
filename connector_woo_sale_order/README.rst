@@ -1,14 +1,14 @@
-**Connector Woo Product**
-=========================
+**Connector Woo Sale Order**
+============================
 
 **Description**
 ***************
 
-* Technical name: connector_woo_product.
-* Create a module named connector_woo_product that extends the functionality of connector_woo_base.
-  This module focuses on the import and export of partner data between Woocommerce and Odoo.
-* Add "Import Products(Woo)" at backend level.
-* Required field to Import the Products are Location,Client Id,Client Secret.
+* Technical name: connector_woo_sale_order.
+* Create a module named connector_woo_sale_order that extends the functionality of connector_woo_base.
+  This module focuses on the import and export of Orders data between Woocommerce and Odoo.
+* Add "Import Orders(Woo)" at backend level.
+* Required field to Import the Orders are Location,Client Id,Client Secret.
 
 
 **Author**
@@ -26,24 +26,24 @@
 **Installation**
 ****************
 
-* Under applications, the application connector_woo_product can be installed/uninstalled.
+* Under applications, the application connector_woo_sale_order can be installed/uninstalled.
 
 
 **Configuration**
 *****************
 
-* Products Import:
+* Orders Import:
     - Go to Woocommerce Backends.
-    - Add Backend Credentils to Import Partners.
-    - Click 'Import Products(Woo)' button to Import the Products from Woocommerce.
+    - Add Backend Credentils to Import Orders.
+    - Click 'Import Orders(Woo)' button to Import the Orders from Woocommerce.
 
 
 **Usage**
 *********
 
-* Import of Product Data:
-  - Enable the import functionality in connector_woo_product to transfer products from Woocommerce to Odoo.
-  - Handle mapping of product data at time of Import Products.
+* Import of Order Data:
+  - Enable the import functionality in connector_woo_sale_order to transfer Orders from Woocommerce to Odoo.
+  - Handle mapping of sale order data at time of Import Orders.
 
 
 **Known issues/Roadmap**

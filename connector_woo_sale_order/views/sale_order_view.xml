@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <!-- Inherit product view to add connector page and  Binding -->
-    <record id="product_product_form_view" model="ir.ui.view">
-        <field name="name">product.product.form</field>
-        <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_normal_form_view" />
+    <!-- Inherit sale order view to add connector page and  Binding -->
+    <record id="sale_order_form_view" model="ir.ui.view">
+        <field name="name">sale.order.form.view</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
+            <xpath expr="//notebook//page[@name='customer_signature']" position="after">
                 <page
                     string="Woo Connector"
                     name="woo_connector"
@@ -15,7 +15,7 @@
                 >
                     <field name="woo_bind_ids" nolabel="1" readonly="1">
                         <tree
-                            string="Woo Product"
+                            string="Woo Order"
                             delete="false"
                             edit="false"
                             create="false"
@@ -24,7 +24,7 @@
                             <field name="external_id" />
                         </tree>
                         <form
-                            string="Woo Patner"
+                            string="Woo Order"
                             delete="false"
                             edit="false"
                             create="false"
