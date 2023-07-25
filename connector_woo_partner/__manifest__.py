@@ -4,8 +4,7 @@
     "category": "Connector",
     "author": "BizzAppDev",
     "website": "http://www.bizzappdev.com",
-    "depends": ["mail", "connector_woo_base"],
-    "external_dependencies": {"python": ["requests", "simplejson"]},
+    "depends": ["connector_woo_base"],
     "license": "LGPL-3",
     "data": [
         "data/queue_job_data.xml",
