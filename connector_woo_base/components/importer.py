@@ -223,6 +223,12 @@ class WooImporter(AbstractComponent):
         self.binder.bind(self.external_id, binding)
 
 
+class WooMapChildImport(AbstractComponent):
+    _name = "woo.map.child.import"
+    _inherit = ["connector.woo.base", "base.map.child.import"]
+    _usage = "import.map.child"
+
+
 class WooBatchImporter(AbstractComponent):
     """
     The role of a BatchImporter is to search for a list of
