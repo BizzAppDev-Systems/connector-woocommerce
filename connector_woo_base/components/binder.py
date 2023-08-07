@@ -15,7 +15,9 @@ class WooModelBinder(Component):
     _inherit = ["base.binder", "connector.woo.base"]
     _apply_on = [
         "woo.res.partner",
+        "woo.product.attribute",
         "woo.product.product",
         "woo.sale.order",
         "woo.sale.order.line",
+        "woocommerce.product.category",
     ]

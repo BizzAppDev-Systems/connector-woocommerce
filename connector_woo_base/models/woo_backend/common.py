@@ -1,5 +1,6 @@
 import logging
 from contextlib import contextmanager
+from datetime import datetime, timedelta
 
 from odoo import fields, models
 
@@ -67,3 +68,36 @@ class WooBackend(models.Model):
             # from the components we'll be able to do: self.work.woo_api
             with _super.work_on(model_name, woo_api=woo_api, **kwargs) as work:
                 yield work
+
+    def _import_from_date(
+        self,
+        model,
+        from_date_field,
+        filters=None,
+        force_update_field=None,
+        priority=None,
+        from_date_field_ext=None,
+    ):
+        """Common method for import data from from_date."""
+        if not filters:
+            filters = {}
+        import_start_time = datetime.now()
+        job_options = {}
+        if priority or priority == 0:
+            job_options["priority"] = priority
+        for backend in self:
+            from_date = backend[from_date_field]
+            if not from_date:
+                from_date = None
+            if from_date and from_date_field_ext:
+                filters[from_date_field_ext] = from_date
+            force = False
+            if force_update_field:
+                force = backend[force_update_field]
+            self.env[model].sudo().with_delay(**job_options or {}).import_batch(
+                backend, filters=filters, force=force
+            )
+            if force:
+                backend[force_update_field] = False
+        next_time = import_start_time - timedelta(seconds=IMPORT_DELTA_BUFFER)
+        self.write({from_date_field: next_time})

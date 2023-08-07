@@ -34,7 +34,6 @@ class WooImporter(AbstractComponent):
     def _before_import(self):
         """Hook called before the import, when we have the
         data from remote system"""
-        pass
 
     def _is_uptodate(self, binding):
         """Return True if the import should be skipped because
@@ -247,19 +246,23 @@ class WooBatchImporter(AbstractComponent):
             records = self.backend_adapter.search_read(filters)
             for record in records:
                 external_id = record.get(self.backend_adapter._woo_ext_id_key)
-                self._import_record(external_id, data=record, force=force)
+                self._import_record(external_id, data=record)
             if records:
                 filters.update({"page": filters.get("page", 1) + 1})
                 self.process_next_page(filters)
         except Exception as err:
             raise ValidationError(_("Error : %s") % err) from err
 
-    def _import_record(self, external_id, data=None):
+    def _import_record(self, external_id, job_options=None, data=None, **kwargs):
         """
         Import a record directly or delay the import of the record.
         Method to implement in sub-classes.
         """
-        raise NotImplementedError
+        job_options = job_options or {}
+        if "identity_key" not in job_options:
+            job_options["identity_key"] = identity_exact
+        delayable = self.model.with_delay(**job_options or {})
+        delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
 
     def process_next_page(self, filters=None, job_options=None, **kwargs):
         """Method to trigger batch import for Next page"""
