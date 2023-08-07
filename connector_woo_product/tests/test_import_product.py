@@ -1,6 +1,7 @@
 from os.path import dirname, join
 
 from vcr import VCR
+
 from odoo.addons.connector_woo_base.tests.test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
@@ -21,9 +22,9 @@ class TestImportProduct(BaseWooTestCase):
         """Test Assertions for Product"""
         with recorder.use_cassette("import_woo_product_product"):
             self.env["woo.product.product"].import_record(
-                external_id="56", backend=self.backend
+                external_id="60", backend=self.backend
             )
-        external_id = "56"
+        external_id = "60"
         self.product_model = self.env["woo.product.product"]
         product1 = self.product_model.search([("external_id", "=", external_id)])
         self.assertEqual(len(product1), 1)
@@ -33,7 +34,7 @@ class TestImportProduct(BaseWooTestCase):
         )
         self.assertEqual(
             product1.name,
-            "Product",
+            "Shirt",
             "Product's name is not matched with response!",
         )
         self.assertEqual(
@@ -48,11 +49,11 @@ class TestImportProduct(BaseWooTestCase):
         )
         self.assertEqual(
             product1.list_price,
-            50,
+            500,
             "List Price is not matched with response",
         )
         self.assertEqual(
             product1.default_code,
-            "product_sku",
+            "shirt-sku",
             "default_code is not match with response",
         )

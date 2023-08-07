@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <!-- Inherit product view to add connector page and  Binding -->
-    <record id="product_product_form_view" model="ir.ui.view">
-        <field name="name">product.product.form</field>
-        <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_normal_form_view" />
+    <!-- Inherit product attribute view to add connector page and  Binding -->
+    <record id="product_attribute_form_view" model="ir.ui.view">
+        <field name="name">product.attribute.form</field>
+        <field name="model">product.attribute</field>
+        <field name="inherit_id" ref="product.product_attribute_view_form" />
         <field name="arch" type="xml">
-            <field name="categ_id" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="detailed_type" position="after">
-                <field name="status" />
-                <field name="tax_status" />
-                <field name="woo_product_categ_ids" />
-                <field name="woo_attribute_ids" />
-            </field>
-            <xpath expr="//div[@name='standard_price_uom']" position="after">
-                <field name="stock_status" />
+            <xpath expr="//field[@name='create_variant']" position="after">
+                <field name="has_archives" />
             </xpath>
-            <xpath expr="//notebook" position="inside">
+            <xpath expr="//page[@name='attribute_values']" position="after">
                 <page
                     string="Woo Connector"
                     name="woo_connector"
@@ -27,7 +18,7 @@
                 >
                     <field name="woo_bind_ids" nolabel="1" readonly="1">
                         <tree
-                            string="Woo Product"
+                            string="Woo Product Attribute"
                             delete="false"
                             edit="false"
                             create="false"
@@ -36,7 +27,7 @@
                             <field name="external_id" />
                         </tree>
                         <form
-                            string="Woo Product"
+                            string="Woo Product Attribute"
                             delete="false"
                             edit="false"
                             create="false"

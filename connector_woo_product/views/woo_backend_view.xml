@@ -6,16 +6,61 @@
         <field name="model">woo.backend</field>
         <field name="inherit_id" ref="connector_woo_base.view_woo_backend_form" />
         <field name="arch" type="xml">
-             <xpath expr="//page[@name='import']" position="attributes">
+            <xpath expr="//page[@name='import']" position="attributes">
                 <attribute name="invisible">0</attribute>
             </xpath>
             <xpath expr="//page[@name='import']" position="inside">
                 <group>
                     <group>
                         <label
+                            for="import_product_attributes"
+                            string="Import Product Attributes(woo)"
+                            style="font-weight:bold; white-space: nowrap;"
+                            class="oe_inline"
+                        />
+                    </group>
+                    <group>
+                        <div style="min-width: 300px; max-width: 300px;">
+                            <button
+                                name="import_product_attributes"
+                                type="object"
+                                class="oe_highlight"
+                                string="Import Product Attributes"
+                            />
+                        </div>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <label
+                            for="import_product_categories"
+                            string="Import Product Categories(Woo)"
+                            style="font-weight:bold; white-space: nowrap;"
+                            class="oe_inline"
+                        />
+                    </group>
+                    <group>
+                        <div style="min-width: 300px; max-width: 300px;">
+                            <button
+                                name="import_product_categories"
+                                type="object"
+                                class="oe_highlight"
+                                string="Import Product Categories"
+                            />
+                        </div>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <label
                             for="import_products"
                             string="Import Products(Woo)"
-                            style="font-weight:bold;"
+                            style="font-weight:bold; white-space: nowrap;"
+                            class="oe_inline"
+                        />
+                        <field
+                            name="import_products_from_date"
+                            nolabel="1"
                             class="oe_inline"
                         />
                     </group>
@@ -25,9 +70,9 @@
                                 name="import_products"
                                 type="object"
                                 class="oe_highlight"
-                                string="Import Products in Background"
+                                string="Import Products"
                             />
-                         </div>
+                        </div>
                     </group>
                 </group>
             </xpath>

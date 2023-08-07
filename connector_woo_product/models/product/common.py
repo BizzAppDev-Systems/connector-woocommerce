@@ -21,9 +21,51 @@ class ProductProduct(models.Model):
         string="Woo Backend",
         ondelete="restrict",
     )
+    woo_id = fields.Char()
+    status = fields.Selection(
+        [
+            ("any", "Any"),
+            ("draft", "Draft"),
+            ("pending", "Pending"),
+            ("private", "Private"),
+            ("publish", "Publish"),
+        ],
+        string="Status",
+        default="any",
+    )
+    tax_status = fields.Selection(
+        [
+            ("taxable", "Taxable"),
+            ("shipping", "Shipping"),
+            ("none", "None"),
+        ],
+        string="Tax Status",
+        default="taxable",
+    )
+    stock_status = fields.Selection(
+        [
+            ("instock", "Instock"),
+            ("outofstock", "Out Of Stock"),
+            ("onbackorder", "On Backorder"),
+        ],
+        string="Stock Status",
+        default="instock",
+    )
+    woo_attribute_ids = fields.Many2many(
+        comodel_name="woo.product.attribute",
+        string="Woo Product Attribute",
+        ondelete="restrict",
+    )
+    woo_product_categ_ids = fields.Many2many(
+        comodel_name="woo.product.category",
+        string="WooCommerce Product Category",
+        ondelete="restrict",
+    )
 
 
 class WooProductProduct(models.Model):
+    """Woocommerce product product"""
+
     _name = "woo.product.product"
     _inherit = "woo.binding"
     _inherits = {"product.product": "odoo_id"}
@@ -37,6 +79,11 @@ class WooProductProduct(models.Model):
         required=True,
         ondelete="restrict",
     )
+    woocommerce_product_category = fields.Many2many(
+        comodel_name="woo.product.category",
+        string="Woo Product Attribute",
+        ondelete="restrict",
+    )
 
 
 class WooProductProductAdapter(Component):
@@ -47,4 +94,4 @@ class WooProductProductAdapter(Component):
     _apply_on = "woo.product.product"
     _woo_model = "products"
     _woo_key = "id"
-    _odoo_ext_id_key = "id"
+    _odoo_ext_id_key = "woo_id"

@@ -13,18 +13,19 @@ interactions:
         {
           string:
             '{
-              "id": 56,
-              "name": "Product",
-              "slug": "product-2",
-              "permalink": "https://woo-wildly-inner-cycle.wpcomstaging.com/product/product-2/",
+              "id": 60,
+              "name": "Shirt",
+              "slug": "Shirt",
               "type": "simple",
               "status": "publish",
               "featured": false,
               "catalog_visibility": "visible",
-              "description": "Discription",
-              "short_description": "",
-              "sku": "product_sku",
-              "price": 50,
+              "description": "<p>shirt.</p>\n",
+              "short_description": "<p>shirt.</p>\n",
+              "sku": "shirt-sku",
+              "price": 500,
+              "regular_price": "",
+              "sale_price": "",
               "on_sale": false,
               "purchasable": false,
               "total_sales": 0,
@@ -38,11 +39,9 @@ interactions:
               "tax_status": "taxable",
               "tax_class": "",
               "manage_stock": false,
-              "stock_quantity": null,
               "backorders": "no",
               "backorders_allowed": false,
               "backordered": false,
-              "low_stock_amount": null,
               "sold_individually": false,
               "weight": "",
               "dimensions": {
@@ -57,48 +56,19 @@ interactions:
               "reviews_allowed": true,
               "average_rating": "0.00",
               "rating_count": 0,
-              "upsell_ids": [],
-              "cross_sell_ids": [],
-              "parent_id": 0,
-              "purchase_note": "",
               "categories": [],
               "tags": [],
               "images": [],
               "attributes": [],
-              "default_attributes": [],
-              "variations": [],
-              "grouped_products": [],
-              "menu_order": 0,
               "price_html": "",
-              "related_ids": [],
-              "meta_data": [
-                  {
-                      "id": 361,
-                      "key": "_wpas_done_all",
-                      "value": "1"
-                  },
-                  {
-                      "id": 379,
-                      "key": "_last_editor_used_jetpack",
-                      "value": "classic-editor"
-                  }
-              ],
               "stock_status": "instock",
               "has_options": false,
               "bundled_by": [],
               "bundle_stock_status": "instock",
-              "bundle_stock_quantity": null,
               "bundle_virtual": false,
               "bundle_layout": "",
               "bundle_add_to_cart_form_location": "",
               "bundle_editable_in_cart": false,
-              "bundle_sold_individually_context": "",
-              "bundle_item_grouping": "",
-              "bundle_min_size": "",
-              "bundle_max_size": "",
-              "bundle_price": [],
-              "bundled_items": [],
-              "bundle_sell_ids": [],
               "jetpack_publicize_connections": [],
               "jetpack_sharing_enabled": true,
               "jetpack_likes_enabled": true,
@@ -106,16 +76,16 @@ interactions:
               "_links": {
                   "self": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/56"
+                          "href": "https://woo-loudly-free-influencer.wpcomstaging.com/wp-json/wc/v3/products/60"
                       }
                   ],
                   "collection": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products"
+                          "href": "https://woo-loudly-free-influencer.wpcomstaging.com/wp-json/wc/v3/products"
                       }
                   ]
               }
-          }',
+            }',
         }
       headers:
         Cache-Control: ["no-store, no-cache, must-revalidate"]

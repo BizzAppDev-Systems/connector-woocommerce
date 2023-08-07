@@ -13,6 +13,31 @@
             <field name="method">import_record</field>
             <field name="channel_id" ref="connector_woo_base.channel_woo" />
         </record>
+        <!-- Import Batch related action queue job -->
+        <record
+            id="job_function_woo_import_product_attribute_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="connector_woo_product.model_woo_product_attribute"
+            />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+        </record>
+
+        <!-- Import Batch related action queue job -->
+        <record
+            id="job_function_woo_import_product_category_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="connector_woo_product.model_woo_product_category"
+            />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+        </record>
         <!-- Import Products related action queue job -->
         <record
             id="job_function_woo_import_product_product_batch"
@@ -21,6 +46,30 @@
             <field
                 name="model_id"
                 ref="connector_woo_product.model_woo_product_product"
+            />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+        </record>
+        <!-- Import Product Attributes related action queue job -->
+        <record
+            id="job_function_woo_import_product_attribute_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="connector_woo_product.model_woo_product_attribute"
+            />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+        </record>
+        <!-- Import Product Categories related action queue job -->
+        <record
+            id="job_function_woo_import_product_category_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="connector_woo_product.model_woo_product_category"
             />
             <field name="method">import_batch</field>
             <field name="channel_id" ref="connector_woo_base.channel_woo" />

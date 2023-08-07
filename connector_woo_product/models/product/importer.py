@@ -1,4 +1,7 @@
+import base64
 import logging
+
+import requests
 
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping, only_create
@@ -12,7 +15,7 @@ class WooProductProductBatchImporter(Component):
     """Batch Importer the WooCommerce Product"""
 
     _name = "woo.product.product.batch.importer"
-    _inherit = "woo.delayed.batch.importer"
+    _inherit = "woo.batch.importer"
     _apply_on = "woo.product.product"
 
 
@@ -32,7 +35,7 @@ class WooProductProductImportMapper(Component):
     @only_create
     @mapping
     def odoo_id(self, record):
-        """Will bind the partner to an existing one with the same code"""
+        """Will bind the product to an existing one with the same code"""
         binder = self.binder_for(model="woo.product.product")
         woo_product = binder.to_internal(record.get("id"), unwrap=True)
         if woo_product:
@@ -40,24 +43,43 @@ class WooProductProductImportMapper(Component):
         return {}
 
     @mapping
-    def list_price(self, record):
+    def lst_price(self, record):
         """Mapping product price"""
         price = record.get("price")
-        return {"list_price": price}
+        return {"lst_price": price}
+
+    @mapping
+    def standard_price(self, record):
+        """Mapping for standard_price"""
+        regular_price = record.get("regular_price")
+        return {"standard_price": regular_price}
 
     @mapping
     def default_code(self, record):
         """Mapped product default code."""
         default_code = record.get("sku")
-        if not default_code:
-            return {}
-        return {"default_code": default_code}
+        if default_code:
+            return {"default_code": default_code}
+        return {}
 
     @mapping
     def description(self, record):
         """Mapping for discription"""
         description = record.get("description")
         return {"description": description}
+
+    @mapping
+    def image_1920(self, record):
+        """Mapping of image"""
+        image = record.get("images")
+        if not image:
+            return {}
+        for img in image:
+            image_src = img.get("src")
+            response = requests.get(image_src)
+            binary_data = response.content
+            base64_data = base64.b64encode(binary_data).decode("utf-8")
+        return {"image_1920": base64_data}
 
     @mapping
     def sale_ok(self, record):
@@ -70,6 +92,81 @@ class WooProductProductImportMapper(Component):
         """Mapping for purchase_ok"""
         purchase = record.get("purchasable", False)
         return {"purchase_ok": purchase}
+
+    @mapping
+    def status(self, record):
+        """Mapping for status"""
+        status = record.get("status")
+        return {"status": status}
+
+    @mapping
+    def tax_status(self, record):
+        """Mapping for tax_status"""
+        tax_status = record.get("tax_status")
+        return {"tax_status": tax_status}
+
+    @mapping
+    def stock_status(self, record):
+        """Mapping for stock_status"""
+        stock_status = record.get("stock_status")
+        return {"stock_status": stock_status}
+
+    @mapping
+    def woo_attribute_ids(self, record):
+        """Mapping of woo_attribute_ids"""
+        attribute_ids = []
+        woo_product_attribute = record.get("attributes")
+        if not woo_product_attribute:
+            return {}
+        binder = self.binder_for("woo.product.attribute")
+        for attribute_id in woo_product_attribute:
+            attribute = attribute_id.get("id")
+            woo_binding = binder.to_internal(attribute)
+            if woo_binding:
+                attribute_ids.append(attribute)
+            elif attribute == 0:
+                created_id = "{}-{}".format(attribute_id.get("name"), record.get("id"))
+                attribute_id.update({"id": created_id})
+                product_attribute = self.env["woo.product.attribute"].create(
+                    {
+                        "name": attribute_id.get("name"),
+                        "backend_id": self.backend_record.id,
+                        "external_id": attribute_id.get("id"),
+                    }
+                )
+                attribute_ids.append(product_attribute.id)
+            else:
+                product_attribute = self.env["woo.product.attribute"].create(
+                    {
+                        "name": attribute_id.get("name"),
+                        "backend_id": self.backend_record.id,
+                        "external_id": attribute_id.get("id"),
+                    }
+                )
+                attribute_ids.append(product_attribute.id)
+        return {"woo_attribute_ids": attribute_ids}
+
+    @mapping
+    def woo_product_categ_ids(self, record):
+        """Mapping for woo_product_categ_ids"""
+        category_ids = []
+        woo_product_category = record.get("categories")
+        binder = self.binder_for("woocommerce.product.category")
+        for category_id in woo_product_category:
+            woo_binding = binder.to_internal(category_id.get("id"))
+            if not woo_binding:
+                product_category = self.env["woocommerce.product.category"].create(
+                    {
+                        "name": category_id.get("name"),
+                        "parent_id": category_id.get("parent"),
+                        "backend_id": self.backend_record.id,
+                        "external_id": category_id.get("id"),
+                    }
+                )
+                category_ids.append(product_category.id)
+            else:
+                category_ids.append(woo_binding.id)
+        return {"woo_product_categ_ids": category_ids}
 
     @mapping
     def backend_id(self, record):
