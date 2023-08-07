@@ -1,7 +1,6 @@
 from os.path import dirname, join
 
 from vcr import VCR
-
 from odoo.addons.connector_woo_base.tests.test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
