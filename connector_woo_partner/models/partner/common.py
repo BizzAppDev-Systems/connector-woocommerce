@@ -3,6 +3,7 @@ import logging
 from odoo import fields, models
 
 from odoo.addons.component.core import Component
+from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
 _logger = logging.getLogger(__name__)
 
@@ -32,6 +33,11 @@ class WooResPartner(models.Model):
         required=True,
         ondelete="restrict",
     )
+
+    def __init__(self, *args, **kwargs):
+        """Bind Odoo Partner"""
+        super().__init__(*args, **kwargs)
+        WooModelBinder._apply_on.append(self._name)
 
 
 class WooResPartnerAdapter(Component):

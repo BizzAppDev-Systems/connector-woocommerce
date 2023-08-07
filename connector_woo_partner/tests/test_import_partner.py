@@ -1,6 +1,7 @@
 from os.path import dirname, join
 
 from vcr import VCR
+
 from odoo.addons.connector_woo_base.tests.test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
@@ -42,7 +43,17 @@ class TestImportPartner(BaseWooTestCase):
             "Partner's Email is not matched with response!",
         )
         self.assertEqual(
-            partner1.city,
-            "Mahuva",
-            "Partner's City is not matched with response!",
+            partner1.phone,
+            "9062615279",
+            "Phone Number of partner is not matched with response!",
+        )
+        self.assertEqual(partner1.street, "xyz", "Street is not matched with response!")
+        self.assertEqual(
+            partner1.street2, "abc", "Street2 is not matched with response!"
+        )
+        self.assertEqual(
+            partner1.zip, "380015", "ZIP code of partner is not matched with response!"
+        )
+        self.assertEqual(
+            partner1.city, "ahemdabad", "Partner's city is not matched with response!"
         )

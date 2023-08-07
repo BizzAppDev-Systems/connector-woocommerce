@@ -24,14 +24,12 @@ interactions:
                     "first_name": "",
                     "last_name": "",
                     "company": "",
-                    "address_1": "",
-                    "address_2": "",
-                    "city": "Mahuva",
-                    "postcode": "",
-                    "country": "",
-                    "state": "",
+                    "address_1": "xyz",
+                    "address_2": "abc",
+                    "postcode": 380015,
+                    "city":"ahemdabad",
                     "email": "",
-                    "phone": ""
+                    "phone": 9062615279
                 },
                 "shipping": {
                     "first_name": "",

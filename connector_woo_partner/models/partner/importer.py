@@ -31,8 +31,22 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for name"""
-        username = record.get("username")
-        return {"name": username}
+        if record.get("username"):
+            return {"name": record.get("username")}
+        elif record.get("billing").get("first_name"):
+            return {
+                "name": "{} {}".format(
+                    record.get("billing").get("first_name"),
+                    record.get("billing").get("last_name"),
+                )
+            }
+        else:
+            return {
+                "name": "{} {}".format(
+                    record.get("shipping").get("first_name"),
+                    record.get("shipping").get("last_name"),
+                )
+            }
 
     @only_create
     @mapping
@@ -47,32 +61,110 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def email(self, record):
         """Mapping for Email"""
-        email = record.get("email")
-        return {"email": email}
+        if record.get("email"):
+            return {"email": record.get("email")}
+        elif record.get("billing").get("email"):
+            return {"email": record.get("billing").get("email")}
+        else:
+            return {"email": record.get("shipping").get("email")}
 
     @mapping
     def street(self, record):
         """Mapping for street"""
-        address = record.get("billing", {}).get("address1") or ""
-        return {"street": address}
+        if record.get("billing", {}).get("address_1"):
+            return {"street": record.get("billing", {}).get("address_1")}
+        elif record.get("shipping", {}).get("address_1"):
+            return {"street": record.get("shipping", {}).get("address_1")}
+        else:
+            return {}
 
     @mapping
     def street2(self, record):
         """Mapping for street2"""
-        address2 = record.get("billing", {}).get("address2") or ""
-        return {"street2": address2}
+        if record.get("billing", {}).get("address_2"):
+            return {"street2": record.get("billing", {}).get("address_2")}
+        elif record.get("shipping", {}).get("address_2"):
+            return {"street2": record.get("shipping", {}).get("address_2")}
+        else:
+            return {}
 
     @mapping
     def city(self, record):
         """Mapping for city"""
-        city = record.get("billing", {}).get("city") or ""
-        return {"city": city}
+        if record.get("billing", {}).get("city"):
+            return {"city": record.get("billing", {}).get("city")}
+        elif record.get("shipping", {}).get("city"):
+            return {"city": record.get("shipping", {}).get("city")}
+        else:
+            return {}
+
+    @mapping
+    def state_id(self, record):
+        """Mapping for state"""
+        state = self.env["res.country.state"].search(
+            [("code", "=", record.get("billing", {}).get("state"))],
+            limit=1,
+        )
+        if state:
+            return {"state_id": state.id}
+        elif record.get("shipping", {}).get("state"):
+            state_shipping = self.env["res.country.state"].search(
+                [("code", "=", record.get("shipping", {}).get("state"))],
+                limit=1,
+            )
+            if state_shipping:
+                return {"state_id": state_shipping.id}
+        else:
+            return {}
+
+    @mapping
+    def country_id(self, record):
+        """Mapping for country"""
+        country = self.env["res.country"].search(
+            [("code", "=", record.get("billing", {}).get("country"))],
+            limit=1,
+        )
+        if country:
+            return {"country_id": country.id}
+        elif record.get("shipping", {}).get("country"):
+            country_shipping = self.env["res.country"].search(
+                [("code", "=", record.get("shipping", {}).get("country"))],
+                limit=1,
+            )
+            if country_shipping:
+                return {"country_id": country_shipping.id}
+        else:
+            return {}
+
+    @mapping
+    def phone(self, record):
+        """Mapping for phone"""
+        if record.get("billing", {}).get("phone"):
+            return {"phone": record.get("billing", {}).get("phone")}
+        elif record.get("shipping", {}).get("phone"):
+            return {"phone": record.get("shipping", {}).get("phone")}
+        else:
+            return {}
+
+    @mapping
+    def zip(self, record):
+        """Mapping for zip"""
+        if record.get("billing", {}).get("postcode"):
+            return {"zip": record.get("billing", {}).get("postcode")}
+        elif record.get("shipping", {}).get("postcode"):
+            return {"zip": record.get("shipping", {}).get("postcode")}
+        else:
+            return {}
 
     @mapping
     def company_id(self, record):
         """Mapping for company"""
-        company = record.get("billing", {}).get("company") or ""
-        return {"company_id": company}
+        if record.get("billing", {}).get("company"):
+            return {"company_id": record.get("billing", {}).get("company")}
+        elif record.get("shipping", {}).get("company"):
+            return {"company_id": record.get("shipping", {}).get("company")}
+        else:
+            return {}
 
     @mapping
     def backend_id(self, record):
