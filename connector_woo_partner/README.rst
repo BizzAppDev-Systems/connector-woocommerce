@@ -44,6 +44,7 @@
 * Import of Partner Data:
   - Enable the import functionality in connector_woo_partner to transfer partners from Woocommerce to Odoo.
   - Handle mapping of partner data at time of Import Partners.
+  - Added filter base on binding.
 
 
 **Known issues/Roadmap**
