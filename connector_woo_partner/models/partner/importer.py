@@ -29,24 +29,18 @@ class WooResPartnerImportMapper(Component):
 
     @only_create
     @mapping
-    def name(self, record):
+    def firstname(self, record):
         """Mapping for name"""
-        if record.get("username"):
-            return {"name": record.get("username")}
-        elif record.get("billing").get("first_name"):
-            return {
-                "name": "{} {}".format(
-                    record.get("billing").get("first_name"),
-                    record.get("billing").get("last_name"),
-                )
-            }
-        else:
-            return {
-                "name": "{} {}".format(
-                    record.get("shipping").get("first_name"),
-                    record.get("shipping").get("last_name"),
-                )
-            }
+        first_name = record.get("first_name")
+        username = record.get("username")
+        email = record.get("email")
+        firstname_value = first_name or username or email
+        return {"firstname": firstname_value}
+
+    @mapping
+    def lastname(self, record):
+        """Mapping for name"""
+        return {"lastname": record.get("last_name")} if record.get("last_name") else {}
 
     @only_create
     @mapping
@@ -62,88 +56,38 @@ class WooResPartnerImportMapper(Component):
     def email(self, record):
         """Mapping for Email"""
         email = record.get("email")
-        billing_address = record.get("billing", {})
-        shipping_address = record.get("shipping", {})
-        email = email or billing_address.get("email") or shipping_address.get("email")
-        return {"email": email} if email else {}
+        return {"email": email}
 
+    @only_create
     @mapping
-    def street(self, record):
-        """Mapping for street"""
-        billing_address = record.get("billing", {})
-        shipping_address = record.get("shipping", {})
-        street = billing_address.get("address_1") or shipping_address.get("address_1")
-        return {"street": street} if street else {}
-
-    @mapping
-    def street2(self, record):
-        """Mapping for street2"""
-        billing_address = record.get("billing", {})
-        shipping_address = record.get("shipping", {})
-        street2 = billing_address.get("address_2") or shipping_address.get("address_2")
-        return {"street2": street2} if street2 else {}
-
-    @mapping
-    def city(self, record):
-        """Mapping for city"""
-        billing_address = record.get("billing", {})
-        shipping_address = record.get("shipping", {})
-        city = billing_address.get("city") or shipping_address.get("city")
-        return {"city": city} if city else {}
-
-    @mapping
-    def state_id(self, record):
-        """Mapping for state"""
-        state_code = record.get("billing", {}).get("state") or record.get(
-            "shipping", {}
-        ).get("state")
-        if state_code:
+    def child_ids(self, record):
+        """Mapping for Invoice and Shipping Addresses"""
+        billing = record.get("billing")
+        shipping = record.get("shipping")
+        state = billing.get("state")
+        child_ids_data = []
+        if state:
             state = self.env["res.country.state"].search(
-                [("code", "=", state_code)],
+                [("code", "=", state)],
                 limit=1,
             )
-            if state:
-                return {"state_id": state.id}
-        return {}
-
-    @mapping
-    def country_id(self, record):
-        """Mapping for country"""
-        billing_country_code = record.get("billing", {}).get("country")
-        shipping_country_code = record.get("shipping", {}).get("country")
-        country_code = billing_country_code or shipping_country_code
-        if country_code:
-            country = self.env["res.country"].search(
-                [("code", "=", country_code)],
-                limit=1,
-            )
-            if country:
-                return {"country_id": country.id}
-        return {}
-
-    @mapping
-    def phone(self, record):
-        """Mapping for phone"""
-        billing_address = record.get("billing", {})
-        shipping_address = record.get("shipping", {})
-        phone = billing_address.get("phone") or shipping_address.get("phone")
-        return {"phone": phone} if phone else {}
-
-    @mapping
-    def zip(self, record):
-        """Mapping for zip"""
-        billing_address = record.get("billing", {})
-        shipping_address = record.get("shipping", {})
-        postcode = billing_address.get("postcode") or shipping_address.get("postcode")
-        return {"zip": postcode} if postcode else {}
-
-    @mapping
-    def company_id(self, record):
-        """Mapping for company"""
-        billing_address = record.get("billing", {})
-        shipping_address = record.get("shipping", {})
-        company = billing_address.get("company") or shipping_address.get("company")
-        return {"company_id": company} if company else {}
+        fields_to_check = ["first_name", "last_name", "email"]
+        for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
+            if any(data.get(field) for field in fields_to_check):
+                address_data = self.env["res.partner"].create(
+                    {
+                        "firstname": data.get("first_name") or data.get("email"),
+                        "lastname": data.get("last_name"),
+                        "email": data.get("email"),
+                        "type": address_type,
+                        "street": data.get("address_1"),
+                        "street2": data.get("address_2"),
+                        "zip": data.get("postcode"),
+                        "state_id": state.id if state else False,
+                    }
+                )
+                child_ids_data.append((4, address_data.id))
+        return {"child_ids": child_ids_data}
 
     @mapping
     def backend_id(self, record):

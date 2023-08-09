@@ -16,20 +16,20 @@ interactions:
               {
                 "id": 237660088,
                 "email": "siddhi.padiya@gmail.com",
-                "first_name": "",
-                "last_name": "",
+                "first_name": "Siddhi",
+                "last_name": "padiya",
                 "role": "customer",
-                "username": "siddhi padiya",
+                "username": "",
                 "billing": {
                     "first_name": "",
                     "last_name": "",
                     "company": "",
-                    "address_1": "xyz",
-                    "address_2": "abc",
-                    "postcode": 380015,
-                    "city":"ahemdabad",
+                    "address_1": "",
+                    "address_2": "",
+                    "postcode": "",
+                    "city":"",
                     "email": "",
-                    "phone": 9062615279
+                    "phone": ""
                 },
                 "shipping": {
                     "first_name": "",

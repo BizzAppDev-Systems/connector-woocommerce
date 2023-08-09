@@ -9,6 +9,7 @@
   This module focuses on the import of partner data between connected Woocommerce and Odoo.
 * Add "Import Partners(Woo)" at backend level.
 * Required field to Import the Partners are Location,Client Id,Client Secret.
+* Required field to Create res.partner is Firstname or Lastname.
 
 
 **Author**
@@ -44,7 +45,7 @@
 * Import of Partner Data:
   - Enable the import functionality in connector_woo_partner to transfer partners from Woocommerce to Odoo.
   - Handle mapping of partner data at time of Import Partners.
-  - Added filter base on binding.
+  - Added filter base of binding.
 
 
 **Known issues/Roadmap**
