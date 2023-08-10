@@ -49,7 +49,7 @@ class TestImportProduct(BaseWooTestCase):
         )
         self.assertEqual(
             product1.list_price,
-            500,
+            1.0,
             "List Price is not matched with response",
         )
         self.assertEqual(

@@ -13,7 +13,7 @@ class WooBackend(models.Model):
     import_products_from_date = fields.Datetime(string="Import products from date")
 
     def import_products(self):
-        """Import Partners from backend"""
+        """Import Products from backend"""
         for backend in self:
             backend._import_from_date(
                 model="woo.product.product",
@@ -28,7 +28,7 @@ class WooBackend(models.Model):
         backend_ids.import_products()
 
     def import_product_attributes(self):
-        """Import Partners from backend"""
+        """Import Products from backend"""
         for backend in self:
             filters = {"per_page": backend.default_limit, "page": 1}
             backend.env["woo.product.attribute"].with_company(

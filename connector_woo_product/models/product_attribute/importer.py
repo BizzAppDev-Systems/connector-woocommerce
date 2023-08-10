@@ -46,7 +46,7 @@ class WooProductAttributeImportMapper(Component):
     @only_create
     @mapping
     def odoo_id(self, record):
-        """Will bind the partner to an existing one with the same code"""
+        """Will bind the Product to an existing one with the same code"""
         binder = self.binder_for(model="woo.product.attribute")
         woo_product_attribute = binder.to_internal(record.get("id"), unwrap=True)
         if woo_product_attribute:
