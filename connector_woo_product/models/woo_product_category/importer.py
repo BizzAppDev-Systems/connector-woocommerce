@@ -32,7 +32,7 @@ class WooProductCategoryImportMapper(Component):
     @only_create
     @mapping
     def odoo_id(self, record):
-        """Will bind the partner to an existing one with the same code"""
+        """Will bind the Product to an existing one with the same code"""
         binder = self.binder_for(model="woocommerce.product.category")
         woo_product = binder.to_internal(record.get("id"), unwrap=True)
         if woo_product:

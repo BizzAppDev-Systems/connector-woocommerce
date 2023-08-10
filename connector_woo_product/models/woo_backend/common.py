@@ -16,7 +16,9 @@ class WooBackend(models.Model):
         """Import Partners from backend"""
         for backend in self:
             backend._import_from_date(
-                "woo.product.product", "import_products_from_date", priority=5
+                model="woo.product.product",
+                from_date_field="import_products_from_date",
+                priority=5,
             )
         return True
 

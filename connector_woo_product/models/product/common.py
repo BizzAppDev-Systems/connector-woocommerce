@@ -3,6 +3,7 @@ import logging
 from odoo import fields, models
 
 from odoo.addons.component.core import Component
+from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
 _logger = logging.getLogger(__name__)
 
@@ -85,6 +86,11 @@ class WooProductProduct(models.Model):
         ondelete="restrict",
     )
 
+    def __init__(self, *args, **kwargs):
+        """Bind Woo Product"""
+        super().__init__(*args, **kwargs)
+        WooModelBinder._apply_on.append(self._name)
+
 
 class WooProductProductAdapter(Component):
     """Adapter for WooCommerce Product Product"""
@@ -94,4 +100,4 @@ class WooProductProductAdapter(Component):
     _apply_on = "woo.product.product"
     _woo_model = "products"
     _woo_key = "id"
-    _odoo_ext_id_key = "woo_id"
+    _odoo_ext_id_key = "id"

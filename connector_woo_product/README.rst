@@ -6,7 +6,7 @@
 
 * Technical name: connector_woo_product.
 * Create a module named connector_woo_product that extends the functionality of connector_woo_base.
-  This module focuses on the import and export of partner data between Woocommerce and Odoo.
+  This module focuses on the import and export of Product data between Woocommerce and Odoo.
 * Add "Import Products","Import Product Attributes" and "Import Product Category" at backend level.
 * Required field to Import the Products,Product Attributes, and Product Category are Location,Client Id,Client Secret.
 
@@ -34,15 +34,15 @@
 
 * Products Import:
     - Go to Woocommerce Backends.
-    - Add Backend Credentils to Import Partners.
+    - Add Backend Credentils to Import Products.
     - Click 'Import Products' button to Import the Products from Woocommerce.
 * Product Attributes Import:
     - Go to Woocommerce Backends.
-    - Add Backend Credentils to Import Partners.
+    - Add Backend Credentils to Import Product Attributes.
     - Click 'Import Product Attributes' button to Import the Product Attributes from Woocommerce.
 * Product Categories Import:
     - Go to Woocommerce Backends.
-    - Add Backend Credentils to Import Partners.
+    - Add Backend Credentils to Import Product categories.
     - Click 'Import Product Categories' button to Import the Product Categories from Woocommerce.
 
 

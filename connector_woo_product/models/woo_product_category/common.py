@@ -3,6 +3,7 @@ import logging
 from odoo import fields, models
 
 from odoo.addons.component.core import Component
+from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
 _logger = logging.getLogger(__name__)
 
@@ -20,13 +21,15 @@ class WooProductCategory(models.Model):
     count = fields.Integer(readonly=True)
     parent_path = fields.Char(index=True, unaccent=False)
     parent_id = fields.Many2one(
-        "woo.product.category", "Parent Category", index=True, ondelete="cascade"
+        comodel_name="woo.product.category",
+        string="Parent Category",
+        index=True,
+        ondelete="cascade",
     )
-    description = fields.Html("Description", translate=True)
+    description = fields.Html(string="Description", translate=True)
     odoo_id = fields.Many2one(
         string="Product Category",
     )
-    child_id = fields.One2many("woo.product.category", "parent_id", "Child Categories")
 
     woo_bind_ids = fields.One2many(
         comodel_name="woocommerce.product.category",
@@ -69,6 +72,11 @@ class WooCommerceProductCategory(models.Model):
     )
     woo_id = fields.Char()
 
+    def __init__(self, *args, **kwargs):
+        """Bind  Woo Product Category"""
+        super().__init__(*args, **kwargs)
+        WooModelBinder._apply_on.append(self._name)
+
 
 class WooProductCategoryAdapter(Component):
     """Adapter for WooCommerce Product Category"""
@@ -77,5 +85,5 @@ class WooProductCategoryAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woocommerce.product.category"
     _woo_model = "products/categories"
-    _odoo_ext_id_key = "woo_id"
+    _odoo_ext_id_key = "id"
     _woo_key = "id"
