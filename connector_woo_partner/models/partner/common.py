@@ -1,6 +1,6 @@
 import logging
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
@@ -18,6 +18,35 @@ class ResPartner(models.Model):
         string="Woo Bindings",
         copy=False,
     )
+    firstname = fields.Char(string="First Name")
+    lastname = fields.Char(string="Last Name")
+
+    def _update_name_from_firstname(self):
+        """
+        Update the 'name' field based on 'firstname' and 'lastname' values.
+
+        If both 'firstname' and 'lastname' exist, set 'name' as a combination
+        of both. If only 'firstname' exists, set 'name' to 'firstname'. If only
+        'lastname' exists, set 'name' to 'lastname'. If neither 'firstname'
+        nor 'lastname' exists, set 'name' to an empty string.
+        """
+        for partner in self:
+            if partner.firstname and partner.lastname:
+                partner.name = f"{partner.firstname} {partner.lastname}"
+            elif partner.firstname:
+                partner.name = partner.firstname
+            elif partner.lastname:
+                partner.name = partner.lastname
+            else:
+                partner.name = ""
+
+    @api.onchange("firstname", "lastname")
+    def _onchange_name_fields(self):
+        """
+        Call the '_update_name_from_firstname' method when 'firstname' or
+        'lastname' fields are changed.
+        """
+        self._update_name_from_firstname()
 
 
 class WooResPartner(models.Model):

@@ -29,17 +29,30 @@ class WooResPartnerImportMapper(Component):
 
     @only_create
     @mapping
-    def firstname(self, record):
-        """Mapping for name"""
+    def name(self, record):
+        """Mapping for Name (combination of firstname and lastname)"""
         first_name = record.get("first_name")
-        username = record.get("username")
-        email = record.get("email")
-        firstname_value = first_name or username or email
-        return {"firstname": firstname_value}
+        last_name = record.get("last_name")
+        if first_name and last_name:
+            full_name = f"{first_name} {last_name}"
+        elif first_name:
+            full_name = first_name
+        elif last_name:
+            full_name = last_name
+        else:
+            full_name = record.get("username")
+        return {"name": full_name}
+
+    @mapping
+    def firstname(self, record):
+        """Mapping for firstname"""
+        return (
+            {"firstname": record.get("first_name")} if record.get("first_name") else {}
+        )
 
     @mapping
     def lastname(self, record):
-        """Mapping for name"""
+        """Mapping for lastname"""
         return {"lastname": record.get("last_name")} if record.get("last_name") else {}
 
     @only_create
@@ -76,6 +89,12 @@ class WooResPartnerImportMapper(Component):
             if any(data.get(field) for field in fields_to_check):
                 address_data = self.env["res.partner"].create(
                     {
+                        "name": data.get("username")
+                        or data.get("first_name")
+                        and data.get("last_name")
+                        and f"{data.get('first_name')} {data.get('last_name')}"
+                        or data.get("first_name")
+                        or data.get("email"),
                         "firstname": data.get("first_name") or data.get("email"),
                         "lastname": data.get("last_name"),
                         "email": data.get("email"),
