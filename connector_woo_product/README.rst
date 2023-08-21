@@ -40,6 +40,7 @@
     - Go to Woocommerce Backends.
     - Add Backend Credentils to Import Product Attributes.
     - Click 'Import Product Attributes' button to Import the Product Attributes from Woocommerce.
+    - Click 'Import Attribute Value' button to Import the Product Attributes Value from Woocommerce.
 * Product Categories Import:
     - Go to Woocommerce Backends.
     - Add Backend Credentils to Import Product categories.
@@ -56,6 +57,8 @@
   - Implemented import Attribute and import category at time of import product.
 * Import of Product Attribute:
   - Enable the import functionality in connector_woo_product to transfer product Attributes from Woocommerce to Odoo.
+  * Import of Product Attribute Value:
+  - Enable the import functionality in connector_woo_product to transfer product Attributes Value from Woocommerce to Odoo.
   - Handle mapping of product attribute data at time of Import Products.
 * Import of Product Category:
   - Enable the import functionality in connector_woo_product to transfer product Categories from Woocommerce to Odoo.

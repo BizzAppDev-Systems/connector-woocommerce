@@ -86,4 +86,3 @@ class WooProductCategoryAdapter(Component):
     _apply_on = "woocommerce.product.category"
     _woo_model = "products/categories"
     _odoo_ext_id_key = "id"
-    _woo_key = "id"

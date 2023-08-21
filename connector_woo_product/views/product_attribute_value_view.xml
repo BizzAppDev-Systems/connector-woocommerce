@@ -64,6 +64,7 @@
                 </form>
             </field>
         </record>
+        <!-- Added Tree view for Product Attribute value -->
         <record id="view_product_attribute_value_tree" model="ir.ui.view">
             <field name="name">product.attribute.value.tree</field>
             <field name="model">product.attribute.value</field>

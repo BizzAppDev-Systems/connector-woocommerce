@@ -60,7 +60,6 @@
             </form>
         </field>
     </record>
-
     <!-- Define the tree view -->
     <record id="view_woo_product_category_tree" model="ir.ui.view" >
         <field name="name">woo.product.category.tree</field>

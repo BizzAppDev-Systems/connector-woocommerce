@@ -61,7 +61,6 @@ class WooProductAttributeValueAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.product.attribute.value"
     _woo_model = "products/attributes"
-    _woo_key = "id"
     _odoo_ext_id_key = "id"
 
     def search_read(self, filters=None, **kwargs):
@@ -72,7 +71,6 @@ class WooProductAttributeValueAdapter(Component):
         )
         result_lst = []
         for res in result:
-            new_res = res.copy()
-            new_res["attribute"] = filters.get("attribute")
-            result_lst.append(new_res)
+            res["attribute"] = filters.get("attribute")
+            result_lst.append(res)
         return result_lst

@@ -41,7 +41,6 @@ class WooProductAttributeImportMapper(Component):
         product_attribute_name = record.get("name")
         return {"name": product_attribute_name}
 
-    @only_create
     @mapping
     def odoo_id(self, record):
         """Will bind the partner to an existing one with the same code"""

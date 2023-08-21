@@ -39,19 +39,6 @@ class WooBackend(models.Model):
         backend_ids = self.search(domain or [])
         backend_ids.import_product_attributes()
 
-    # def import_product_attributes_value(self):
-    #     """Import Product Attributes Value from backend"""
-    #     for backend in self:
-    #         filters = {"per_page": backend.default_limit, "page": 1}
-    #         backend.env["woo.product.attribute.value"].with_company(
-    #             backend.company_id
-    #         ).with_delay(priority=5).import_batch(backend=backend, filters=filters)
-
-    # def cron_import_product_attributes_value(self, domain=None):
-    #     """Cron for import_product_attributes_value"""
-    #     backend_ids = self.search(domain or [])
-    #     backend_ids.import_product_attributes_value()
-
     def import_product_categories(self):
         """Import Product Category from backend"""
         for backend in self:

@@ -37,13 +37,13 @@ class WooProductProductImportMapper(Component):
     _inherit = "woo.import.mapper"
     _apply_on = "woo.product.product"
 
+    @only_create
     @mapping
     def name(self, record):
         """Mapping for name"""
         product_name = record.get("name")
         return {"name": product_name}
 
-    @only_create
     @mapping
     def odoo_id(self, record):
         """Will bind the product to an existing one with the same code"""
@@ -69,15 +69,13 @@ class WooProductProductImportMapper(Component):
     def default_code(self, record):
         """Mapped product default code."""
         default_code = record.get("sku")
-        if default_code:
-            return {"default_code": default_code}
-        return {}
+        return {"default_code": default_code} if default_code else {}
 
     @mapping
     def description(self, record):
         """Mapping for discription"""
         description = record.get("description")
-        return {"description": description}
+        return {"description": description} if description else {}
 
     @mapping
     def image_1920(self, record):
@@ -108,19 +106,19 @@ class WooProductProductImportMapper(Component):
     def status(self, record):
         """Mapping for status"""
         status = record.get("status")
-        return {"status": status}
+        return {"status": status} if status else {}
 
     @mapping
     def tax_status(self, record):
         """Mapping for tax_status"""
         tax_status = record.get("tax_status")
-        return {"tax_status": tax_status}
+        return {"tax_status": tax_status} if tax_status else {}
 
     @mapping
     def stock_status(self, record):
         """Mapping for stock_status"""
         stock_status = record.get("stock_status")
-        return {"stock_status": stock_status}
+        return {"stock_status": stock_status} if stock_status else {}
 
     @mapping
     def woo_attribute_ids(self, record):
@@ -135,44 +133,43 @@ class WooProductProductImportMapper(Component):
             woo_binding = binder.to_internal(attribute)
             if woo_binding:
                 attribute_ids.append(woo_binding.id)
-            else:
-                created_id = "{}-{}".format(attribute_id.get("name"), record.get("id"))
-                product_attribute = self.env["woo.product.attribute"].search(
+                continue
+            created_id = "{}-{}".format(attribute_id.get("name"), record.get("id"))
+            product_attribute = self.env["woo.product.attribute"].search(
+                [
+                    ("name", "=", attribute_id.get("name")),
+                    ("backend_id", "=", self.backend_record.id),
+                    ("external_id", "=", created_id),
+                ],
+                limit=1,
+            )
+            if not product_attribute:
+                product_attribute = self.env["woo.product.attribute"].create(
+                    {
+                        "name": attribute_id.get("name"),
+                        "backend_id": self.backend_record.id,
+                        "external_id": created_id,
+                    }
+                )
+            if "options" not in attribute_id:
+                continue
+            for option in attribute_id.get("options"):
+                product_attribute_value = self.env["product.attribute.value"].search(
                     [
-                        ("name", "=", attribute_id.get("name")),
-                        ("backend_id", "=", self.backend_record.id),
-                        ("external_id", "=", created_id),
+                        ("name", "=", option),
+                        ("attribute_id", "=", product_attribute.odoo_id.id),
                     ],
                     limit=1,
                 )
-                if not product_attribute:
-                    product_attribute = self.env["woo.product.attribute"].create(
-                        {
-                            "name": attribute_id.get("name"),
-                            "backend_id": self.backend_record.id,
-                            "external_id": created_id,
-                        }
-                    )
-                if "options" in attribute_id:
-                    for option in attribute_id.get("options"):
-                        product_attribute_value = self.env[
-                            "product.attribute.value"
-                        ].search(
-                            [
-                                ("name", "=", option),
-                                ("attribute_id", "=", product_attribute.odoo_id.id),
-                            ],
-                            limit=1,
-                        )
-                        if not product_attribute_value:
-                            value = self.env["product.attribute.value"].create(
-                                {
-                                    "name": option,
-                                    "attribute_id": product_attribute.odoo_id.id,
-                                    "woo_attribute_id": product_attribute.id,
-                                }
-                            )
-                attribute_ids.append(product_attribute.id)
+                if product_attribute_value:
+                    continue
+                attribute_value = {
+                    "name": option,
+                    "attribute_id": product_attribute.odoo_id.id,
+                    "woo_attribute_id": product_attribute.id,
+                }
+                self.env["product.attribute.value"].create(attribute_value)
+        attribute_ids.append(product_attribute.id)
         return {"woo_attribute_ids": attribute_ids}
 
     @mapping
@@ -185,16 +182,15 @@ class WooProductProductImportMapper(Component):
             woo_binding = binder.to_internal(category_id.get("id"))
             if woo_binding:
                 category_ids.append(woo_binding.id)
-            else:
-                product_category = self.env["woocommerce.product.category"].create(
-                    {
-                        "name": category_id.get("name"),
-                        "parent_id": category_id.get("parent"),
-                        "backend_id": self.backend_record.id,
-                        "external_id": category_id.get("id"),
-                    }
-                )
-                category_ids.append(product_category.id)
+                continue
+            values = {
+                "name": category_id.get("name"),
+                "parent_id": category_id.get("parent"),
+                "backend_id": self.backend_record.id,
+                "external_id": category_id.get("id"),
+            }
+            product_category = self.env["woocommerce.product.category"].create(values)
+            category_ids.append(product_category.id)
         return {"woo_product_categ_ids": category_ids}
 
     @mapping

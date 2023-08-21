@@ -66,15 +66,12 @@ class WooAttributeValueImportMapper(Component):
         """Return backend."""
         return {"backend_id": self.backend_record.id}
 
-    @only_create
     @mapping
     def odoo_id(self, record):
         """Will bind the product to an existing one with the same code"""
         binder = self.binder_for(model="woo.product.attribute.value")
         woo_product = binder.to_internal(record.get("id"), unwrap=True)
-        if woo_product:
-            return {"odoo_id": woo_product.id}
-        return {}
+        return {"odoo_id": woo_product.id} if woo_product else {}
 
     @only_create
     @mapping

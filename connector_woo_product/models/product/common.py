@@ -99,7 +99,6 @@ class WooProductProductAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.product.product"
     _woo_model = "products"
-    _woo_key = "id"
     _odoo_ext_id_key = "id"
     _model_dependencies = [
         (
