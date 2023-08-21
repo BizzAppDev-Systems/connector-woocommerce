@@ -73,7 +73,7 @@ class WooCommerceProductCategory(models.Model):
     woo_id = fields.Char()
 
     def __init__(self, *args, **kwargs):
-        """Bind  Woo Product Category"""
+        """Bind Odoo Product Category"""
         super().__init__(*args, **kwargs)
         WooModelBinder._apply_on.append(self._name)
 

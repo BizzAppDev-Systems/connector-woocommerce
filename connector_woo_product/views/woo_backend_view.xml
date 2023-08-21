@@ -6,7 +6,7 @@
         <field name="model">woo.backend</field>
         <field name="inherit_id" ref="connector_woo_base.view_woo_backend_form" />
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='import']" position="attributes">
+             <xpath expr="//page[@name='import']" position="attributes">
                 <attribute name="invisible">0</attribute>
             </xpath>
             <xpath expr="//page[@name='import']" position="inside">
@@ -14,7 +14,7 @@
                     <group>
                         <label
                             for="import_product_attributes"
-                            string="Import Product Attributes(woo)"
+                            string="Import Product Attributes"
                             style="font-weight:bold; white-space: nowrap;"
                             class="oe_inline"
                         />
@@ -27,14 +27,14 @@
                                 class="oe_highlight"
                                 string="Import Product Attributes"
                             />
-                        </div>
+                         </div>
                     </group>
                 </group>
                 <group>
                     <group>
                         <label
                             for="import_product_categories"
-                            string="Import Product Categories(Woo)"
+                            string="Import Product Categories"
                             style="font-weight:bold; white-space: nowrap;"
                             class="oe_inline"
                         />
@@ -47,14 +47,14 @@
                                 class="oe_highlight"
                                 string="Import Product Categories"
                             />
-                        </div>
+                         </div>
                     </group>
                 </group>
                 <group>
                     <group>
                         <label
                             for="import_products"
-                            string="Import Products(Woo)"
+                            string="Import Products"
                             style="font-weight:bold; white-space: nowrap;"
                             class="oe_inline"
                         />
@@ -72,7 +72,7 @@
                                 class="oe_highlight"
                                 string="Import Products"
                             />
-                        </div>
+                         </div>
                     </group>
                 </group>
             </xpath>

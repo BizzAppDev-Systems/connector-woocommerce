@@ -1,9 +1,9 @@
-import base64
 import logging
-
+import base64
 import requests
-
 from odoo.addons.component.core import Component
+from odoo.exceptions import ValidationError
+from odoo import _
 from odoo.addons.connector.components.mapper import mapping, only_create
 
 # pylint: disable=W7950
@@ -17,6 +17,17 @@ class WooProductProductBatchImporter(Component):
     _name = "woo.product.product.batch.importer"
     _inherit = "woo.batch.importer"
     _apply_on = "woo.product.product"
+
+    def run(self, filters=None, force=None):
+        """Run the synchronization"""
+        filters = filters or {}
+        try:
+            records = self.backend_adapter.search_read(filters)
+            for record in records:
+                external_id = record.get(self.backend_adapter._woo_ext_id_key)
+                self._import_record(external_id, data=record)
+        except Exception as err:
+            raise ValidationError(_("Error : %s") % err) from err
 
 
 class WooProductProductImportMapper(Component):
@@ -43,10 +54,10 @@ class WooProductProductImportMapper(Component):
         return {}
 
     @mapping
-    def lst_price(self, record):
+    def list_price(self, record):
         """Mapping product price"""
         price = record.get("price")
-        return {"lst_price": price}
+        return {"list_price": price}
 
     @mapping
     def standard_price(self, record):
@@ -126,24 +137,42 @@ class WooProductProductImportMapper(Component):
                 attribute_ids.append(woo_binding.id)
             else:
                 created_id = "{}-{}".format(attribute_id.get("name"), record.get("id"))
-                existing_attributes = self.env["woo.product.attribute"].search(
+                product_attribute = self.env["woo.product.attribute"].search(
                     [
                         ("name", "=", attribute_id.get("name")),
                         ("backend_id", "=", self.backend_record.id),
                         ("external_id", "=", created_id),
-                    ]
+                    ],
+                    limit=1,
                 )
-                if existing_attributes:
-                    attribute_ids.append(existing_attributes.id)
-                else:
+                if not product_attribute:
                     product_attribute = self.env["woo.product.attribute"].create(
                         {
                             "name": attribute_id.get("name"),
                             "backend_id": self.backend_record.id,
-                            "external_id": attribute_id.get("id"),
+                            "external_id": created_id,
                         }
                     )
-                    attribute_ids.append(product_attribute.id)
+                if "options" in attribute_id:
+                    for option in attribute_id.get("options"):
+                        product_attribute_value = self.env[
+                            "product.attribute.value"
+                        ].search(
+                            [
+                                ("name", "=", option),
+                                ("attribute_id", "=", product_attribute.odoo_id.id),
+                            ],
+                            limit=1,
+                        )
+                        if not product_attribute_value:
+                            value = self.env["product.attribute.value"].create(
+                                {
+                                    "name": option,
+                                    "attribute_id": product_attribute.odoo_id.id,
+                                    "woo_attribute_id": product_attribute.id,
+                                }
+                            )
+                attribute_ids.append(product_attribute.id)
         return {"woo_attribute_ids": attribute_ids}
 
     @mapping

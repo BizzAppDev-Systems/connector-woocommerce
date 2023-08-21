@@ -1,10 +1,8 @@
 import logging
-
 from odoo import _
-from odoo.exceptions import ValidationError
-
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping, only_create
+from odoo.exceptions import ValidationError
 
 # pylint: disable=W7950
 
@@ -46,7 +44,7 @@ class WooProductAttributeImportMapper(Component):
     @only_create
     @mapping
     def odoo_id(self, record):
-        """Will bind the Product to an existing one with the same code"""
+        """Will bind the partner to an existing one with the same code"""
         binder = self.binder_for(model="woo.product.attribute")
         woo_product_attribute = binder.to_internal(record.get("id"), unwrap=True)
         if woo_product_attribute:
@@ -70,4 +68,4 @@ class WooProductAttributeImporter(Component):
 
     _name = "woo.product.attribute.importer"
     _inherit = "woo.importer"
-    _apply_on = "woo.product.attribute"
+    _apply_on = ["woo.product.attribute"]

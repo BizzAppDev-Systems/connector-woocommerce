@@ -14,5 +14,6 @@
         "views/product_views.xml",
         "views/product_attribute_view.xml",
         "views/product_category_view.xml",
+        "views/product_attribute_value_view.xml",
     ],
 }
