@@ -19,8 +19,11 @@ class ResPartner(models.Model):
     )
     firstname = fields.Char(string="First Name")
     lastname = fields.Char(string="Last Name")
+    # Inherited the field to add store true and compute for add first and last name
+    name = fields.Char(compute="_compute_name", store=True, readonly=False)
 
-    def _update_name_from_firstname(self):
+    @api.depends("firstname", "lastname")
+    def _compute_name(self):
         """
         Update the 'name' field based on 'firstname' and 'lastname' values.
 
@@ -38,14 +41,6 @@ class ResPartner(models.Model):
                 partner.name = partner.lastname
             else:
                 partner.name = ""
-
-    @api.onchange("firstname", "lastname")
-    def _onchange_name_fields(self):
-        """
-        Call the '_update_name_from_firstname' method when 'firstname' or
-        'lastname' fields are changed.
-        """
-        self._update_name_from_firstname()
 
 
 class WooResPartner(models.Model):
@@ -77,5 +72,4 @@ class WooResPartnerAdapter(Component):
     _apply_on = "woo.res.partner"
 
     _woo_model = "customers"
-    _woo_key = "id"
     _odoo_ext_id_key = "id"

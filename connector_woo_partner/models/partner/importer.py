@@ -73,50 +73,24 @@ class WooResPartnerImportMapper(Component):
             raise MappingError(_("No Email found in Response"))
         return {"email": email}
 
-    # def _prepare_partner_vals(self, data, address_type):
-    #     state = data.get("state")
-    #     if state:
-    #         state = self.env["res.country.state"].search(
-    #             [("code", "=", state)],
-    #             limit=1,
-    #         )
-    #     return {
-    #         "name": data.get("username")
-    #         or (
-    #             f"{data.get('first_name')} {data.get('last_name')}"
-    #             if data.get("first_name") and data.get("last_name")
-    #             else data.get("first_name") or data.get("email")
-    #         ),
-    #         "firstname": data.get("first_name") or data.get("email"),
-    #         "lastname": data.get("last_name"),
-    #         "email": data.get("email"),
-    #         "type": address_type,
-    #         "street": data.get("address_1"),
-    #         "street2": data.get("address_2"),
-    #         "zip": data.get("postcode"),
-    #         "state_id": state.id if state else False,
-    #     }
-
-    # def child_ids(self, record):
-    #     """Mapping for Invoice and Shipping Addresses"""
-    #     billing = record.get("billing")
-    #     shipping = record.get("shipping")
-
-    #     # Common data fields
-    #     firstname = billing.get("first_name")
-    #     lastname = billing.get("last_name")
-    #     email = billing.get("email")
-    #     child_ids_data = []
-    #     fields_to_check = ["first_name", "last_name", "email"]
-    #     for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
-    #         if not any(data.get(field) for field in fields_to_check):
-    #             continue
-    #         address_data = self.env["res.partner"].create(
-    #             self._prepare_partner_vals(data, address_type)
-    #         )
-    #         child_ids_data.append((4, address_data.id))
-
-    #     return {"child_ids": child_ids_data} if child_ids_data else {}
+    def _prepare_partner_vals(self, data, address_type, state):
+        vals = {
+            "name": data.get("username")
+            or data.get("first_name")
+            and data.get("last_name")
+            and f"{data.get('first_name')} {data.get('last_name')}"
+            or data.get("first_name")
+            or data.get("email"),
+            "firstname": data.get("first_name") or data.get("email"),
+            "lastname": data.get("last_name"),
+            "email": data.get("email"),
+            "type": address_type,
+            "street": data.get("address_1"),
+            "street2": data.get("address_2"),
+            "zip": data.get("postcode"),
+            "state_id": state.id if state else False,
+        }
+        return vals
 
     @only_create
     @mapping
@@ -124,35 +98,22 @@ class WooResPartnerImportMapper(Component):
         """Mapping for Invoice and Shipping Addresses"""
         billing = record.get("billing")
         shipping = record.get("shipping")
-        state = billing.get("state")
         child_ids_data = []
-        if state:
-            state = self.env["res.country.state"].search(
-                [("code", "=", state)],
-                limit=1,
-            )
         fields_to_check = ["first_name", "last_name", "email"]
         for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
             if not any(data.get(field) for field in fields_to_check):
                 continue
-            address_data = self.env["res.partner"].create(
-                {
-                    "name": data.get("username")
-                    or data.get("first_name")
-                    and data.get("last_name")
-                    and f"{data.get('first_name')} {data.get('last_name')}"
-                    or data.get("first_name")
-                    or data.get("email"),
-                    "firstname": data.get("first_name") or data.get("email"),
-                    "lastname": data.get("last_name"),
-                    "email": data.get("email"),
-                    "type": address_type,
-                    "street": data.get("address_1"),
-                    "street2": data.get("address_2"),
-                    "zip": data.get("postcode"),
-                    "state_id": state.id if state else False,
-                }
-            )
+            if data.get("billing"):
+                state = billing.get("state")
+            else:
+                state = shipping.get("state")
+            if state:
+                state = self.env["res.country.state"].search(
+                    [("code", "=", state)],
+                    limit=1,
+                )
+            address_data = self._prepare_partner_vals(data, address_type, state)
+            address_data = self.env["res.partner"].create(address_data)
             child_ids_data.append((4, address_data.id))
         return {"child_ids": child_ids_data} if child_ids_data else {}
 
