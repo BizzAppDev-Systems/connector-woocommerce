@@ -1,13 +1,9 @@
 import logging
 
-from odoo import _
-
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
-from odoo.addons.connector.exception import MappingError
+from odoo.addons.connector.components.mapper import mapping, only_create
 
 # pylint: disable=W7950
-# from odoo.addons.connector_shopify.components.misc import date_parser
 
 _logger = logging.getLogger(__name__)
 
@@ -23,7 +19,10 @@ class WooSaleOrderImportMapper(Component):
     _inherit = "woo.import.mapper"
     _apply_on = "woo.sale.order"
 
-    direct = [("id", "id")]
+    direct = [
+        ("id", "external_id"),
+        ("order_id", "woo_order_id"),
+    ]
 
     children = [
         ("line_items", "woo_order_line_ids", "woo.sale.order.line"),
@@ -33,33 +32,120 @@ class WooSaleOrderImportMapper(Component):
     def name(self, record):
         """Return name data with sale prefix."""
         name = record.get("order_key")
+        if self.backend_record.order_prefix:
+            name = "{}{}".format(self.backend_record.order_prefix, record.get("id"))
         return {"name": name}
 
+    @only_create
+    @mapping
+    def odoo_id(self, record):
+        """Will bind the Sale order to an existing one with the same code"""
+        binder = self.binder_for(model="woo.sale.order")
+        woo_order = binder.to_internal(record.get("id"), unwrap=True)
+        if woo_order:
+            return {"odoo_id": woo_order.id}
+        return {}
+
+    # @mapping
+    # def partner_id(self, record):
+    #     """Return the partner_id ."""
+    #     binder = self.binder_for("woo.res.partner")
+    #     partner = binder.to_internal(record.get("customer_id"), unwrap=True)
+    # billing = record.get("billing", [])
+    # shipping = record.get("shipping", [])
+    # if not partner:
+    #     return {}
+    # billing_partner = {
+    #     "name": billing.get("first_name") + " " + billing.get("last_name"),
+    #     "street": billing.get("address_1", ""),
+    #     "street2": billing.get("address_2", ""),
+    #     "city": billing.get("city", ""),
+    #     "zip": billing.get("postcode", ""),
+    #     "email": billing.get("email"),
+    #     "phone": billing.get("phone"),
+    # }
+    # partner = self.env["res.partner"].create(billing_partner)
+    # elif not billing.get("first_name"):
+    #     shiping_partner = {
+    #         "name": shipping.get("first_name") + " " + shipping.get("last_name"),
+    #         "street": shipping.get("address_1", ""),
+    #         "street2": shipping.get("address_2", ""),
+    #         "city": shipping.get("city", ""),
+    #         "zip": shipping.get("postcode", ""),
+    #         "email": shipping.get("email"),
+    #         "phone": shipping.get("phone"),
+    #     }
+    #     partner = self.env["res.partner"].create(shiping_partner)
+    # return {"partner_id": partner.id}
     @mapping
     def partner_id(self, record):
-        """Return the partner_id ."""
+        """Return the partner_id."""
         binder = self.binder_for("woo.res.partner")
         partner = binder.to_internal(record.get("customer_id"), unwrap=True)
         if not partner:
-            return {}
+            billing_info = record.get("billing", {})
+            existing_partner = self.env["res.partner"].search(
+                [
+                    ("name", "=", billing_info.get("first_name")),
+                    ("woo_customer_id", "=", False),
+                ],
+                limit=1,
+            )
+
+            if existing_partner:
+                partner = existing_partner
+            else:
+                partner_vals = {
+                    "firstname": billing_info.get("first_name"),
+                    "lastname": billing_info.get("last_name"),
+                    "woo_customer_id": record.get("customer_id"),
+                    "street": billing_info.get("address_1", ""),
+                    "street2": billing_info.get("address_2", ""),
+                    "city": billing_info.get("city", ""),
+                    "zip": billing_info.get("postcode", ""),
+                    "state_id": self.map_state_id(
+                        billing_info.get("state"), billing_info.get("country")
+                    ),
+                    "country_id": self.map_country_id(billing_info.get("country")),
+                }
+                partner = self.env["res.partner"].create(partner_vals)
+
         return {"partner_id": partner.id}
 
     @mapping
-    def order_line(self, record):
-        items = record.get("line_items")
-        order_line = []
-        for item in items:
-            vals = {
-                "product_uom_qty": item.get("quantity"),
-                "product_id": record.get("product_id"),
-                "price_unit": 0,
-            }
-            order_line.append((0, 0, vals))
-        return {"order_line": order_line}
+    def discount_total(self, record):
+        print(record.get("discount_total"))
+        return {"discount_total": record.get("discount_total")}
+
+    @mapping
+    def discount_tax(self, record):
+        print(record.get("discount_tax"))
+        return {"discount_tax": record.get("discount_tax")}
+
+    @mapping
+    def shipping_total(self, record):
+        print(record.get("shipping_total"))
+        return {"shipping_total": record.get("shipping_total")}
+
+    @mapping
+    def shipping_tax(self, record):
+        print(record.get("shipping_tax"))
+        return {"shipping_tax": record.get("shipping_tax")}
+
+    @mapping
+    def cart_tax(self, record):
+        print(record.get("cart_tax"))
+        return {"cart_tax": record.get("cart_tax")}
 
     @mapping
     def currency_id(self, record):
+        print(record.get("currency"))
         return {"currency_id": record.get("currency")}
+
+    @mapping
+    def total_tax(self, record):
+        print(record.get("total_tax"))
+        return {"total_tax": record.get("total_tax")}
 
     @mapping
     def amount_total(self, record):
@@ -78,6 +164,10 @@ class WooSaleOrderImportMapper(Component):
     def backend_id(self, record):
         """Return backend."""
         return {"backend_id": self.backend_record.id}
+
+    @mapping
+    def update_order_id(self, record):
+        self.options.update(order_id=record.get("id"))
 
 
 class WooSaleOrderImporter(Component):
@@ -101,10 +191,15 @@ class WooSaleOrderLineImportMapper(Component):
     ]
 
     @mapping
+    def product_uom(self, record):
+        return {"product_uom": 1}
+
+    @only_create
+    @mapping
     def odoo_id(self, record):
         """Return sale order line."""
         line = self.env["sale.order.line"].search(
-            [("woo_line_id", "=", record["id"])], limit=1
+            [("woo_line_id", "=", record.get("id"))], limit=1
         )
         if not line:
             return {}
@@ -113,24 +208,42 @@ class WooSaleOrderLineImportMapper(Component):
     @mapping
     def product_id(self, record):
         """Return Product excited in Woo order line and pre-check validations."""
-        print("hellllllllllooooooooooooo worrrrrrrrrrrrkkkkkkkkkkkiiiiiiiingggg")
-        print(record, "lllllllllllllllllllllllllllllllllll")
         binder = self.binder_for("woo.product.product")
-        product = binder.to_internal(record.get("product_id"), unwrap=True)
-        if not product:
+        if not record.get("product_id"):
             return {}
-        # product_id = record.get("line_items").get("product_id")
-        # product = binder.to_internal(product_id, unwrap=True)
+        product = binder.to_internal(record.get("product_id"), unwrap=True)
         return {"product_id": product.id}
 
-    # @mapping
-    # def name(self, record):
-    #     print({"name": record.get("name")},"lllllllllllllllllll")
-    #     return {"name": record.get("name")}
+    @mapping
+    def product_uom_qty(self, record):
+        return {"product_uom_qty": record.get("quantity")}
+
+    @mapping
+    def price_unit(self, record):
+        return {"price_unit": record.get("price")}
+
+    @mapping
+    def tax_id(self, record):
+        tax_ids = []
+        total_tax = record.get("taxes")
+        if total_tax:
+            tax_id_list = total_tax.split(",")
+            tax_ids = [int(tax_id) for tax_id in tax_id_list]
+
+        return {"tax_id": [(6, 0, tax_ids)]}
+
+    @mapping
+    def price_subtotal(self, record):
+        return {"price_subtotal": record.get("total")}
+
+    @mapping
+    def name(self, record):
+        return {"name": record.get("name")}
 
     @mapping
     def order_id(self, record):
-        return {"order_id": record.get("id")}
+        order_id = self.options.get("order_id")
+        return {"order_id": order_id}
 
 
 class WooSaleOrderLineImporter(Component):

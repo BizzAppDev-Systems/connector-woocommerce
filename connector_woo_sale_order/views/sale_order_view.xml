@@ -4,9 +4,60 @@
     <record id="sale_order_form_view" model="ir.ui.view">
         <field name="name">sale.order.form.view</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="inherit_id" ref="connector_ecommerce.view_order_connector_form" />
         <field name="arch" type="xml">
-            <xpath expr="//notebook//page[@name='customer_signature']" position="after">
+            <xpath expr="//form/header/button[@name='action_cancel']" position="after">
+                <field name="has_done_picking" invisible="1" />
+                <button
+                    name="export_delivery_status"
+                    type="object"
+                    class="oe_highlight"
+                    attrs="{'invisible': [('has_done_picking', '=', False)]}"
+                    string="Export Delivery Status"
+                />
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='payment_term_id']" position="after">
+                <field name="woo_order_status" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//tree" position="attributes">
+                <attribute name="editable"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form" position="inside">
+                <notebook>
+                    <page
+                        string="Woo Connector"
+                        name="woo_connector"
+                        attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                        groups="connector.group_connector_manager"
+                    >
+                        <field name="woo_bind_ids" nolabel="1" readonly="1">
+                            <tree
+                                string="WooCommerce Product Category"
+                                delete="false"
+                                edit="false"
+                                create="false"
+                            >
+                                <field name="backend_id" widget="selection" />
+                                <field name="external_id" />
+                            </tree>
+                            <form
+                                string="WooCommerce Product Category"
+                                delete="false"
+                                edit="false"
+                                create="false"
+                            >
+                                <group>
+                                    <group>
+                                        <field name="backend_id" widget="selection" />
+                                        <field name="external_id" />
+                                    </group>
+                                </group>
+                            </form>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
                 <page
                     string="Woo Connector"
                     name="woo_connector"
@@ -29,12 +80,24 @@
                             edit="false"
                             create="false"
                         >
+                        <group>
                             <group>
-                                <group>
-                                    <field name="backend_id" widget="selection" />
-                                    <field name="external_id" />
-                                </group>
+                                <field name="backend_id" widget="selection" />
+                                <field name="external_id" />
+                                <field name="price_unit"/>
+                                <field name="price_subtotal"/>
+                                <field name="discount_total"/>
+                                <field name="amount_total"/>
                             </group>
+                            <group>
+                                <field name="discount_tax"/>
+                                <field name="shipping_total"/>
+                                <field name="shipping_tax"/>
+                                <field name="cart_tax"/>
+                                <field name="total_tax"/>
+                            </group>
+                            <field name="order_line"/>
+                        </group>
                         </form>
                     </field>
                 </page>
