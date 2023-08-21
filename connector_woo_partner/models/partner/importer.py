@@ -1,6 +1,7 @@
 import logging
-
+from odoo import _
 from odoo.addons.component.core import Component
+from odoo.addons.connector.exception import MappingError
 from odoo.addons.connector.components.mapper import mapping, only_create
 
 # pylint: disable=W7950
@@ -55,7 +56,6 @@ class WooResPartnerImportMapper(Component):
         """Mapping for lastname"""
         return {"lastname": record.get("last_name")} if record.get("last_name") else {}
 
-    @only_create
     @mapping
     def odoo_id(self, record):
         """Will bind the partner to an existing one with the same code"""
@@ -69,7 +69,54 @@ class WooResPartnerImportMapper(Component):
     def email(self, record):
         """Mapping for Email"""
         email = record.get("email")
+        if not email:
+            raise MappingError(_("No Email found in Response"))
         return {"email": email}
+
+    # def _prepare_partner_vals(self, data, address_type):
+    #     state = data.get("state")
+    #     if state:
+    #         state = self.env["res.country.state"].search(
+    #             [("code", "=", state)],
+    #             limit=1,
+    #         )
+    #     return {
+    #         "name": data.get("username")
+    #         or (
+    #             f"{data.get('first_name')} {data.get('last_name')}"
+    #             if data.get("first_name") and data.get("last_name")
+    #             else data.get("first_name") or data.get("email")
+    #         ),
+    #         "firstname": data.get("first_name") or data.get("email"),
+    #         "lastname": data.get("last_name"),
+    #         "email": data.get("email"),
+    #         "type": address_type,
+    #         "street": data.get("address_1"),
+    #         "street2": data.get("address_2"),
+    #         "zip": data.get("postcode"),
+    #         "state_id": state.id if state else False,
+    #     }
+
+    # def child_ids(self, record):
+    #     """Mapping for Invoice and Shipping Addresses"""
+    #     billing = record.get("billing")
+    #     shipping = record.get("shipping")
+
+    #     # Common data fields
+    #     firstname = billing.get("first_name")
+    #     lastname = billing.get("last_name")
+    #     email = billing.get("email")
+    #     child_ids_data = []
+    #     fields_to_check = ["first_name", "last_name", "email"]
+    #     for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
+    #         if not any(data.get(field) for field in fields_to_check):
+    #             continue
+    #         address_data = self.env["res.partner"].create(
+    #             self._prepare_partner_vals(data, address_type)
+    #         )
+    #         child_ids_data.append((4, address_data.id))
+
+    #     return {"child_ids": child_ids_data} if child_ids_data else {}
 
     @only_create
     @mapping
@@ -86,27 +133,28 @@ class WooResPartnerImportMapper(Component):
             )
         fields_to_check = ["first_name", "last_name", "email"]
         for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
-            if any(data.get(field) for field in fields_to_check):
-                address_data = self.env["res.partner"].create(
-                    {
-                        "name": data.get("username")
-                        or data.get("first_name")
-                        and data.get("last_name")
-                        and f"{data.get('first_name')} {data.get('last_name')}"
-                        or data.get("first_name")
-                        or data.get("email"),
-                        "firstname": data.get("first_name") or data.get("email"),
-                        "lastname": data.get("last_name"),
-                        "email": data.get("email"),
-                        "type": address_type,
-                        "street": data.get("address_1"),
-                        "street2": data.get("address_2"),
-                        "zip": data.get("postcode"),
-                        "state_id": state.id if state else False,
-                    }
-                )
-                child_ids_data.append((4, address_data.id))
-        return {"child_ids": child_ids_data}
+            if not any(data.get(field) for field in fields_to_check):
+                continue
+            address_data = self.env["res.partner"].create(
+                {
+                    "name": data.get("username")
+                    or data.get("first_name")
+                    and data.get("last_name")
+                    and f"{data.get('first_name')} {data.get('last_name')}"
+                    or data.get("first_name")
+                    or data.get("email"),
+                    "firstname": data.get("first_name") or data.get("email"),
+                    "lastname": data.get("last_name"),
+                    "email": data.get("email"),
+                    "type": address_type,
+                    "street": data.get("address_1"),
+                    "street2": data.get("address_2"),
+                    "zip": data.get("postcode"),
+                    "state_id": state.id if state else False,
+                }
+            )
+            child_ids_data.append((4, address_data.id))
+        return {"child_ids": child_ids_data} if child_ids_data else {}
 
     @mapping
     def backend_id(self, record):

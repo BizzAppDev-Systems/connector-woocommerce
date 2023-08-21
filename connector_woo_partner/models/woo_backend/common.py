@@ -15,7 +15,7 @@ class WooBackend(models.Model):
             backend.env["woo.res.partner"].with_company(backend.company_id).with_delay(
                 priority=5
             ).import_batch(
-                backend=backend, force=backend.force_import_partner, filters=filters
+                backend=backend, filters=filters
             )
 
     def cron_import_partners(self, domain=None):

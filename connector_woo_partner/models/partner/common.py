@@ -1,7 +1,6 @@
 import logging
 
-from odoo import api, fields, models
-
+from odoo import fields, models, api
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
