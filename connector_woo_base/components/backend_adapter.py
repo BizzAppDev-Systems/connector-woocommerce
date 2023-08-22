@@ -128,7 +128,7 @@ class WooAPI(object):
             self._api = remote_client
         return self._api
 
-    def api_call(self, resource_path, arguments, http_method=None, headers=None):
+    def api_call(self, resource_path, arguments, http_method=None):
         """Adjust available arguments per API"""
         if not self.api:
             return self.api
@@ -142,7 +142,7 @@ class WooAPI(object):
         if self._api is not None and hasattr(self._api, "__exit__"):
             self._api.__exit__(exc_type, exc_value, traceback)
 
-    def call(self, resource_path, arguments, http_method=None, headers=None):
+    def call(self, resource_path, arguments, http_method=None):
         try:
             if isinstance(arguments, list):
                 while arguments and arguments[-1] is None:
@@ -150,7 +150,7 @@ class WooAPI(object):
             start = datetime.now()
             try:
                 result = self.api_call(
-                    resource_path, arguments, http_method=http_method, headers=headers
+                    resource_path, arguments, http_method=http_method
                 )
             except Exception:
                 _logger.error("api.call('%s', %s) failed", resource_path, arguments)
