@@ -1,10 +1,11 @@
 import logging
 from contextlib import contextmanager
+from datetime import datetime, timedelta
 
 from odoo import fields, models
 
 from ...components.backend_adapter import WooAPI, WooLocation
-from datetime import datetime, timedelta
+
 _logger = logging.getLogger(__name__)
 
 
@@ -37,6 +38,7 @@ class WooBackend(models.Model):
     test_client_id = fields.Char(string="Client ID")
     test_client_secret = fields.Char(string="Secret key")
     force_import_partner = fields.Boolean(string="Force Import(Partner)")
+    order_prefix = fields.Char(string="Sale Order Prefix", default="WOO_")
 
     def toggle_test_mode(self):
         """Test Mode"""
@@ -47,25 +49,27 @@ class WooBackend(models.Model):
     def work_on(self, model_name, **kwargs):
         """Add the work on for woo."""
         self.ensure_one()
-        location = self.test_location
-        version = self.version
-        client_id = self.test_client_id
-        client_secret = self.test_client_secret
-        if not self.test_mode:
-            location = self.location
-            client_id = self.client_id
-            client_secret = self.client_secret
+        location = self.location
+        client_id = self.client_id
+        client_secret = self.client_secret
+
+        if self.test_mode:
+            location = self.test_location
+            client_id = self.test_client_id
+            client_secret = self.test_client_secret
+
         woo_location = WooLocation(
             location=location,
             client_id=client_id,
             client_secret=client_secret,
-            version=version,
+            version=self.version,
             test_mode=self.test_mode,
         )
+
         with WooAPI(woo_location) as woo_api:
-            _super = super(WooBackend, self)
-            # from the components we'll be able to do: self.work.woo_api
-            with _super.work_on(model_name, woo_api=woo_api, **kwargs) as work:
+            with super(WooBackend, self).work_on(
+                model_name, woo_api=woo_api, **kwargs
+            ) as work:
                 yield work
 
     def _import_from_date(

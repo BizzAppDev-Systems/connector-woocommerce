@@ -57,7 +57,7 @@ class WooClient(object):
             return data
         return None
 
-    def call(self, resource_path, arguments, http_method=None, headers=None):
+    def call(self, resource_path, arguments, http_method=None):
         """send/get request/response to/from remote system"""
         if resource_path is None:
             _logger.exception("Remote System API called without resource path")
@@ -262,4 +262,10 @@ class GenericAdapter(AbstractComponent):
     def create(self, data):
         """Creates the data in remote"""
         result = self._call(self._woo_model, data, http_method="post")
+        return result
+
+    def write(self, external_id, data):
+        """Update records on the external system"""
+        resource_path = "{}/{}".format(self._woo_model, external_id)
+        result = self._call(resource_path, data, http_method="post")
         return result

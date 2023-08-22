@@ -1,4 +1,3 @@
-
 from odoo import _, models
 
 
