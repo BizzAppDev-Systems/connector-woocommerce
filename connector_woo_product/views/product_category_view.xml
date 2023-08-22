@@ -84,6 +84,13 @@
     <menuitem id="menu_woo_product_category"
         name="Woo Product Categories"
         sequence="15"
+        parent="connector.menu_connector_root"
+        groups="connector.group_connector_manager"
+    />
+    <menuitem
+        id="menu_woo_backend"
+        name="Product Categories"
+        parent="menu_woo_product_category"
         action="action_woo_product_category"
     />
 </odoo>

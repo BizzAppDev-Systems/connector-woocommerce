@@ -48,8 +48,14 @@
                         </form>
                     </field>
                     <group string="Woo Product Categories and Attributes">
-                        <field name="woo_product_categ_ids"/>
-                        <field name="woo_attribute_ids"/>
+                        <group>
+                            <field name="woo_product_categ_ids" nolabel="1" />
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="woo_attribute_ids" nolabel="1"/>
+                        </group>
                     </group>
                 </page>
             </xpath>

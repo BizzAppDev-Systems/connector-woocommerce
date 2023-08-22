@@ -83,11 +83,10 @@ class WooProductProductImportMapper(Component):
         image = record.get("images")
         if not image:
             return {}
-        for img in image:
-            image_src = img.get("src")
-            response = requests.get(image_src)
-            binary_data = response.content
-            base64_data = base64.b64encode(binary_data).decode("utf-8")
+        image_src = image[0].get("src")
+        response = requests.get(image_src)
+        binary_data = response.content
+        base64_data = base64.b64encode(binary_data).decode("utf-8")
         return {"image_1920": base64_data}
 
     @mapping
@@ -119,6 +118,10 @@ class WooProductProductImportMapper(Component):
         """Mapping for stock_status"""
         stock_status = record.get("stock_status")
         return {"stock_status": stock_status} if stock_status else {}
+
+    # @mapping
+    # def product_template_variant_value_ids(self, record):
+    #     pass
 
     @mapping
     def woo_attribute_ids(self, record):
@@ -169,8 +172,11 @@ class WooProductProductImportMapper(Component):
                     "woo_attribute_id": product_attribute.id,
                 }
                 self.env["product.attribute.value"].create(attribute_value)
-        attribute_ids.append(product_attribute.id)
-        return {"woo_attribute_ids": attribute_ids}
+            attribute_ids.append(product_attribute.id)
+        return {
+            "woo_attribute_ids": attribute_ids,
+            "product_template_variant_value_ids": attribute_ids,
+        }
 
     @mapping
     def woo_product_categ_ids(self, record):
