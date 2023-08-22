@@ -28,7 +28,6 @@ class WooResPartnerImportMapper(Component):
         ("woo_res_partner_email_unique", "UNIQUE(email)", "Email must be unique!")
     ]
 
-    @only_create
     @mapping
     def name(self, record):
         """Mapping for Name (combination of firstname and lastname)"""
@@ -61,9 +60,7 @@ class WooResPartnerImportMapper(Component):
         """Will bind the partner to an existing one with the same code"""
         binder = self.binder_for(model="woo.res.partner")
         woo_partner = binder.to_internal(record.get("id"), unwrap=True)
-        if woo_partner:
-            return {"odoo_id": woo_partner.id}
-        return {}
+        return {"odoo_id": woo_partner.id} if woo_partner else {}
 
     @mapping
     def email(self, record):
@@ -74,6 +71,7 @@ class WooResPartnerImportMapper(Component):
         return {"email": email}
 
     def _prepare_partner_vals(self, data, address_type, state):
+        """Prepare values for child_ids"""
         vals = {
             "name": data.get("username")
             or data.get("first_name")
@@ -88,17 +86,17 @@ class WooResPartnerImportMapper(Component):
             "street": data.get("address_1"),
             "street2": data.get("address_2"),
             "zip": data.get("postcode"),
+            "phone": data.get("phone"),
             "state_id": state.id if state else False,
         }
         return vals
 
-    @only_create
     @mapping
     def child_ids(self, record):
         """Mapping for Invoice and Shipping Addresses"""
         billing = record.get("billing")
         shipping = record.get("shipping")
-        child_ids_data = []
+        child_data = []
         fields_to_check = ["first_name", "last_name", "email"]
         for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
             if not any(data.get(field) for field in fields_to_check):
@@ -112,10 +110,27 @@ class WooResPartnerImportMapper(Component):
                     [("code", "=", state)],
                     limit=1,
                 )
-            address_data = self._prepare_partner_vals(data, address_type, state)
-            address_data = self.env["res.partner"].create(address_data)
-            child_ids_data.append((4, address_data.id))
-        return {"child_ids": child_ids_data} if child_ids_data else {}
+            existing_child = self.env["res.partner"].search(
+                [
+                    ("name", "=", data.get("username")),
+                    ("firstname", "=", data.get("first_name")),
+                    ("lastname", "=", data.get("last_name")),
+                    ("email", "=", data.get("email")),
+                    ("street", "=", data.get("address_1")),
+                    ("street2", "=", data.get("address_2")),
+                    ("type", "=", address_type),
+                    ("zip", "=", data.get("postcode")),
+                    ("street", "=", data.get("address_1")),
+                    ("phone", "=", data.get("phone")),
+                ]
+            )
+            if existing_child:
+                child_data.append((4, existing_child.id))
+            else:
+                address_data = self._prepare_partner_vals(data, address_type, state)
+                address_data = self.env["res.partner"].create(address_data)
+                child_data.append((4, address_data.id))
+        return {"child_ids": child_data} if child_data else {}
 
     @mapping
     def backend_id(self, record):

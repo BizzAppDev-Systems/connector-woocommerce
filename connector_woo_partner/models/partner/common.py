@@ -5,7 +5,6 @@ from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
 _logger = logging.getLogger(__name__)
-LOCKED_FIELD_STATES = {state: [("readonly", True)] for state in {"done", "cancel"}}
 
 
 class ResPartner(models.Model):
@@ -26,7 +25,6 @@ class ResPartner(models.Model):
     def _compute_name(self):
         """
         Update the 'name' field based on 'firstname' and 'lastname' values.
-
         If both 'firstname' and 'lastname' exist, set 'name' as a combination
         of both. If only 'firstname' exists, set 'name' to 'firstname'. If only
         'lastname' exists, set 'name' to 'lastname'. If neither 'firstname'
