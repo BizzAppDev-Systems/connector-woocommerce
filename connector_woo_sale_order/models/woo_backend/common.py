@@ -17,7 +17,7 @@ class WooBackend(models.Model):
         for backend in self:
             filters = {"per_page": backend.default_limit, "page": 1}
             backend.env["woo.sale.order"].with_company(backend.company_id).with_delay(
-                priority=5
+                priority=10
             ).import_batch(backend=backend, filters=filters)
 
     def cron_import_sale_orders(self, domain=None):
@@ -41,7 +41,7 @@ class WooBackend(models.Model):
         for backend in self:
             filters = {"per_page": backend.default_limit, "page": 1}
             self.env["woo.sale.order"].with_company(backend.company_id).with_delay(
-                priority=5
+                priority=15
             ).export_batch(backend=backend, filters=filters)
 
     def cron_export_sale_order_status(self, domain=None):

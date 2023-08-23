@@ -36,7 +36,6 @@ class WooSaleOrderImportMapper(Component):
             name = "{}{}".format(self.backend_record.order_prefix, record.get("id"))
         return {"name": name}
 
-    @only_create
     @mapping
     def odoo_id(self, record):
         """Will bind the Sale order to an existing one with the same code"""
@@ -46,71 +45,202 @@ class WooSaleOrderImportMapper(Component):
             return {"odoo_id": woo_order.id}
         return {}
 
-    # @mapping
-    # def partner_id(self, record):
-    #     """Return the partner_id ."""
-    #     binder = self.binder_for("woo.res.partner")
-    #     partner = binder.to_internal(record.get("customer_id"), unwrap=True)
-    # billing = record.get("billing", [])
-    # shipping = record.get("shipping", [])
-    # if not partner:
-    #     return {}
-    # billing_partner = {
-    #     "name": billing.get("first_name") + " " + billing.get("last_name"),
-    #     "street": billing.get("address_1", ""),
-    #     "street2": billing.get("address_2", ""),
-    #     "city": billing.get("city", ""),
-    #     "zip": billing.get("postcode", ""),
-    #     "email": billing.get("email"),
-    #     "phone": billing.get("phone"),
-    # }
-    # partner = self.env["res.partner"].create(billing_partner)
-    # elif not billing.get("first_name"):
-    #     shiping_partner = {
-    #         "name": shipping.get("first_name") + " " + shipping.get("last_name"),
-    #         "street": shipping.get("address_1", ""),
-    #         "street2": shipping.get("address_2", ""),
-    #         "city": shipping.get("city", ""),
-    #         "zip": shipping.get("postcode", ""),
-    #         "email": shipping.get("email"),
-    #         "phone": shipping.get("phone"),
-    #     }
-    #     partner = self.env["res.partner"].create(shiping_partner)
-    # return {"partner_id": partner.id}
     @mapping
     def partner_id(self, record):
-        """Return the partner_id."""
+        """Return the partner_id ."""
         binder = self.binder_for("woo.res.partner")
         partner = binder.to_internal(record.get("customer_id"), unwrap=True)
-        if not partner:
-            billing_info = record.get("billing", {})
-            existing_partner = self.env["res.partner"].search(
-                [
-                    ("name", "=", billing_info.get("first_name")),
-                    ("woo_customer_id", "=", False),
-                ],
-                limit=1,
-            )
+        billing = record.get("billing")
+        shipping = record.get("shipping")
+        if partner:
+            return {"partner_id": partner.id}
+        if not billing or not shipping:
+            return {}
+        else:
+            if billing:
+                existing_partner = self.env["res.partner"].search(
+                    [
+                        ("firstname", "=", billing.get("first_name")),
+                        ("lastname", "=", billing.get("last_name")),
+                        ("email", "=", billing.get("email")),
+                        ("street", "=", billing.get("address_1")),
+                        ("street2", "=", billing.get("address_2")),
+                        ("type", "=", "invoice"),
+                        ("zip", "=", billing.get("postcode")),
+                        ("street", "=", billing.get("address_1")),
+                        ("phone", "=", billing.get("phone")),
+                    ],
+                    limit=1,
+                )
+                if not existing_partner:
+                    billing_partner_data = {
+                        "firstname": billing.get("first_name"),
+                        "lastname": billing.get("last_name"),
+                        "street": billing.get("address_1"),
+                        "street2": billing.get("address_2"),
+                        "city": billing.get("city"),
+                        "zip": billing.get("postcode"),
+                        "email": billing.get("email"),
+                        "phone": billing.get("phone"),
+                        "type": "invoice",
+                    }
+                    billing_partner = self.env["res.partner"].create(
+                        billing_partner_data
+                    )
+                    existing_partner = self.env["res.partner"].search(
+                        [
+                            ("firstname", "=", shipping.get("first_name")),
+                            ("lastname", "=", shipping.get("last_name")),
+                            ("email", "=", shipping.get("email")),
+                            ("street", "=", shipping.get("address_1")),
+                            ("street2", "=", shipping.get("address_2")),
+                            ("type", "=", "delivery"),
+                            ("zip", "=", shipping.get("postcode")),
+                            ("street", "=", shipping.get("address_1")),
+                            ("phone", "=", shipping.get("phone")),
+                        ],
+                        limit=1,
+                    )
+                    if not existing_partner:
+                        child_partner_data = {
+                            "firstname": shipping.get("first_name"),
+                            "lastname": shipping.get("last_name"),
+                            "street": shipping.get("address_1", ""),
+                            "street2": shipping.get("address_2", ""),
+                            "city": shipping.get("city", ""),
+                            "zip": shipping.get("postcode", ""),
+                            "email": shipping.get("email"),
+                            "phone": shipping.get("phone"),
+                            "type": "delivery",
+                        }
+                        child_partner = self.env["res.partner"].create(
+                            child_partner_data
+                        )
+                        delivery_partner_data = {
+                            "firstname": shipping.get("first_name"),
+                            "lastname": shipping.get("last_name"),
+                            "street": shipping.get("address_1"),
+                            "street2": shipping.get("address_2"),
+                            "city": shipping.get("city"),
+                            "zip": shipping.get("postcode"),
+                            "email": shipping.get("email"),
+                            "phone": shipping.get("phone"),
+                            "type": "delivery",  # Indicating this is a delivery-related partner
+                        }
 
-            if existing_partner:
-                partner = existing_partner
-            else:
-                partner_vals = {
-                    "firstname": billing_info.get("first_name"),
-                    "lastname": billing_info.get("last_name"),
-                    "woo_customer_id": record.get("customer_id"),
-                    "street": billing_info.get("address_1", ""),
-                    "street2": billing_info.get("address_2", ""),
-                    "city": billing_info.get("city", ""),
-                    "zip": billing_info.get("postcode", ""),
-                    "state_id": self.map_state_id(
-                        billing_info.get("state"), billing_info.get("country")
-                    ),
-                    "country_id": self.map_country_id(billing_info.get("country")),
-                }
-                partner = self.env["res.partner"].create(partner_vals)
+                        # Create the child partner for delivery
+                        delivery_partner = self.env["res.partner"].create(
+                            delivery_partner_data
+                        )
+                    billing_partner.child_ids = [(4, child_partner.id)]
+                    return {"partner_id": billing_partner.id}
+                    # if shipping:
+                    #     existing_delivery_partner = self.env["res.partner"].search(
+                    #         [
+                    #             ("firstname", "=", shipping.get("first_name")),
+                    #             ("lastname", "=", shipping.get("last_name")),
+                    #             ("email", "=", shipping.get("email")),
+                    #             ("street", "=", shipping.get("address_1")),
+                    #             ("street2", "=", shipping.get("address_2")),
+                    #             ("type", "=", "delivery"),
+                    #             ("zip", "=", shipping.get("postcode")),
+                    #             ("street", "=", shipping.get("address_1")),
+                    #             ("phone", "=", shipping.get("phone")),
+                    #         ],
+                    #         limit=1,
+                    #     )
+                    #     if not existing_delivery_partner:
+                    # billing_partner = {
+                    #     "firstname": billing.get("first_name"),
+                    #     "lastname": billing.get("last_name"),
+                    #     "street": billing.get("address_1", ""),
+                    #     "street2": billing.get("address_2", ""),
+                    #     "city": billing.get("city", ""),
+                    #     "type": "delivery",
+                    #     "zip": billing.get("postcode", ""),
+                    #     "email": billing.get("email"),
+                    #     "phone": billing.get("phone"),
+                    # }
+                    # self.env["res.partner"].create(billing_partner)
+                    # else:
+                    #     existing_delivery_partner = self.env["res.partner"].search(
+                    #         [
+                    #             ("firstname", "=", shipping.get("first_name")),
+                    #             ("lastname", "=", shipping.get("last_name")),
+                    #             ("email", "=", shipping.get("email")),
+                    #             ("street", "=", shipping.get("address_1")),
+                    #             ("street2", "=", shipping.get("address_2")),
+                    #             ("type", "=", "delivery"),
+                    #             ("zip", "=", shipping.get("postcode")),
+                    #             ("street", "=", shipping.get("address_1")),
+                    #             ("phone", "=", shipping.get("phone")),
+                    #         ],
+                    #         limit=1,
+                    #     )
+                    # if existing_delivery_partner:
+                    #     return {"partner_id": existing_partner.id}
+                    # else:
+                    #     billing_partner = {
+                    #         "firstname": billing.get("first_name"),
+                    #         "lastname": billing.get("last_name"),
+                    #         "street": billing.get("address_1", ""),
+                    #         "street2": billing.get("address_2", ""),
+                    #         "city": billing.get("city", ""),
+                    #         "type": "invoice",
+                    #         "zip": billing.get("postcode", ""),
+                    #         "email": billing.get("email"),
+                    #         "phone": billing.get("phone"),
+                    #     }
+                    #     partner = self.env["res.partner"].create(billing_partner)
+                    #     return {"partner_id": partner.id}
+                    # return {"partner_id": billing_partner_created.id}
+        # elif shipping:
+        #     shiping_partner = {
+        #         "name": shipping.get("first_name") + " " + shipping.get("last_name"),
+        #         "street": shipping.get("address_1", ""),
+        #         "street2": shipping.get("address_2", ""),
+        #         "city": shipping.get("city", ""),
+        #         "zip": shipping.get("postcode", ""),
+        #         "email": shipping.get("email"),
+        #         "phone": shipping.get("phone"),
+        #     }
+        #     partner = self.env["res.partner"].create(shiping_partner)
 
-        return {"partner_id": partner.id}
+    # return {"partner_id": partner.id}
+    # @mapping
+    # def partner_id(self, record):
+    #     """Return the partner_id."""
+    #     binder = self.binder_for("woo.res.partner")
+    #     partner = binder.to_internal(record.get("customer_id"), unwrap=True)
+    #     if not partner:
+    #         billing_info = record.get("billing", {})
+    #         existing_partner = self.env["res.partner"].search(
+    #             [
+    #                 ("name", "=", billing_info.get("first_name")),
+    #                 ("woo_customer_id", "=", False),
+    #             ],
+    #             limit=1,
+    #         )
+
+    #         if existing_partner:
+    #             partner = existing_partner
+    #         else:
+    #             partner_vals = {
+    #                 "firstname": billing_info.get("first_name"),
+    #                 "lastname": billing_info.get("last_name"),
+    #                 "woo_customer_id": record.get("customer_id"),
+    #                 "street": billing_info.get("address_1", ""),
+    #                 "street2": billing_info.get("address_2", ""),
+    #                 "city": billing_info.get("city", ""),
+    #                 "zip": billing_info.get("postcode", ""),
+    #                 "state_id": self.map_state_id(
+    #                     billing_info.get("state"), billing_info.get("country")
+    #                 ),
+    #                 "country_id": self.map_country_id(billing_info.get("country")),
+    #             }
+    #             partner = self.env["res.partner"].create(partner_vals)
+
+    #     return {"partner_id": partner.id}
 
     @mapping
     def discount_total(self, record):
@@ -194,16 +324,12 @@ class WooSaleOrderLineImportMapper(Component):
     def product_uom(self, record):
         return {"product_uom": 1}
 
-    @only_create
     @mapping
     def odoo_id(self, record):
         """Return sale order line."""
-        line = self.env["sale.order.line"].search(
-            [("woo_line_id", "=", record.get("id"))], limit=1
-        )
-        if not line:
-            return {}
-        return {"odoo_id": line.id}
+        binder = self.binder_for(model="woo.sale.order.line")
+        woo_order = binder.to_internal(record.get("id"), unwrap=True)
+        return {"odoo_id": woo_order.id} if woo_order else {}
 
     @mapping
     def product_id(self, record):
@@ -244,6 +370,16 @@ class WooSaleOrderLineImportMapper(Component):
     def order_id(self, record):
         order_id = self.options.get("order_id")
         return {"order_id": order_id}
+
+    @mapping
+    def external_id(self, record):
+        """Return external id."""
+        return {"external_id": record.get("id")}
+
+    @mapping
+    def backend_id(self, record):
+        """Return backend."""
+        return {"backend_id": self.backend_record.id}
 
 
 class WooSaleOrderLineImporter(Component):

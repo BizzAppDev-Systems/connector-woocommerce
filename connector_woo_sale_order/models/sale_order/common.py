@@ -22,12 +22,12 @@ class SaleOrder(models.Model):
         string="Woo Backend",
         ondelete="restrict",
     )
-    woo_external_id = fields.Char(
-        related="woo_bind_ids.external_id",
-        store=True,
-        readonly=True,
-        string="Everstox Outgoing External Id",
-    )
+    # woo_external_id = fields.Char(
+    #     related="woo_bind_ids.external_id",
+    #     store=True,
+    #     readonly=True,
+    #     string="Everstox Outgoing External Id",
+    # )
     discount_total = fields.Float(string="Discount Total")
     discount_tax = fields.Float(string="Discount Tax")
     shipping_total = fields.Float(string="Shipping Total")
@@ -36,7 +36,7 @@ class SaleOrder(models.Model):
     total_tax = fields.Float(string="Total Tax")
     price_unit = fields.Float(string="Price Total")
     price_subtotal = fields.Float(string="Price Subtotal")
-    amount_total=fields.Float(string="Amount Total")
+    amount_total = fields.Float(string="Amount Total")
 
     has_done_picking = fields.Boolean(
         string="Has Done Picking", compute="_compute_has_done_picking"
@@ -164,11 +164,20 @@ class WooSaleOrderLine(models.Model):
 
     @api.model
     def create(self, vals):
-        woo_order_id = vals["woo_order_id"]
-        binding = self.env["woo.sale.order"].browse(woo_order_id)
-        vals["order_id"] = binding.odoo_id.id
-        binding = super(WooSaleOrderLine, self).create(vals)
-        return binding
+        existing_record = self.search(
+            [
+                ("external_id", "=", vals.get("external_id")),
+                ("backend_id", "=", vals.get("backend_id")),
+            ]
+        )
+        if existing_record:
+            _logger.warning("Duplicate record creation detected: %s", vals)
+            return existing_record
+        else:
+            binding = self.env["woo.sale.order"].browse(vals["woo_order_id"])
+            vals["order_id"] = binding.odoo_id.id
+            binding = super(WooSaleOrderLine, self).create(vals)
+            return binding
 
 
 class SaleOrderLine(models.Model):
@@ -181,8 +190,8 @@ class SaleOrderLine(models.Model):
         copy=False,
     )
     woo_line_id = fields.Char()
-    woo_backend_id = fields.Many2one(
-        comodel_name="woo.backend",
-        string="Woo Backend",
-        ondelete="restrict",
-    )
+    # woo_backend_id = fields.Many2one(
+    #     comodel_name="woo.backend",
+    #     string="Woo Backend",
+    #     ondelete="restrict",
+    # )

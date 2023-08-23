@@ -32,7 +32,7 @@
                     >
                         <field name="woo_bind_ids" nolabel="1" readonly="1">
                             <tree
-                                string="WooCommerce Product Category"
+                                string="Woo Sale Order Line"
                                 delete="false"
                                 edit="false"
                                 create="false"
@@ -41,7 +41,7 @@
                                 <field name="external_id" />
                             </tree>
                             <form
-                                string="WooCommerce Product Category"
+                                string="Woo Sale Order Line"
                                 delete="false"
                                 edit="false"
                                 create="false"
@@ -50,6 +50,9 @@
                                     <group>
                                         <field name="backend_id" widget="selection" />
                                         <field name="external_id" />
+                                        <field name="price_unit"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="price_subtotal"/>
                                     </group>
                                 </group>
                             </form>
@@ -96,7 +99,6 @@
                                 <field name="cart_tax"/>
                                 <field name="total_tax"/>
                             </group>
-                            <field name="order_line"/>
                         </group>
                         </form>
                     </field>
