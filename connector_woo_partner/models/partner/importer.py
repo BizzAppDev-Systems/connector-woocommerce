@@ -1,8 +1,10 @@
 import logging
+
 from odoo import _
+
 from odoo.addons.component.core import Component
+from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
-from odoo.addons.connector.components.mapper import mapping, only_create
 
 # pylint: disable=W7950
 
@@ -125,11 +127,11 @@ class WooResPartnerImportMapper(Component):
                 ]
             )
             if existing_child:
-                child_data.append((4, existing_child.id))
+                child_data.append(existing_child.id)
             else:
                 address_data = self._prepare_partner_vals(data, address_type, state)
                 address_data = self.env["res.partner"].create(address_data)
-                child_data.append((4, address_data.id))
+                child_data.append(address_data.id)
         return {"child_ids": child_data} if child_data else {}
 
     @mapping
