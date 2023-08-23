@@ -1,9 +1,11 @@
+import hashlib
 import logging
+
 from odoo import _
-from hashlib import blake2b
+
 from odoo.addons.component.core import Component
+from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
-from odoo.addons.connector.components.mapper import mapping, only_create
 
 # pylint: disable=W7950
 
@@ -92,34 +94,14 @@ class WooResPartnerImportMapper(Component):
         }
         return vals
 
-    # def _generate_hash_for_address(self, address_values):
-    #     """Generate the hash for the specific address fields # T-02076"""
-    #     if not address_values.values():
-    #         return None
-    #     address_list = [
-    #         "firstName",
-    #         "lastName",
-    #         "zipCode",
-    #         "countryCode",
-    #         "phoneNumber",
-    #         "state",
-    #         "streetHouseNumber",
-    #         "city",
-    #     ]
-    #     address_hash = blake2b()
-    #     for item in address_list:
-    #         address = address_values.get(item) or ""
-    #         address_hash.update(address.encode("UTF-8"))
-    #     hash_id = address_hash.hexdigest()
-    #     return hash_id
-
     @mapping
     def child_ids(self, record):
         """Mapping for Invoice and Shipping Addresses"""
         billing = record.get("billing")
         shipping = record.get("shipping")
         child_data = []
-        fields_to_check = ["first_name", "last_name", "email"]
+        hash_to_partner = {}
+        fields_to_check = ["first_name", "email"]
         for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
             if not any(data.get(field) for field in fields_to_check):
                 continue
@@ -132,26 +114,35 @@ class WooResPartnerImportMapper(Component):
                     [("code", "=", state)],
                     limit=1,
                 )
-            existing_child = self.env["res.partner"].search(
-                [
-                    ("name", "=", data.get("username")),
-                    ("firstname", "=", data.get("first_name")),
-                    ("lastname", "=", data.get("last_name")),
-                    ("email", "=", data.get("email")),
-                    ("street", "=", data.get("address_1")),
-                    ("street2", "=", data.get("address_2")),
-                    ("type", "=", address_type),
-                    ("zip", "=", data.get("postcode")),
-                    ("street", "=", data.get("address_1")),
-                    ("phone", "=", data.get("phone")),
-                ]
+            hash_attributes = (
+                data.get("username"),
+                data.get("first_name"),
+                data.get("last_name"),
+                data.get("email"),
+                data.get("address_1"),
+                data.get("address_2"),
+                address_type,
+                data.get("postcode"),
+                data.get("phone"),
             )
-            if existing_child:
-                child_data.append(existing_child.id)
+            hash_key = hashlib.md5(
+                "|".join(str(attr) for attr in hash_attributes).encode()
+            ).hexdigest()
+            if hash_key in hash_to_partner:
+                child_data.append(hash_to_partner[hash_key])
             else:
-                address_data = self._prepare_partner_vals(data, address_type, state)
-                address_data = self.env["res.partner"].create(address_data)
-                child_data.append(address_data.id)
+                existing_partner = self.env["res.partner"].search(
+                    [("hash_key", "=", hash_key)], limit=1
+                )
+                if existing_partner:
+                    hash_to_partner[hash_key] = existing_partner.id
+                    child_data.append(existing_partner.id)
+                else:
+                    address_data = self._prepare_partner_vals(data, address_type, state)
+                    address_data["hash_key"] = hash_key
+                    address_data = self.env["res.partner"].create(address_data)
+                    hash_to_partner[hash_key] = address_data.id
+                    child_data.append(address_data.id)
         return {"child_ids": child_data} if child_data else {}
 
     @mapping

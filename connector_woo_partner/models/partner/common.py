@@ -1,6 +1,7 @@
 import logging
 
 from odoo import fields, models
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
@@ -18,6 +19,7 @@ class ResPartner(models.Model):
     )
     firstname = fields.Char(string="First Name")
     lastname = fields.Char(string="Last Name")
+    hash_key = fields.Char(string="Hash Key")
 
 
 class WooResPartner(models.Model):
