@@ -33,24 +33,9 @@ class WooAttributeValueImportMapper(Component):
     def attribute_id(self, record):
         # Assuming 'attribute' contains information about the WooCommerce attribute
         attribute_id = record.get("attribute")
-        if attribute_id:
-            attribute = self.env["woo.product.attribute"].search(
-                [
-                    ("external_id", "=", attribute_id),
-                    ("backend_id", "=", self.backend_record.id),
-                ],
-                limit=1,
-            )
-            if attribute:
-                return {"attribute_id": attribute.odoo_id.id}
-            else:
-                _logger.warning(
-                    "WooCommerce attribute with ID %s not found in Odoo.",
-                    attribute_id,
-                )
-        else:
-            _logger.warning("No attribute ID found in the record.")
-        return {}
+        binder = self.binder_for(model="woo.product.attribute")
+        woo_attribute = binder.to_internal(attribute_id.get("id"), unwrap=True)
+        return {"attribute_id": woo_attribute.odoo_id.id} if woo_attribute else {}
 
     @mapping
     def description(self, record):
@@ -85,22 +70,20 @@ class WooAttributeValueImportMapper(Component):
             ],
             limit=1,
         )
-        if attribute:
-            attribute_value = self.env["product.attribute.value"].search(
-                [
-                    ("attribute_id", "=", attribute.id),
-                    ("name", "=", attribute_value_name),
-                ],
-                limit=1,
-            )
-            if attribute_value:
-                attribute.write({"value_ids": [(6, attribute_value.id)]})
-            else:
-                _logger.warning(
-                    "Product attribute value with name %s not found for attribute %s in Odoo.",
-                    attribute_value_name,
-                    attribute.name,
-                )
+        if not attribute:
+            return {}
+        attribute_value = self.env["product.attribute.value"].search(
+            [
+                ("attribute_id", "=", attribute.id),
+                ("name", "=", attribute_value_name),
+            ],
+            limit=1,
+        )
+        if attribute_value:
+            attribute.write({"value_ids": [(6, attribute_value.id)]})
         else:
-            _logger.warning("No attribute found for updating product attribute value.")
-        return {}
+            _logger.warning(
+                "Product attribute value with name %s not found for attribute %s in Odoo.",
+                attribute_value_name,
+                attribute.name,
+            )

@@ -22,7 +22,6 @@ class ProductProduct(models.Model):
         string="Woo Backend",
         ondelete="restrict",
     )
-    woo_id = fields.Char()
     status = fields.Selection(
         [
             ("any", "Any"),
@@ -62,6 +61,11 @@ class ProductProduct(models.Model):
         string="WooCommerce Product Category",
         ondelete="restrict",
     )
+    woo_product_template_variant_value_ids = fields.Many2many(
+        comodel_name="woo.product.attribute.value",
+        string="WooCommerce Product Template Variant Value",
+        ondelete="restrict",
+    )
 
 
 class WooProductProduct(models.Model):
@@ -80,7 +84,7 @@ class WooProductProduct(models.Model):
         required=True,
         ondelete="restrict",
     )
-    woocommerce_product_category = fields.Many2many(
+    woocommerce_product_category_ids = fields.Many2many(
         comodel_name="woo.product.category",
         string="Woo Product Attribute",
         ondelete="restrict",

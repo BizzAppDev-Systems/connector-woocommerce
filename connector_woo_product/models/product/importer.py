@@ -1,13 +1,10 @@
-import base64
 import logging
-
+import base64
 import requests
-
-from odoo import _
-from odoo.exceptions import ValidationError
-
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
+from odoo.exceptions import ValidationError
+from odoo import _
+from odoo.addons.connector.components.mapper import mapping, only_create
 
 # pylint: disable=W7950
 
@@ -25,7 +22,7 @@ class WooProductProductBatchImporter(Component):
         """Run the synchronization"""
         filters = filters or {}
         try:
-            records = self.backend_adapter.search_read(filters)
+            records = self.backend_adapter.search(filters)
             for record in records:
                 external_id = record.get(self.backend_adapter._woo_ext_id_key)
                 self._import_record(external_id, data=record)
@@ -43,29 +40,24 @@ class WooProductProductImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for name"""
-        product_name = record.get("name")
-        return {"name": product_name}
+        return {"name": record.get("name")}
 
     @mapping
     def odoo_id(self, record):
         """Will bind the product to an existing one with the same code"""
         binder = self.binder_for(model="woo.product.product")
         woo_product = binder.to_internal(record.get("id"), unwrap=True)
-        if woo_product:
-            return {"odoo_id": woo_product.id}
-        return {}
+        return {"odoo_id": woo_product.id} if woo_product else {}
 
     @mapping
     def list_price(self, record):
         """Mapping product price"""
-        price = record.get("price")
-        return {"list_price": price}
+        return {"list_price": record.get("price")}
 
     @mapping
     def standard_price(self, record):
         """Mapping for standard_price"""
-        regular_price = record.get("regular_price")
-        return {"standard_price": regular_price}
+        return {"standard_price": record.get("regular_price")}
 
     @mapping
     def default_code(self, record):
@@ -94,14 +86,12 @@ class WooProductProductImportMapper(Component):
     @mapping
     def sale_ok(self, record):
         """Mapping for sale_ok"""
-        sale = record.get("on_sale", False)
-        return {"sale_ok": sale}
+        return {"sale_ok": record.get("on_sale", False)}
 
     @mapping
     def purchase_ok(self, record):
         """Mapping for purchase_ok"""
-        purchase = record.get("purchasable", False)
-        return {"purchase_ok": purchase}
+        return {"purchase_ok": record.get("purchasable", False)}
 
     @mapping
     def status(self, record):
@@ -179,20 +169,20 @@ class WooProductProductImportMapper(Component):
         category_ids = []
         woo_product_category = record.get("categories")
         binder = self.binder_for("woocommerce.product.category")
-        for category_id in woo_product_category:
-            woo_binding = binder.to_internal(category_id.get("id"))
+        for category in woo_product_category:
+            woo_binding = binder.to_internal(category.get("id"))
             if woo_binding:
                 category_ids.append(woo_binding.id)
                 continue
             values = {
-                "name": category_id.get("name"),
-                "parent_id": category_id.get("parent"),
+                "name": category.get("name"),
+                "parent_id": category.get("parent"),
                 "backend_id": self.backend_record.id,
-                "external_id": category_id.get("id"),
+                "external_id": category.get("id"),
             }
             product_category = self.env["woocommerce.product.category"].create(values)
             category_ids.append(product_category.id)
-        return {"woo_product_categ_ids": category_ids}
+        return {"woo_product_categ_ids": category_ids} if category_ids else {}
 
     @mapping
     def backend_id(self, record):

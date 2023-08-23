@@ -29,6 +29,7 @@ class WooProductCategory(models.Model):
     description = fields.Html(string="Description", translate=True)
     odoo_id = fields.Many2one(
         string="Product Category",
+        comodel_name="woo.product.category"
     )
 
     woo_bind_ids = fields.One2many(
@@ -70,7 +71,6 @@ class WooCommerceProductCategory(models.Model):
         inverse_name="woo_parent_id",
         string="WooCommerce Child Categories",
     )
-    woo_id = fields.Char()
 
     def __init__(self, *args, **kwargs):
         """Bind Odoo Product Category"""

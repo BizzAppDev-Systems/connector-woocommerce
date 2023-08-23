@@ -29,7 +29,6 @@ class WooProductCategoryImportMapper(Component):
         product_name = record.get("name")
         return {"name": product_name}
 
-    @only_create
     @mapping
     def odoo_id(self, record):
         """Will bind the Product to an existing one with the same code"""

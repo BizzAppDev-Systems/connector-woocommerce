@@ -23,10 +23,14 @@ class ProductAttributeValue(models.Model):
         string="Woo Backend",
         ondelete="restrict",
     )
-    woo_id = fields.Char()
     woo_attribute_id = fields.Many2one(
         comodel_name="woo.product.attribute",
         string="Woo Product Attribute",
+        ondelete="restrict",
+    )
+    woo_product_template_variant_value_ids = fields.Many2many(
+        comodel_name="woo.product.attribute.value",
+        string="WooCommerce Product Template Variant Value",
         ondelete="restrict",
     )
 

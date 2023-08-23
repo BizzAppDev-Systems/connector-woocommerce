@@ -1,7 +1,7 @@
 import logging
 
 from odoo import fields, models
-
+from odoo.exceptions import ValidationError
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
@@ -22,18 +22,18 @@ class ProductAttribute(models.Model):
         string="Woo Backend",
         ondelete="restrict",
     )
-    woo_id = fields.Char()
-    has_archives = fields.Boolean(default=False)
+    has_archives = fields.Boolean()
 
     def import_product_attribute_value(self):
         """Import Product Attribute Value of account move."""
+        self.ensure_one()
         filters = {
             "per_page": self.woo_backend_id.default_limit,
             "page": 1,
             "attribute": self.woo_bind_ids[0].external_id,
         }
         binding_obj = self.env["woo.product.attribute.value"]
-        binding_obj.with_delay(priority=10).import_batch(
+        binding_obj.with_delay(priority=1).import_batch(
             self.woo_backend_id, filters=filters
         )
 

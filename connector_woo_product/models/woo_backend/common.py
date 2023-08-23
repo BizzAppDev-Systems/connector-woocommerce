@@ -1,6 +1,5 @@
+from odoo import models, fields
 from datetime import datetime, timedelta
-
-from odoo import fields, models
 
 IMPORT_DELTA_BUFFER = 30  # seconds
 
@@ -13,12 +12,16 @@ class WooBackend(models.Model):
     import_products_from_date = fields.Datetime(string="Import products from date")
 
     def import_products(self):
-        """Import Partners from backend"""
+        """Import Products from backend"""
         for backend in self:
             backend._import_from_date(
                 model="woo.product.product",
                 from_date_field="import_products_from_date",
                 priority=5,
+                filters={
+                    "per_page": backend.default_limit,
+                    "page": 1,
+                },
             )
         return True
 
@@ -30,7 +33,8 @@ class WooBackend(models.Model):
     def import_product_attributes(self):
         """Import Product Attribute from backend"""
         for backend in self:
-            filters = {"per_page": backend.default_limit, "page": 1}
+            filters = {"page": 1}
+            filters.update({"per_page": backend.default_limit})
             backend.env["woo.product.attribute"].with_company(
                 backend.company_id
             ).with_delay(priority=5).import_batch(backend=backend, filters=filters)
@@ -46,17 +50,18 @@ class WooBackend(models.Model):
             filters = {"per_page": backend.default_limit, "page": 1}
             backend.env["woocommerce.product.category"].with_company(
                 backend.company_id
-            ).with_delay(priority=5).import_batch(backend=backend, filters=filters)
+            ).with_delay(priority=2).import_batch(backend=backend, filters=filters)
 
     def cron_import_product_categories(self, domain=None):
         """Cron for import_product_categories"""
         backend_ids = self.search(domain or [])
         backend_ids.import_product_categories()
 
-    def _import_from_date(self, model, from_date_field, priority=None):
+    def _import_from_date(self, model, from_date_field, priority=None, filters=None):
         """Method to add a filter based on the date."""
         import_start_time = datetime.now()
         job_options = {}
+        filters["after"] = from_date_field
         if priority or priority == 0:
             job_options["priority"] = priority
         for backend in self:
@@ -66,12 +71,7 @@ class WooBackend(models.Model):
             else:
                 from_date = None
             self.env[model].with_delay(**job_options or {}).import_batch(
-                backend,
-                {
-                    "per_page": backend.default_limit,
-                    "page": 1,
-                    "after": from_date,
-                },
+                backend, filters=filters
             )
         # Records from Woo are imported based on their `created_at`
         # date.  This date is set on Woo at the beginning of a
