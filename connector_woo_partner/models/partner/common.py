@@ -1,7 +1,6 @@
 import logging
 
-from odoo import api, fields, models
-
+from odoo import fields, models
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
@@ -19,27 +18,6 @@ class ResPartner(models.Model):
     )
     firstname = fields.Char(string="First Name")
     lastname = fields.Char(string="Last Name")
-    # Inherited the field to add store true and compute for add first and last name
-    name = fields.Char(compute="_compute_name", store=True, readonly=False)
-
-    @api.depends("firstname", "lastname")
-    def _compute_name(self):
-        """
-        Update the 'name' field based on 'firstname' and 'lastname' values.
-        If both 'firstname' and 'lastname' exist, set 'name' as a combination
-        of both. If only 'firstname' exists, set 'name' to 'firstname'. If only
-        'lastname' exists, set 'name' to 'lastname'. If neither 'firstname'
-        nor 'lastname' exists, set 'name' to an empty string.
-        """
-        for partner in self:
-            if partner.firstname and partner.lastname:
-                partner.name = f"{partner.firstname} {partner.lastname}"
-            elif partner.firstname:
-                partner.name = partner.firstname
-            elif partner.lastname:
-                partner.name = partner.lastname
-            else:
-                partner.name = ""
 
 
 class WooResPartner(models.Model):

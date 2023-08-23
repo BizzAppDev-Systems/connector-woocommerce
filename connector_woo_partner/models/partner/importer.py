@@ -1,10 +1,9 @@
 import logging
-
 from odoo import _
-
+from hashlib import blake2b
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
+from odoo.addons.connector.components.mapper import mapping, only_create
 
 # pylint: disable=W7950
 
@@ -92,6 +91,27 @@ class WooResPartnerImportMapper(Component):
             "state_id": state.id if state else False,
         }
         return vals
+
+    # def _generate_hash_for_address(self, address_values):
+    #     """Generate the hash for the specific address fields # T-02076"""
+    #     if not address_values.values():
+    #         return None
+    #     address_list = [
+    #         "firstName",
+    #         "lastName",
+    #         "zipCode",
+    #         "countryCode",
+    #         "phoneNumber",
+    #         "state",
+    #         "streetHouseNumber",
+    #         "city",
+    #     ]
+    #     address_hash = blake2b()
+    #     for item in address_list:
+    #         address = address_values.get(item) or ""
+    #         address_hash.update(address.encode("UTF-8"))
+    #     hash_id = address_hash.hexdigest()
+    #     return hash_id
 
     @mapping
     def child_ids(self, record):
