@@ -15,17 +15,13 @@ class WooBinding(models.AbstractModel):
         ondelete="restrict",
     )
     external_id = fields.Char(string="ID on woo")
-
-    def init(self):
-        """Unique index for Backend ID and External ID"""
-        if self._table == "woo_binding":
-            return
-        self.env.cr.execute(
-            "CREATE UNIQUE INDEX IF NOT EXISTS %s_unique_backend_external_id ON %s"
-            " (external_id, backend_id) WHERE external_id IS NOT NULL and"
-            " external_id != '' and external_id != 'False' and external_id != 'false'"
-            % (self._table, self._table)
-        )
+    _sql_constraints = [
+        (
+            "unique_backend_external_id",
+            "unique(backend_id, external_id)",
+            "A binding with the same backend and external ID already exists!",
+        ),
+    ]
 
     @api.model
     def import_batch(self, backend, filters=None, job_options=None, force=False):

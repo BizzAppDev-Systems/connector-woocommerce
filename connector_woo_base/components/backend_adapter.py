@@ -7,7 +7,6 @@ from urllib.parse import urljoin
 
 import requests
 from requests.auth import HTTPBasicAuth
-from simplejson.errors import JSONDecodeError
 
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import (
@@ -76,32 +75,28 @@ class WooClient(object):
         status_code = response.status_code
         if status_code == 201:
             return response
-        try:
-            if status_code == 200:
-                return response.json()
-        except JSONDecodeError:
-            if status_code == 400 or status_code == 401 or status_code == 404:
-                # From Woo on invalid data we get a 400 error
-                # From Woo on Authentication or permission error we get a 401 error,
-                # e.g. incorrect API keys
-                # From Woo on record don't exist or are missing we get a 404 error
-                # but raise_for_status treats it as a network error (which is retryable)
-                raise InvalidDataError(
-                    "HTTP Error:\n"
-                    "Result:%s\n"
-                    "Code: %s\n"
-                    "Reason: %s\n"
-                    "name: %s\n" % (response, status_code, response._content, __name__)
-                ) from None
-        except urllib.error.HTTPError as err:
-            if err.code == 500:
-                # Origin Error
-                raise NetworkRetryableError(
-                    "HTTP Error:\n"
-                    "Code: %s\n"
-                    "Reason: %s\n"
-                    "Headers: %d\n" % (err.code, err.reason, err.headers)
-                ) from err
+        if status_code == 200:
+            return response.json()
+        if status_code == 400 or status_code == 401 or status_code == 404:
+            # From Woo on invalid data we get a 400 error
+            # From Woo on Authentication or permission error we get a 401 error,
+            # e.g. incorrect API keys
+            # From Woo on record don't exist or are missing we get a 404 error
+            # but raise_for_status treats it as a network error (which is retryable)
+            raise InvalidDataError(
+                "HTTP Error:\n"
+                "Result:%s\n"
+                "Code: %s\n"
+                "Reason: %s\n"
+                "name: %s\n" % (response, status_code, response._content, __name__)
+            )
+        if status_code == 500:
+            # Origin Error
+            raise NetworkRetryableError(
+                "HTTP Error:\n"
+                "Code: %s\n"
+                "Reason: %s\n" % (status_code, response._content)
+            )
         response.raise_for_status()
         return response
 

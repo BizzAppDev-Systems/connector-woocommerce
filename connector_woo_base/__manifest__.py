@@ -5,7 +5,6 @@
     "author": "BizzAppDev",
     "website": "http://www.bizzappdev.com",
     "depends": ["connector", "mail"],
-    "external_dependencies": {"python": ["requests", "simplejson"]},
     "license": "LGPL-3",
     "data": [
         "data/queue_job_data.xml",
