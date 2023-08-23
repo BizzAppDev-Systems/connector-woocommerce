@@ -25,7 +25,6 @@ class WooAttributeValueImportMapper(Component):
     _inherit = "woo.import.mapper"
     _apply_on = ["woo.product.attribute.value"]
 
-    @only_create
     @mapping
     def name(self, record):
         return {"name": record.get("name")}

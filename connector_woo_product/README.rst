@@ -41,10 +41,12 @@
     - Add Backend Credentils to Import Product Attributes.
     - Click 'Import Product Attributes' button to Import the Product Attributes from Woocommerce.
     - Click 'Import Attribute Value' button to Import the Product Attributes Value from Woocommerce.
+    - 'Product Attributes Value' menuitem is allocated at Sale>Configuration>Product
 * Product Categories Import:
     - Go to Woocommerce Backends.
     - Add Backend Credentils to Import Product categories.
     - Click 'Import Product Categories' button to Import the Product Categories from Woocommerce.
+    - 'Woocommerce Product Categories' menuitem is allocated at Connector>Woo Product Categories>Product Categories
 
 
 **Usage**

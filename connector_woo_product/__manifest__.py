@@ -4,7 +4,7 @@
     "category": "Connector",
     "author": "BizzAppDev",
     "website": "http://www.bizzappdev.com",
-    "depends": ["product", "connector_woo_base"],
+    "depends": ["product", "connector_woo_base", "sale_management"],
     "license": "LGPL-3",
     "data": [
         "data/queue_job_data.xml",

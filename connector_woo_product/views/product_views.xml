@@ -10,11 +10,11 @@
                 <attribute name="invisible">1</attribute>
             </field>
             <field name="detailed_type" position="after">
-                <field name="status"/>
-                <field name="tax_status"/>
+                <field name="status" />
+                <field name="tax_status" />
             </field>
             <xpath expr="//div[@name='standard_price_uom']" position="after">
-                <field name="stock_status"/>
+                <field name="stock_status" />
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page
@@ -44,19 +44,19 @@
                                     <field name="backend_id" widget="selection" />
                                     <field name="external_id" />
                                 </group>
+                                <label
+                                    for="woo_product_categ_ids"
+                                    string="Woo Product Categories"
+                                />
+                                <field name="woo_product_categ_ids" />
+                                <label
+                                    for="woo_attribute_ids"
+                                    string="Woo Attributes"
+                                />
+                                <field name="woo_attribute_ids" />
                             </group>
                         </form>
                     </field>
-                    <group string="Woo Product Categories and Attributes">
-                        <group>
-                            <field name="woo_product_categ_ids" nolabel="1" />
-                        </group>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="woo_attribute_ids" nolabel="1"/>
-                        </group>
-                    </group>
                 </page>
             </xpath>
         </field>

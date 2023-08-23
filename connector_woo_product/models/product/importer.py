@@ -1,10 +1,13 @@
-import logging
 import base64
+import logging
+
 import requests
-from odoo.addons.component.core import Component
-from odoo.exceptions import ValidationError
+
 from odoo import _
-from odoo.addons.connector.components.mapper import mapping, only_create
+from odoo.exceptions import ValidationError
+
+from odoo.addons.component.core import Component
+from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
 
@@ -37,7 +40,6 @@ class WooProductProductImportMapper(Component):
     _inherit = "woo.import.mapper"
     _apply_on = "woo.product.product"
 
-    @only_create
     @mapping
     def name(self, record):
         """Mapping for name"""
@@ -119,10 +121,6 @@ class WooProductProductImportMapper(Component):
         stock_status = record.get("stock_status")
         return {"stock_status": stock_status} if stock_status else {}
 
-    # @mapping
-    # def product_template_variant_value_ids(self, record):
-    #     pass
-
     @mapping
     def woo_attribute_ids(self, record):
         """Mapping of woo_attribute_ids"""
@@ -173,10 +171,7 @@ class WooProductProductImportMapper(Component):
                 }
                 self.env["product.attribute.value"].create(attribute_value)
             attribute_ids.append(product_attribute.id)
-        return {
-            "woo_attribute_ids": attribute_ids,
-            "product_template_variant_value_ids": attribute_ids,
-        }
+        return {"woo_attribute_ids": attribute_ids}
 
     @mapping
     def woo_product_categ_ids(self, record):
