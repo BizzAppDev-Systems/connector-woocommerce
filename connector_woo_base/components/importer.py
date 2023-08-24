@@ -34,6 +34,7 @@ class WooImporter(AbstractComponent):
     def _before_import(self):
         """Hook called before the import, when we have the
         data from remote system"""
+        pass
 
     def _is_uptodate(self, binding):
         """Return True if the import should be skipped because
@@ -243,7 +244,7 @@ class WooBatchImporter(AbstractComponent):
         """Run the synchronization"""
         filters = filters or {}
         try:
-            records = self.backend_adapter.search_read(filters)
+            records = self.backend_adapter.search(filters)
             for record in records:
                 external_id = record.get(self.backend_adapter._woo_ext_id_key)
                 self._import_record(external_id, data=record)

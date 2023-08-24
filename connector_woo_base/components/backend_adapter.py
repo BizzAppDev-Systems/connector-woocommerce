@@ -242,7 +242,7 @@ class GenericAdapter(AbstractComponent):
     _woo_ext_id_key = "id"
     _odoo_ext_id_key = "external_id"
 
-    def search_read(self, filters=None, **kwargs):
+    def search(self, filters=None, **kwargs):
         """Method to get the records from woo"""
         result = self._call(
             resource_path=self._woo_model, arguments=filters, http_method="get"
