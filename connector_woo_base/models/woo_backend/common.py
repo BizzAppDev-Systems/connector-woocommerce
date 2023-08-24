@@ -1,10 +1,10 @@
 import logging
 from contextlib import contextmanager
+from datetime import datetime, timedelta
 
 from odoo import fields, models
 
 from ...components.backend_adapter import WooAPI, WooLocation
-from datetime import datetime, timedelta
 
 _logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ class WooBackend(models.Model):
     """Backend for WooCommerce"""
 
     _name = "woo.backend"
-    _description = "Woo Backend"
+    _description = "WooCommerce Backend"
     _inherit = ["mail.thread", "connector.backend"]
 
     name = fields.Char(string="Name", required=True)
@@ -29,9 +29,9 @@ class WooBackend(models.Model):
     default_limit = fields.Integer(string="Default Limit", default=10)
     company_id = fields.Many2one(comodel_name="res.company", string="Company")
     import_partner_from_date = fields.Datetime(string="Import partner from date")
-    location = fields.Char(string="Woo Location (Live)")
-    client_id = fields.Char(string=" Woo Client ID")
-    client_secret = fields.Char(string="Woo Secret key")
+    location = fields.Char(string="WooCommerce Location (Live)")
+    client_id = fields.Char(string="WooCommerce Client ID")
+    client_secret = fields.Char(string="WooCommerce Secret key")
     test_mode = fields.Boolean(string="Test Mode", default=True)
     test_location = fields.Char(string="Test Location")
     test_client_id = fields.Char(string="Client ID")

@@ -6,7 +6,7 @@ class WooBinding(models.AbstractModel):
 
     _name = "woo.binding"
     _inherit = "external.binding"
-    _description = "woo Binding (abstract)"
+    _description = "WooCommerce Binding (abstract)"
 
     backend_id = fields.Many2one(
         comodel_name="woo.backend",

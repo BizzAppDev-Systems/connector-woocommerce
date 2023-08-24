@@ -50,22 +50,22 @@
                         <field name="name" class="oe_inline" />
                     </h1>
                     <group
-                        name="woo"
-                        string="Woo Configuration"
+                        name="woocommerce"
+                        string="WooCommerce Configuration"
                         groups="base.group_system"
                     >
                         <group>
                             <field name="version" groups="base.group_system" />
                             <field
                                 name="location"
-                                placeholder="e.g. https://api.staging.woo.com"
+                                placeholder="e.g. https://api.staging.woocommerce.com"
                                 colspan="2"
                                 attrs="{'invisible': [('test_mode', '=', True)], 'required': [('test_mode', '=', False)]}"
                                 groups="base.group_system"
                             />
                             <field
                                 name="test_location"
-                                placeholder="e.g. https://api.staging.woo.com"
+                                placeholder="e.g. https://api.staging.woocommerce.com"
                                 colspan="2"
                                 attrs="{'invisible': [('test_mode', '=', False)], 'required': [('test_mode', '=', True)]}"
                                 groups="base.group_system"
@@ -100,20 +100,20 @@
                         </group>
                         <notebook>
                             <page
-                            name="import"
-                            string="Imports"
-                            attrs="{'invisible': True}"
-                        >
-                            <p class="oe_grey oe_inline">
-                                By clicking on the buttons,
+                                name="import"
+                                string="Imports"
+                                attrs="{'invisible': True}"
+                            >
+                                <p class="oe_grey oe_inline">
+                                    By clicking on the buttons,
                                 you will initiate the synchronizations
                                 with odoo database.
                                 Note that the import
                                 won't be done directly,
                                 they will create 'Jobs'
                                 executed as soon as possible.
-                            </p>
-                        </page>
+                                </p>
+                            </page>
                             <page
                                 name="advanced_configuration"
                                 string="Advanced Configuration"
@@ -146,7 +146,7 @@
     </record>
     <!-- Main Action view for Woo backend -->
     <record id="action_woo_backend" model="ir.actions.act_window">
-        <field name="name">Woo Backends</field>
+        <field name="name">WooCommerce Backends</field>
         <field name="res_model">woo.backend</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_woo_backend_tree" />
