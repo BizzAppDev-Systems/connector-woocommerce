@@ -9,7 +9,7 @@
             eval="[(4, ref('connector.group_connector_manager'))]"
         />
         <field name="arch" type="xml">
-            <form string="Woo Backend">
+            <form string="WooCommerce Backend">
                 <sheet>
                     <div name="button_box" class="oe_button_box">
                         <button
@@ -100,20 +100,20 @@
                         </group>
                         <notebook>
                             <page
-                                name="import"
-                                string="Imports"
-                                attrs="{'invisible': True}"
-                            >
-                                <p class="oe_grey oe_inline">
-                                    By clicking on the buttons,
+                            name="import"
+                            string="Imports"
+                            attrs="{'invisible': True}"
+                        >
+                            <p class="oe_grey oe_inline">
+                                By clicking on the buttons,
                                 you will initiate the synchronizations
                                 with odoo database.
                                 Note that the import
                                 won't be done directly,
                                 they will create 'Jobs'
                                 executed as soon as possible.
-                                </p>
-                            </page>
+                            </p>
+                        </page>
                             <page
                                 name="advanced_configuration"
                                 string="Advanced Configuration"
@@ -138,7 +138,7 @@
             eval="[(4, ref('connector.group_connector_manager'))]"
         />
         <field name="arch" type="xml">
-            <tree string="Woo Backend">
+            <tree string="WooCommerce Backend">
                 <field name="name" />
                 <field name="location" />
             </tree>
