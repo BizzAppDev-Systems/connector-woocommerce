@@ -27,10 +27,6 @@ class WooResPartnerImportMapper(Component):
     _inherit = "woo.import.mapper"
     _apply_on = "woo.res.partner"
 
-    _sql_constraints = [
-        ("woo_res_partner_email_unique", "UNIQUE(email)", "Email must be unique!")
-    ]
-
     @mapping
     def name(self, record):
         """Mapping for Name (combination of firstname and lastname)"""
@@ -70,7 +66,7 @@ class WooResPartnerImportMapper(Component):
             raise MappingError(_("No Email found in Response"))
         return {"email": email}
 
-    def _prepare_partner_vals(self, data, address_type, state):
+    def _prepare_child_partner_vals(self, data, address_type, state):
         """Prepare values for child_ids"""
         vals = {
             "name": data.get("username")
@@ -135,7 +131,9 @@ class WooResPartnerImportMapper(Component):
                     hash_to_partner[hash_key] = existing_partner.id
                     child_data.append(existing_partner.id)
                 else:
-                    address_data = self._prepare_partner_vals(data, address_type, state)
+                    address_data = self._prepare_child_partner_vals(
+                        data, address_type, state
+                    )
                     address_data["hash_key"] = hash_key
                     address_data = self.env["res.partner"].create(address_data)
                     hash_to_partner[hash_key] = address_data.id
