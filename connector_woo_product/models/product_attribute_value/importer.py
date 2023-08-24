@@ -27,18 +27,20 @@ class WooAttributeValueImportMapper(Component):
 
     @mapping
     def name(self, record):
+        """Mapping for name"""
         return {"name": record.get("name")}
 
     @mapping
     def attribute_id(self, record):
-        # Assuming 'attribute' contains information about the WooCommerce attribute
+        """Mapping for attribute_id"""
         attribute_id = record.get("attribute")
         binder = self.binder_for(model="woo.product.attribute")
-        woo_attribute = binder.to_internal(attribute_id.get("id"), unwrap=True)
-        return {"attribute_id": woo_attribute.odoo_id.id} if woo_attribute else {}
+        woo_attribute = binder.to_internal(attribute_id, unwrap=True)
+        return {"attribute_id": woo_attribute.id} if woo_attribute else {}
 
     @mapping
     def description(self, record):
+        """Mapping for description"""
         return (
             {"description": record.get("description")}
             if record.get("description")
@@ -63,13 +65,8 @@ class WooAttributeValueImportMapper(Component):
         """Update product attribute with imported attribute value."""
         attribute_id = record.get("attribute")
         attribute_value_name = record.get("name")
-        attribute = self.env["woo.product.attribute"].search(
-            [
-                ("external_id", "=", attribute_id),
-                ("backend_id", "=", self.backend_record.id),
-            ],
-            limit=1,
-        )
+        binder = self.binder_for(model="woo.product.attribute")
+        attribute = binder.to_internal(attribute_id, unwrap=True)
         if not attribute:
             return {}
         attribute_value = self.env["product.attribute.value"].search(
@@ -79,11 +76,4 @@ class WooAttributeValueImportMapper(Component):
             ],
             limit=1,
         )
-        if attribute_value:
-            attribute.write({"value_ids": [(6, attribute_value.id)]})
-        else:
-            _logger.warning(
-                "Product attribute value with name %s not found for attribute %s in Odoo.",
-                attribute_value_name,
-                attribute.name,
-            )
+        return {"value_ids": [(6, 0, attribute_value.ids)]} if attribute_value else {}

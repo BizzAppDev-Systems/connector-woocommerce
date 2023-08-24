@@ -67,7 +67,7 @@ class WooProductAttributeValueAdapter(Component):
     _woo_model = "products/attributes"
     _odoo_ext_id_key = "id"
 
-    def search_read(self, filters=None, **kwargs):
+    def search(self, filters=None, **kwargs):
         """Method to get the records from woo"""
         resource_path = "{}/{}/terms".format(self._woo_model, filters.get("attribute"))
         result = self._call(

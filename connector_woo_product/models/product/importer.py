@@ -72,18 +72,6 @@ class WooProductProductImportMapper(Component):
         return {"description": description} if description else {}
 
     @mapping
-    def image_1920(self, record):
-        """Mapping of image"""
-        image = record.get("images")
-        if not image:
-            return {}
-        image_src = image[0].get("src")
-        response = requests.get(image_src)
-        binary_data = response.content
-        base64_data = base64.b64encode(binary_data).decode("utf-8")
-        return {"image_1920": base64_data}
-
-    @mapping
     def sale_ok(self, record):
         """Mapping for sale_ok"""
         return {"sale_ok": record.get("on_sale", False)}
@@ -111,6 +99,42 @@ class WooProductProductImportMapper(Component):
         stock_status = record.get("stock_status")
         return {"stock_status": stock_status} if stock_status else {}
 
+    def _get_product_attribute(self, attribute_id, record):
+        """Get the product attribute"""
+        binder = self.binder_for("woo.product.attribute")
+        attribute_name = attribute_id.get("name")
+        created_id = "{}-{}".format(attribute_name, record.get("id"))
+        product_attribute = binder.to_internal(created_id)
+        if not product_attribute:
+            product_attribute = self.env["woo.product.attribute"].create(
+                {
+                    "name": attribute_name,
+                    "backend_id": self.backend_record.id,
+                    "external_id": created_id,
+                }
+            )
+
+        return product_attribute
+
+    def _create_attribute_values(self, options, product_attribute):
+        """Create attribute value"""
+        for option in options:
+            product_attribute_value = self.env["product.attribute.value"].search(
+                [
+                    ("name", "=", option),
+                    ("attribute_id", "=", product_attribute.odoo_id.id),
+                ],
+                limit=1,
+            )
+            if product_attribute_value:
+                continue
+            attribute_value = {
+                "name": option,
+                "attribute_id": product_attribute.odoo_id.id,
+                "woo_attribute_id": product_attribute.id,
+            }
+            self.env["product.attribute.value"].create(attribute_value)
+
     @mapping
     def woo_attribute_ids(self, record):
         """Mapping of woo_attribute_ids"""
@@ -125,41 +149,14 @@ class WooProductProductImportMapper(Component):
             if woo_binding:
                 attribute_ids.append(woo_binding.id)
                 continue
-            created_id = "{}-{}".format(attribute_id.get("name"), record.get("id"))
-            product_attribute = self.env["woo.product.attribute"].search(
-                [
-                    ("name", "=", attribute_id.get("name")),
-                    ("backend_id", "=", self.backend_record.id),
-                    ("external_id", "=", created_id),
-                ],
-                limit=1,
+            product_attribute = self._get_product_attribute(
+                attribute_id, record
             )
-            if not product_attribute:
-                product_attribute = self.env["woo.product.attribute"].create(
-                    {
-                        "name": attribute_id.get("name"),
-                        "backend_id": self.backend_record.id,
-                        "external_id": created_id,
-                    }
+            if "options" in attribute_id:
+                self._create_attribute_values(
+                    attribute_id["options"], product_attribute
                 )
-            if "options" not in attribute_id:
-                continue
-            for option in attribute_id.get("options"):
-                product_attribute_value = self.env["product.attribute.value"].search(
-                    [
-                        ("name", "=", option),
-                        ("attribute_id", "=", product_attribute.odoo_id.id),
-                    ],
-                    limit=1,
-                )
-                if product_attribute_value:
-                    continue
-                attribute_value = {
-                    "name": option,
-                    "attribute_id": product_attribute.odoo_id.id,
-                    "woo_attribute_id": product_attribute.id,
-                }
-                self.env["product.attribute.value"].create(attribute_value)
+
             attribute_ids.append(product_attribute.id)
         return {"woo_attribute_ids": attribute_ids}
 

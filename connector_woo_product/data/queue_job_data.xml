@@ -11,7 +11,7 @@
                 ref="connector_woo_product.model_woo_product_product"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
         <!-- Import Batch related action queue job -->
         <record
@@ -23,7 +23,7 @@
                 ref="connector_woo_product.model_woo_product_attribute"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
         <!-- Import Batch related action queue job -->
         <record
@@ -35,7 +35,7 @@
                 ref="connector_woo_product.model_woo_product_attribute_value"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
 
         <!-- Import Batch related action queue job -->
@@ -48,7 +48,7 @@
                 ref="connector_woo_product.model_woo_product_category"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
         <!-- Import Products related action queue job -->
         <record
@@ -60,7 +60,7 @@
                 ref="connector_woo_product.model_woo_product_product"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
         <!-- Import Product Attributes related action queue job -->
         <record
@@ -72,7 +72,7 @@
                 ref="connector_woo_product.model_woo_product_attribute"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
         <!-- Import Product Attribute terms related action queue job -->
         <record
@@ -84,7 +84,7 @@
                 ref="connector_woo_product.model_woo_product_attribute_value"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
 
         <!-- Import Product Categories related action queue job -->
@@ -97,7 +97,7 @@
                 ref="connector_woo_product.model_woo_product_category"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
     </data>
 </odoo>

@@ -104,9 +104,13 @@ class WooProductProductAdapter(Component):
     _apply_on = "woo.product.product"
     _woo_model = "products"
     _odoo_ext_id_key = "id"
-    _model_dependencies = [
-        (
-            "woocommerce.product.category",
-            "woo.product.attribute",
-        ),
-    ]
+    # _model_dependencies = [
+    #     (
+    #         "woocommerce.product.category",
+    #         "id",
+    #     ),
+    #     (
+    #         "woo.product.attribute",
+    #         "id",
+    #     ),
+    # ]

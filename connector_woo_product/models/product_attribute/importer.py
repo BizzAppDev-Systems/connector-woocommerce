@@ -20,7 +20,7 @@ class WooProductAttributeBatchImporter(Component):
         """Run the synchronization"""
         filters = filters or {}
         try:
-            records = self.backend_adapter.search_read(filters)
+            records = self.backend_adapter.search(filters)
             for record in records:
                 external_id = record.get(self.backend_adapter._woo_ext_id_key)
                 self._import_record(external_id, data=record)
@@ -51,8 +51,7 @@ class WooProductAttributeImportMapper(Component):
     @mapping
     def has_archives(self, record):
         """Mapping product has_archives"""
-        has_archives = record.get("has_archives")
-        return {"has_archives": has_archives}
+        return {"has_archives": record.get("has_archives")}
 
     @mapping
     def backend_id(self, record):
