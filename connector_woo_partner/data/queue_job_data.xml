@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data noupdate="1">
+        <!-- Create channel for the Woocommerce Partners -->
+        <record id="channel_woo_partner" model="queue.job.channel">
+            <field name="name">woo</field>
+            <field name="parent_id" ref="queue_job.channel_root" />
+        </record>
         <!-- Import Batch related action queue job -->
         <record
             id="job_function_woo_import_res_partner_record"
@@ -8,7 +13,7 @@
         >
             <field name="model_id" ref="connector_woo_partner.model_woo_res_partner" />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="channel_woo_partner" />
         </record>
         <!-- Import Partners related action queue job -->
         <record
@@ -17,7 +22,7 @@
         >
             <field name="model_id" ref="connector_woo_partner.model_woo_res_partner" />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="channel_woo_partner" />
         </record>
     </data>
 </odoo>

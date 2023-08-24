@@ -42,7 +42,12 @@
                     groups="connector.group_connector_manager"
                 >
                     <field name="woo_bind_ids" nolabel="1" readonly="1">
-                        <tree>
+                        <tree
+                            string="Woo Bindings"
+                            delete="false"
+                            edit="false"
+                            create="false"
+                        >
                             <field name="backend_id" widget="selection" />
                             <field name="external_id" />
                         </tree>

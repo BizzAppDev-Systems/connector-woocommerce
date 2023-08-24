@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 
 
 class WooResPartnerBatchImporter(Component):
-    """Batch Importer the WooCommerce Partner"""
+    """Batch Importer for WooCommerce Partners"""
 
     _name = "woo.res.partner.batch.importer"
     _inherit = "woo.delayed.batch.importer"
@@ -34,16 +34,13 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for Name (combination of firstname and lastname)"""
-        first_name = record.get("first_name")
-        last_name = record.get("last_name")
-        if first_name and last_name:
-            full_name = f"{first_name} {last_name}"
-        elif first_name:
-            full_name = first_name
-        elif last_name:
-            full_name = last_name
-        else:
-            full_name = record.get("username")
+        first_name = record.get("first_name", "")
+        last_name = record.get("last_name", "")
+        full_name = (
+            f"{first_name} {last_name}"
+            if first_name and last_name
+            else first_name or last_name or record.get("username", "")
+        )
         return {"name": full_name}
 
     @mapping
