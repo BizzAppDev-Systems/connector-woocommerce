@@ -82,7 +82,7 @@
                                 colspan="2"
                                 attrs="{'invisible': [('test_mode', '=', False)], 'required': [('test_mode', '=', True)]}"
                                 groups="base.group_system"
-                                string="Client Key"
+                                string="Client Key(Staging)"
                             />
                             <field
                                 name="client_secret"
@@ -95,7 +95,7 @@
                                 colspan="2"
                                 attrs="{'invisible': [('test_mode', '=', False)], 'required': [('test_mode', '=', True)]}"
                                 groups="base.group_system"
-                                string="Client Secret"
+                                string="Client Secret(Staging)"
                             />
                         </group>
                         <notebook>
