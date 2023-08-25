@@ -1,10 +1,9 @@
 import logging
 import hashlib
 from odoo import _
-from hashlib import blake2b
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
-from odoo.addons.connector.components.mapper import mapping, only_create
+from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
 

@@ -13,7 +13,7 @@ class ResPartner(models.Model):
     woo_bind_ids = fields.One2many(
         comodel_name="woo.res.partner",
         inverse_name="odoo_id",
-        string="Woo Bindings",
+        string="WooCommerce Bindings",
         copy=False,
     )
     firstname = fields.Char(string="First Name")
