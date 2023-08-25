@@ -14,12 +14,12 @@ class ProductProduct(models.Model):
     woo_bind_ids = fields.One2many(
         comodel_name="woo.product.product",
         inverse_name="odoo_id",
-        string="Woo Bindings",
+        string="WooCommerce Bindings",
         copy=False,
     )
     woo_backend_id = fields.Many2one(
         comodel_name="woo.backend",
-        string="Woo Backend",
+        string="WooCommerce Backend",
         ondelete="restrict",
     )
     status = fields.Selection(
@@ -53,7 +53,7 @@ class ProductProduct(models.Model):
     )
     woo_attribute_ids = fields.Many2many(
         comodel_name="woo.product.attribute",
-        string="Woo Product Attribute",
+        string="WooCommerce Product Attribute",
         ondelete="restrict",
     )
     woo_product_categ_ids = fields.Many2many(
@@ -69,7 +69,7 @@ class ProductProduct(models.Model):
 
 
 class WooProductProduct(models.Model):
-    """Woocommerce product product"""
+    """Woocommerce Product Product"""
 
     _name = "woo.product.product"
     _inherit = "woo.binding"
@@ -80,7 +80,7 @@ class WooProductProduct(models.Model):
 
     odoo_id = fields.Many2one(
         comodel_name="product.product",
-        string="Product",
+        string="WooCommerce Product",
         required=True,
         ondelete="restrict",
     )
@@ -90,10 +90,10 @@ class WooProductProduct(models.Model):
         ondelete="restrict",
     )
 
-    def __init__(self, *args, **kwargs):
-        """Bind Woo Product"""
-        super().__init__(*args, **kwargs)
+    def __init__(self, name, bases, attrs):
+        """Bind Odoo Product"""
         WooModelBinder._apply_on.append(self._name)
+        super(WooProductProduct, self).__init__(name, bases, attrs)
 
 
 class WooProductProductAdapter(Component):
@@ -104,13 +104,3 @@ class WooProductProductAdapter(Component):
     _apply_on = "woo.product.product"
     _woo_model = "products"
     _odoo_ext_id_key = "id"
-    # _model_dependencies = [
-    #     (
-    #         "woocommerce.product.category",
-    #         "id",
-    #     ),
-    #     (
-    #         "woo.product.attribute",
-    #         "id",
-    #     ),
-    # ]

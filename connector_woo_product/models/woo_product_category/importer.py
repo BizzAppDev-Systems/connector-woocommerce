@@ -40,15 +40,13 @@ class WooProductCategoryImportMapper(Component):
     def slug(self, record):
         """Mapping product slug"""
         slug = record.get("slug")
-        return {"slug": slug}
+        return {"slug": slug} if slug else {}
 
     @mapping
     def display(self, record):
         """Mapped product default code."""
         display = record.get("display")
-        if not display:
-            return {}
-        return {"display": display}
+        return {"display": display} if display else {}
 
     @mapping
     def description(self, record):
@@ -70,7 +68,7 @@ class WooProductCategoryImportMapper(Component):
 
     @mapping
     def parent_id(self, record):
-        """Mapping for Parent"""
+        """Mapping for Product Category"""
         binder = self.binder_for(model="woocommerce.product.category")
         woo_parent = binder.to_internal(record.get("parent"), unwrap=True)
         return {"parent_id": woo_parent.id} if woo_parent else {}

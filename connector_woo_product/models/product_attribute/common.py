@@ -14,12 +14,12 @@ class ProductAttribute(models.Model):
     woo_bind_ids = fields.One2many(
         comodel_name="woo.product.attribute",
         inverse_name="odoo_id",
-        string="Woo Bindings",
+        string="WooCommerce Bindings",
         copy=False,
     )
     woo_backend_id = fields.Many2one(
         comodel_name="woo.backend",
-        string="Woo Backend",
+        string="WooCommerce Backend",
         ondelete="restrict",
     )
     has_archives = fields.Boolean()
@@ -57,10 +57,10 @@ class WooProductAttribute(models.Model):
         ondelete="restrict",
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name, bases, attrs):
         """Bind Odoo Product Attribute"""
-        super().__init__(*args, **kwargs)
         WooModelBinder._apply_on.append(self._name)
+        super(WooProductAttribute, self).__init__(name, bases, attrs)
 
 
 class WooProductAttributeAdapter(Component):

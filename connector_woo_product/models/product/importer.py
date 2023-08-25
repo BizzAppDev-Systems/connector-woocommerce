@@ -1,10 +1,8 @@
 import logging
-import base64
-import requests
 from odoo.addons.component.core import Component
 from odoo.exceptions import ValidationError
 from odoo import _
-from odoo.addons.connector.components.mapper import mapping, only_create
+from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
 
@@ -134,6 +132,7 @@ class WooProductProductImportMapper(Component):
                 "woo_attribute_id": product_attribute.id,
             }
             self.env["product.attribute.value"].create(attribute_value)
+        return True
 
     @mapping
     def woo_attribute_ids(self, record):

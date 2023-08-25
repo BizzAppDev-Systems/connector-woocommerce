@@ -8,11 +8,13 @@
         <field name="arch" type="xml">
             <xpath expr="//form/field[@name='number_related_products']" position="after">
                 <header>
+                    <field name="woo_bind_ids" invisible="1"/>
                     <button
                         name="import_product_attribute_value"
                         type="object"
                         class="oe_highlight"
                         string="Import Attribute Value"
+                        attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
                     />
                 </header>
             </xpath>
@@ -22,14 +24,14 @@
             </xpath>
             <xpath expr="//page[@name='attribute_values']" position="after">
                 <page
-                    string="Woo Connector"
+                    string="WooCommerce Connector"
                     name="woo_connector"
                     attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
                     groups="connector.group_connector_manager"
                 >
                     <field name="woo_bind_ids" nolabel="1" readonly="1">
                         <tree
-                            string="Woo Product Attribute"
+                            string="WooCommerce Product Attribute"
                             delete="false"
                             edit="false"
                             create="false"
@@ -38,7 +40,7 @@
                             <field name="external_id" />
                         </tree>
                         <form
-                            string="Woo Product Attribute"
+                            string="WooCommerce Product Attribute"
                             delete="false"
                             edit="false"
                             create="false"

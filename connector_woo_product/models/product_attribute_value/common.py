@@ -15,17 +15,17 @@ class ProductAttributeValue(models.Model):
     woo_bind_ids = fields.One2many(
         comodel_name="woo.product.attribute.value",
         inverse_name="odoo_id",
-        string="Woo Bindings",
+        string="WooCommerce Bindings",
         copy=False,
     )
     woo_backend_id = fields.Many2one(
         comodel_name="woo.backend",
-        string="Woo Backend",
+        string="WooCommerce Backend",
         ondelete="restrict",
     )
     woo_attribute_id = fields.Many2one(
         comodel_name="woo.product.attribute",
-        string="Woo Product Attribute",
+        string="WooCommerce Product Attribute",
         ondelete="restrict",
     )
     woo_product_template_variant_value_ids = fields.Many2many(
@@ -41,21 +41,21 @@ class WooProductAttributeValue(models.Model):
     _name = "woo.product.attribute.value"
     _inherit = "woo.binding"
     _inherits = {"product.attribute.value": "odoo_id"}
-    _description = "Woo Product Attribute Value"
+    _description = "WooCommerce Product Attribute Value"
 
     _rec_name = "name"
 
     odoo_id = fields.Many2one(
         comodel_name="product.attribute.value",
-        string="Product",
+        string="Product Attribute Value",
         required=True,
         ondelete="restrict",
     )
 
-    def __init__(self, *args, **kwargs):
-        """Bind Woo Product Attribute Value"""
-        super().__init__(*args, **kwargs)
+    def __init__(self, name, bases, attrs):
+        """Bind Odoo Product Attribute Value"""
         WooModelBinder._apply_on.append(self._name)
+        super(WooProductAttributeValue, self).__init__(name, bases, attrs)
 
 
 class WooProductAttributeValueAdapter(Component):

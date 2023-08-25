@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class WooProductCategory(models.Model):
     _name = "woo.product.category"
-    _description = "Woo Product Category"
+    _description = "WooCommerce Product Category"
     _parent_name = "parent_id"
     _parent_store = True
 
@@ -35,18 +35,18 @@ class WooProductCategory(models.Model):
     woo_bind_ids = fields.One2many(
         comodel_name="woocommerce.product.category",
         inverse_name="odoo_id",
-        string="Woo Bindings",
+        string="WooCommerce Bindings",
         copy=False,
     )
     woo_backend_id = fields.Many2one(
         comodel_name="woo.backend",
-        string="Woo Backend",
+        string="WooCommerce Backend",
         ondelete="restrict",
     )
 
 
 class WooCommerceProductCategory(models.Model):
-    """Woocommerce product Category"""
+    """Woocommerce Product Category"""
 
     _name = "woocommerce.product.category"
     _inherit = "woo.binding"
@@ -63,7 +63,7 @@ class WooCommerceProductCategory(models.Model):
     )
     woo_parent_id = fields.Many2one(
         comodel_name="woocommerce.product.category",
-        string="Woo Parent Category",
+        string="WooCommerce Parent Category",
         ondelete="cascade",
     )
     woo_child_ids = fields.One2many(
@@ -72,10 +72,10 @@ class WooCommerceProductCategory(models.Model):
         string="WooCommerce Child Categories",
     )
 
-    def __init__(self, *args, **kwargs):
-        """Bind Odoo Product Category"""
-        super().__init__(*args, **kwargs)
+    def __init__(self, name, bases, attrs):
+        """Bind Odoo WooCommerce Product Category"""
         WooModelBinder._apply_on.append(self._name)
+        super(WooCommerceProductCategory, self).__init__(name, bases, attrs)
 
 
 class WooProductCategoryAdapter(Component):

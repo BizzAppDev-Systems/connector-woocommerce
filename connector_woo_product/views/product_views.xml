@@ -18,14 +18,14 @@
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page
-                    string="Woo Connector"
+                    string="WooCommerce Connector"
                     name="woo_connector"
                     attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
                     groups="connector.group_connector_manager"
                 >
                     <field name="woo_bind_ids" nolabel="1" readonly="1">
                         <tree
-                            string="Woo Product"
+                            string="WooCommerce Product"
                             delete="false"
                             edit="false"
                             create="false"
@@ -34,7 +34,7 @@
                             <field name="external_id" />
                         </tree>
                         <form
-                            string="Woo Product"
+                            string="WooCommerce Product"
                             delete="false"
                             edit="false"
                             create="false"
@@ -44,9 +44,9 @@
                                     <field name="backend_id" widget="selection" />
                                     <field name="external_id" />
                                 </group>
-                                <label for="woo_product_categ_ids" string="Woo Product Categories"/>
+                                <label for="woo_product_categ_ids" string="WooCommerce Product Categories"/>
                                 <field name="woo_product_categ_ids" />
-                                <label for="woo_attribute_ids" string="Woo Attributes"/>
+                                <label for="woo_attribute_ids" string="WooCommerce Attributes"/>
                                 <field name="woo_attribute_ids" />
                             </group>
                         </form>

@@ -28,7 +28,7 @@
                                     </group>
                                 </page>
                                 <page
-                                    string="Woo Connector"
+                                    string="WooCommerce Connector"
                                     name="woo_connector"
                                     attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
                                     groups="connector.group_connector_manager"
@@ -82,7 +82,7 @@
             <field name="view_id" ref="view_product_attribute_value_tree"/>
             <field name="target">current</field>
         </record>
-
+        <!-- Menuitem for Product Attribute Value at sale level -->
         <menuitem id="menu_product_attribute_value_form"
                     action="action_product_attribute_value_form"
                     parent="sale.prod_config_main"
