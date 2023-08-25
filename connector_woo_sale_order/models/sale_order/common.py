@@ -104,10 +104,10 @@ class WooSaleOrder(models.Model):
     )
     woo_order_id = fields.Integer(string="Woo Order ID", help="'order_id' field in Woo")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name, bases, attrs):
         """Bind Odoo Partner"""
-        super().__init__(*args, **kwargs)
         WooModelBinder._apply_on.append(self._name)
+        super(WooSaleOrder, self).__init__(name, bases, attrs)
 
     def export_fulfillment(self):
         """Change status of a sales order on shopify"""
@@ -157,10 +157,10 @@ class WooSaleOrderLine(models.Model):
         required=False,
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name, bases, attrs):
         """Bind Odoo Partner"""
-        super().__init__(*args, **kwargs)
         WooModelBinder._apply_on.append(self._name)
+        super(WooSaleOrderLine, self).__init__(name, bases, attrs)
 
     @api.model
     def create(self, vals):

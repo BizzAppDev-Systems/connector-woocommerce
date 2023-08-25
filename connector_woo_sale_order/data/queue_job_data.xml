@@ -11,7 +11,7 @@
                 ref="connector_woo_sale_order.model_woo_sale_order"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
         <!-- Import Orders related action queue job -->
         <record
@@ -23,7 +23,7 @@
                 ref="connector_woo_sale_order.model_woo_sale_order"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
 
         <record
@@ -35,7 +35,7 @@
                 ref="connector_woo_sale_order.model_woo_sale_order_line"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
         <record
             id="job_function_woo_sale_order_line_import_batch"
@@ -46,7 +46,7 @@
                 ref="connector_woo_sale_order.model_woo_sale_order_line"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
 
         <record
@@ -58,7 +58,7 @@
                 ref="connector_woo_sale_order.model_woo_sale_order"
             />
             <field name="method">export_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
         <record
             id="job_function_woo_sale_order_status_export_record"
@@ -69,7 +69,7 @@
                 ref="connector_woo_sale_order.model_woo_sale_order"
             />
             <field name="method">export_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
     </data>
 </odoo>

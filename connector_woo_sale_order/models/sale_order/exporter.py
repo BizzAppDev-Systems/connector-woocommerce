@@ -5,7 +5,6 @@ import logging
 from odoo import _, tools
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
-from odoo.addons.connector.exception import MappingError
 from odoo.exceptions import ValidationError
 from odoo.addons.connector.exception import IDMissingInBackend
 
@@ -21,8 +20,10 @@ class WooSaleOrderExporterMapper(Component):
 
     @mapping
     def status(self, record):
-        if record.picking_ids.state == "done":
+        if record.picking_ids.state == "done" and self.backend_record.mark_completed:
             return {"status": "completed"}
+        else:
+            return {}
 
     @mapping
     def tracking_number(self, record):
@@ -30,22 +31,26 @@ class WooSaleOrderExporterMapper(Component):
         pickings = record.picking_ids.filtered(
             lambda picking: picking.state == "done" and picking.carrier_tracking_ref
         )
-        if not pickings:
-            MappingError(_("Please Add carrier_tracking_ref in DO."))
-        if pickings:
+        if (
+            pickings
+            and self.backend_record.mark_completed
+            and self.backend_record.tracking_info
+        ):
             tracking_number = pickings[0].carrier_tracking_ref
-        return {
-            "meta_data": [
-                {
-                    "key": "_wc_shipment_tracking_items",
-                    "value": [
-                        {
-                            "tracking_number": tracking_number,
-                        }
-                    ],
-                }
-            ]
-        }
+            return {
+                "meta_data": [
+                    {
+                        "key": "_wc_shipment_tracking_items",
+                        "value": [
+                            {
+                                "tracking_number": tracking_number,
+                            }
+                        ],
+                    }
+                ]
+            }
+        else:
+            return {}
 
 
 class WooSaleOrderBatchExporter(Component):

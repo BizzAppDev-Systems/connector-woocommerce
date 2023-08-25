@@ -12,7 +12,7 @@
                     name="export_delivery_status"
                     type="object"
                     class="oe_highlight"
-                    attrs="{'invisible': [('has_done_picking', '=', False)]}"
+                    attrs="{'invisible': ['|',('has_done_picking', '=', False),('woo_order_status','=','completed')]}"
                     string="Export Delivery Status"
                 />
             </xpath>
