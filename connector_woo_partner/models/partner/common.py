@@ -1,7 +1,6 @@
 import logging
 
 from odoo import fields, models
-
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
@@ -26,7 +25,7 @@ class WooResPartner(models.Model):
     _name = "woo.res.partner"
     _inherit = "woo.binding"
     _inherits = {"res.partner": "odoo_id"}
-    _description = "Woo Partner"
+    _description = "WooCommerce Partner"
 
     _rec_name = "name"
 
@@ -37,10 +36,10 @@ class WooResPartner(models.Model):
         ondelete="restrict",
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name, bases, attrs):
         """Bind Odoo Partner"""
-        super().__init__(*args, **kwargs)
         WooModelBinder._apply_on.append(self._name)
+        super(WooResPartner, self).__init__(name, bases, attrs)
 
 
 class WooResPartnerAdapter(Component):
@@ -49,6 +48,5 @@ class WooResPartnerAdapter(Component):
     _name = "woo.res.partner.adapter"
     _inherit = "woo.adapter"
     _apply_on = "woo.res.partner"
-
     _woo_model = "customers"
     _odoo_ext_id_key = "id"

@@ -7,9 +7,8 @@
 * Technical name: connector_woo_partner.
 * Create a module named connector_woo_partner that extends the functionality of connector_woo_base.
   This module focuses on the import of partner data between connected Woocommerce and Odoo.
-* Add "Import Partners(Woo)" at backend level.
+* Add "Import Partners" at backend level.
 * Required field to Import the Partners are Location,Client Id,Client Secret.
-* Required field to Create res.partner is Firstname or name.
 
 
 **Author**
@@ -36,7 +35,7 @@
 * Partners Import:
     - Go to Woocommerce Backends.
     - Add Backend Credentils to Import Partners.
-    - Click 'Import Partners(Woo)' button to Import the Partners from Woocommerce.
+    - Click 'Import Partners' button to Import the Partners from Woocommerce.
 
 
 **Usage**

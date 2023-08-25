@@ -14,7 +14,7 @@
                     <group>
                         <label
                             for="import_partners"
-                            string="Import Partners(Woo)"
+                            string="Import Partners"
                             style="font-weight:bold;"
                             class="oe_inline"
                         />

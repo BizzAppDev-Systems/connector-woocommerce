@@ -8,7 +8,7 @@
         >
             <field name="model_id" ref="connector_woo_partner.model_woo_res_partner" />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
         <!-- Import Partners related action queue job -->
         <record
@@ -17,7 +17,7 @@
         >
             <field name="model_id" ref="connector_woo_partner.model_woo_res_partner" />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woo" />
+            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
         </record>
     </data>
 </odoo>
