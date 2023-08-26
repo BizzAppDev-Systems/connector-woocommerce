@@ -8,8 +8,9 @@ class WooBackend(models.Model):
 
     def import_partners(self):
         """Import Partners from backend"""
+        filters = {"page": 1}
         for backend in self:
-            filters = {"per_page": backend.default_limit, "page": 1}
+            filters.update({"per_page": backend.default_limit})
             backend.env["woo.res.partner"].with_company(backend.company_id).with_delay(
                 priority=5
             ).import_batch(backend=backend, filters=filters)

@@ -20,27 +20,6 @@ class ResPartner(models.Model):
     lastname = fields.Char(string="Last Name")
     hash_key = fields.Char(string="Hash Key")
 
-
-class WooResPartner(models.Model):
-    _name = "woo.res.partner"
-    _inherit = "woo.binding"
-    _inherits = {"res.partner": "odoo_id"}
-    _description = "WooCommerce Partner"
-
-    _rec_name = "name"
-
-    odoo_id = fields.Many2one(
-        comodel_name="res.partner",
-        string="Partner",
-        required=True,
-        ondelete="restrict",
-    )
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Partner"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooResPartner, self).__init__(name, bases, attrs)
-
     def _prepare_child_partner_vals(self, data, address_type, state):
         """Prepare values for child_ids"""
         vals = {
@@ -48,8 +27,9 @@ class WooResPartner(models.Model):
             or data.get("first_name")
             and data.get("last_name")
             and f"{data.get('first_name')} {data.get('last_name')}"
-            or data.get("first_name"),
-            "firstname": data.get("first_name") or data.get("email"),
+            or data.get("first_name")
+            or data.get("email"),
+            "firstname": data.get("first_name"),
             "lastname": data.get("last_name"),
             "email": data.get("email"),
             "type": address_type,
@@ -61,19 +41,14 @@ class WooResPartner(models.Model):
         }
         return vals
 
-    def child_id(self, record):
+    def child(self, record):
         """Mapping for Invoice and Shipping Addresses"""
         billing = record.get("billing")
         shipping = record.get("shipping")
         child_data = []
         hash_to_partner = {}
         fields_to_check = ["first_name", "email"]
-        print(record, "akswjssskqoswiosjwisjwisjwidjwdqjmdjqjwdqwdjwdjwjqwdjqdqwd")
         for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
-            print(
-                data,
-                "huhuwhuiwdhwidhwuihwuidhuwihuwhsewuiesyhuwieyhwuieyhwuedyhuwieydhuwi",
-            )
             if not any(data.get(field) for field in fields_to_check):
                 continue
             if data.get("billing"):
@@ -117,6 +92,27 @@ class WooResPartner(models.Model):
                     hash_to_partner[hash_key] = address_data.id
                     child_data.append(address_data.id)
         return child_data
+
+
+class WooResPartner(models.Model):
+    _name = "woo.res.partner"
+    _inherit = "woo.binding"
+    _inherits = {"res.partner": "odoo_id"}
+    _description = "WooCommerce Partner"
+
+    _rec_name = "name"
+
+    odoo_id = fields.Many2one(
+        comodel_name="res.partner",
+        string="Partner",
+        required=True,
+        ondelete="restrict",
+    )
+
+    def __init__(self, name, bases, attrs):
+        """Bind Odoo Partner"""
+        WooModelBinder._apply_on.append(self._name)
+        super(WooResPartner, self).__init__(name, bases, attrs)
 
 
 class WooResPartnerAdapter(Component):

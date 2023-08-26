@@ -33,7 +33,7 @@
 *****************
 
 * Partners Import:
-    - Go to Woocommerce Backends.
+    - Navigate to Woocommerce Backends by going to Connectors > Woocommerce > WooCommerce Backends.
     - Add Backend Credentils to Import Partners.
     - Click 'Import Partners' button to Import the Partners from Woocommerce.
 

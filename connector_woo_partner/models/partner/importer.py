@@ -32,7 +32,7 @@ class WooResPartnerImportMapper(Component):
         full_name = (
             f"{first_name} {last_name}"
             if first_name and last_name
-            else first_name or last_name or record.get("username", "")
+            else first_name or record.get("username", "")
         )
         return {"name": full_name}
 
@@ -49,13 +49,6 @@ class WooResPartnerImportMapper(Component):
         return {"lastname": record.get("last_name")} if record.get("last_name") else {}
 
     @mapping
-    def odoo_id(self, record):
-        """Will bind the partner to an existing one with the same code"""
-        binder = self.binder_for(model="woo.res.partner")
-        woo_partner = binder.to_internal(record.get("id"), unwrap=True)
-        return {"odoo_id": woo_partner.id} if woo_partner else {}
-
-    @mapping
     def email(self, record):
         """Mapping for Email"""
         email = record.get("email")
@@ -66,8 +59,8 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def child_ids(self, record):
         """Mapping for Invoice and Shipping Addresses"""
-        woo_res_partner = self.env["woo.res.partner"]
-        child_data = woo_res_partner.child_id(record)
+        woo_res_partner = self.env["res.partner"]
+        child_data = woo_res_partner.child(record)
         return {"child_ids": child_data} if child_data else {}
 
     @mapping
