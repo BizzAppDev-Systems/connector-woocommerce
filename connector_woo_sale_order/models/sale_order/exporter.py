@@ -1,14 +1,11 @@
 import logging
 
-# from odoo import _
-# from odoo.osv import expression
 from odoo import _, tools
+from odoo.exceptions import ValidationError
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
-from odoo.exceptions import ValidationError
 from odoo.addons.connector.exception import IDMissingInBackend
-
-# from odoo.addons.connector_ebay_base.components.misc import check_length
 
 _logger = logging.getLogger(__name__)
 
@@ -20,13 +17,16 @@ class WooSaleOrderExporterMapper(Component):
 
     @mapping
     def status(self, record):
-        if record.picking_ids.state == "done" and self.backend_record.mark_completed:
-            return {"status": "completed"}
-        else:
-            return {}
+        """Mapping for Status"""
+        return (
+            {"status": "completed"}
+            if record.picking_ids.state == "done" and self.backend_record.mark_completed
+            else {}
+        )
 
     @mapping
     def tracking_number(self, record):
+        """Mapping for tracking number"""
         tracking_number = False
         pickings = record.picking_ids.filtered(
             lambda picking: picking.state == "done" and picking.carrier_tracking_ref
@@ -62,7 +62,7 @@ class WooSaleOrderBatchExporter(Component):
         """Run the synchronization"""
         if not binding:
             if not record:
-                raise ValidationError(_("No record found to export!!!"))
+                raise ValidationError(_("No record found to Export!!!"))
             binding = self.create_get_binding(record)
         self.binding = binding
         self.external_id = self.binder.to_external(self.binding)

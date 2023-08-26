@@ -1,7 +1,4 @@
-from odoo import models
 from odoo import fields, models
-
-IMPORT_DELTA_BUFFER = 30  # seconds
 
 
 class WooBackend(models.Model):
@@ -14,8 +11,9 @@ class WooBackend(models.Model):
 
     def import_sale_orders(self):
         """Import Orders from backend"""
+        filters = {"page": 1}
         for backend in self:
-            filters = {"per_page": backend.default_limit, "page": 1}
+            filters.update({"per_page": backend.default_limit})
             backend.env["woo.sale.order"].with_company(backend.company_id).with_delay(
                 priority=10
             ).import_batch(backend=backend, filters=filters)
@@ -25,8 +23,8 @@ class WooBackend(models.Model):
         backend_ids = self.search(domain or [])
         backend_ids.import_sale_orders()
 
-    # Export Stock Picking status
     def export_stock_picking_status(self):
+        """Export Stock Picking status"""
         for backend in self.sudo():
             backend._export_from_date(
                 model="woo.stock.picking",
@@ -34,16 +32,20 @@ class WooBackend(models.Model):
             )
 
     def cron_export_stock_picking_status(self, domain=None):
+        """Cron for Export Stock Picking Status"""
         backend_ids = self.search(domain or [])
         backend_ids.export_stock_picking_status()
 
     def export_sale_order_status(self):
+        """Export Sale Order Status"""
+        filters = {"page": 1}
         for backend in self:
-            filters = {"per_page": backend.default_limit, "page": 1}
+            filters.update({"per_page": backend.default_limit})
             self.env["woo.sale.order"].with_company(backend.company_id).with_delay(
                 priority=15
             ).export_batch(backend=backend, filters=filters)
 
     def cron_export_sale_order_status(self, domain=None):
+        """Cron of Export sale order status"""
         backend_ids = self.search(domain or [])
         backend_ids.export_sale_order_status()

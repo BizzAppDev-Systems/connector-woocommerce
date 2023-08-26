@@ -1,9 +1,10 @@
 import logging
 
-from odoo import fields, models, api, _
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
-from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -14,20 +15,14 @@ class SaleOrder(models.Model):
     woo_bind_ids = fields.One2many(
         comodel_name="woo.sale.order",
         inverse_name="odoo_id",
-        string="Woo Bindings",
+        string="WooCommerce Bindings",
         copy=False,
     )
     woo_backend_id = fields.Many2one(
         comodel_name="woo.backend",
-        string="Woo Backend",
+        string="WooCommerce Backend",
         ondelete="restrict",
     )
-    # woo_external_id = fields.Char(
-    #     related="woo_bind_ids.external_id",
-    #     store=True,
-    #     readonly=True,
-    #     string="Everstox Outgoing External Id",
-    # )
     discount_total = fields.Float(string="Discount Total")
     discount_tax = fields.Float(string="Discount Tax")
     shipping_total = fields.Float(string="Shipping Total")
@@ -46,11 +41,12 @@ class SaleOrder(models.Model):
             ("completed", "Completed"),
             ("null", "Null"),
         ],
-        string="Woo Order Status",
+        string="WooCommerce Order Status",
     )
 
     @api.depends("picking_ids", "picking_ids.state")
     def _compute_has_done_picking(self):
+        """Check all Picking is in done state"""
         for order in self:
             if not order.picking_ids:
                 order.has_done_picking = False
@@ -68,7 +64,7 @@ class SaleOrder(models.Model):
         """
         picking_ids = self.picking_ids.filtered(lambda p: p.state == "done")
         if not picking_ids:
-            print("no SP in done state")
+            raise ValidationError("No delivery orders in 'done' state.")
 
     def export_delivery_status(self, allowed_states=None, comment=None, notify=None):
         """Change state of a sales order on WooCommerce"""
@@ -86,7 +82,7 @@ class WooSaleOrder(models.Model):
     _name = "woo.sale.order"
     _inherit = "woo.binding"
     _inherits = {"sale.order": "odoo_id"}
-    _description = "Woo Sale Order"
+    _description = "WooCommerce Sale Order"
 
     _rec_name = "name"
 
@@ -99,10 +95,12 @@ class WooSaleOrder(models.Model):
     woo_order_line_ids = fields.One2many(
         comodel_name="woo.sale.order.line",
         inverse_name="woo_order_id",
-        string="Woo Order Lines",
+        string="WooCommerce Order Lines",
         copy=False,
     )
-    woo_order_id = fields.Integer(string="Woo Order ID", help="'order_id' field in Woo")
+    woo_order_id = fields.Integer(
+        string="WooCommerce Order ID", help="'order_id' field in WooCommerce"
+    )
 
     def __init__(self, name, bases, attrs):
         """Bind Odoo Partner"""
@@ -133,12 +131,12 @@ class WooSaleOrderAdapter(Component):
 class WooSaleOrderLine(models.Model):
     _name = "woo.sale.order.line"
     _inherit = "woo.binding"
-    _description = "Woo Sale Order Line"
+    _description = "WooCommerce Sale Order Line"
     _inherits = {"sale.order.line": "odoo_id"}
 
     woo_order_id = fields.Many2one(
         comodel_name="woo.sale.order",
-        string="Woo Sale Order",
+        string="WooCommerce Sale Order",
         required=True,
         ondelete="cascade",
         index=True,
@@ -151,14 +149,14 @@ class WooSaleOrderLine(models.Model):
     )
     backend_id = fields.Many2one(
         related="woo_order_id.backend_id",
-        string="Woo Backend",
+        string="WooCommerce Backend",
         readonly=True,
         store=True,
         required=False,
     )
 
     def __init__(self, name, bases, attrs):
-        """Bind Odoo Partner"""
+        """Bind Odoo Sale Order Line"""
         WooModelBinder._apply_on.append(self._name)
         super(WooSaleOrderLine, self).__init__(name, bases, attrs)
 
@@ -190,8 +188,8 @@ class SaleOrderLine(models.Model):
         copy=False,
     )
     woo_line_id = fields.Char()
-    # woo_backend_id = fields.Many2one(
-    #     comodel_name="woo.backend",
-    #     string="Woo Backend",
-    #     ondelete="restrict",
-    # )
+    woo_backend_id = fields.Many2one(
+        comodel_name="woo.backend",
+        string="WooCommerce Backend",
+        ondelete="restrict",
+    )
