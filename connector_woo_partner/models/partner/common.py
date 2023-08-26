@@ -1,7 +1,6 @@
 import logging
-
+import hashlib
 from odoo import fields, models
-
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
@@ -14,7 +13,7 @@ class ResPartner(models.Model):
     woo_bind_ids = fields.One2many(
         comodel_name="woo.res.partner",
         inverse_name="odoo_id",
-        string="WooCommerce Bindings",
+        string="Woo Bindings",
         copy=False,
     )
     firstname = fields.Char(string="First Name")
@@ -41,6 +40,83 @@ class WooResPartner(models.Model):
         """Bind Odoo Partner"""
         WooModelBinder._apply_on.append(self._name)
         super(WooResPartner, self).__init__(name, bases, attrs)
+
+    def _prepare_child_partner_vals(self, data, address_type, state):
+        """Prepare values for child_ids"""
+        vals = {
+            "name": data.get("username")
+            or data.get("first_name")
+            and data.get("last_name")
+            and f"{data.get('first_name')} {data.get('last_name')}"
+            or data.get("first_name"),
+            "firstname": data.get("first_name") or data.get("email"),
+            "lastname": data.get("last_name"),
+            "email": data.get("email"),
+            "type": address_type,
+            "street": data.get("address_1"),
+            "street2": data.get("address_2"),
+            "zip": data.get("postcode"),
+            "phone": data.get("phone"),
+            "state_id": state.id if state else False,
+        }
+        return vals
+
+    def child_id(self, record):
+        """Mapping for Invoice and Shipping Addresses"""
+        billing = record.get("billing")
+        shipping = record.get("shipping")
+        child_data = []
+        hash_to_partner = {}
+        fields_to_check = ["first_name", "email"]
+        print(record, "akswjssskqoswiosjwisjwisjwidjwdqjmdjqjwdqwdjwdjwjqwdjqdqwd")
+        for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
+            print(
+                data,
+                "huhuwhuiwdhwidhwuihwuidhuwihuwhsewuiesyhuwieyhwuieyhwuedyhuwieydhuwi",
+            )
+            if not any(data.get(field) for field in fields_to_check):
+                continue
+            if data.get("billing"):
+                state = billing.get("state")
+            else:
+                state = shipping.get("state")
+            if state:
+                state = self.env["res.country.state"].search(
+                    [("code", "=", state)],
+                    limit=1,
+                )
+            hash_attributes = (
+                data.get("username"),
+                data.get("first_name"),
+                data.get("last_name"),
+                data.get("email"),
+                data.get("address_1"),
+                data.get("address_2"),
+                address_type,
+                data.get("postcode"),
+                data.get("phone"),
+            )
+            hash_key = hashlib.md5(
+                "|".join(str(attr) for attr in hash_attributes).encode()
+            ).hexdigest()
+            if hash_key in hash_to_partner:
+                child_data.append(hash_to_partner[hash_key])
+            else:
+                existing_partner = self.env["res.partner"].search(
+                    [("hash_key", "=", hash_key)], limit=1
+                )
+                if existing_partner:
+                    hash_to_partner[hash_key] = existing_partner.id
+                    child_data.append(existing_partner.id)
+                else:
+                    address_data = self._prepare_child_partner_vals(
+                        data, address_type, state
+                    )
+                    address_data["hash_key"] = hash_key
+                    address_data = self.env["res.partner"].create(address_data)
+                    hash_to_partner[hash_key] = address_data.id
+                    child_data.append(address_data.id)
+        return child_data
 
 
 class WooResPartnerAdapter(Component):
