@@ -33,19 +33,19 @@
 *****************
 
 * Products Import:
-    - Navigate to WooCommerce Backends.
+    - Navigate to Woocommerce Backends by going to Connectors > Woocommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Products.
     - Click the 'Import Products' button to import Products from WooCommerce.
 
 * Product Attributes Import:
-    - Navigate to WooCommerce Backends.
+    - Navigate to Woocommerce Backends by going to Connectors > Woocommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Product Attributes.
     - Click the 'Import Product Attributes' button to import Product Attributes from WooCommerce.
     - Click the 'Import Attribute Value' button to import Product Attribute Values from WooCommerce.
     - The 'Product Attributes Value' menu item is located at Sale > Configuration > Product.
 
 * Product Categories Import:
-    - Navigate to WooCommerce Backends.
+    - Navigate to Woocommerce Backends by going to Connectors > Woocommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Product Categories.
     - Click the 'Import Product Categories' button to import Product Categories from WooCommerce.
     - The 'WooCommerce Product Categories' menu item is located at Connector > Woo Product Categories > Product Categories.

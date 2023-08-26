@@ -7,8 +7,8 @@
     "depends": ["product", "connector_woo_base", "sale_management"],
     "license": "LGPL-3",
     "data": [
-        "data/queue_job_data.xml",
         "data/ir_cron_data.xml",
+        "data/queue_job_data.xml",
         "security/ir.model.access.csv",
         "views/woo_backend_view.xml",
         "views/product_views.xml",

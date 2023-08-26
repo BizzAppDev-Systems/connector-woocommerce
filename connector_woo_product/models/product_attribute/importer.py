@@ -42,13 +42,6 @@ class WooProductAttributeImportMapper(Component):
         return {"name": product_attribute_name}
 
     @mapping
-    def odoo_id(self, record):
-        """Will bind the Product Attribute to an existing one with the same code"""
-        binder = self.binder_for(model="woo.product.attribute")
-        woo_product_attribute = binder.to_internal(record.get("id"), unwrap=True)
-        return {"odoo_id": woo_product_attribute.id} if woo_product_attribute else {}
-
-    @mapping
     def has_archives(self, record):
         """Mapping product has_archives"""
         return {"has_archives": record.get("has_archives")}

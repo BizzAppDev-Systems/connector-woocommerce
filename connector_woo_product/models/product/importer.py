@@ -41,13 +41,6 @@ class WooProductProductImportMapper(Component):
         return {"name": record.get("name")}
 
     @mapping
-    def odoo_id(self, record):
-        """Will bind the product to an existing one with the same code"""
-        binder = self.binder_for(model="woo.product.product")
-        woo_product = binder.to_internal(record.get("id"), unwrap=True)
-        return {"odoo_id": woo_product.id} if woo_product else {}
-
-    @mapping
     def list_price(self, record):
         """Mapping product price"""
         return {"list_price": record.get("price")}

@@ -1,7 +1,7 @@
 import logging
 
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping, only_create
+from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
 
@@ -28,13 +28,6 @@ class WooProductCategoryImportMapper(Component):
         """Mapping for name"""
         product_name = record.get("name")
         return {"name": product_name}
-
-    @mapping
-    def odoo_id(self, record):
-        """Will bind the Product to an existing one with the same code"""
-        binder = self.binder_for(model="woocommerce.product.category")
-        woo_product = binder.to_internal(record.get("id"), unwrap=True)
-        return {"odoo_id": woo_product.id} if woo_product else {}
 
     @mapping
     def slug(self, record):

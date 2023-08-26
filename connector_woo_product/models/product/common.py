@@ -58,7 +58,7 @@ class ProductProduct(models.Model):
     )
     woo_product_categ_ids = fields.Many2many(
         comodel_name="woo.product.category",
-        string="WooCommerce Product Category",
+        string="WooCommerce Product Category(Product)",
         ondelete="restrict",
     )
     woo_product_template_variant_value_ids = fields.Many2many(
@@ -86,7 +86,7 @@ class WooProductProduct(models.Model):
     )
     woocommerce_product_category_ids = fields.Many2many(
         comodel_name="woo.product.category",
-        string="Woo Product Attribute",
+        string="WooCommerce Product Category",
         ondelete="restrict",
     )
 
