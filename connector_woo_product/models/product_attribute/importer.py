@@ -1,8 +1,10 @@
 import logging
+
 from odoo import _
+from odoo.exceptions import ValidationError
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
-from odoo.exceptions import ValidationError
 
 # pylint: disable=W7950
 

@@ -1,7 +1,9 @@
 import logging
-from odoo.addons.component.core import Component
-from odoo.exceptions import ValidationError
+
 from odoo import _
+from odoo.exceptions import ValidationError
+
+from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
@@ -141,9 +143,7 @@ class WooProductProductImportMapper(Component):
             if woo_binding:
                 attribute_ids.append(woo_binding.id)
                 continue
-            product_attribute = self._get_product_attribute(
-                attribute_id, record
-            )
+            product_attribute = self._get_product_attribute(attribute_id, record)
             if "options" in attribute_id:
                 self._create_attribute_values(
                     attribute_id["options"], product_attribute
