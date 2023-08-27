@@ -34,7 +34,6 @@ class WooImporter(AbstractComponent):
     def _before_import(self):
         """Hook called before the import, when we have the
         data from remote system"""
-        pass
 
     def _is_uptodate(self, binding):
         """Return True if the import should be skipped because
