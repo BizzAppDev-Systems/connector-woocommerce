@@ -194,11 +194,6 @@ class WooSaleOrderImportMapper(Component):
         )
 
     @mapping
-    def backend_id(self, record):
-        """Mapping for backend."""
-        return {"backend_id": self.backend_record.id}
-
-    @mapping
     def update_order_id(self, record):
         """Update the order_id"""
         self.options.update(order_id=record.get("id"))

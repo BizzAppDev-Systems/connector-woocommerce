@@ -50,12 +50,10 @@ class SaleOrder(models.Model):
         for order in self:
             if not order.picking_ids:
                 order.has_done_picking = False
-                continue
-            order.has_done_picking = True
-            for picking in order.picking_ids:
-                if picking.state != "done":
-                    order.has_done_picking = False
-                    break
+            else:
+                order.has_done_picking = all(
+                    picking.state == "done" for picking in order.picking_ids
+                )
 
     def check_export_fulfillment(self):
         """
@@ -149,7 +147,7 @@ class WooSaleOrderLine(models.Model):
     )
     backend_id = fields.Many2one(
         related="woo_order_id.backend_id",
-        string="WooCommerce Backend",
+        string="WooCommerce Backend(Woo Line)",
         readonly=True,
         store=True,
         required=False,
@@ -190,6 +188,6 @@ class SaleOrderLine(models.Model):
     woo_line_id = fields.Char()
     woo_backend_id = fields.Many2one(
         comodel_name="woo.backend",
-        string="WooCommerce Backend",
+        string="WooCommerce Backend(Line)",
         ondelete="restrict",
     )
