@@ -173,11 +173,6 @@ class WooProductProductImportMapper(Component):
             category_ids.append(product_category.id)
         return {"woo_product_categ_ids": category_ids} if category_ids else {}
 
-    @mapping
-    def backend_id(self, record):
-        """Return backend."""
-        return {"backend_id": self.backend_record.id}
-
 
 class WooProductProductImporter(Component):
     """Importer the WooCommerce Product"""

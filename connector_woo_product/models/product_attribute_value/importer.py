@@ -47,18 +47,6 @@ class WooAttributeValueImportMapper(Component):
             else {}
         )
 
-    @mapping
-    def backend_id(self, record):
-        """Return backend."""
-        return {"backend_id": self.backend_record.id}
-
-    @mapping
-    def odoo_id(self, record):
-        """Will bind the product to an existing one with the same code"""
-        binder = self.binder_for(model="woo.product.attribute.value")
-        woo_product = binder.to_internal(record.get("id"), unwrap=True)
-        return {"odoo_id": woo_product.id} if woo_product else {}
-
     @only_create
     @mapping
     def update_product_attribute(self, record):

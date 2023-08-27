@@ -66,11 +66,6 @@ class WooProductCategoryImportMapper(Component):
         woo_parent = binder.to_internal(record.get("parent"), unwrap=True)
         return {"parent_id": woo_parent.id} if woo_parent else {}
 
-    @mapping
-    def backend_id(self, record):
-        """Return backend."""
-        return {"backend_id": self.backend_record.id}
-
 
 class WooProductCategoryImporter(Component):
     """Importer the WooCommerce Product category"""

@@ -48,11 +48,6 @@ class WooProductAttributeImportMapper(Component):
         """Mapping product has_archives"""
         return {"has_archives": record.get("has_archives")}
 
-    @mapping
-    def backend_id(self, record):
-        """Return backend."""
-        return {"backend_id": self.backend_record.id}
-
 
 class WooProductAttributeImporter(Component):
     """Importer the WooCommerce Product"""
