@@ -63,11 +63,6 @@ class WooResPartnerImportMapper(Component):
         child_data = woo_res_partner.child(record)
         return {"child_ids": child_data} if child_data else {}
 
-    @mapping
-    def backend_id(self, record):
-        """Return backend."""
-        return {"backend_id": self.backend_record.id}
-
 
 class WooResPartnerImporter(Component):
     """Importer the WooCommerce Partner"""

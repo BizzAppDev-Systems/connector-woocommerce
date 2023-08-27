@@ -13,7 +13,7 @@ class ResPartner(models.Model):
     woo_bind_ids = fields.One2many(
         comodel_name="woo.res.partner",
         inverse_name="odoo_id",
-        string="Woo Bindings",
+        string="WooCommerce Bindings",
         copy=False,
     )
     firstname = fields.Char(string="First Name")
@@ -51,10 +51,9 @@ class ResPartner(models.Model):
         for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
             if not any(data.get(field) for field in fields_to_check):
                 continue
-            if data.get("billing"):
-                state = billing.get("state")
-            else:
-                state = shipping.get("state")
+            state = (
+                billing.get("state") if data.get("billing") else shipping.get("state")
+            )
             if state:
                 state = self.env["res.country.state"].search(
                     [("code", "=", state)],
