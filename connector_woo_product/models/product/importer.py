@@ -5,6 +5,7 @@ from odoo.exceptions import ValidationError
 
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.exception import MappingError
 
 # pylint: disable=W7950
 
@@ -40,7 +41,10 @@ class WooProductProductImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for name"""
-        return {"name": record.get("name")}
+        name = record.get("name")
+        if not name:
+            raise MappingError(_("Attribute Name is not found!"))
+        return {"name": name}
 
     @mapping
     def list_price(self, record):
@@ -150,7 +154,7 @@ class WooProductProductImportMapper(Component):
                 )
 
             attribute_ids.append(product_attribute.id)
-        return {"woo_attribute_ids": attribute_ids}
+        return {"woo_attribute_ids": [(6, 0, attribute_ids)]}
 
     @mapping
     def woo_product_categ_ids(self, record):
@@ -169,9 +173,8 @@ class WooProductProductImportMapper(Component):
                 "backend_id": self.backend_record.id,
                 "external_id": category.get("id"),
             }
-            product_category = self.env["woocommerce.product.category"].create(values)
-            category_ids.append(product_category.id)
-        return {"woo_product_categ_ids": category_ids} if category_ids else {}
+            category_ids.append([(0, 0, values)])
+        return {"woo_product_categ_ids": [(6, 0, category_ids)]} if category_ids else {}
 
 
 class WooProductProductImporter(Component):

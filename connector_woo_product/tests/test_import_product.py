@@ -20,11 +20,11 @@ class TestImportProduct(BaseWooTestCase):
 
     def test_import_product_product(self):
         """Test Assertions for Product"""
+        external_id = "60"
         with recorder.use_cassette("import_woo_product_product"):
             self.env["woo.product.product"].import_record(
-                external_id="60", backend=self.backend
+                external_id=external_id, backend=self.backend
             )
-        external_id = "60"
         self.product_model = self.env["woo.product.product"]
         product1 = self.product_model.search([("external_id", "=", external_id)])
         self.assertEqual(len(product1), 1)

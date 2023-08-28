@@ -10,11 +10,11 @@ _logger = logging.getLogger(__name__)
 
 class WooProductCategory(models.Model):
     _name = "woo.product.category"
-    _description = "WooCommerce Product Category"
+    _description = "Product Category"
     _parent_name = "parent_id"
     _parent_store = True
 
-    name = fields.Char()
+    name = fields.Char(required=True)
     slug = fields.Char()
     display = fields.Char()
     menu_order = fields.Integer()

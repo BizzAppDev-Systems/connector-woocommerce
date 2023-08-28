@@ -20,11 +20,11 @@ class TestImportProductAttributes(BaseWooTestCase):
 
     def test_import_product_attribute(self):
         """Test Assertions for Product Attribute"""
+        external_id = "2"
         with recorder.use_cassette("import_woo_product_attribute"):
             self.env["woo.product.attribute"].import_record(
-                external_id="2", backend=self.backend
+                external_id=external_id, backend=self.backend
             )
-        external_id = "2"
         self.product_model = self.env["woo.product.attribute"]
         productattribute1 = self.product_model.search(
             [("external_id", "=", external_id)]

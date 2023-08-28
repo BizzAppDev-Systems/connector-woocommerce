@@ -5,6 +5,7 @@ from odoo.exceptions import ValidationError
 
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.exception import MappingError
 
 # pylint: disable=W7950
 
@@ -40,8 +41,10 @@ class WooProductAttributeImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for name"""
-        product_attribute_name = record.get("name")
-        return {"name": product_attribute_name}
+        name = record.get("name")
+        if not name:
+            raise MappingError(_("Attribute Name is not found!"))
+        return {"name": name}
 
     @mapping
     def has_archives(self, record):

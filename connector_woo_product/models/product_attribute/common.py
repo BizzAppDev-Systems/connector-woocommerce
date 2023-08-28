@@ -35,8 +35,7 @@ class ProductAttribute(models.Model):
             "page": 1,
             "attribute": self.woo_bind_ids[0].external_id,
         }
-        binding_obj = self.env["woo.product.attribute.value"]
-        binding_obj.with_delay(priority=5).import_batch(
+        self.env["woo.product.attribute.value"].with_delay(priority=5).import_batch(
             self.woo_backend_id, filters=filters
         )
 

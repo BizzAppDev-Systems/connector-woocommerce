@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 IMPORT_DELTA_BUFFER = 30  # seconds
 
@@ -11,52 +11,6 @@ class WooBackend(models.Model):
     _inherit = "woo.backend"
 
     import_products_from_date = fields.Datetime(string="Import products from date")
-
-    def import_products(self):
-        """Import Products from backend"""
-        filters = {"page": 1}
-        for backend in self:
-            filters.update({"per_page": backend.default_limit})
-            backend._import_from_date(
-                model="woo.product.product",
-                from_date_field="import_products_from_date",
-                priority=5,
-                filters=filters,
-            )
-        return True
-
-    def cron_import_products(self, domain=None):
-        """Cron for import_products"""
-        backend_ids = self.search(domain or [])
-        backend_ids.import_products()
-
-    def import_product_attributes(self):
-        """Import Product Attribute from backend"""
-        filters = {"page": 1}
-        for backend in self:
-            filters.update({"per_page": backend.default_limit})
-            backend.env["woo.product.attribute"].with_company(
-                backend.company_id
-            ).with_delay(priority=5).import_batch(backend=backend, filters=filters)
-
-    def cron_import_product_attributes(self, domain=None):
-        """Cron for import_product_attributes"""
-        backend_ids = self.search(domain or [])
-        backend_ids.import_product_attributes()
-
-    def import_product_categories(self):
-        """Import Product Category from backend"""
-        filters = {"page": 1}
-        for backend in self:
-            filters.update({"per_page": backend.default_limit})
-            backend.env["woocommerce.product.category"].with_company(
-                backend.company_id
-            ).with_delay(priority=5).import_batch(backend=backend, filters=filters)
-
-    def cron_import_product_categories(self, domain=None):
-        """Cron for import_product_categories"""
-        backend_ids = self.search(domain or [])
-        backend_ids.import_product_categories()
 
     def _import_from_date(self, model, from_date_field, priority=None, filters=None):
         """Method to add a filter based on the date."""
@@ -85,3 +39,52 @@ class WooBackend(models.Model):
         next_time = import_start_time - timedelta(seconds=IMPORT_DELTA_BUFFER)
         next_time = fields.Datetime.to_string(next_time)
         self.write({from_date_field: next_time})
+
+    def import_products(self):
+        """Import Products from backend"""
+        filters = {"page": 1}
+        for backend in self:
+            filters.update({"per_page": backend.default_limit})
+            backend._import_from_date(
+                model="woo.product.product",
+                from_date_field="import_products_from_date",
+                priority=5,
+                filters=filters,
+            )
+        return True
+
+    @api.model
+    def cron_import_products(self, domain=None):
+        """Cron for import_products"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_products()
+
+    def import_product_attributes(self):
+        """Import Product Attribute from backend"""
+        filters = {"page": 1}
+        for backend in self:
+            filters.update({"per_page": backend.default_limit})
+            backend.env["woo.product.attribute"].with_company(
+                backend.company_id
+            ).with_delay(priority=5).import_batch(backend=backend, filters=filters)
+
+    @api.model
+    def cron_import_product_attributes(self, domain=None):
+        """Cron for import_product_attributes"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_product_attributes()
+
+    def import_product_categories(self):
+        """Import Product Category from backend"""
+        filters = {"page": 1}
+        for backend in self:
+            filters.update({"per_page": backend.default_limit})
+            backend.env["woocommerce.product.category"].with_company(
+                backend.company_id
+            ).with_delay(priority=5).import_batch(backend=backend, filters=filters)
+
+    @api.model
+    def cron_import_product_categories(self, domain=None):
+        """Cron for import_product_categories"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_product_categories()

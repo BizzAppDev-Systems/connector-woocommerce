@@ -1,7 +1,10 @@
 import logging
 
+from odoo import _
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping, only_create
+from odoo.addons.connector.exception import MappingError
 
 _logger = logging.getLogger(__name__)
 
@@ -28,6 +31,9 @@ class WooAttributeValueImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for name"""
+        name = record.get("name")
+        if not name:
+            raise MappingError(_("Attribute Value Name is not found!"))
         return {"name": record.get("name")}
 
     @mapping
@@ -36,7 +42,9 @@ class WooAttributeValueImportMapper(Component):
         attribute_id = record.get("attribute")
         binder = self.binder_for(model="woo.product.attribute")
         woo_attribute = binder.to_internal(attribute_id, unwrap=True)
-        return {"attribute_id": woo_attribute.id} if woo_attribute else {}
+        if not woo_attribute:
+            raise MappingError(_("Attribute_id is not found!"))
+        return {"attribute_id": woo_attribute.id}
 
     @mapping
     def description(self, record):

@@ -1,7 +1,10 @@
 import logging
 
+from odoo import _
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.exception import MappingError
 
 # pylint: disable=W7950
 
@@ -26,8 +29,10 @@ class WooProductCategoryImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for name"""
-        product_name = record.get("name")
-        return {"name": product_name}
+        name = record.get("name")
+        if not name:
+            raise MappingError(_("Category Name is not found!"))
+        return {"name": record.get("name")}
 
     @mapping
     def slug(self, record):
@@ -44,20 +49,17 @@ class WooProductCategoryImportMapper(Component):
     @mapping
     def description(self, record):
         """Mapping for discription"""
-        description = record.get("description")
-        return {"description": description}
+        return {"description": record.get("description")}
 
     @mapping
     def menu_order(self, record):
         """Mapping for sale_ok"""
-        menu_order = record.get("menu_order")
-        return {"menu_order": menu_order}
+        return {"menu_order": record.get("menu_order")}
 
     @mapping
     def count(self, record):
         """Mapping for count"""
-        count = record.get("count")
-        return {"count": count}
+        return {"count": record.get("count")}
 
     @mapping
     def parent_id(self, record):
