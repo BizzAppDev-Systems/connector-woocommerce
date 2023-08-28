@@ -1,6 +1,8 @@
-import logging
 import hashlib
+import logging
+
 from odoo import fields, models
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
