@@ -15,9 +15,9 @@ interactions:
             '
               {
                 "id": 237660088,
-                "email": "siddhi.padiya@gmail.com",
-                "first_name": "Siddhi",
-                "last_name": "padiya",
+                "email": "john.doe@example.com",
+                "first_name": "John",
+                "last_name": "Doe",
                 "role": "customer",
                 "username": "",
                 "billing": {

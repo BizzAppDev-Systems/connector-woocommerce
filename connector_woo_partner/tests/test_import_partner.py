@@ -20,11 +20,11 @@ class TestImportPartner(BaseWooTestCase):
 
     def test_import_res_partner(self):
         """Test Assertions for Partner"""
+        external_id = "237660088"
         with recorder.use_cassette("import_woo_res_partner"):
             self.env["woo.res.partner"].import_record(
-                external_id="237660088", backend=self.backend
+                external_id=external_id, backend=self.backend
             )
-        external_id = "237660088"
         self.partner_model = self.env["woo.res.partner"]
         partner1 = self.partner_model.search([("external_id", "=", external_id)])
         self.assertEqual(len(partner1), 1)
@@ -34,21 +34,21 @@ class TestImportPartner(BaseWooTestCase):
         )
         self.assertEqual(
             partner1.firstname,
-            "Siddhi",
+            "John",
             "Partner's First name is not matched with response!",
         )
         self.assertEqual(
             partner1.lastname,
-            "padiya",
+            "Doe",
             "Partner's Last name is not matched with response!",
         )
         self.assertEqual(
             partner1.name,
-            "Siddhi padiya",
+            "John Doe",
             "Partner's name is not matched with response!",
         )
         self.assertEqual(
             partner1.email,
-            "siddhi.padiya@gmail.com",
+            "john.doe@example.com",
             "Partner's Email is not matched with response!",
         )

@@ -29,14 +29,7 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for Name (combination of firstname and lastname)"""
-        first_name = record.get("first_name", "")
-        last_name = record.get("last_name", "")
-        full_name = (
-            f"{first_name} {last_name}"
-            if first_name and last_name
-            else first_name or record.get("username", "")
-        )
-        return {"name": full_name}
+        return {"name": record.get("username")}
 
     @mapping
     def firstname(self, record):
@@ -59,7 +52,7 @@ class WooResPartnerImportMapper(Component):
         return {"email": email}
 
     @mapping
-    def child_ids(self, record):
+    def addresses(self, record):
         """Mapping for Invoice and Shipping Addresses"""
         woo_res_partner = self.env["res.partner"]
         child_data = woo_res_partner.child(record)

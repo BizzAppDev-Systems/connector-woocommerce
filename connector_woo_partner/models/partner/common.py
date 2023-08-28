@@ -43,7 +43,7 @@ class ResPartner(models.Model):
         }
         return vals
 
-    def _process_address_data(self, data, address_type, state, hash_to_partner):
+    def _process_address_data(self, data, address_type, state):
         """
         Process address data, generate hash key, and handle partner creation or retrieval.
         """
@@ -71,25 +71,21 @@ class ResPartner(models.Model):
         existing_partner = self.env["res.partner"].search(
             [("hash_key", "=", hash_key)], limit=1
         )
-
         if existing_partner:
-            hash_to_partner[hash_key] = existing_partner.id
-            return hash_key, existing_partner.id
+            return existing_partner.id
         else:
             address_data = self._prepare_child_partner_vals(
                 data, address_type, state_obj
             )
             address_data["hash_key"] = hash_key
-            children_ids = self.env["res.partner"].create(address_data)
-            hash_to_partner[hash_key] = children_ids.id
-            return hash_key, children_ids.id
+            partner_id = self.env["res.partner"].create(address_data)
+            return partner_id.id
 
     def child(self, record):
         """Mapping for Invoice and Shipping Addresses"""
         billing = record.get("billing")
         shipping = record.get("shipping")
         child_data = []
-        hash_to_partner = {}
         fields_to_check = ["first_name", "email"]
 
         for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
@@ -98,11 +94,8 @@ class ResPartner(models.Model):
             state = (
                 billing.get("state") if data.get("billing") else shipping.get("state")
             )
-            hash_key, partner_id = self._process_address_data(
-                data, address_type, state, hash_to_partner
-            )
+            partner_id = self._process_address_data(data, address_type, state)
             child_data.append(partner_id)
-
         return child_data
 
 
