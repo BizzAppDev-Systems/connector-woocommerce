@@ -41,6 +41,47 @@ class ResPartner(models.Model):
         }
         return vals
 
+    def _process_address_data(self, data, address_type, state, hash_to_partner):
+        """
+        Process address data, generate hash key, and handle partner creation or retrieval.
+        """
+        state_obj = None
+        if state:
+            state_obj = self.env["res.country.state"].search(
+                [("code", "=", state)],
+                limit=1,
+            )
+
+        hash_attributes = (
+            data.get("username"),
+            data.get("first_name"),
+            data.get("last_name"),
+            data.get("email"),
+            data.get("address_1"),
+            data.get("address_2"),
+            address_type,
+            data.get("postcode"),
+            data.get("phone"),
+        )
+        hash_key = hashlib.md5(
+            "|".join(str(attr) for attr in hash_attributes).encode()
+        ).hexdigest()
+        existing_partner = self.env["res.partner"].search(
+            [("hash_key", "=", hash_key)], limit=1
+        )
+
+        if existing_partner:
+            hash_to_partner[hash_key] = existing_partner.id
+            return hash_key, existing_partner.id
+        else:
+            address_data = self._prepare_child_partner_vals(
+                data, address_type, state_obj
+            )
+            address_data["hash_key"] = hash_key
+            children_ids = self.env["res.partner"].create(address_data)
+            hash_to_partner[hash_key] = children_ids.id
+            return hash_key, children_ids.id
+
     def child(self, record):
         """Mapping for Invoice and Shipping Addresses"""
         billing = record.get("billing")
@@ -48,48 +89,18 @@ class ResPartner(models.Model):
         child_data = []
         hash_to_partner = {}
         fields_to_check = ["first_name", "email"]
+
         for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
             if not any(data.get(field) for field in fields_to_check):
                 continue
             state = (
                 billing.get("state") if data.get("billing") else shipping.get("state")
             )
-            if state:
-                state = self.env["res.country.state"].search(
-                    [("code", "=", state)],
-                    limit=1,
-                )
-            hash_attributes = (
-                data.get("username"),
-                data.get("first_name"),
-                data.get("last_name"),
-                data.get("email"),
-                data.get("address_1"),
-                data.get("address_2"),
-                address_type,
-                data.get("postcode"),
-                data.get("phone"),
+            hash_key, partner_id = self._process_address_data(
+                data, address_type, state, hash_to_partner
             )
-            hash_key = hashlib.md5(
-                "|".join(str(attr) for attr in hash_attributes).encode()
-            ).hexdigest()
-            if hash_key in hash_to_partner:
-                child_data.append(hash_to_partner[hash_key])
-            else:
-                existing_partner = self.env["res.partner"].search(
-                    [("hash_key", "=", hash_key)], limit=1
-                )
-                if existing_partner:
-                    hash_to_partner[hash_key] = existing_partner.id
-                    child_data.append(existing_partner.id)
-                else:
-                    address_data = self._prepare_child_partner_vals(
-                        data, address_type, state
-                    )
-                    address_data["hash_key"] = hash_key
-                    address_data = self.env["res.partner"].create(address_data)
-                    hash_to_partner[hash_key] = address_data.id
-                    child_data.append(address_data.id)
+            child_data.append(partner_id)
+
         return child_data
 
 
