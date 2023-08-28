@@ -1,11 +1,9 @@
 import logging
-
-from odoo import _
-from odoo.exceptions import ValidationError
-
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
+from odoo.exceptions import ValidationError
 from odoo.addons.connector.exception import MappingError
+from odoo import _
+from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
 
@@ -160,6 +158,7 @@ class WooProductProductImportMapper(Component):
     def woo_product_categ_ids(self, record):
         """Mapping for woo_product_categ_ids"""
         category_ids = []
+        create_categ_ids = []
         woo_product_category = record.get("categories")
         binder = self.binder_for("woocommerce.product.category")
         for category in woo_product_category:
@@ -170,11 +169,12 @@ class WooProductProductImportMapper(Component):
             values = {
                 "name": category.get("name"),
                 "parent_id": category.get("parent"),
-                "backend_id": self.backend_record.id,
-                "external_id": category.get("id"),
+                "woo_backend_id": self.backend_record.id,
             }
-            category_ids.append([(0, 0, values)])
-        return {"woo_product_categ_ids": [(6, 0, category_ids)]} if category_ids else {}
+            create_categ_ids.append((0, 0, values))
+        if category_ids:
+            create_categ_ids.extend([(6, 0, category_ids)])
+        return {"woo_product_categ_ids": create_categ_ids} if create_categ_ids else {}
 
 
 class WooProductProductImporter(Component):

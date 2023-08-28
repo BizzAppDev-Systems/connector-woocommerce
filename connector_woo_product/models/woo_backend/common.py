@@ -1,6 +1,5 @@
+from odoo import models, fields, api
 from datetime import datetime, timedelta
-
-from odoo import api, fields, models
 
 IMPORT_DELTA_BUFFER = 30  # seconds
 

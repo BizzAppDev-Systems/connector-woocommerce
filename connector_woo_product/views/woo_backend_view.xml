@@ -6,7 +6,7 @@
         <field name="model">woo.backend</field>
         <field name="inherit_id" ref="connector_woo_base.view_woo_backend_form" />
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='import']" position="attributes">
+             <xpath expr="//page[@name='import']" position="attributes">
                 <attribute name="invisible">0</attribute>
             </xpath>
             <xpath expr="//page[@name='import']" position="inside">
@@ -27,7 +27,7 @@
                                 class="oe_highlight"
                                 string="Import Product Attributes"
                             />
-                        </div>
+                         </div>
                     </group>
                 </group>
                 <group>
@@ -47,7 +47,7 @@
                                 class="oe_highlight"
                                 string="Import Product Categories"
                             />
-                        </div>
+                         </div>
                     </group>
                 </group>
                 <group>
@@ -72,7 +72,7 @@
                                 class="oe_highlight"
                                 string="Import Products"
                             />
-                        </div>
+                         </div>
                     </group>
                 </group>
             </xpath>
