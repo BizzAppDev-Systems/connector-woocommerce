@@ -36,6 +36,10 @@ class WooImporter(AbstractComponent):
         data from remote system"""
         pass
 
+    def get_parsed_date(self, datetime_str):
+        # TODO : Support me for the Date structure.
+        return datetime_str
+
     def _is_uptodate(self, binding):
         """Return True if the import should be skipped because
         it is already up-to-date in OpenERP"""
@@ -60,10 +64,6 @@ class WooImporter(AbstractComponent):
         # and if so, schedule a new import. If we don't do that, we'll
         # miss changes done in remote system
         return remote_date < sync_date
-
-    def get_parsed_date(self, datetime_str):
-        # TODO : Support me for the Date structure.
-        return datetime_str
 
     def _import_dependency(
         self, external_id, binding_model, importer=None, always=False

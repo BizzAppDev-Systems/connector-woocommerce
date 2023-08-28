@@ -9,11 +9,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 from odoo.addons.component.core import AbstractComponent
-from odoo.addons.connector.exception import (
-    InvalidDataError,
-    NetworkRetryableError,
-    RetryableJobError,
-)
+from odoo.addons.connector.exception import NetworkRetryableError, RetryableJobError
 
 _logger = logging.getLogger(__name__)
 
@@ -77,25 +73,19 @@ class WooClient(object):
             return response
         if status_code == 200:
             return response.json()
-        if status_code == 400 or status_code == 401 or status_code == 404:
+        if (
+            status_code == 400
+            or status_code == 401
+            or status_code == 404
+            or status_code == 500
+        ):
             # From Woo on invalid data we get a 400 error
             # From Woo on Authentication or permission error we get a 401 error,
             # e.g. incorrect API keys
             # From Woo on record don't exist or are missing we get a 404 error
             # but raise_for_status treats it as a network error (which is retryable)
-            raise InvalidDataError(
-                "HTTP Error:\n"
-                "Result:%s\n"
-                "Code: %s\n"
-                "Reason: %s\n"
-                "name: %s\n" % (response, status_code, response._content, __name__)
-            )
-        if status_code == 500:
-            # Origin Error
-            raise NetworkRetryableError(
-                "HTTP Error:\n"
-                "Code: %s\n"
-                "Reason: %s\n" % (status_code, response._content)
+            raise requests.HTTPError(
+                url, response.status_code, response._content, __name__
             )
         response.raise_for_status()
         return response
@@ -113,14 +103,14 @@ class WooAPI(object):
     @property
     def api(self):
         if self._api is None:
-            remote_client = WooClient(
+            woocommerce_client = WooClient(
                 self._location.location,
                 self._location.client_id,
                 self._location.client_secret,
                 self._location.test_mode,
                 self._location.version,
             )
-            self._api = remote_client
+            self._api = woocommerce_client
         return self._api
 
     def api_call(self, resource_path, arguments, http_method=None):
@@ -236,9 +226,8 @@ class GenericAdapter(AbstractComponent):
     _name = "woo.adapter"
     _inherit = "woo.crud.adapter"
     _apply_on = "woo.backend"
-
+    _last_update_field = "date_modified"
     _woo_model = None
-    _last_update_field = None
     _woo_ext_id_key = "id"
     _odoo_ext_id_key = "external_id"
 
