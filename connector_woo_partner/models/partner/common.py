@@ -71,15 +71,14 @@ class ResPartner(models.Model):
         existing_partner = self.env["res.partner"].search(
             [("hash_key", "=", hash_key)], limit=1
         )
-        if existing_partner:
-            return existing_partner.id
-        else:
+        if not existing_partner:
             address_data = self._prepare_child_partner_vals(
                 data, address_type, state_obj
             )
             address_data["hash_key"] = hash_key
             partner_id = self.env["res.partner"].create(address_data)
             return partner_id.id
+        return existing_partner.id
 
     def child(self, record):
         """Mapping for Invoice and Shipping Addresses"""
