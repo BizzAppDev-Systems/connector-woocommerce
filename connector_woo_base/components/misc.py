@@ -7,6 +7,7 @@ def get_queue_job_description(model_name, batch=False, job_type=""):
         message = "Prepare Batch {} of ".format(job_type)
     else:
         message = "Record {} of ".format(job_type)
+    model_name = model_name.replace("woo", "WooCommerce")
     return "{} {}".format(
         message,
         " ".join(list(Counter(model_name.replace(".", " ").title().split()).keys())),
