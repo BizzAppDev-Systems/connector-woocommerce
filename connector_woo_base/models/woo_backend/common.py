@@ -1,10 +1,10 @@
 import logging
 from contextlib import contextmanager
+from datetime import datetime, timedelta
 
 from odoo import fields, models
 
 from ...components.backend_adapter import WooAPI, WooLocation
-from datetime import datetime, timedelta
 
 _logger = logging.getLogger(__name__)
 

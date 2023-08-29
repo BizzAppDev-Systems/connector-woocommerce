@@ -14,10 +14,12 @@ import logging
 
 from odoo import _, tools
 from odoo.exceptions import ValidationError
-from .misc import get_queue_job_description
+
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.job import identity_exact
+
+from .misc import get_queue_job_description
 
 _logger = logging.getLogger(__name__)
 

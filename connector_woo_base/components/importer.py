@@ -2,11 +2,13 @@ import logging
 
 from odoo import _, fields
 from odoo.exceptions import ValidationError
-from .misc import get_queue_job_description
+
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.exception import NothingToDoJob
 from odoo.addons.queue_job.job import identity_exact
+
+from .misc import get_queue_job_description
 
 _logger = logging.getLogger(__name__)
 
@@ -34,7 +36,6 @@ class WooImporter(AbstractComponent):
     def _before_import(self):
         """Hook called before the import, when we have the
         data from remote system"""
-        pass
 
     def get_parsed_date(self, datetime_str):
         # TODO : Support me for the Date structure.
@@ -240,7 +241,7 @@ class WooBatchImporter(AbstractComponent):
     _inherit = ["base.importer", "connector.woo.base"]
     _usage = "batch.importer"
 
-    def run(self, filters=None, force=None):
+    def run(self, filters=None, force=None, **kwargs):
         """Run the synchronization"""
         filters = filters or {}
         try:

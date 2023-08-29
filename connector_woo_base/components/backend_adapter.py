@@ -9,10 +9,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 from odoo.addons.component.core import AbstractComponent
-from odoo.addons.connector.exception import (
-    NetworkRetryableError,
-    RetryableJobError,
-)
+from odoo.addons.connector.exception import NetworkRetryableError, RetryableJobError
 
 _logger = logging.getLogger(__name__)
 
@@ -75,7 +72,12 @@ class WooClient(object):
         if status_code == 201:
             return response
         if status_code == 200:
-            return response.json()
+            json_response = response.json()
+            record_count = response.headers.get("X-WP-Total")
+            json_response.append({"count": {"record_count": record_count}})
+            # print(json_response.json(),"aaaaaaaaaaaqqqqqqqq")
+            return json_response
+
         if (
             status_code == 400
             or status_code == 401
