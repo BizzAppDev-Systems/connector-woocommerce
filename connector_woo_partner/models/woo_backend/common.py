@@ -1,6 +1,4 @@
-from odoo import fields, models
-
-from odoo.addons.connector_woo_base.components.misc import get_queue_job_description
+from odoo import models, fields
 
 
 class WooBackend(models.Model):
@@ -13,12 +11,8 @@ class WooBackend(models.Model):
     def import_partners(self):
         """Import Partners from backend"""
         filters = {"page": 1}
-        job_options = {}
         for backend in self:
             filters.update({"per_page": backend.default_limit})
-            job_options["description"] = get_queue_job_description(
-                model_name="woo.res.partner", batch=True, job_type="Import"
-            )
             backend.env["woo.res.partner"].with_company(backend.company_id).with_delay(
                 priority=5
             ).import_batch(backend=backend, filters=filters)
