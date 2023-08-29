@@ -1,8 +1,10 @@
 import logging
+
 from odoo import _
+
 from odoo.addons.component.core import Component
-from odoo.addons.connector.exception import MappingError
 from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.exception import MappingError
 
 # pylint: disable=W7950
 
@@ -53,8 +55,10 @@ class WooResPartnerImportMapper(Component):
     def addresses(self, record):
         """Mapping for Invoice and Shipping Addresses"""
         woo_res_partner = self.env["res.partner"]
-        child_data = woo_res_partner.child(record)
-        return {"child_ids": child_data} if child_data else {}
+        child_data = woo_res_partner.create_get_children(
+            record, record.get("id"), self.backend_record
+        )
+        return {"child_ids": [(0, 0, add) for add in child_data]} if child_data else {}
 
 
 class WooResPartnerImporter(Component):

@@ -6,6 +6,12 @@
         <field name="model">woo.backend</field>
         <field name="inherit_id" ref="connector_woo_base.view_woo_backend_form" />
         <field name="arch" type="xml">
+            <xpath
+                expr="//page[@name='advanced_configuration']/group"
+                position="inside"
+            >
+                <field name="without_email" />
+            </xpath>
             <xpath expr="//page[@name='import']" position="attributes">
                 <attribute name="invisible">0</attribute>
             </xpath>
@@ -16,11 +22,6 @@
                             for="import_partners"
                             string="Import Partners"
                             style="font-weight:bold;"
-                            class="oe_inline"
-                        />
-                        <field
-                            name="import_partners_from_date"
-                            nolabel="1"
                             class="oe_inline"
                         />
                     </group>
