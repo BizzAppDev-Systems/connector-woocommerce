@@ -1,6 +1,8 @@
-import logging
 import hashlib
-from odoo import fields, models, _
+import logging
+
+from odoo import _, fields, models
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
@@ -96,8 +98,9 @@ class ResPartner(models.Model):
         billing = record.get("billing")
         shipping = record.get("shipping")
         child_data = []
+        fields_to_check = ["email"]
         for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
-            if not data.get("email"):
+            if not any(data.get(field) for field in fields_to_check):
                 if any(data.values()) and not backend_id.without_email:
                     raise MappingError(_("Email is Missing!"))
                 continue
