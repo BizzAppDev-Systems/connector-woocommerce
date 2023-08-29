@@ -14,7 +14,7 @@ import logging
 
 from odoo import _, tools
 from odoo.exceptions import ValidationError
-
+from .misc import get_queue_job_description
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.job import identity_exact
@@ -299,9 +299,16 @@ class WooDirectBatchExporter(AbstractComponent):
     _name = "woo.direct.batch.exporter"
     _inherit = "woo.batch.exporter"
 
-    def _export_record(self, record):
-        """Export the record directly"""
-        self.model.export_record(self.backend_record, record)
+    def _export_record(self, record, job_options=None, **kwargs):
+        """Delay the export of the records"""
+        job_options = job_options or {}
+        if "identity_key" not in job_options:
+            job_options["identity_key"] = identity_exact
+        job_options["description"] = get_queue_job_description(
+            model_name=self.model._name, job_type="Export"
+        )
+        delayable = self.model.with_delay(**job_options or {})
+        delayable.export_record(self.backend_record, record, **kwargs)
 
 
 class WooDelayedBatchExporter(AbstractComponent):

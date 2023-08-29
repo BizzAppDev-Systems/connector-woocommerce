@@ -2,7 +2,7 @@ import logging
 
 from odoo import _, fields
 from odoo.exceptions import ValidationError
-
+from .misc import get_queue_job_description
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.exception import NothingToDoJob
@@ -262,6 +262,9 @@ class WooBatchImporter(AbstractComponent):
         job_options = job_options or {}
         if "identity_key" not in job_options:
             job_options["identity_key"] = identity_exact
+        job_options["description"] = get_queue_job_description(
+            model_name=self.model._name, job_type="Import"
+        )
         delayable = self.model.with_delay(**job_options or {})
         delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
 

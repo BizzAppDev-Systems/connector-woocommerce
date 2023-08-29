@@ -34,7 +34,7 @@ class WooBinding(models.AbstractModel):
 
     @api.model
     def import_record(self, backend, external_id, data=None, force=False):
-        """Import a woo record"""
+        """Import a Partner record from Woocommerce"""
         with backend.work_on(self._name) as work:
             importer = work.component(usage="record.importer")
             return importer.run(external_id, data=data)

@@ -9,7 +9,10 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 from odoo.addons.component.core import AbstractComponent
-from odoo.addons.connector.exception import NetworkRetryableError, RetryableJobError
+from odoo.addons.connector.exception import (
+    NetworkRetryableError,
+    RetryableJobError,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -226,7 +229,7 @@ class GenericAdapter(AbstractComponent):
     _name = "woo.adapter"
     _inherit = "woo.crud.adapter"
     _apply_on = "woo.backend"
-    _last_update_field = "date_modified"
+    _last_update_field = "date_modified_gmt"
     _woo_model = None
     _woo_ext_id_key = "id"
     _odoo_ext_id_key = "external_id"
