@@ -21,8 +21,8 @@ class WooProductProductBatchImporter(Component):
         """Run the synchronization"""
         filters = filters or {}
         try:
-            records = self.backend_adapter.search(filters)
-            for record in records.get("data"):
+            records_with_count = self.backend_adapter.search(filters)
+            for record in records_with_count.get("data"):
                 external_id = record.get(self.backend_adapter._woo_ext_id_key)
                 self._import_record(external_id, data=record)
         except Exception as err:
@@ -41,7 +41,7 @@ class WooProductProductImportMapper(Component):
         """Mapping for name"""
         name = record.get("name")
         if not name:
-            raise MappingError(_("Attribute Name is not found!"))
+            raise MappingError(_("Name is not found!"))
         return {"name": name}
 
     @mapping
