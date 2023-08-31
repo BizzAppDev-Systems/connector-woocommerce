@@ -22,7 +22,7 @@ class WooProductAttributeBatchImporter(Component):
         filters = filters or {}
         try:
             records = self.backend_adapter.search(filters)
-            for record in records:
+            for record in records.get("data"):
                 external_id = record.get(self.backend_adapter._woo_ext_id_key)
                 self._import_record(external_id, data=record)
         except Exception as err:

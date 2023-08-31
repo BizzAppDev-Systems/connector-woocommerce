@@ -73,8 +73,6 @@ class WooProductAttributeValueAdapter(Component):
         result = self._call(
             resource_path=resource_path, arguments=filters, http_method="get"
         )
-        result_lst = []
-        for res in result:
+        for res in result.get("data"):
             res["attribute"] = filters.get("attribute")
-            result_lst.append(res)
-        return result_lst
+        return result
