@@ -1,10 +1,9 @@
 import logging
 
 from odoo import _, tools
-from odoo.exceptions import ValidationError
-
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
+from odoo.exceptions import ValidationError
 from odoo.addons.connector.exception import IDMissingInBackend
 
 _logger = logging.getLogger(__name__)
@@ -20,7 +19,8 @@ class WooSaleOrderExporterMapper(Component):
         """Mapping for Status"""
         return (
             {"status": "completed"}
-            if record.picking_ids.state == "done" and self.backend_record.mark_completed
+            if record.picking_ids.state == "done"
+            and self.backend_record.mark_completed
             else {}
         )
 
@@ -31,26 +31,25 @@ class WooSaleOrderExporterMapper(Component):
         pickings = record.picking_ids.filtered(
             lambda picking: picking.state == "done" and picking.carrier_tracking_ref
         )
-        if (
+        if not (
             pickings
             and self.backend_record.mark_completed
             and self.backend_record.tracking_info
         ):
-            tracking_number = pickings[0].carrier_tracking_ref
-            return {
-                "meta_data": [
-                    {
-                        "key": "_wc_shipment_tracking_items",
-                        "value": [
-                            {
-                                "tracking_number": tracking_number,
-                            }
-                        ],
-                    }
-                ]
-            }
-        else:
             return {}
+        tracking_number = pickings[0].carrier_tracking_ref
+        return {
+            "meta_data": [
+                {
+                    "key": "_wc_shipment_tracking_items",
+                    "value": [
+                        {
+                            "tracking_number": tracking_number,
+                        }
+                    ],
+                }
+            ]
+        }
 
 
 class WooSaleOrderBatchExporter(Component):
@@ -90,6 +89,4 @@ class WooSaleOrderBatchExporter(Component):
 
     def _after_export(self, binding):
         """Import the transaction lines after checking shopify order status."""
-        # external_id = self.binder.to_external(binding)
-        # record = self.backend_adapter.read(external_id)
         binding.write({"woo_order_status": "completed"})

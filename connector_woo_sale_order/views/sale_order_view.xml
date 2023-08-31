@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <!-- Inherit sale order view to add connector page and  Binding -->
-    <record id="sale_order_form_view" model="ir.ui.view">
+    <record id="sale_order_form_view_inherit_woocommerce" model="ir.ui.view">
         <field name="name">sale.order.form.view</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="connector_ecommerce.view_order_connector_form" />
         <field name="arch" type="xml">
             <xpath expr="//form/header/button[@name='action_cancel']" position="after">
                 <field name="has_done_picking" invisible="1" />
-                <field name="woo_bind_ids" invisible="1" />
+                <field name="woo_bind_ids" invisible="1"/>
                 <button
                     name="export_delivery_status"
                     type="object"
@@ -17,14 +17,11 @@
                     string="Export Delivery Status"
                 />
             </xpath>
-            <xpath
-                expr="//form/sheet/group/group/field[@name='payment_term_id']"
-                position="after"
-            >
-                <field name="woo_order_status" readonly="1" />
+            <xpath expr="//form/sheet/group/group/field[@name='payment_term_id']" position="after">
+                <field name="woo_order_status" readonly="1"/>
             </xpath>
             <xpath expr="//field[@name='order_line']//tree" position="attributes">
-                <attribute name="editable" />
+                <attribute name="editable"/>
             </xpath>
             <xpath expr="//field[@name='order_line']/form" position="inside">
                 <notebook>
@@ -54,9 +51,9 @@
                                     <group>
                                         <field name="backend_id" widget="selection" />
                                         <field name="external_id" />
-                                        <field name="price_unit" />
-                                        <field name="product_uom_qty" />
-                                        <field name="price_subtotal" />
+                                        <field name="price_unit"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="price_subtotal"/>
                                     </group>
                                 </group>
                             </form>
@@ -87,23 +84,23 @@
                             edit="false"
                             create="false"
                         >
+                        <group>
                             <group>
-                                <group>
-                                    <field name="backend_id" widget="selection" />
-                                    <field name="external_id" />
-                                    <field name="price_unit" />
-                                    <field name="price_subtotal" />
-                                    <field name="discount_total" />
-                                    <field name="amount_total" />
-                                </group>
-                                <group>
-                                    <field name="discount_tax" />
-                                    <field name="shipping_total" />
-                                    <field name="shipping_tax" />
-                                    <field name="cart_tax" />
-                                    <field name="total_tax" />
-                                </group>
+                                <field name="backend_id" widget="selection" />
+                                <field name="external_id" />
+                                <field name="price_unit"/>
+                                <field name="price_subtotal"/>
+                                <field name="discount_total"/>
+                                <field name="amount_total"/>
                             </group>
+                            <group>
+                                <field name="discount_tax"/>
+                                <field name="shipping_total"/>
+                                <field name="shipping_tax"/>
+                                <field name="cart_tax"/>
+                                <field name="total_tax"/>
+                            </group>
+                        </group>
                         </form>
                     </field>
                 </page>

@@ -1,4 +1,5 @@
-from odoo import fields, models
+from odoo import models
+from odoo import fields, models, api
 
 
 class WooBackend(models.Model):
@@ -18,23 +19,25 @@ class WooBackend(models.Model):
                 priority=10
             ).import_batch(backend=backend, filters=filters)
 
+    @api.model
     def cron_import_sale_orders(self, domain=None):
         """Cron for import_sale_orders"""
         backend_ids = self.search(domain or [])
         backend_ids.import_sale_orders()
 
-    def export_stock_picking_status(self):
-        """Export Stock Picking status"""
-        for backend in self.sudo():
-            backend._export_from_date(
-                model="woo.stock.picking",
-                priority=20,
-            )
+    # def export_stock_picking_status(self):
+    #     """Export Stock Picking status"""
+    #     for backend in self.sudo():
+    #         backend._export_from_date(
+    #             model="woo.stock.picking",
+    #             priority=20,
+    #         )
 
-    def cron_export_stock_picking_status(self, domain=None):
-        """Cron for Export Stock Picking Status"""
-        backend_ids = self.search(domain or [])
-        backend_ids.export_stock_picking_status()
+    # @api.model
+    # def cron_export_stock_picking_status(self, domain=None):
+    #     """Cron for Export Stock Picking Status"""
+    #     backend_ids = self.search(domain or [])
+    #     backend_ids.export_stock_picking_status()
 
     def export_sale_order_status(self):
         """Export Sale Order Status"""
@@ -45,6 +48,7 @@ class WooBackend(models.Model):
                 priority=15
             ).export_batch(backend=backend, filters=filters)
 
+    @api.model
     def cron_export_sale_order_status(self, domain=None):
         """Cron of Export sale order status"""
         backend_ids = self.search(domain or [])

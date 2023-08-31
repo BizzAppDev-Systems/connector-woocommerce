@@ -1,10 +1,9 @@
 import logging
 
-from odoo import api, fields, models
-from odoo.exceptions import ValidationError
-
+from odoo import fields, models, api
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -23,15 +22,15 @@ class SaleOrder(models.Model):
         string="WooCommerce Backend",
         ondelete="restrict",
     )
-    discount_total = fields.Float(string="Discount Total")
-    discount_tax = fields.Float(string="Discount Tax")
-    shipping_total = fields.Float(string="Shipping Total")
-    shipping_tax = fields.Float(string="Shipping Tax")
-    cart_tax = fields.Float(string="Cart Tax")
-    total_tax = fields.Float(string="Total Tax")
-    price_unit = fields.Float(string="Price Total")
-    price_subtotal = fields.Float(string="Price Subtotal")
-    amount_total = fields.Float(string="Amount Total")
+    discount_total = fields.Float()
+    discount_tax = fields.Float()
+    shipping_total = fields.Float()
+    shipping_tax = fields.Float()
+    cart_tax = fields.Float()
+    total_tax = fields.Float()
+    price_unit = fields.Float()
+    price_subtotal = fields.Float()
+    amount_total = fields.Float()
 
     has_done_picking = fields.Boolean(
         string="Has Done Picking", compute="_compute_has_done_picking"
@@ -147,7 +146,7 @@ class WooSaleOrderLine(models.Model):
     )
     backend_id = fields.Many2one(
         related="woo_order_id.backend_id",
-        string="WooCommerce Backend(Woo Line)",
+        string="WooCommerce Line",
         readonly=True,
         store=True,
         required=False,
@@ -166,14 +165,10 @@ class WooSaleOrderLine(models.Model):
                 ("backend_id", "=", vals.get("backend_id")),
             ]
         )
-        if existing_record:
-            _logger.warning("Duplicate record creation detected: %s", vals)
-            return existing_record
-        else:
+        if not existing_record:
             binding = self.env["woo.sale.order"].browse(vals["woo_order_id"])
             vals["order_id"] = binding.odoo_id.id
-            binding = super(WooSaleOrderLine, self).create(vals)
-            return binding
+            return super(WooSaleOrderLine, self).create(vals)
 
 
 class SaleOrderLine(models.Model):
@@ -182,7 +177,7 @@ class SaleOrderLine(models.Model):
     woo_bind_ids = fields.One2many(
         comodel_name="woo.sale.order.line",
         inverse_name="odoo_id",
-        string="Woo Bindings",
+        string="WooCommerce Bindings(Order Line)",
         copy=False,
     )
     woo_line_id = fields.Char()
