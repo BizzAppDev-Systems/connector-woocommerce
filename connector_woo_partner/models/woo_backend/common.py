@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import models, fields, api
 
 
 class WooBackend(models.Model):
@@ -17,6 +17,7 @@ class WooBackend(models.Model):
                 priority=5
             ).import_batch(backend=backend, filters=filters)
 
+    @api.model
     def cron_import_partners(self, domain=None):
         backend_ids = self.search(domain or [])
         backend_ids.import_partners()

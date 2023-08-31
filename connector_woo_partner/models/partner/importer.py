@@ -1,10 +1,8 @@
 import logging
-
 from odoo import _
-
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
+from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
 
@@ -29,7 +27,10 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for Name (combination of firstname and lastname)"""
-        return {"name": record.get("username")}
+        name = record.get("username")
+        if not name:
+            raise MappingError(_("Username not found!"))
+        return {"name": name}
 
     @mapping
     def firstname(self, record):
@@ -58,7 +59,11 @@ class WooResPartnerImportMapper(Component):
         child_data = woo_res_partner.create_get_children(
             record, record.get("id"), self.backend_record
         )
-        return {"child_ids": [(0, 0, add) for add in child_data]} if child_data else {}
+        return (
+            {"child_ids": [(0, 0, child_added) for child_added in child_data]}
+            if child_data
+            else {}
+        )
 
 
 class WooResPartnerImporter(Component):
