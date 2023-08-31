@@ -1,6 +1,8 @@
-import logging
 import hashlib
-from odoo import fields, models, _
+import logging
+
+from odoo import _, fields, models
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
@@ -21,7 +23,18 @@ class ResPartner(models.Model):
     lastname = fields.Char(string="Last Name")
     hash_key = fields.Char(string="Hash Key")
 
-    def _prepare_child_partner_vals(self, data, address_type, state, country):
+    def _prepare_child_partner_vals(self, data, address_type=None):
+        country = data.get("country")
+        state = data.get("state")
+
+        country = self.env["res.country"].search(
+            [("code", "=", state)],
+            limit=1,
+        )
+        state = self.env["res.country.state"].search(
+            [("code", "=", state)],
+            limit=1,
+        )
         """Prepare values for child_ids"""
         vals = {
             "name": data.get("username")
@@ -33,7 +46,7 @@ class ResPartner(models.Model):
             "firstname": data.get("first_name"),
             "lastname": data.get("last_name"),
             "email": data.get("email"),
-            "type": address_type,
+            "type": address_type or "",
             "street": data.get("address_1"),
             "street2": data.get("address_2"),
             "zip": data.get("postcode"),
@@ -44,24 +57,10 @@ class ResPartner(models.Model):
         }
         return vals
 
-    def _process_address_data(
-        self, data, address_type, state, country, partner_ext_id, backend_id
-    ):
+    def _process_address_data(self, data, address_type, partner_ext_id, backend_id):
         """
         Process address data, generate hash key, and handle partner creation or retrieval.
         """
-        state_obj = None
-        country_obj = None
-        if country:
-            country_obj = self.env["res.country"].search(
-                [("code", "=", state)],
-                limit=1,
-            )
-        if state:
-            state_obj = self.env["res.country.state"].search(
-                [("code", "=", state)],
-                limit=1,
-            )
         hash_attributes = (
             data.get("username"),
             data.get("first_name"),
@@ -85,9 +84,7 @@ class ResPartner(models.Model):
         )
         if existing_partner:
             return
-        address_data = self._prepare_child_partner_vals(
-            data, address_type, state_obj, country_obj
-        )
+        address_data = self._prepare_child_partner_vals(data, address_type)
         address_data["hash_key"] = hash_key
         return address_data
 
@@ -101,16 +98,8 @@ class ResPartner(models.Model):
                 if any(data.values()) and not backend_id.without_email:
                     raise MappingError(_("Email is Missing!"))
                 continue
-            country = (
-                billing.get("country")
-                if data.get("billing")
-                else shipping.get("country")
-            )
-            state = (
-                billing.get("state") if data.get("billing") else shipping.get("state")
-            )
             address_data = self._process_address_data(
-                data, address_type, state, country, partner_ext_id, backend_id
+                data, address_type, partner_ext_id, backend_id
             )
             if not address_data:
                 continue
