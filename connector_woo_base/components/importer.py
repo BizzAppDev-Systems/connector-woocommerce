@@ -8,8 +8,6 @@ from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.exception import NothingToDoJob
 from odoo.addons.queue_job.job import identity_exact
 
-from .misc import get_queue_job_description
-
 _logger = logging.getLogger(__name__)
 
 
@@ -36,6 +34,7 @@ class WooImporter(AbstractComponent):
     def _before_import(self):
         """Hook called before the import, when we have the
         data from remote system"""
+        pass
 
     def get_parsed_date(self, datetime_str):
         # TODO : Support me for the Date structure.
@@ -241,15 +240,19 @@ class WooBatchImporter(AbstractComponent):
     _inherit = ["base.importer", "connector.woo.base"]
     _usage = "batch.importer"
 
-    def run(self, filters=None, force=None, **kwargs):
+    def run(self, filters=None, force=None):
         """Run the synchronization"""
         filters = filters or {}
+        if "record_count" not in filters:
+            filters.update({"record_count": 0})
         try:
-            records = self.backend_adapter.search(filters)
+            data = self.backend_adapter.search(filters)
+            records = data.get("data", [])
             for record in records:
                 external_id = record.get(self.backend_adapter._woo_ext_id_key)
                 self._import_record(external_id, data=record)
-            if records:
+            filters["record_count"] += len(records)
+            if data.get("record_count", 0) > filters.get("record_count", 0):
                 filters.update({"page": filters.get("page", 1) + 1})
                 self.process_next_page(filters)
         except Exception as err:
@@ -263,9 +266,6 @@ class WooBatchImporter(AbstractComponent):
         job_options = job_options or {}
         if "identity_key" not in job_options:
             job_options["identity_key"] = identity_exact
-        job_options["description"] = get_queue_job_description(
-            model_name=self.model._name, job_type="Import"
-        )
         delayable = self.model.with_delay(**job_options or {})
         delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
 

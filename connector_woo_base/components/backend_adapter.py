@@ -74,9 +74,7 @@ class WooClient(object):
         if status_code == 200:
             json_response = response.json()
             record_count = response.headers.get("X-WP-Total")
-            json_response.append({"count": {"record_count": record_count}})
-            # print(json_response.json(),"aaaaaaaaaaaqqqqqqqq")
-            return json_response
+            return {"record_count": int(record_count), "data": json_response}
 
         if (
             status_code == 400

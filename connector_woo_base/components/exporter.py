@@ -19,8 +19,6 @@ from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.job import identity_exact
 
-from .misc import get_queue_job_description
-
 _logger = logging.getLogger(__name__)
 
 
@@ -306,9 +304,6 @@ class WooDirectBatchExporter(AbstractComponent):
         job_options = job_options or {}
         if "identity_key" not in job_options:
             job_options["identity_key"] = identity_exact
-        job_options["description"] = get_queue_job_description(
-            model_name=self.model._name, job_type="Export"
-        )
         delayable = self.model.with_delay(**job_options or {})
         delayable.export_record(self.backend_record, record, **kwargs)
 
