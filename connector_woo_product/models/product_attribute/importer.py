@@ -41,7 +41,7 @@ class WooProductAttributeImportMapper(Component):
         """Mapping for name"""
         name = record.get("name")
         if not name:
-            raise MappingError(_("Attribute Name is not found!"))
+            raise MappingError(_("Attribute Name doesn't exist please check !!!"))
         return {"name": name}
 
     @mapping

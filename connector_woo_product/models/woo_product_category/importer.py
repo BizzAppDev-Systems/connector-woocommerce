@@ -29,7 +29,7 @@ class WooProductCategoryImportMapper(Component):
         """Mapping for name"""
         name = record.get("name")
         if not name:
-            raise MappingError(_("Category Name is not found!"))
+            raise MappingError(_("Category Name doesn't exist please check !!!"))
         return {"name": record.get("name")}
 
     @mapping

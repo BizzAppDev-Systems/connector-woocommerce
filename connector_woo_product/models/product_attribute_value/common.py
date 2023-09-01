@@ -65,7 +65,7 @@ class WooProductAttributeValueAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.product.attribute.value"
     _woo_model = "products/attributes"
-    _odoo_ext_id_key = "id"
+    _woo_ext_id_key = "id"
 
     def search(self, filters=None, **kwargs):
         """Method to get the records from woo"""

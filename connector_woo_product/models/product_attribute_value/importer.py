@@ -31,7 +31,7 @@ class WooAttributeValueImportMapper(Component):
         """Mapping for name"""
         name = record.get("name")
         if not name:
-            raise MappingError(_("Attribute Value Name is not found!"))
+            raise MappingError(_("Attribute Value Name doesn't exist please check !!!"))
         return {"name": record.get("name")}
 
     @mapping

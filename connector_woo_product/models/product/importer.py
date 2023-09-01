@@ -41,7 +41,7 @@ class WooProductProductImportMapper(Component):
         """Mapping for name"""
         name = record.get("name")
         if not name:
-            raise MappingError(_("Name is not found!"))
+            raise MappingError(_("Product name doesn't exist please check !!!"))
         return {"name": name}
 
     @mapping
@@ -135,11 +135,11 @@ class WooProductProductImportMapper(Component):
     def woo_attribute_ids(self, record):
         """Mapping of woo_attribute_ids"""
         attribute_ids = []
-        woo_product_attribute = record.get("attributes")
-        if not woo_product_attribute:
+        woo_product_attributes = record.get("attributes", [])
+        if not woo_product_attributes:
             return {}
         binder = self.binder_for("woo.product.attribute")
-        for attribute_id in woo_product_attribute:
+        for attribute_id in woo_product_attributes:
             attribute = attribute_id.get("id")
             woo_binding = binder.to_internal(attribute)
             if woo_binding:
@@ -159,9 +159,9 @@ class WooProductProductImportMapper(Component):
         """Mapping for woo_product_categ_ids"""
         category_ids = []
         create_categ_ids = []
-        woo_product_category = record.get("categories")
+        woo_product_categories = record.get("categories", [])
         binder = self.binder_for("woocommerce.product.category")
-        for category in woo_product_category:
+        for category in woo_product_categories:
             woo_binding = binder.to_internal(category.get("id"))
             if woo_binding:
                 category_ids.append(woo_binding.id)

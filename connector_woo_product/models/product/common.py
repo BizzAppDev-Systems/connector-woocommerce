@@ -84,11 +84,6 @@ class WooProductProduct(models.Model):
         required=True,
         ondelete="restrict",
     )
-    woocommerce_product_category_ids = fields.Many2many(
-        comodel_name="woo.product.category",
-        string="WooCommerce Product Category",
-        ondelete="restrict",
-    )
 
     def __init__(self, name, bases, attrs):
         """Bind Odoo Product"""
@@ -103,4 +98,4 @@ class WooProductProductAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.product.product"
     _woo_model = "products"
-    _odoo_ext_id_key = "id"
+    _woo_ext_id_key = "id"
