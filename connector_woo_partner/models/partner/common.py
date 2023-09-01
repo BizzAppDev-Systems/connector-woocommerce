@@ -94,7 +94,7 @@ class ResPartner(models.Model):
         for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
             if not any(data.values()):
                 continue
-            if not (data.get("email") and backend_id.without_email):
+            if not data.get("email") and not backend_id.without_email:
                 raise MappingError(_("Email is Missing!"))
             address_data = self._process_address_data(
                 data, address_type, partner_ext_id, backend_id
