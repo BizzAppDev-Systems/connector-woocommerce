@@ -1,8 +1,6 @@
-import hashlib
 import logging
-
-from odoo import _, fields, models
-
+import hashlib
+from odoo import fields, models, _
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
@@ -24,6 +22,7 @@ class ResPartner(models.Model):
     hash_key = fields.Char(string="Hash Key")
 
     def _prepare_child_partner_vals(self, data, address_type=None):
+        """Prepare values for child_ids"""
         country = data.get("country")
         state = data.get("state")
 
@@ -35,7 +34,6 @@ class ResPartner(models.Model):
             [("code", "=", state)],
             limit=1,
         )
-        """Prepare values for child_ids"""
         vals = {
             "name": data.get("username")
             or data.get("first_name")
@@ -94,10 +92,11 @@ class ResPartner(models.Model):
         shipping = record.get("shipping")
         child_data = []
         for data, address_type in [(billing, "invoice"), (shipping, "delivery")]:
-            if not data.get("email", ""):
+            if not any(data.values()):
+                continue
+            if not data.get("email"):
                 if any(data.values()) and not backend_id.without_email:
                     raise MappingError(_("Email is Missing!"))
-                continue
             address_data = self._process_address_data(
                 data, address_type, partner_ext_id, backend_id
             )
