@@ -6,9 +6,12 @@
         <field name="model">product.attribute</field>
         <field name="inherit_id" ref="product.product_attribute_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//form/field[@name='number_related_products']" position="after">
+            <xpath
+                expr="//form/field[@name='number_related_products']"
+                position="after"
+            >
                 <header>
-                    <field name="woo_bind_ids" invisible="1"/>
+                    <field name="woo_bind_ids" invisible="1" />
                     <button
                         name="import_product_attribute_value"
                         type="object"
@@ -19,8 +22,8 @@
                 </header>
             </xpath>
             <xpath expr="//field[@name='create_variant']" position="after">
-                <field name="has_archives"/>
-                <field name="woo_backend_id"/>
+                <field name="has_archives" />
+                <field name="woo_backend_id" />
             </xpath>
             <xpath expr="//page[@name='attribute_values']" position="after">
                 <page
