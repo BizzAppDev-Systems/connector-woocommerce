@@ -119,7 +119,13 @@ class WooSaleOrderAdapter(Component):
 
     _woo_model = "orders"
     _woo_key = "id"
-    _odoo_ext_id_key = "id"
+    _woo_ext_id_key = "id"
+    _model_dependencies = [
+        (
+            "woo.res.partner",
+            "customer_id",
+        ),
+    ]
 
 
 # Sale order line

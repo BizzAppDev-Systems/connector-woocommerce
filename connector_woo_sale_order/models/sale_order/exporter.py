@@ -19,8 +19,7 @@ class WooSaleOrderExporterMapper(Component):
         """Mapping for Status"""
         return (
             {"status": "completed"}
-            if record.picking_ids.state == "done"
-            and self.backend_record.mark_completed
+            if record.picking_ids.state == "done" and self.backend_record.mark_completed
             else {}
         )
 
@@ -31,25 +30,24 @@ class WooSaleOrderExporterMapper(Component):
         pickings = record.picking_ids.filtered(
             lambda picking: picking.state == "done" and picking.carrier_tracking_ref
         )
-        if not (
+        if (
             pickings
             and self.backend_record.mark_completed
             and self.backend_record.tracking_info
         ):
-            return {}
-        tracking_number = pickings[0].carrier_tracking_ref
-        return {
-            "meta_data": [
-                {
-                    "key": "_wc_shipment_tracking_items",
-                    "value": [
-                        {
-                            "tracking_number": tracking_number,
-                        }
-                    ],
-                }
-            ]
-        }
+            tracking_number = pickings[0].carrier_tracking_ref
+            return {
+                "meta_data": [
+                    {
+                        "key": "_wc_shipment_tracking_items",
+                        "value": [
+                            {
+                                "tracking_number": tracking_number,
+                            }
+                        ],
+                    }
+                ]
+            }
 
 
 class WooSaleOrderBatchExporter(Component):
@@ -73,7 +71,6 @@ class WooSaleOrderBatchExporter(Component):
         if should_import:
             self._delay_import()
             return
-
         result = self._run(*args, **kwargs)
         if not self.external_id or self.external_id == "False":
             self.external_id = record.id
