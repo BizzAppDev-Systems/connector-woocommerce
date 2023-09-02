@@ -14,7 +14,6 @@ import logging
 
 from odoo import _, tools
 from odoo.exceptions import ValidationError
-
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.job import identity_exact

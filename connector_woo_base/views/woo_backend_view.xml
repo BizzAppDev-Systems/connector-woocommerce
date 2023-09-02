@@ -100,20 +100,20 @@
                         </group>
                         <notebook>
                             <page
-                                name="import"
-                                string="Imports"
-                                attrs="{'invisible': True}"
-                            >
-                                <p class="oe_grey oe_inline">
-                                    By clicking on the buttons,
+                            name="import"
+                            string="Imports"
+                            attrs="{'invisible': True}"
+                        >
+                            <p class="oe_grey oe_inline">
+                                By clicking on the buttons,
                                 you will initiate the synchronizations
                                 with odoo database.
                                 Note that the import
                                 won't be done directly,
                                 they will create 'Jobs'
                                 executed as soon as possible.
-                                </p>
-                            </page>
+                            </p>
+                        </page>
                             <page
                                 name="advanced_configuration"
                                 string="Advanced Configuration"

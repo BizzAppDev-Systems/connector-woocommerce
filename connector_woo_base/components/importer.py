@@ -2,7 +2,6 @@ import logging
 
 from odoo import _, fields
 from odoo.exceptions import ValidationError
-
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.exception import NothingToDoJob
@@ -252,7 +251,9 @@ class WooBatchImporter(AbstractComponent):
                 external_id = record.get(self.backend_adapter._woo_ext_id_key)
                 self._import_record(external_id, data=record)
             filters["record_count"] += len(records)
-            if data.get("record_count", 0) > filters.get("record_count", 0):
+            record_count = data.get("record_count", 0)
+            filters_record_count = filters.get("record_count", 0)
+            if int(record_count) > int(filters_record_count):
                 filters.update({"page": filters.get("page", 1) + 1})
                 self.process_next_page(filters)
         except Exception as err:
