@@ -36,7 +36,7 @@
     - Navigate to Woocommerce Backends by going to Connectors > Woocommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Partners.
     - Click 'Import Partners' button to Import the Partners from Woocommerce.
-    - At the WooCommerce backend level, a new boolean option 'Allow Partners without Email' has been introduced. When this option is set to 'True,' the system will import all partners from child_ids that do not have an email. Conversely, when the option is set to 'False,' the system will import only those partners from child_ids that have an email.
+    - At the WooCommerce backend level, a new boolean option 'Allow Partners without Email' has been introduced. When this option is set to 'True', the system will import all partners from child_ids that do not have an email. Conversely, when the option is set to 'False', the system will import only those partners from child_ids that have an email.
 
 
 **Usage**

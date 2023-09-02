@@ -1,6 +1,6 @@
 import logging
 import hashlib
-from odoo import fields, models, _
+from odoo import fields, models, _, api
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
@@ -20,6 +20,22 @@ class ResPartner(models.Model):
     firstname = fields.Char(string="First Name")
     lastname = fields.Char(string="Last Name")
     hash_key = fields.Char(string="Hash Key")
+
+    @api.onchange(
+        "firstname",
+        "lastname",
+        "email",
+        "mobile",
+        "phone",
+        "street",
+        "street2",
+        "city",
+        "state_id",
+        "zip",
+    )
+    def _onchange_child_ids(self):
+        if self.hash_key:
+            self.hash_key = False
 
     def _prepare_child_partner_vals(self, data, address_type=None):
         """Prepare values for child_ids"""
