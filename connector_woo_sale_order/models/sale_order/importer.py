@@ -1,6 +1,7 @@
 import logging
 from odoo import _
 from odoo.addons.component.core import Component
+from odoo.addons.connector.exception import MappingError
 from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.components.mapper import mapping, only_create
 
@@ -33,6 +34,8 @@ class WooSaleOrderImportMapper(Component):
     def name(self, record):
         """Return name data with sale prefix."""
         name = record.get("order_key")
+        if not name:
+            raise MappingError(_("Sale Order Name not found Please check!!!"))
         if self.backend_record.order_prefix:
             name = "{}{}".format(self.backend_record.order_prefix, record.get("id"))
         return {"name": name}
