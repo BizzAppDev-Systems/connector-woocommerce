@@ -22,6 +22,24 @@ class ProductProduct(models.Model):
         string="WooCommerce Backend",
         ondelete="restrict",
     )
+
+
+class WooProductProduct(models.Model):
+    """Woocommerce Product Product"""
+
+    _name = "woo.product.product"
+    _inherit = "woo.binding"
+    _inherits = {"product.product": "odoo_id"}
+    _description = "WooCommerce Product"
+
+    _rec_name = "name"
+
+    odoo_id = fields.Many2one(
+        comodel_name="product.product",
+        string="WooCommerce Product",
+        required=True,
+        ondelete="restrict",
+    )
     status = fields.Selection(
         [
             ("any", "Any"),
@@ -64,24 +82,6 @@ class ProductProduct(models.Model):
     woo_product_template_variant_value_ids = fields.Many2many(
         comodel_name="woo.product.attribute.value",
         string="WooCommerce Product Template Variant Value",
-        ondelete="restrict",
-    )
-
-
-class WooProductProduct(models.Model):
-    """Woocommerce Product Product"""
-
-    _name = "woo.product.product"
-    _inherit = "woo.binding"
-    _inherits = {"product.product": "odoo_id"}
-    _description = "WooCommerce Product"
-
-    _rec_name = "name"
-
-    odoo_id = fields.Many2one(
-        comodel_name="product.product",
-        string="WooCommerce Product",
-        required=True,
         ondelete="restrict",
     )
 
