@@ -81,6 +81,7 @@
             </tree>
         </field>
     </record>
+    <!-- Define the search view -->
     <record id="view_woo_product_category_view_search" model="ir.ui.view">
         <field name="name">woo.product.category.view.search</field>
         <field name="model">woo.product.category</field>
