@@ -1,8 +1,7 @@
 import logging
 
-from odoo import _, fields, models
+from odoo import fields, models, _
 from odoo.exceptions import ValidationError
-
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
 
@@ -18,26 +17,12 @@ class ProductAttribute(models.Model):
         string="WooCommerce Bindings",
         copy=False,
     )
-    woo_backend_id = fields.Many2one(
-        comodel_name="woo.backend",
-        string="WooCommerce Backend",
-        ondelete="restrict",
-    )
     has_archives = fields.Boolean()
 
     def import_product_attribute_value(self):
         """Import Product Attribute Value of account move."""
-        self.ensure_one()
-        if not self.woo_backend_id:
-            raise ValidationError(_("Please add backend on Product Attribute."))
-        filters = {
-            "per_page": self.woo_backend_id.default_limit,
-            "page": 1,
-            "attribute": self.woo_bind_ids[0].external_id,
-        }
-        self.env["woo.product.attribute.value"].with_delay(priority=5).import_batch(
-            self.woo_backend_id, filters=filters
-        )
+        for binding in self.woo_bind_ids:
+            binding.method_to_call_attribute()
 
 
 class WooProductAttribute(models.Model):
@@ -56,6 +41,21 @@ class WooProductAttribute(models.Model):
         required=True,
         ondelete="restrict",
     )
+
+    def method_to_call_attribute(self):
+        self.ensure_one()
+        if not self.backend_id:
+            raise ValidationError(_("No Backend found on Product Attribute."))
+        if not self.external_id:
+            raise ValidationError(_("No External Id found in backend"))
+        filters = {
+            "per_page": self.backend_id.default_limit,
+            "page": 1,
+            "attribute": self.external_id,
+        }
+        self.env["woo.product.attribute.value"].with_delay(priority=5).import_batch(
+            self.backend_id, filters=filters
+        )
 
     def __init__(self, name, bases, attrs):
         """Bind Odoo Product Attribute"""

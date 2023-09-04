@@ -18,11 +18,6 @@ class ProductAttributeValue(models.Model):
         string="WooCommerce Bindings",
         copy=False,
     )
-    woo_backend_id = fields.Many2one(
-        comodel_name="woo.backend",
-        string="WooCommerce Backend",
-        ondelete="restrict",
-    )
     woo_attribute_id = fields.Many2one(
         comodel_name="woo.product.attribute",
         string="WooCommerce Product Attribute",

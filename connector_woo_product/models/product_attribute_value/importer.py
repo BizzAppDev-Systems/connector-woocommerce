@@ -1,10 +1,8 @@
 import logging
-
 from odoo import _
-
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping, only_create
 from odoo.addons.connector.exception import MappingError
+from odoo.addons.connector.components.mapper import mapping
 
 _logger = logging.getLogger(__name__)
 
@@ -54,22 +52,3 @@ class WooAttributeValueImportMapper(Component):
             if record.get("description")
             else {}
         )
-
-    @only_create
-    @mapping
-    def update_product_attribute(self, record):
-        """Update product attribute with imported attribute value."""
-        attribute_id = record.get("attribute")
-        attribute_value_name = record.get("name")
-        binder = self.binder_for(model="woo.product.attribute")
-        attribute = binder.to_internal(attribute_id, unwrap=True)
-        if not attribute:
-            return {}
-        attribute_value = self.env["product.attribute.value"].search(
-            [
-                ("attribute_id", "=", attribute.id),
-                ("name", "=", attribute_value_name),
-            ],
-            limit=1,
-        )
-        return {"value_ids": [(6, 0, attribute_value.ids)]} if attribute_value else {}

@@ -1,7 +1,6 @@
 from os.path import dirname, join
 
 from vcr import VCR
-
 from odoo.addons.connector_woo_base.tests.test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
@@ -26,9 +25,7 @@ class TestImportProductCategory(BaseWooTestCase):
                 external_id=external_id, backend=self.backend
             )
         self.product_model = self.env["woocommerce.product.category"]
-        productcategory1 = self.product_model.search(
-            [("external_id", "=", external_id)]
-        )
+        productcategory1 = self.product_model.search([("external_id", "=", external_id)])
         self.assertEqual(len(productcategory1), 1)
         self.assertTrue(productcategory1, "Woo Product Category is not imported!")
         self.assertEqual(

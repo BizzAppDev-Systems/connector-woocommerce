@@ -17,11 +17,6 @@ class ProductProduct(models.Model):
         string="WooCommerce Bindings",
         copy=False,
     )
-    woo_backend_id = fields.Many2one(
-        comodel_name="woo.backend",
-        string="WooCommerce Backend",
-        ondelete="restrict",
-    )
 
 
 class WooProductProduct(models.Model):
@@ -79,9 +74,9 @@ class WooProductProduct(models.Model):
         string="WooCommerce Product Category(Product)",
         ondelete="restrict",
     )
-    woo_product_template_variant_value_ids = fields.Many2many(
+    woo_product_attribute_value_ids = fields.Many2many(
         comodel_name="woo.product.attribute.value",
-        string="WooCommerce Product Template Variant Value",
+        string="WooCommerce Product Attribute Value",
         ondelete="restrict",
     )
 

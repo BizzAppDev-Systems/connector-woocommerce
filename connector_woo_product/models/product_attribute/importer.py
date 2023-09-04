@@ -1,11 +1,9 @@
 import logging
-
 from odoo import _
-from odoo.exceptions import ValidationError
-
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
+from odoo.addons.connector.components.mapper import mapping
+from odoo.exceptions import ValidationError
 
 # pylint: disable=W7950
 
@@ -31,6 +29,19 @@ class WooProductAttributeBatchImporter(Component):
             raise ValidationError(_("Error : %s") % err) from err
 
 
+class WooProductAttributeImporter(Component):
+    """Importer the WooCommerce Product"""
+
+    _name = "woo.product.attribute.importer"
+    _inherit = "woo.importer"
+    _apply_on = "woo.product.attribute"
+
+    def _after_import(self, binding, **kwargs):
+        """Call import batch of Product Attribute Value"""
+        binding.method_to_call_attribute()
+        return super(WooProductAttributeImporter, self)._after_import(binding, **kwargs)
+
+
 class WooProductAttributeImportMapper(Component):
     """Impoter Mapper for the WooCommerce Product Attribute"""
 
@@ -50,11 +61,3 @@ class WooProductAttributeImportMapper(Component):
     def has_archives(self, record):
         """Mapping product has_archives"""
         return {"has_archives": record.get("has_archives")}
-
-
-class WooProductAttributeImporter(Component):
-    """Importer the WooCommerce Product"""
-
-    _name = "woo.product.attribute.importer"
-    _inherit = "woo.importer"
-    _apply_on = ["woo.product.attribute"]

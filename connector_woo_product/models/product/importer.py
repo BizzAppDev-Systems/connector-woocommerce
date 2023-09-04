@@ -1,11 +1,9 @@
 import logging
-
-from odoo import _
-from odoo.exceptions import ValidationError
-
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
+from odoo.exceptions import ValidationError
 from odoo.addons.connector.exception import MappingError
+from odoo import _
+from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
 
@@ -60,6 +58,8 @@ class WooProductProductImportMapper(Component):
     def default_code(self, record):
         """Mapped product default code."""
         default_code = record.get("sku")
+        if not default_code and not self.backend_record.without_sku:
+            raise MappingError(_("SKU is Missing!"))
         return {"default_code": default_code} if default_code else {}
 
     @mapping
@@ -141,18 +141,17 @@ class WooProductProductImportMapper(Component):
         if not woo_product_attributes:
             return {}
         binder = self.binder_for("woo.product.attribute")
-        for attribute_id in woo_product_attributes:
-            attribute = attribute_id.get("id")
-            woo_binding = binder.to_internal(attribute)
+        for attribute in woo_product_attributes:
+            attribute_id = attribute.get("id")
+            woo_binding = binder.to_internal(attribute_id)
             if woo_binding:
                 attribute_ids.append(woo_binding.id)
                 continue
-            product_attribute = self._get_product_attribute(attribute_id, record)
-            if "options" in attribute_id:
+            product_attribute = self._get_product_attribute(attribute, record)
+            if "options" in attribute:
                 self._create_attribute_values(
-                    attribute_id["options"], product_attribute
+                    attribute["options"], product_attribute
                 )
-
             attribute_ids.append(product_attribute.id)
         return {"woo_attribute_ids": [(6, 0, attribute_ids)]}
 
@@ -162,7 +161,7 @@ class WooProductProductImportMapper(Component):
         category_ids = []
         create_categ_ids = []
         woo_product_categories = record.get("categories", [])
-        binder = self.binder_for("woocommerce.product.category")
+        binder = self.binder_for("woo.product.category")
         for category in woo_product_categories:
             woo_binding = binder.to_internal(category.get("id"))
             if woo_binding:

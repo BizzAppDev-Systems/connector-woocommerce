@@ -1,6 +1,5 @@
+from odoo import models, fields, api
 from datetime import datetime, timedelta
-
-from odoo import api, fields, models
 
 IMPORT_DELTA_BUFFER = 30  # seconds
 
@@ -11,6 +10,7 @@ class WooBackend(models.Model):
     _inherit = "woo.backend"
 
     import_products_from_date = fields.Datetime(string="Import products from date")
+    without_sku = fields.Boolean(string="Allow Product without SKU")
 
     def _import_from_date(self, model, from_date_field, priority=None, filters=None):
         """Method to add a filter based on the date."""
@@ -79,7 +79,7 @@ class WooBackend(models.Model):
         filters = {"page": 1}
         for backend in self:
             filters.update({"per_page": backend.default_limit})
-            backend.env["woocommerce.product.category"].with_company(
+            backend.env["woo.product.category"].with_company(
                 backend.company_id
             ).with_delay(priority=5).import_batch(backend=backend, filters=filters)
 

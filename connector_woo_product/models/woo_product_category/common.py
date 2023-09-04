@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 class WooProductCategory(models.Model):
     _name = "woo.product.category"
     _description = "Product Category"
+    _inherit = "woo.binding"
     _parent_name = "parent_id"
     _parent_store = True
 
@@ -32,7 +33,7 @@ class WooProductCategory(models.Model):
     )
 
     woo_bind_ids = fields.One2many(
-        comodel_name="woocommerce.product.category",
+        comodel_name="woo.product.category",
         inverse_name="odoo_id",
         string="WooCommerce Bindings",
         copy=False,
@@ -42,31 +43,13 @@ class WooProductCategory(models.Model):
         string="WooCommerce Backend",
         ondelete="restrict",
     )
-
-
-class WooCommerceProductCategory(models.Model):
-    """Woocommerce Product Category"""
-
-    _name = "woocommerce.product.category"
-    _inherit = "woo.binding"
-    _inherits = {"woo.product.category": "odoo_id"}
-    _description = "WooCommerce Product Category"
-
-    _rec_name = "name"
-
-    odoo_id = fields.Many2one(
-        comodel_name="woo.product.category",
-        string=" WooCommerce Product Category",
-        required=True,
-        ondelete="restrict",
-    )
     woo_parent_id = fields.Many2one(
-        comodel_name="woocommerce.product.category",
+        comodel_name="woo.product.category",
         string="WooCommerce Parent Category",
         ondelete="cascade",
     )
     woo_child_ids = fields.One2many(
-        comodel_name="woocommerce.product.category",
+        comodel_name="woo.product.category",
         inverse_name="woo_parent_id",
         string="WooCommerce Child Categories",
     )
@@ -74,7 +57,24 @@ class WooCommerceProductCategory(models.Model):
     def __init__(self, name, bases, attrs):
         """Bind Odoo WooCommerce Product Category"""
         WooModelBinder._apply_on.append(self._name)
-        super(WooCommerceProductCategory, self).__init__(name, bases, attrs)
+        super(WooProductCategory, self).__init__(name, bases, attrs)
+
+
+# class WooCommerceProductCategory(models.Model):
+#     """Woocommerce Product Category"""
+
+#     _name = "woocommerce.product.category"
+#     _inherits = {"woo.product.category": "odoo_id"}
+#     _description = "WooCommerce Product Category"
+
+#     _rec_name = "name"
+
+#     odoo_id = fields.Many2one(
+#         comodel_name="woo.product.category",
+#         string=" WooCommerce Product Category",
+#         required=True,
+#         ondelete="restrict",
+#     )
 
 
 class WooProductCategoryAdapter(Component):
@@ -82,6 +82,6 @@ class WooProductCategoryAdapter(Component):
 
     _name = "woo.product.category.adapter"
     _inherit = "woo.adapter"
-    _apply_on = "woocommerce.product.category"
+    _apply_on = "woo.product.category"
     _woo_model = "products/categories"
     _woo_ext_id_key = "id"
