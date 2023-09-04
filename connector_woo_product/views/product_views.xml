@@ -6,9 +6,6 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view" />
         <field name="arch" type="xml">
-            <field name="categ_id" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </field>
             <xpath expr="//notebook" position="inside">
                 <page
                     string="WooCommerce Connector"
@@ -44,6 +41,8 @@
                                 <field name="woo_product_categ_ids" />
                                 <label for="woo_attribute_ids" string="WooCommerce Attributes"/>
                                 <field name="woo_attribute_ids" />
+                                <label for="woo_product_attribute_value_ids" string="WooCommerce Product Attribute Values"/>
+                                <field name="woo_product_attribute_value_ids" />
                             </group>
                         </form>
                     </field>

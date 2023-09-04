@@ -22,7 +22,7 @@ class ProductAttribute(models.Model):
     def import_product_attribute_value(self):
         """Import Product Attribute Value of account move."""
         for binding in self.woo_bind_ids:
-            binding.method_to_call_attribute()
+            binding.sync_attribute_values_from_woo()
 
 
 class WooProductAttribute(models.Model):
@@ -42,7 +42,7 @@ class WooProductAttribute(models.Model):
         ondelete="restrict",
     )
 
-    def method_to_call_attribute(self):
+    def sync_attribute_values_from_woo(self):
         self.ensure_one()
         if not self.backend_id:
             raise ValidationError(_("No Backend found on Product Attribute."))

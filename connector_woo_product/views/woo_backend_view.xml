@@ -11,6 +11,7 @@
             </xpath>
             <xpath expr="//page[@name='advanced_configuration']/group" position="inside">
                 <field name="without_sku" />
+                <field name="product_categ_id"/>
             </xpath>
             <xpath expr="//page[@name='import']" position="inside">
                 <group>

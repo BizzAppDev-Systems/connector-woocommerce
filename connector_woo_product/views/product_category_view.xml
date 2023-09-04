@@ -92,16 +92,10 @@
     </record>
 
     <!-- Define the menu item product category at backend level-->
-    <menuitem id="menu_woo_product_category"
-        name="WooCommerce Product Categories"
-        sequence="15"
-        parent="connector.menu_connector_root"
-        groups="connector.group_connector_manager"
-    />
     <menuitem
-        id="menu_woo_backend"
-        name="Product Categories"
-        parent="menu_woo_product_category"
+        id="menu_woo_product_category"
+        name="WooCommerce Product Categories"
+        parent="connector_woo_base.menu_woo_root"
         action="action_woo_product_category"
     />
 </odoo>

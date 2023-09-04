@@ -96,6 +96,12 @@ class WooProductProductImportMapper(Component):
         stock_status = record.get("stock_status")
         return {"stock_status": stock_status} if stock_status else {}
 
+    @mapping
+    def categ_id(self, record):
+        """Mapping for Odoo category"""
+        product_category = self.backend_record.product_categ_id
+        return {"categ_id": product_category} if product_category else {}
+
     def _get_product_attribute(self, attribute_id, record):
         """Get the product attribute"""
         binder = self.binder_for("woo.product.attribute")
@@ -110,7 +116,6 @@ class WooProductProductImportMapper(Component):
                     "external_id": created_id,
                 }
             )
-
         return product_attribute
 
     def _create_attribute_values(self, options, product_attribute):
@@ -149,9 +154,7 @@ class WooProductProductImportMapper(Component):
                 continue
             product_attribute = self._get_product_attribute(attribute, record)
             if "options" in attribute:
-                self._create_attribute_values(
-                    attribute["options"], product_attribute
-                )
+                self._create_attribute_values(attribute["options"], product_attribute)
             attribute_ids.append(product_attribute.id)
         return {"woo_attribute_ids": [(6, 0, attribute_ids)]}
 

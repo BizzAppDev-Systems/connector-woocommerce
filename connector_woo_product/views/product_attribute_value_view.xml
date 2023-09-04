@@ -76,7 +76,7 @@
         </record>
         <!-- Action to open the form view -->
         <record id="action_product_attribute_woo_value_form" model="ir.actions.act_window">
-            <field name="name">Product Attribute Woo Value</field>
+            <field name="name">Attribute Value</field>
             <field name="res_model">product.attribute.value</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_product_attribute_woo_value_tree"/>
