@@ -21,21 +21,24 @@ class ResPartner(models.Model):
     lastname = fields.Char(string="Last Name")
     hash_key = fields.Char(string="Hash Key")
 
-    @api.onchange(
-        "firstname",
-        "lastname",
-        "email",
-        "mobile",
-        "phone",
-        "street",
-        "street2",
-        "city",
-        "state_id",
-        "zip",
-    )
-    def _onchange_child_ids(self):
-        if self.hash_key:
-            self.hash_key = False
+    def write(self, vals):
+        if set(vals.keys()) & set(
+            [
+                "firstname",
+                "lastname",
+                "email",
+                "mobile",
+                "phone",
+                "street",
+                "street2",
+                "city",
+                "state_id",
+                "zip",
+            ]
+        ):
+            vals["hash_key"] = False
+
+        return super(ResPartner, self).write(vals)
 
     def _prepare_child_partner_vals(self, data, address_type=None):
         """Prepare values for child_ids"""
