@@ -11,7 +11,6 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False" />
-            <field name="active" eval="True" />
         </record>
         <!-- Import Product Attributes -->
         <record id="ir_cron_woocommerce_import_product_attribute" model="ir.cron">
@@ -23,7 +22,6 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False" />
-            <field name="active" eval="True" />
         </record>
         <!-- Import Product Categories -->
         <record id="ir_cron_woocommerce_import_product_category" model="ir.cron">
@@ -35,7 +33,6 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False" />
-            <field name="active" eval="True" />
         </record>
     </data>
 </odoo>

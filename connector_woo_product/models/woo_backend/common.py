@@ -12,7 +12,10 @@ class WooBackend(models.Model):
     import_products_from_date = fields.Datetime(string="Import products from date")
     without_sku = fields.Boolean(string="Allow Product without SKU")
     product_categ_id = fields.Many2one(
-        comodel_name="product.category", string="Product Category"
+        comodel_name="product.category",
+        string="Product Category",
+        default=lambda self: self.env.ref('product.product_category_all').id,
+        help="Default product category for imported WooCommerce products.",
     )
 
     def _import_from_date(self, model, from_date_field, priority=None, filters=None):
