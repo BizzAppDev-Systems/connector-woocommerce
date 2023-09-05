@@ -11,11 +11,10 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False" />
-            <field name="active" eval="True" />
         </record>
         <!-- Export Sale Order status -->
         <record id="ir_cron_woo_sale_order_export" model="ir.cron">
-            <field name="name">Everstox: Export Sale Order status</field>
+            <field name="name">Woocommerce: Export Sale Order status</field>
             <field name="model_id" ref="model_woo_backend" />
             <field name="state">code</field>
             <field name="code">model.cron_export_sale_order_status()</field>
@@ -23,7 +22,6 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False" />
-            <field name="active" eval="True" />
         </record>
     </data>
 </odoo>

@@ -30,24 +30,25 @@ class WooSaleOrderExporterMapper(Component):
         pickings = record.picking_ids.filtered(
             lambda picking: picking.state == "done" and picking.carrier_tracking_ref
         )
-        if (
+        if not (
             pickings
             and self.backend_record.mark_completed
             and self.backend_record.tracking_info
         ):
-            tracking_number = pickings[0].carrier_tracking_ref
-            return {
-                "meta_data": [
-                    {
-                        "key": "_wc_shipment_tracking_items",
-                        "value": [
-                            {
-                                "tracking_number": tracking_number,
-                            }
-                        ],
-                    }
-                ]
-            }
+            return {}
+        tracking_number = pickings[0].carrier_tracking_ref
+        return {
+            "meta_data": [
+                {
+                    "key": "_wc_shipment_tracking_items",
+                    "value": [
+                        {
+                            "tracking_number": tracking_number,
+                        }
+                    ],
+                }
+            ]
+        }
 
 
 class WooSaleOrderBatchExporter(Component):

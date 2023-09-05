@@ -91,7 +91,7 @@
                                 <field name="price_unit"/>
                                 <field name="price_subtotal"/>
                                 <field name="discount_total"/>
-                                <field name="amount_total"/>
+                                <field name="woo_amount_total"/>
                             </group>
                             <group>
                                 <field name="discount_tax"/>

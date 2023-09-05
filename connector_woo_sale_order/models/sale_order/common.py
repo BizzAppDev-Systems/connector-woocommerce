@@ -17,21 +17,6 @@ class SaleOrder(models.Model):
         string="WooCommerce Bindings",
         copy=False,
     )
-    woo_backend_id = fields.Many2one(
-        comodel_name="woo.backend",
-        string="WooCommerce Backend",
-        ondelete="restrict",
-    )
-    discount_total = fields.Float()
-    discount_tax = fields.Float()
-    shipping_total = fields.Float()
-    shipping_tax = fields.Float()
-    cart_tax = fields.Float()
-    total_tax = fields.Float()
-    price_unit = fields.Float()
-    price_subtotal = fields.Float()
-    amount_total = fields.Float()
-
     has_done_picking = fields.Boolean(
         string="Has Done Picking", compute="_compute_has_done_picking"
     )
@@ -98,6 +83,15 @@ class WooSaleOrder(models.Model):
     woo_order_id = fields.Integer(
         string="WooCommerce Order ID", help="'order_id' field in WooCommerce"
     )
+    discount_total = fields.Float()
+    discount_tax = fields.Float()
+    shipping_total = fields.Float()
+    shipping_tax = fields.Float()
+    cart_tax = fields.Float()
+    total_tax = fields.Float()
+    price_unit = fields.Float()
+    price_subtotal = fields.Float()
+    woo_amount_total = fields.Float()
 
     def __init__(self, name, bases, attrs):
         """Bind Odoo Partner"""
@@ -150,31 +144,25 @@ class WooSaleOrderLine(models.Model):
         required=True,
         ondelete="restrict",
     )
-    backend_id = fields.Many2one(
-        related="woo_order_id.backend_id",
-        string="WooCommerce Line",
-        readonly=True,
-        store=True,
-        required=False,
-    )
 
     def __init__(self, name, bases, attrs):
         """Bind Odoo Sale Order Line"""
         WooModelBinder._apply_on.append(self._name)
         super(WooSaleOrderLine, self).__init__(name, bases, attrs)
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
-        existing_record = self.search(
-            [
-                ("external_id", "=", vals.get("external_id")),
-                ("backend_id", "=", vals.get("backend_id")),
-            ]
-        )
-        if not existing_record:
-            binding = self.env["woo.sale.order"].browse(vals["woo_order_id"])
-            vals["order_id"] = binding.odoo_id.id
-            return super(WooSaleOrderLine, self).create(vals)
+        for value in vals:
+            existing_record = self.search(
+                [
+                    ("external_id", "=", value.get("external_id")),
+                    ("backend_id", "=", value.get("backend_id")),
+                ]
+            )
+            if not existing_record:
+                binding = self.env["woo.sale.order"].browse(value["woo_order_id"])
+                value["order_id"] = binding.odoo_id.id
+        return super(WooSaleOrderLine, self).create(vals)
 
 
 class SaleOrderLine(models.Model):
@@ -187,8 +175,3 @@ class SaleOrderLine(models.Model):
         copy=False,
     )
     woo_line_id = fields.Char()
-    woo_backend_id = fields.Many2one(
-        comodel_name="woo.backend",
-        string="WooCommerce Backend(Line)",
-        ondelete="restrict",
-    )

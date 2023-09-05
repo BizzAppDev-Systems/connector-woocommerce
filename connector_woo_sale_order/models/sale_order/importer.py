@@ -51,11 +51,11 @@ class WooSaleOrderImportMapper(Component):
         else:
             billing = record.get("billing")
             shipping = record.get("shipping")
-            partner_dict = {}
-            if billing.get("first_name") or billing.get("email"):
-                partner_dict = billing
-            else:
-                partner_dict = shipping
+            partner_dict = (
+                billing
+                if billing.get("first_name") or billing.get("email")
+                else shipping
+            )
             partner_data = self.env["res.partner"]._prepare_child_partner_vals(
                 partner_dict
             )
@@ -112,8 +112,10 @@ class WooSaleOrderImportMapper(Component):
         currency = self.env["res.currency"].search(
             [("name", "=", record.get("currency"))], limit=1
         )
+        if not currency:
+            return {}
         currency.write({"active": True})
-        return {"currency_id": currency.id} if currency else {}
+        return {"currency_id": currency.id}
 
     @mapping
     def total_tax(self, record):
@@ -121,9 +123,9 @@ class WooSaleOrderImportMapper(Component):
         return {"total_tax": record.get("total_tax")} if record.get("total_tax") else {}
 
     @mapping
-    def amount_total(self, record):
+    def woo_amount_total(self, record):
         """Mapping for Amount Total"""
-        return {"amount_total": record.get("total")} if record.get("total") else {}
+        return {"woo_amount_total": record.get("total")} if record.get("total") else {}
 
     @mapping
     def amount_tax(self, record):
@@ -170,37 +172,37 @@ class WooSaleOrderLineImportMapper(Component):
     ]
 
     @mapping
-    def product_uom(self, record):
-        """Mapping for Product UOM"""
-        return {"product_uom": 1}
-
-    @mapping
     def product_id(self, record):
         """Return Product excited in Woo order line and pre-check validations."""
+        if not record.get("product_id"):
+            return {}
         binder = self.binder_for("woo.product.product")
         product = binder.to_internal(record.get("product_id"), unwrap=True)
-        return {"product_id": product.id} if record.get("product_id") else {}
+        return {"product_id": product.id}
 
     @mapping
     def product_uom_qty(self, record):
         """Mapping for Product Uom qty"""
+        product_qty = record.get("quantity")
+        if not product_qty:
+            raise MappingError(
+                _("Order Line Product Quantity not found Please check!!!")
+            )
         return {"product_uom_qty": record.get("quantity")}
 
     @mapping
     def price_unit(self, record):
         """Mapping for Price Unit"""
-        return {"price_unit": record.get("price")}
+        unit_price = record.get("price")
+        if not unit_price:
+            raise MappingError(_("Order Line Price Unit not found Please check!!!"))
+        return {"price_unit": unit_price}
 
     @mapping
     def tax_id(self, record):
         """Mapping for Tax"""
-        tax_ids = []
-        total_tax = record.get("taxes")
-        if not total_tax:
+        if not record.get("taxes"):
             return {}
-        tax_id_list = total_tax.split(",")
-        tax_ids = [int(tax_id) for tax_id in tax_id_list]
-        return {"tax_id": [(6, 0, tax_ids)]}
 
     @mapping
     def price_subtotal(self, record):
@@ -210,12 +212,18 @@ class WooSaleOrderLineImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for Name"""
-        return {"name": record.get("name")}
+        name = record.get("name")
+        if not name:
+            raise MappingError(_("Order Line Name not found Please check!!!"))
+        return {"name": name}
 
     @mapping
     def order_id(self, record):
         """Mapping for Order"""
-        return {"order_id": self.options.get("order_id")}
+        order_id = self.options.get("order_id")
+        if not order_id:
+            raise MappingError(_("Order Line Order Id not found Please check!!!"))
+        return {"order_id": order_id}
 
 
 class WooSaleOrderLineImporter(Component):
