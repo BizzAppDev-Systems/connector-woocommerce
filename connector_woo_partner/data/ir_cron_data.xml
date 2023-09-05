@@ -11,7 +11,6 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="False" />
-            <field name="active" eval="True" />
         </record>
     </data>
 </odoo>
