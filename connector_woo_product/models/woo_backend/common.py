@@ -15,7 +15,7 @@ class WooBackend(models.Model):
         comodel_name="product.category",
         string="Product Category",
         default=lambda self: self.env.ref('product.product_category_all').id,
-        help="Default product category for imported WooCommerce products.",
+        help="Set Odoo Product Category for imported WooCommerce products.",
     )
 
     def _import_from_date(self, model, from_date_field, priority=None, filters=None):

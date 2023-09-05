@@ -177,7 +177,6 @@ class WooProductProductImportMapper(Component):
             values = {
                 "name": category.get("name"),
                 "parent_id": category.get("parent"),
-                "woo_backend_id": self.backend_record.id,
             }
             create_categ_ids.append((0, 0, values))
         if category_ids:
