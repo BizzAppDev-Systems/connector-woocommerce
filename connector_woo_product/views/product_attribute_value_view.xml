@@ -74,6 +74,18 @@
                 </tree>
             </field>
         </record>
+        <!-- Added Search view for Product Attribute value-->
+        <record id="product_attribute_woo_value_view_search" model="ir.ui.view">
+            <field name="name">product.attribute.woo.value.search</field>
+            <field name="model">product.attribute.value</field>
+            <field name="arch" type="xml">
+                <search string="Attribute Values">
+                    <group expand="1" string="Group By">
+                        <filter string="Attribute" name="group_by_attribute" context="{'group_by': 'attribute_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
         <!-- Action to open the form view -->
         <record id="action_product_attribute_woo_value_form" model="ir.actions.act_window">
             <field name="name">Attribute Value</field>

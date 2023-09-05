@@ -79,6 +79,8 @@ class WooProductProduct(models.Model):
         string="WooCommerce Product Attribute Value",
         ondelete="restrict",
     )
+    price = fields.Char()
+    regular_price = fields.Char()
 
     def __init__(self, name, bases, attrs):
         """Bind Odoo Product"""

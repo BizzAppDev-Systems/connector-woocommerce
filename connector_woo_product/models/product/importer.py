@@ -50,9 +50,13 @@ class WooProductProductImportMapper(Component):
         return {"list_price": record.get("price")}
 
     @mapping
-    def standard_price(self, record):
+    def price(self, record):
         """Mapping for standard_price"""
-        return {"standard_price": record.get("regular_price")}
+        return {"price": record.get("price")}
+
+    @mapping
+    def regular_price(self, record):
+        return {"price": record.get("regular_price")}
 
     @mapping
     def default_code(self, record):
@@ -100,7 +104,7 @@ class WooProductProductImportMapper(Component):
     def categ_id(self, record):
         """Mapping for Odoo category"""
         product_category = self.backend_record.product_categ_id
-        return {"categ_id": product_category} if product_category else {}
+        return {"categ_id": product_category.id} if product_category else {}
 
     def _get_product_attribute(self, attribute_id, record):
         """Get the product attribute"""

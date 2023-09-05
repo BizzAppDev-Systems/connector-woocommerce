@@ -23,9 +23,9 @@ class ProductAttributeValue(models.Model):
         string="WooCommerce Product Attribute",
         ondelete="restrict",
     )
-    woo_product_template_variant_value_ids = fields.Many2many(
+    woo_product_attribute_value_ids = fields.Many2many(
         comodel_name="woo.product.attribute.value",
-        string="WooCommerce Product Template Variant Value",
+        string="WooCommerce Product Attribute Value",
         ondelete="restrict",
     )
 

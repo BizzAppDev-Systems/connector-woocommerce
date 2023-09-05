@@ -36,19 +36,23 @@
     - Navigate to Woocommerce Backends by going to Connectors > Woocommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Products.
     - Click the 'Import Products' button to import Products from WooCommerce.
+    - At the WooCommerce backend level, a new boolean option 'Allow Product without SKU' has been introduced. When this option is set to 'True', the system will import all Products from WooCommerce that do not have an SKU. Conversely, when the option is set to 'False', the system will import only those Products from WooCommerce that have an SKU.
+    - At the WooCommerce backend level, in 'Advanced Configuration' tab there is 'Product Category' from that select any category in which you have to keep your Product.
+    - Added a Price,Regular Price,Stock Status,Tax Status,WooCommerce Product Attribute Values, and Status at the binding level.
 
 * Product Attributes Import:
     - Navigate to Woocommerce Backends by going to Connectors > Woocommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Product Attributes.
     - Click the 'Import Product Attributes' button to import Product Attributes from WooCommerce.
-    - Click the 'Import Attribute Value' button to import Product Attribute Values from WooCommerce.
+    - After Import Product Attribute immediately Attribute Value will be imported and another way to Import Attribute Value is Click the 'Import Attribute Value' button to import Product Attribute Values from WooCommerce.
     - The 'Product Attributes Value' menu item is located at Sale > Configuration > Product.
+    - Product Attribute Value, add a "Group By" based on the Attribute.
 
 * Product Categories Import:
     - Navigate to Woocommerce Backends by going to Connectors > Woocommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Product Categories.
     - Click the 'Import Product Categories' button to import Product Categories from WooCommerce.
-    - The 'WooCommerce Product Categories' menu item is located at Connector > Woo Product Categories > Product Categories.
+    - The 'WooCommerce Product Categories' menu item is located at Connector > WooCommerce > WooCommerce Product Categories.
 
 
 **Usage**

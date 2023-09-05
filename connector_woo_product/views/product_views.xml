@@ -36,6 +36,8 @@
                                     <field name="status"/>
                                     <field name="tax_status"/>
                                     <field name="stock_status"/>
+                                    <field name="price"/>
+                                    <field name="regular_price"/>
                                 </group>
                                 <label for="woo_product_categ_ids" string="WooCommerce Product Categories"/>
                                 <field name="woo_product_categ_ids" />

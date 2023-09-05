@@ -29,19 +29,6 @@ class WooProductAttributeBatchImporter(Component):
             raise ValidationError(_("Error : %s") % err) from err
 
 
-class WooProductAttributeImporter(Component):
-    """Importer the WooCommerce Product"""
-
-    _name = "woo.product.attribute.importer"
-    _inherit = "woo.importer"
-    _apply_on = "woo.product.attribute"
-
-    def _after_import(self, binding, **kwargs):
-        """Call import batch of Product Attribute Value"""
-        binding.sync_attribute_values_from_woo()
-        return super(WooProductAttributeImporter, self)._after_import(binding, **kwargs)
-
-
 class WooProductAttributeImportMapper(Component):
     """Impoter Mapper for the WooCommerce Product Attribute"""
 
@@ -61,3 +48,16 @@ class WooProductAttributeImportMapper(Component):
     def has_archives(self, record):
         """Mapping product has_archives"""
         return {"has_archives": record.get("has_archives")}
+
+
+class WooProductAttributeImporter(Component):
+    """Importer the WooCommerce Product"""
+
+    _name = "woo.product.attribute.importer"
+    _inherit = "woo.importer"
+    _apply_on = "woo.product.attribute"
+
+    def _after_import(self, binding, **kwargs):
+        """Inherit Method: inherit method to import remote child"""
+        binding.sync_attribute_values_from_woo()
+        return super(WooProductAttributeImporter, self)._after_import(binding, **kwargs)

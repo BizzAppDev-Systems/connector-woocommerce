@@ -43,6 +43,7 @@ class WooProductAttribute(models.Model):
     )
 
     def sync_attribute_values_from_woo(self):
+        """sync Attribute values from woocommerce"""
         self.ensure_one()
         if not self.backend_id:
             raise ValidationError(_("No Backend found on Product Attribute."))

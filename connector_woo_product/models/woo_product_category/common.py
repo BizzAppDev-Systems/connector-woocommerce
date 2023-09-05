@@ -60,23 +60,6 @@ class WooProductCategory(models.Model):
         super(WooProductCategory, self).__init__(name, bases, attrs)
 
 
-# class WooCommerceProductCategory(models.Model):
-#     """Woocommerce Product Category"""
-
-#     _name = "woocommerce.product.category"
-#     _inherits = {"woo.product.category": "odoo_id"}
-#     _description = "WooCommerce Product Category"
-
-#     _rec_name = "name"
-
-#     odoo_id = fields.Many2one(
-#         comodel_name="woo.product.category",
-#         string=" WooCommerce Product Category",
-#         required=True,
-#         ondelete="restrict",
-#     )
-
-
 class WooProductCategoryAdapter(Component):
     """Adapter for WooCommerce Product Category"""
 
