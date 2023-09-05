@@ -34,6 +34,7 @@ class ResPartner(models.Model):
                 "city",
                 "state_id",
                 "zip",
+                "country_id",
             ]
         ):
             vals["hash_key"] = False
@@ -44,13 +45,14 @@ class ResPartner(models.Model):
         """Prepare values for child_ids"""
         country = data.get("country")
         state = data.get("state")
-
+        if "-" in state:
+            state = state.split("-")[0]
         country = self.env["res.country"].search(
-            [("code", "=", state)],
+            [("code", "=ilike", country)],
             limit=1,
         )
         state = self.env["res.country.state"].search(
-            [("code", "=", state)],
+            [("code", "=ilike", state)],
             limit=1,
         )
         vals = {
@@ -116,7 +118,7 @@ class ResPartner(models.Model):
             if (
                 not data.get("email")
                 and not backend_id.without_email
-                and not address_type == "delivery"
+                and address_type != "delivery"
             ):
                 raise MappingError(_("Email is Missing!"))
             address_data = self._process_address_data(
