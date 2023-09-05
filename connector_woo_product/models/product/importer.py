@@ -112,7 +112,7 @@ class WooProductProductImportMapper(Component):
         attribute_name = attribute_id.get("name")
         created_id = "{}-{}".format(attribute_name, record.get("id"))
         product_attribute = binder.to_internal(created_id)
-        if not product_attribute:
+        if not product_attribute and not attribute_id.get("id"):
             product_attribute = self.env["woo.product.attribute"].create(
                 {
                     "name": attribute_name,
