@@ -5,6 +5,7 @@ class WooBackend(models.Model):
     """Backend for WooCommerce"""
 
     _inherit = "woo.backend"
+
     import_partners_from_date = fields.Datetime(string="Import partners from date")
     without_email = fields.Boolean(string="Allow Partners without Email")
 
