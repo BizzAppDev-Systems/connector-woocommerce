@@ -1,6 +1,5 @@
 import logging
 from odoo.addons.component.core import Component
-from odoo.exceptions import ValidationError
 from odoo.addons.connector.exception import MappingError
 from odoo import _
 from odoo.addons.connector.components.mapper import mapping
@@ -16,17 +15,6 @@ class WooProductProductBatchImporter(Component):
     _name = "woo.product.product.batch.importer"
     _inherit = "woo.batch.importer"
     _apply_on = "woo.product.product"
-
-    def run(self, filters=None, force=None):
-        """Run the synchronization"""
-        filters = filters or {}
-        try:
-            records_with_count = self.backend_adapter.search(filters)
-            for record in records_with_count.get("data"):
-                external_id = record.get(self.backend_adapter._woo_ext_id_key)
-                self._import_record(external_id, data=record)
-        except Exception as err:
-            raise ValidationError(_("Error : %s") % err) from err
 
 
 class WooProductProductImportMapper(Component):

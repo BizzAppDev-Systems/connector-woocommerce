@@ -14,7 +14,7 @@ class WooBackend(models.Model):
     product_categ_id = fields.Many2one(
         comodel_name="product.category",
         string="Product Category",
-        default=lambda self: self.env.ref('product.product_category_all').id,
+        default=lambda self: self.env.ref("product.product_category_all").id,
         help="Set Odoo Product Category for imported WooCommerce products.",
     )
 
@@ -70,9 +70,9 @@ class WooBackend(models.Model):
         filters = {"page": 1}
         for backend in self:
             filters.update({"per_page": backend.default_limit})
-            backend.env["woo.product.attribute"].with_company(
-                backend.company_id
-            ).with_delay(priority=5).import_batch(backend=backend, filters=filters)
+            backend.env["woo.product.attribute"].with_delay(priority=5).import_batch(
+                backend=backend, filters=filters
+            )
 
     @api.model
     def cron_import_product_attributes(self, domain=None):
@@ -85,9 +85,9 @@ class WooBackend(models.Model):
         filters = {"page": 1}
         for backend in self:
             filters.update({"per_page": backend.default_limit})
-            backend.env["woo.product.category"].with_company(
-                backend.company_id
-            ).with_delay(priority=5).import_batch(backend=backend, filters=filters)
+            backend.env["woo.product.category"].with_delay(priority=5).import_batch(
+                backend=backend, filters=filters
+            )
 
     @api.model
     def cron_import_product_categories(self, domain=None):
