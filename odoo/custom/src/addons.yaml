@@ -1,0 +1,11 @@
+enterprise:
+  - "*"
+
+woocommerce:
+  - "*"
+
+connector:
+  - "*"
+
+queue:
+  - "*"

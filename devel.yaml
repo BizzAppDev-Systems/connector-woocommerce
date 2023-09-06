@@ -20,7 +20,7 @@ services:
       default:
       public:
     ports:
-      - "127.0.0.1:8055:8069"
+      - "127.0.0.1:8065:8069"
     extends:
       file: common.yaml
       service: odoo

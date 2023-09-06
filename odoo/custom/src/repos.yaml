@@ -14,3 +14,39 @@
     - ocb $ODOO_VERSION
     # Example of a merge of the PR with the number <PR>
     # - oca refs/pull/<PR>/head
+
+enterprise:
+  defaults:
+    depth: $DEPTH_DEFAULT
+  remotes:
+    origin: git@github.com:odoo/enterprise.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+woocommerce:
+  defaults:
+    depth: $DEPTH_DEFAULT
+  remotes:
+    origin: git@github.com:BizzAppDev-Systems/woocommerce.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+connector:
+  defaults:
+    depth: $DEPTH_DEFAULT
+  remotes:
+    origin: git@github.com:OCA/connector.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION
+
+queue:
+  defaults:
+    depth: $DEPTH_DEFAULT
+  remotes:
+    origin: git@github.com:OCA/queue.git
+  target: origin $ODOO_VERSION
+  merges:
+    - origin $ODOO_VERSION

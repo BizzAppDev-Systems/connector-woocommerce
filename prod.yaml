@@ -27,6 +27,13 @@ services:
     env_file:
       - .docker/db-creation.env
     restart: unless-stopped
+    networks:
+      default:
+      inverseproxy_shared:
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "inverseproxy_shared"
+      traefik.tcp.services.rx-14-0-prod-database.loadbalancer.server.port: 5432
 
 networks:
   default:
