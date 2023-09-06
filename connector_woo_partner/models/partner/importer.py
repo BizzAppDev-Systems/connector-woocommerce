@@ -15,7 +15,7 @@ class WooResPartnerBatchImporter(Component):
     """Batch Importer for WooCommerce Partners"""
 
     _name = "woo.res.partner.batch.importer"
-    _inherit = "woo.delayed.batch.importer"
+    _inherit = "woo.batch.importer"
     _apply_on = "woo.res.partner"
 
 
