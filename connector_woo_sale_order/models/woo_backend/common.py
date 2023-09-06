@@ -66,7 +66,7 @@ class WooBackend(models.Model):
         filters = {"page": 1}
         for backend in self:
             filters.update({"per_page": backend.default_limit})
-            self.env["woo.sale.order"].with_company(backend.company_id).with_delay(
+            self.env["woo.sale.order"].with_delay(
                 priority=15
             ).export_batch(backend=backend, filters=filters)
 

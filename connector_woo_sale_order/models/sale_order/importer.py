@@ -201,13 +201,19 @@ class WooSaleOrderLineImportMapper(Component):
     @mapping
     def tax_id(self, record):
         """Mapping for Tax"""
-        if not record.get("taxes"):
+        tax = record.get("taxes", [])
+        if not tax:
             return {}
 
     @mapping
     def price_subtotal(self, record):
         """Mapping for Price Subtotal"""
         return {"price_subtotal": record.get("total")}
+
+    @mapping
+    def total_tax_line(self, record):
+        """Mapping for Tax Line"""
+        return {"total_tax_line": record.get("total_tax")}
 
     @mapping
     def name(self, record):

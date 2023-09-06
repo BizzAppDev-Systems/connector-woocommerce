@@ -27,6 +27,24 @@ class SaleOrder(models.Model):
         ],
         string="WooCommerce Order Status",
     )
+    tax_different = fields.Boolean(compute="_compute_tax_diffrent")
+
+    @api.depends(
+        "woo_bind_ids", "woo_bind_ids.woo_order_line_ids", "woo_bind_ids.total_tax"
+    )
+    def _compute_tax_diffrent(self):
+        for order in self:
+            tax_different = False
+            if any(
+                [
+                    line.price_tax != line.total_tax_line
+                    for line in order.mapped("woo_bind_ids").mapped(
+                        "woo_order_line_ids"
+                    )
+                ]
+            ):
+                tax_different = True
+            order.tax_different = tax_different
 
     @api.depends("picking_ids", "picking_ids.state")
     def _compute_has_done_picking(self):
@@ -38,6 +56,8 @@ class SaleOrder(models.Model):
                 order.has_done_picking = all(
                     picking.state == "done" for picking in order.picking_ids
                 )
+
+    # @api.depends("price_tax")
 
     def check_export_fulfillment(self):
         """
@@ -144,7 +164,9 @@ class WooSaleOrderLine(models.Model):
         required=True,
         ondelete="restrict",
     )
+    total_tax_line = fields.Float()
 
+    # total_tax_line=
     def __init__(self, name, bases, attrs):
         """Bind Odoo Sale Order Line"""
         WooModelBinder._apply_on.append(self._name)

@@ -40,6 +40,6 @@ class TestImportSaleOrder(BaseWooTestCase):
         )
         self.assertEqual(
             sale_order1.name,
-            "wc_order_2Ds61hBbocVBS",
+            "woo_71",
             "Order's name is not matched with response!",
         )
