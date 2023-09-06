@@ -1,0 +1,38 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v5.2.0
+_src_path: gh:Tecnativa/doodba-copier-template
+backup_deletion: false
+backup_dst: ""
+backup_email_from: None
+backup_email_to: None
+backup_image_version: latest
+backup_tz: UTC
+cidr_whitelist: null
+domains_prod: null
+domains_test: null
+gitlab_url: https://github.com/BizzAppDev-Systems/woocommerce
+odoo_dbfilter: v16_woocommerce
+odoo_initial_lang: en_US
+odoo_listdb: true
+odoo_oci_image: ""
+odoo_proxy: ""
+odoo_version: 16.0
+paths_without_crawlers:
+  - /web
+  - /website/info
+postgres_cidr_whitelist: null
+postgres_dbname: v16_woocommerce
+postgres_exposed: false
+postgres_exposed_port: 5432
+postgres_username: odoo
+postgres_version: "15"
+project_author: BizzAppDev
+project_license: OPL-1.0
+project_name: woocommerce
+smtp_canonical_default: None
+smtp_canonical_domains: null
+smtp_default_from: ""
+smtp_relay_host: ""
+smtp_relay_port: 587
+smtp_relay_user: None
+smtp_relay_version: "10"

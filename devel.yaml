@@ -1,0 +1,106 @@
+version: "2.4"
+
+services:
+  odoo_proxy:
+    image: ghcr.io/tecnativa/docker-whitelist:latest
+    depends_on:
+      - odoo
+    networks: &public
+      default:
+      public:
+    ports:
+      - "127.0.0.1:16899:6899"
+      - "127.0.0.1:16069:8069"
+    environment:
+      PORT: "6899 8069"
+      TARGET: odoo
+
+  odoo:
+    networks:
+      default:
+      public:
+    ports:
+      - "127.0.0.1:8055:8069"
+    extends:
+      file: common.yaml
+      service: odoo
+    build:
+      args:
+        # To aggregate in development, use `setup-devel.yaml`
+        AGGREGATE: "false"
+        # Export these variables to own files created by odoo in your filesystem
+        UID: "${UID:-1000}"
+        GID: "${GID:-1000}"
+        # No need for this in development
+        PIP_INSTALL_ODOO: "false"
+        CLEAN: "false"
+        COMPILE: "false"
+    environment:
+      DOODBA_ENVIRONMENT: "${DOODBA_ENVIRONMENT-devel}"
+      LIST_DB: "true"
+      DEBUGPY_ENABLE: "${DOODBA_DEBUGPY_ENABLE:-0}"
+      PGDATABASE: &dbname devel
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONOPTIMIZE: ""
+      PYTHONPATH: /opt/odoo/custom/src/odoo
+      SMTP_PORT: "1025"
+      WDB_WEB_PORT: "16984"
+      # To avoid installing demo data export DOODBA_WITHOUT_DEMO=all
+      WITHOUT_DEMO: "${DOODBA_WITHOUT_DEMO-false}"
+    volumes:
+      - ./odoo/custom:/opt/odoo/custom:ro,z
+      - ./odoo/auto:/opt/odoo/auto:rw,z
+    depends_on:
+      - db
+      - smtp
+      - wdb
+    command:
+      - odoo
+      - --limit-memory-soft=0
+      - --limit-time-real-cron=9999999
+      - --limit-time-real=9999999
+      - --workers=0
+      - --dev=reload,qweb,werkzeug,xml
+
+  db:
+    extends:
+      file: common.yaml
+      service: db
+    environment:
+      POSTGRES_DB: *dbname
+      POSTGRES_PASSWORD: odoopassword
+
+  pgweb:
+    image: docker.io/sosedoff/pgweb
+    networks: *public
+    ports:
+      - "127.0.0.1:16081:8081"
+    environment:
+      DATABASE_URL: postgres://odoo:odoopassword@db:5432/devel?sslmode=disable
+    depends_on:
+      - db
+
+  smtp:
+    extends:
+      file: common.yaml
+      service: smtpfake
+    networks: *public
+    ports:
+      - "127.0.0.1:16025:8025"
+
+  wdb:
+    image: docker.io/kozea/wdb
+    networks: *public
+    ports:
+      - "127.0.0.1:16984:1984"
+    # HACK https://github.com/Kozea/wdb/issues/136
+    init: true
+
+networks:
+  default:
+    internal: ${DOODBA_NETWORK_INTERNAL-true}
+  public:
+
+volumes:
+  filestore:
+  db:
