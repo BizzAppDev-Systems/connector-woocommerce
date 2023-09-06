@@ -1,10 +1,11 @@
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 
 class WooBackend(models.Model):
     """Backend for WooCommerce"""
 
     _inherit = "woo.backend"
+
     import_partners_from_date = fields.Datetime(string="Import partners from date")
     without_email = fields.Boolean(string="Allow Partners without Email")
 
@@ -13,7 +14,7 @@ class WooBackend(models.Model):
         filters = {"page": 1}
         for backend in self:
             filters.update({"per_page": backend.default_limit})
-            backend.env["woo.res.partner"].with_company(backend.company_id).with_delay(
+            backend.env["woo.res.partner"].with_company().with_delay(
                 priority=5
             ).import_batch(backend=backend, filters=filters)
 

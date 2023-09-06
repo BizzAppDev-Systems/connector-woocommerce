@@ -1,6 +1,8 @@
-import logging
 import hashlib
-from odoo import fields, models, _, api
+import logging
+
+from odoo import _, fields, models
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
@@ -22,8 +24,7 @@ class ResPartner(models.Model):
     hash_key = fields.Char(string="Hash Key")
 
     def write(self, vals):
-        if set(vals.keys()) & set(
-            [
+        if set(vals.keys()) & {
                 "firstname",
                 "lastname",
                 "email",
@@ -35,8 +36,7 @@ class ResPartner(models.Model):
                 "state_id",
                 "zip",
                 "country_id",
-            ]
-        ):
+        }:
             vals["hash_key"] = False
 
         return super(ResPartner, self).write(vals)
