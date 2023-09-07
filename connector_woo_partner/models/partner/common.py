@@ -25,17 +25,17 @@ class ResPartner(models.Model):
 
     def write(self, vals):
         if set(vals.keys()) & {
-                "firstname",
-                "lastname",
-                "email",
-                "mobile",
-                "phone",
-                "street",
-                "street2",
-                "city",
-                "state_id",
-                "zip",
-                "country_id",
+            "firstname",
+            "lastname",
+            "email",
+            "mobile",
+            "phone",
+            "street",
+            "street2",
+            "city",
+            "state_id",
+            "zip",
+            "country_id",
         }:
             vals["hash_key"] = False
 
