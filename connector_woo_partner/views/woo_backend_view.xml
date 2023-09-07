@@ -10,7 +10,9 @@
                 expr="//page[@name='advanced_configuration']/group"
                 position="inside"
             >
-                <field name="without_email" />
+                <group name="Partner_configuration" string="Customers Configuration">
+                    <field name="without_email" />
+                </group>
             </xpath>
             <xpath expr="//page[@name='import']" position="attributes">
                 <attribute name="invisible">0</attribute>
