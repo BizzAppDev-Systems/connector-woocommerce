@@ -19,25 +19,47 @@ class WooBackend(models.Model):
     _description = "WooCommerce Backend"
     _inherit = ["mail.thread", "connector.backend"]
 
-    name = fields.Char(string="Name", required=True)
+    name = fields.Char(
+        string="Name", required=True, help="Enter the name of the WooCommerce backend."
+    )
     version = fields.Selection(
-        selection=[("v0", "V0"), ("v1", "V1"), ("v3", "V3")],
+        selection=[("v3", "V3")],
         default="v3",
         required=True,
         string="Version",
+        help="Select the WooCommerce API version you want to use.",
     )
-    default_limit = fields.Integer(string="Default Limit", default=10)
+    default_limit = fields.Integer(
+        string="Default Limit",
+        default=10,
+        help="Set the default limit for data imports.",
+    )
     company_id = fields.Many2one(comodel_name="res.company", string="Company")
-    import_partner_from_date = fields.Datetime(string="Import partner from date")
-    location = fields.Char(string="Location(Live)")
-    client_id = fields.Char(string="Client ID(Live)")
-    client_secret = fields.Char(string="Secret key(Live)")
-    test_mode = fields.Boolean(string="Test Mode", default=True)
-    test_location = fields.Char(string="Test Location")
-    test_client_id = fields.Char(string="Client ID")
-    test_client_secret = fields.Char(string="Secret key")
-    force_import_partner = fields.Boolean(string="Force Import(Partner)")
-    order_prefix = fields.Char(string="Sale Order Prefix", default="WOO_")
+    location = fields.Char(
+        string="Location(Live)", help="Enter the Live Location for WooCommerce."
+    )
+    client_id = fields.Char(
+        string="Client ID(Live)",
+        help="Enter the Client ID for Live Mode (Username for Basic Authentication).",
+    )
+    client_secret = fields.Char(
+        string="Secret key(Live)",
+        help="Enter the Secret Key for Live Mode (Password for Basic Authentication).",
+    )
+    test_mode = fields.Boolean(
+        string="Test Mode", default=True, help="Toggle between Test and Live modes."
+    )
+    test_location = fields.Char(
+        string="Test Location", help="Enter the Test Location for WooCommerce."
+    )
+    test_client_id = fields.Char(
+        string="Client ID",
+        help="Enter the Client ID for Test Mode (Username for Basic Authentication).",
+    )
+    test_client_secret = fields.Char(
+        string="Secret key",
+        help="Enter the Secret Key for Test Mode (Password for Basic Authentication).",
+    )
 
     def toggle_test_mode(self):
         """Test Mode"""

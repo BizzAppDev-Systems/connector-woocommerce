@@ -220,6 +220,7 @@ class WooImporter(AbstractComponent):
             record = self._create_data(map_record)
             binding = self._create(record)
         self.binder.bind(self.external_id, binding)
+        self._after_import(binding)
 
 
 class WooMapChildImport(AbstractComponent):

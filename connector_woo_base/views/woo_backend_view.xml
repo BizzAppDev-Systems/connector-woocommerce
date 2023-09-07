@@ -71,6 +71,8 @@
                                 groups="base.group_system"
                                 string="Location(Staging)"
                             />
+                        </group>
+                        <group>
                             <field
                                 name="client_id"
                                 colspan="2"
@@ -119,8 +121,12 @@
                                 string="Advanced Configuration"
                             >
                                 <group>
-                                    <field name="default_limit" />
-                                    <field name="order_prefix" />
+                                    <group
+                                        name="default_configuration"
+                                        string="Default Configuration"
+                                        >
+                                        <field name="default_limit" />
+                                    </group>
                                 </group>
                             </page>
                         </notebook>
