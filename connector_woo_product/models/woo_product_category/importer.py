@@ -51,7 +51,7 @@ class WooProductCategoryImportMapper(Component):
 
     @mapping
     def menu_order(self, record):
-        """Mapping for sale_ok"""
+        """Mapping for Menu Order"""
         return {"menu_order": record.get("menu_order")}
 
     @mapping

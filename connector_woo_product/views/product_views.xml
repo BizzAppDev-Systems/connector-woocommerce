@@ -35,6 +35,8 @@
                                     <field name="external_id" />
                                     <field name="status"/>
                                     <field name="tax_status"/>
+                                </group>
+                                <group>
                                     <field name="stock_status"/>
                                     <field name="price"/>
                                     <field name="regular_price"/>

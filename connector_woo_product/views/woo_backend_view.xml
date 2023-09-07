@@ -10,8 +10,13 @@
                 <attribute name="invisible">0</attribute>
             </xpath>
             <xpath expr="//page[@name='advanced_configuration']/group" position="inside">
-                <field name="without_sku" />
-                <field name="product_categ_id"/>
+                <group
+                    name="product_configuration"
+                    string="Products Configuration"
+                >
+                    <field name="without_sku" />
+                    <field name="product_categ_id"/>
+                </group>
             </xpath>
             <xpath expr="//page[@name='import']" position="inside">
                 <group>

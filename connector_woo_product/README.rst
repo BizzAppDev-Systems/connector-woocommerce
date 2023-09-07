@@ -8,7 +8,7 @@
 * This module extends the functionality of connector_woo_base and focuses on importing and exporting Product data between WooCommerce and Odoo.
 * It provides options to import "Products," "Product Attributes," and "Product Categories" at the backend level.
 * Add "Import Products","Import Product Attributes" and "Import Product Category" at backend level.
-* Required field to Import the Products,Product Attributes, and Product Category are Location,Client Id,Client Secret.
+* Required field to Import the Products,Product Attributes, and Product Category are Location,Client Id,Client Secret,Product Category.
 
 
 **Author**
@@ -39,6 +39,7 @@
     - At the WooCommerce backend level, a new boolean option 'Allow Product without SKU' has been introduced. When this option is set to 'True', the system will import all Products from WooCommerce that do not have an SKU. Conversely, when the option is set to 'False', the system will import only those Products from WooCommerce that have an SKU.
     - At the WooCommerce backend level, in 'Advanced Configuration' tab there is 'Product Category' from that select any category in which you have to keep your Product.
     - Added a Price,Regular Price,Stock Status,Tax Status,WooCommerce Product Attribute Values, and Status at the binding level.
+    - Added 'Product Category' field which is located at Connectors> Woocommerce > Advanced Configuration which is use to Set Odoo Product Category for imported WooCommerce Product.
 
 * Product Attributes Import:
     - Navigate to Woocommerce Backends by going to Connectors > Woocommerce > WooCommerce Backends.

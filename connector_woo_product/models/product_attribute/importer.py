@@ -17,17 +17,6 @@ class WooProductAttributeBatchImporter(Component):
     _inherit = "woo.batch.importer"
     _apply_on = "woo.product.attribute"
 
-    def run(self, filters=None, force=None):
-        """Run the synchronization"""
-        filters = filters or {}
-        try:
-            records_with_count = self.backend_adapter.search(filters)
-            for record in records_with_count.get("data"):
-                external_id = record.get(self.backend_adapter._woo_ext_id_key)
-                self._import_record(external_id, data=record)
-        except Exception as err:
-            raise ValidationError(_("Error : %s") % err) from err
-
 
 class WooProductAttributeImportMapper(Component):
     """Impoter Mapper for the WooCommerce Product Attribute"""

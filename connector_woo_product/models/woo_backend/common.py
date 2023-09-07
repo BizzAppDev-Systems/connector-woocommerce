@@ -14,7 +14,7 @@ class WooBackend(models.Model):
     product_categ_id = fields.Many2one(
         comodel_name="product.category",
         string="Product Category",
-        default=lambda self: self.env.ref("product.product_category_all").id,
+        required=True,
         help="Set Odoo Product Category for imported WooCommerce products.",
     )
 
