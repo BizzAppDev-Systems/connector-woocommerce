@@ -6,11 +6,20 @@
         <field name="model">woo.backend</field>
         <field name="inherit_id" ref="connector_woo_base.view_woo_backend_form" />
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='advanced_configuration']/group" position="inside">
-                <field name="mark_completed" />
-                <field name="tracking_info" attrs="{'invisible': [('mark_completed', '=', False)]}"/>
+            <xpath
+                expr="//page[@name='advanced_configuration']/group"
+                position="inside"
+            >
+                <group name="sale_order_configuration" string="Orders Configuration">
+                    <field name="order_prefix" />
+                    <field name="mark_completed" />
+                    <field
+                        name="tracking_info"
+                        attrs="{'invisible': [('mark_completed', '=', False)]}"
+                    />
+                </group>
             </xpath>
-             <xpath expr="//page[@name='import']" position="attributes">
+            <xpath expr="//page[@name='import']" position="attributes">
                 <attribute name="invisible">0</attribute>
             </xpath>
             <xpath expr="//page[@name='import']" position="inside">
@@ -36,7 +45,7 @@
                                 class="oe_highlight"
                                 string="Import Orders in Background"
                             />
-                         </div>
+                        </div>
                     </group>
                 </group>
             </xpath>

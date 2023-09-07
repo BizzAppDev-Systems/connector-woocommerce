@@ -1,9 +1,10 @@
 import logging
 
-from odoo import fields, models, api
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
-from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -30,9 +31,19 @@ class SaleOrder(models.Model):
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
 
     @api.depends(
-        "woo_bind_ids", "woo_bind_ids.woo_order_line_ids", "woo_bind_ids.total_tax"
+        "woo_bind_ids",
+        "order_line.woo_bind_ids.total_tax_line",
+        "order_line.price_tax",
     )
     def _compute_tax_diffrent(self):
+        """
+        Compute the 'tax_different' field for the sale order.
+
+        This method calculates whether the tax amounts on WooCommerce order lines
+        are different from the total tax amount of the order binding. If there is any
+        inconsistency, it sets the 'tax_different' field to True; otherwise, it remains
+        False.
+        """
         for order in self:
             tax_different = False
             if any(
@@ -57,8 +68,6 @@ class SaleOrder(models.Model):
                     picking.state == "done" for picking in order.picking_ids
                 )
 
-    # @api.depends("price_tax")
-
     def check_export_fulfillment(self):
         """
         Add validations on creation and process of fulfillment orders
@@ -66,7 +75,7 @@ class SaleOrder(models.Model):
         """
         picking_ids = self.picking_ids.filtered(lambda p: p.state == "done")
         if not picking_ids:
-            raise ValidationError("No delivery orders in 'done' state.")
+            raise ValidationError(_("No delivery orders in 'done' state."))
 
     def export_delivery_status(self, allowed_states=None, comment=None, notify=None):
         """Change state of a sales order on WooCommerce"""
@@ -119,7 +128,7 @@ class WooSaleOrder(models.Model):
         super(WooSaleOrder, self).__init__(name, bases, attrs)
 
     def export_fulfillment(self):
-        """Change status of a sales order on shopify"""
+        """Change status of a sales order on WooCommerce"""
         self.ensure_one()
         with self.backend_id.work_on(self._name) as work:
             exporter = work.component(usage="record.exporter")
@@ -153,7 +162,7 @@ class WooSaleOrderLine(models.Model):
 
     woo_order_id = fields.Many2one(
         comodel_name="woo.sale.order",
-        string="WooCommerce Sale Order",
+        string="WooCommerce Order Line",
         required=True,
         ondelete="cascade",
         index=True,
@@ -165,8 +174,10 @@ class WooSaleOrderLine(models.Model):
         ondelete="restrict",
     )
     total_tax_line = fields.Float()
+    price_subtotal_line = fields.Float()
+    subtotal_tax_line = fields.Float()
+    subtotal_line = fields.Float()
 
-    # total_tax_line=
     def __init__(self, name, bases, attrs):
         """Bind Odoo Sale Order Line"""
         WooModelBinder._apply_on.append(self._name)

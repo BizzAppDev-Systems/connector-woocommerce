@@ -1,6 +1,6 @@
-from odoo import models
-from odoo import fields, models, api
 from datetime import datetime, timedelta
+
+from odoo import api, fields, models
 
 IMPORT_DELTA_BUFFER = 30
 
@@ -13,6 +13,7 @@ class WooBackend(models.Model):
     mark_completed = fields.Boolean(string="Mark Order Completed On Delivery")
     tracking_info = fields.Boolean(string="Send Tracking Information")
     import_orders_from_date = fields.Datetime(string="Import Orders from date")
+    order_prefix = fields.Char(string="Sale Order Prefix", default="WOO_")
 
     def _import_from_date(self, model, from_date_field, priority=None, filters=None):
         """Method to add a filter based on the date."""
@@ -66,9 +67,9 @@ class WooBackend(models.Model):
         filters = {"page": 1}
         for backend in self:
             filters.update({"per_page": backend.default_limit})
-            self.env["woo.sale.order"].with_delay(
-                priority=15
-            ).export_batch(backend=backend, filters=filters)
+            self.env["woo.sale.order"].with_delay(priority=15).export_batch(
+                backend=backend, filters=filters
+            )
 
     @api.model
     def cron_export_sale_order_status(self, domain=None):

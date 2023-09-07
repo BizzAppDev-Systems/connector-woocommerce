@@ -1,13 +1,8 @@
 from os.path import dirname, join
 
 from vcr import VCR
+
 from odoo.addons.connector_woo_base.tests.test_woo_backend import BaseWooTestCase
-from odoo.addons.connector_woo_partner.tests.test_import_partner import (
-    TestImportPartner,
-)
-from odoo.addons.connector_woo_product.tests.test_import_product import (
-    TestImportProduct,
-)
 
 recorder = VCR(
     cassette_library_dir=join(dirname(__file__), "fixtures/cassettes"),

@@ -1,9 +1,10 @@
 import logging
+
 from odoo import _
+
 from odoo.addons.component.core import Component
-from odoo.addons.connector.exception import MappingError
-from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.components.mapper import mapping, only_create
+from odoo.addons.connector.exception import MappingError
 
 # pylint: disable=W7950
 
@@ -12,7 +13,7 @@ _logger = logging.getLogger(__name__)
 
 class WooSaleOrderBatchImporter(Component):
     _name = "woo.sale.order.batch.importer"
-    _inherit = "woo.delayed.batch.importer"
+    _inherit = "woo.batch.importer"
     _apply_on = "woo.sale.order"
 
 
@@ -68,43 +69,32 @@ class WooSaleOrderImportMapper(Component):
     @mapping
     def discount_total(self, record):
         """Mapping for Discount Total"""
-        return (
-            {"discount_total": record.get("discount_total")}
-            if record.get("discount_total")
-            else {}
-        )
+        discount_total = record.get("discount_total")
+        return {"discount_total": discount_total} if discount_total else {}
 
     @mapping
     def discount_tax(self, record):
         """Mapping for Discount Tax"""
-        return (
-            {"discount_tax": record.get("discount_tax")}
-            if record.get("discount_tax")
-            else {}
-        )
+        discount_tax = record.get("discount_tax")
+        return {"discount_tax": discount_tax} if discount_tax else {}
 
     @mapping
     def shipping_total(self, record):
         """Mapping for Shipping Total"""
-        return (
-            {"shipping_total": record.get("shipping_total")}
-            if record.get("shipping_total")
-            else {}
-        )
+        shipping_total = record.get("shipping_total")
+        return {"shipping_total": shipping_total} if shipping_total else {}
 
     @mapping
     def shipping_tax(self, record):
         """Mapping for Shipping Tax"""
-        return (
-            {"shipping_tax": record.get("shipping_tax")}
-            if record.get("shipping_tax")
-            else {}
-        )
+        shipping_tax = record.get("shipping_tax")
+        return {"shipping_tax": shipping_tax} if shipping_tax else {}
 
     @mapping
     def cart_tax(self, record):
         """Mapping for Cart Tax"""
-        return {"cart_tax": record.get("cart_tax")} if record.get("cart_tax") else {}
+        cart_tax = record.get("cart_tax")
+        return {"cart_tax": cart_tax} if cart_tax else {}
 
     @mapping
     def currency_id(self, record):
@@ -120,19 +110,20 @@ class WooSaleOrderImportMapper(Component):
     @mapping
     def total_tax(self, record):
         """Mapping for Total Tax"""
-        return {"total_tax": record.get("total_tax")} if record.get("total_tax") else {}
+        total_tax = record.get("total_tax")
+        return {"total_tax": total_tax} if total_tax else {}
 
     @mapping
     def woo_amount_total(self, record):
         """Mapping for Amount Total"""
-        return {"woo_amount_total": record.get("total")} if record.get("total") else {}
+        total = record.get("total")
+        return {"woo_amount_total": total} if total else {}
 
     @mapping
     def amount_tax(self, record):
         """Mapping for Amount Tax"""
-        return (
-            {"amount_tax": record.get("total_tax")} if record.get("total_tax") else {}
-        )
+        total_tax = record.get("total_tax")
+        return {"amount_tax": total_tax} if total_tax else {}
 
     @mapping
     def update_order_id(self, record):
@@ -152,6 +143,7 @@ class WooSaleOrderImporter(Component):
         return super(WooSaleOrderImporter, self)._must_skip()
 
     def _import_dependencies(self):
+        """Added dependencies for Product"""
         record = self.remote_record
         for line in record.get("items", []):
             _logger.debug("line: %s", line)
@@ -174,10 +166,11 @@ class WooSaleOrderLineImportMapper(Component):
     @mapping
     def product_id(self, record):
         """Return Product excited in Woo order line and pre-check validations."""
-        if not record.get("product_id"):
+        product_rec = record.get("product_id")
+        if not product_rec:
             return {}
         binder = self.binder_for("woo.product.product")
-        product = binder.to_internal(record.get("product_id"), unwrap=True)
+        product = binder.to_internal(product_rec, unwrap=True)
         return {"product_id": product.id}
 
     @mapping
@@ -199,21 +192,28 @@ class WooSaleOrderLineImportMapper(Component):
         return {"price_unit": unit_price}
 
     @mapping
-    def tax_id(self, record):
-        """Mapping for Tax"""
-        tax = record.get("taxes", [])
-        if not tax:
-            return {}
+    def price_subtotal_line(self, record):
+        """Mapping for Price Subtotal"""
+        total = record.get("total")
+        return {"price_subtotal_line": total} if total else {}
 
     @mapping
-    def price_subtotal(self, record):
-        """Mapping for Price Subtotal"""
-        return {"price_subtotal": record.get("total")}
+    def subtotal_line(self, record):
+        """Mapping for Subtotal Line"""
+        subtotal = record.get("subtotal")
+        return {"subtotal_line": subtotal} if subtotal else {}
+
+    @mapping
+    def subtotal_tax_line(self, record):
+        """Mapping for Subtotal Tax"""
+        subtotal_tax = record.get("subtotal_tax")
+        return {"subtotal_tax_line": subtotal_tax} if subtotal_tax else {}
 
     @mapping
     def total_tax_line(self, record):
-        """Mapping for Tax Line"""
-        return {"total_tax_line": record.get("total_tax")}
+        """Mapping for Total Tax Line"""
+        total_tax = record.get("total_tax")
+        return {"total_tax_line": total_tax} if total_tax else {}
 
     @mapping
     def name(self, record):
