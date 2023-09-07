@@ -67,9 +67,11 @@ class WooBackend(models.Model):
         filters = {"page": 1}
         for backend in self:
             filters.update({"per_page": backend.default_limit})
-            self.env["woo.sale.order"].with_delay(priority=15).export_batch(
-                backend=backend, filters=filters
+            sale_orders = self.env["sale.order"].search(
+                [("woo_bind_ids.backend_id", "=", backend.id)]
             )
+            for sale_order in sale_orders:
+                sale_order.export_delivery_status()
 
     @api.model
     def cron_export_sale_order_status(self, domain=None):

@@ -77,7 +77,7 @@ class SaleOrder(models.Model):
         if not picking_ids:
             raise ValidationError(_("No delivery orders in 'done' state."))
 
-    def export_delivery_status(self, allowed_states=None, comment=None, notify=None):
+    def export_delivery_status(self):
         """Change state of a sales order on WooCommerce"""
         for binding in self.woo_bind_ids:
             if self._context.get("state"):
