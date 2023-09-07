@@ -136,7 +136,7 @@ interactions:
                       }
                   ]
               }
-          }',
+            }',
         }
       headers:
         Cache-Control: ["no-store, no-cache, must-revalidate"]
