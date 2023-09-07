@@ -68,7 +68,7 @@ class SaleOrder(models.Model):
                     picking.state == "done" for picking in order.picking_ids
                 )
 
-    def check_export_fulfillment(self):
+    def validate_delivery_orders_done(self):
         """
         Add validations on creation and process of fulfillment orders
         based on delivery order state.
@@ -83,10 +83,10 @@ class SaleOrder(models.Model):
             if self._context.get("state"):
                 binding.with_delay(
                     priority=5,
-                ).export_fulfillment()
+                ).update_woo_order_fulfillment_status()
             else:
-                self.check_export_fulfillment()
-                binding.export_fulfillment()
+                self.validate_delivery_orders_done()
+                binding.update_woo_order_fulfillment_status()
 
 
 class WooSaleOrder(models.Model):
@@ -127,7 +127,7 @@ class WooSaleOrder(models.Model):
         WooModelBinder._apply_on.append(self._name)
         super(WooSaleOrder, self).__init__(name, bases, attrs)
 
-    def export_fulfillment(self):
+    def update_woo_order_fulfillment_status(self):
         """Change status of a sales order on WooCommerce"""
         self.ensure_one()
         with self.backend_id.work_on(self._name) as work:
