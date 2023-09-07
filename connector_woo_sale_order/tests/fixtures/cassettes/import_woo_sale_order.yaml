@@ -31,8 +31,8 @@ interactions:
               "customer_id": 237660088,
               "order_key": "wc_order_qzJgPfO1CWI8B",
               "billing": {
-                  "first_name": "Siddhi",
-                  "last_name": "Padiya",
+                  "first_name": "jhon",
+                  "last_name": "Doe",
                   "company": "",
                   "address_1": "969 Market",
                   "address_2": "",
@@ -40,12 +40,12 @@ interactions:
                   "state": "CA",
                   "postcode": "94103",
                   "country": "US",
-                  "email": "siddhi.padiya@gmail.com",
+                  "email": "jhon.doe@gmail.com",
                   "phone": "(555) 555-5555"
               },
               "shipping": {
-                  "first_name": "Siddhi",
-                  "last_name": "Padiya",
+                  "first_name": "jhon",
+                  "last_name": "Doe",
                   "company": "",
                   "address_1": "969 Market",
                   "address_2": "",
