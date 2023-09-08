@@ -26,7 +26,7 @@ class WooProductCategoryImportMapper(Component):
 
     @mapping
     def name(self, record):
-        """Mapping for name"""
+        """Mapping for Name"""
         name = record.get("name")
         if not name:
             raise MappingError(_("Category Name doesn't exist please check !!!"))
@@ -34,19 +34,19 @@ class WooProductCategoryImportMapper(Component):
 
     @mapping
     def slug(self, record):
-        """Mapping product slug"""
+        """Mapping product Slug"""
         slug = record.get("slug")
         return {"slug": slug} if slug else {}
 
     @mapping
     def display(self, record):
-        """Mapped product default code."""
+        """Mapped for Display."""
         display = record.get("display")
         return {"display": display} if display else {}
 
     @mapping
     def description(self, record):
-        """Mapping for discription"""
+        """Mapping for Discription"""
         return {"description": record.get("description")}
 
     @mapping
@@ -56,7 +56,7 @@ class WooProductCategoryImportMapper(Component):
 
     @mapping
     def count(self, record):
-        """Mapping for count"""
+        """Mapping for Count"""
         return {"count": record.get("count")}
 
     @mapping

@@ -28,7 +28,7 @@ class WooAttributeValueImportMapper(Component):
 
     @mapping
     def name(self, record):
-        """Mapping for name"""
+        """Mapping for Name"""
         name = record.get("name")
         if not name:
             raise MappingError(_("Attribute Value Name doesn't exist please check !!!"))
@@ -36,7 +36,7 @@ class WooAttributeValueImportMapper(Component):
 
     @mapping
     def attribute_id(self, record):
-        """Mapping for attribute_id"""
+        """Mapping for Attribute Id"""
         attribute_id = record.get("attribute")
         binder = self.binder_for(model="woo.product.attribute")
         woo_attribute = binder.to_internal(attribute_id, unwrap=True)
@@ -46,7 +46,7 @@ class WooAttributeValueImportMapper(Component):
 
     @mapping
     def description(self, record):
-        """Mapping for description"""
+        """Mapping for Description"""
         return (
             {"description": record.get("description")}
             if record.get("description")

@@ -26,7 +26,7 @@ class WooProductProductImportMapper(Component):
 
     @mapping
     def name(self, record):
-        """Mapping for name"""
+        """Mapping for Name"""
         name = record.get("name")
         if not name:
             raise MappingError(_("Product name doesn't exist please check !!!"))
@@ -34,16 +34,17 @@ class WooProductProductImportMapper(Component):
 
     @mapping
     def list_price(self, record):
-        """Mapping product price"""
+        """Mapping product Price"""
         return {"list_price": record.get("price")}
 
     @mapping
     def price(self, record):
-        """Mapping for standard_price"""
+        """Mapping for Standard Price"""
         return {"price": record.get("price")}
 
     @mapping
     def regular_price(self, record):
+        """Mapping for Regular Price"""
         return {"price": record.get("regular_price")}
 
     @mapping
@@ -59,11 +60,6 @@ class WooProductProductImportMapper(Component):
         """Mapping for discription"""
         description = record.get("description")
         return {"description": description} if description else {}
-
-    @mapping
-    def sale_ok(self, record):
-        """Mapping for sale_ok"""
-        return {"sale_ok": record.get("on_sale", False)}
 
     @mapping
     def purchase_ok(self, record):
@@ -154,7 +150,6 @@ class WooProductProductImportMapper(Component):
     def woo_product_categ_ids(self, record):
         """Mapping for woo_product_categ_ids"""
         category_ids = []
-        create_categ_ids = []
         woo_product_categories = record.get("categories", [])
         binder = self.binder_for("woo.product.category")
         for category in woo_product_categories:
@@ -162,14 +157,7 @@ class WooProductProductImportMapper(Component):
             if woo_binding:
                 category_ids.append(woo_binding.id)
                 continue
-            values = {
-                "name": category.get("name"),
-                "parent_id": category.get("parent"),
-            }
-            create_categ_ids.append((0, 0, values))
-        if category_ids:
-            create_categ_ids.extend([(6, 0, category_ids)])
-        return {"woo_product_categ_ids": create_categ_ids} if create_categ_ids else {}
+        return {"woo_product_categ_ids": [(6, 0, category_ids)]} if category_ids else {}
 
 
 class WooProductProductImporter(Component):
@@ -178,3 +166,12 @@ class WooProductProductImporter(Component):
     _name = "woo.product.product.importer"
     _inherit = "woo.importer"
     _apply_on = "woo.product.product"
+
+    def _import_dependencies(self):
+        """Added dependencies for Product Category and Product Attributes"""
+        record = self.remote_record
+        for category in record.get("categories", []):
+            _logger.debug("category: %s", category)
+            category_id = category.get("id")
+            if category_id:
+                self._import_dependency(category_id, "woo.product.category")

@@ -27,7 +27,7 @@ class WooProductAttributeImportMapper(Component):
 
     @mapping
     def name(self, record):
-        """Mapping for name"""
+        """Mapping for Name"""
         name = record.get("name")
         if not name:
             raise MappingError(_("Attribute Name doesn't exist please check !!!"))
@@ -35,7 +35,7 @@ class WooProductAttributeImportMapper(Component):
 
     @mapping
     def has_archives(self, record):
-        """Mapping product has_archives"""
+        """Mapping product Has Archives"""
         return {"has_archives": record.get("has_archives")}
 
 
