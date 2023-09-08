@@ -168,7 +168,7 @@ class WooProductProductImporter(Component):
     _apply_on = "woo.product.product"
 
     def _import_dependencies(self):
-        """Added dependencies for Product Category and Product Attributes"""
+        """Added dependencies for Product Category"""
         record = self.remote_record
         for category in record.get("categories", []):
             _logger.debug("category: %s", category)

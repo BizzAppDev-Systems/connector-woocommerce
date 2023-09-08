@@ -46,7 +46,7 @@ class WooProductCategoryImportMapper(Component):
 
     @mapping
     def description(self, record):
-        """Mapping for Discription"""
+        """Mapping for Description"""
         return {"description": record.get("description")}
 
     @mapping
