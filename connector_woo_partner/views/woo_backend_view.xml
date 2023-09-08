@@ -33,7 +33,7 @@
                                 name="import_partners"
                                 type="object"
                                 class="oe_highlight"
-                                string="Import Partners in Background"
+                                string="Import Partners"
                             />
                         </div>
                     </group>
