@@ -1,6 +1,6 @@
 import logging
 
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 from odoo.addons.component.core import Component
@@ -21,12 +21,21 @@ class SaleOrder(models.Model):
     has_done_picking = fields.Boolean(
         string="Has Done Picking", compute="_compute_has_done_picking"
     )
+    # TODO: phase 2 convert me to compute.
     woo_order_status = fields.Selection(
         selection=[
             ("completed", "Completed"),
-            ("null", "Null"),
+            ("any", "Any"),
+            ("pending", "Pending"),
+            ("processing", "Processing"),
+            ("on-hold", "Hold"),
+            ("cancelled", "Cancelled"),
+            ("refunded", "Refunded"),
+            ("failed", "Failed"),
+            ("trash", "Trash"),
         ],
         string="WooCommerce Order Status",
+        default="any",
     )
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
 

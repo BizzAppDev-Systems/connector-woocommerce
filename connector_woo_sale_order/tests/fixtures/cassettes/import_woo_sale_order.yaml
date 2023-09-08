@@ -31,7 +31,7 @@ interactions:
               "customer_id": 237660088,
               "order_key": "wc_order_qzJgPfO1CWI8B",
               "billing": {
-                  "first_name": "jhon",
+                  "first_name": "john",
                   "last_name": "Doe",
                   "company": "",
                   "address_1": "969 Market",
@@ -40,11 +40,11 @@ interactions:
                   "state": "CA",
                   "postcode": "94103",
                   "country": "US",
-                  "email": "jhon.doe@gmail.com",
+                  "email": "john.doe@gmail.com",
                   "phone": "(555) 555-5555"
               },
               "shipping": {
-                  "first_name": "jhon",
+                  "first_name": "john",
                   "last_name": "Doe",
                   "company": "",
                   "address_1": "969 Market",
@@ -135,8 +135,8 @@ interactions:
                           "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/customers/237660088"
                       }
                   ]
-              }
-            }',
+            }
+          }',
         }
       headers:
         Cache-Control: ["no-store, no-cache, must-revalidate"]

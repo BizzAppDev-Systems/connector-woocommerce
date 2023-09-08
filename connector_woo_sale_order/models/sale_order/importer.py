@@ -126,9 +126,19 @@ class WooSaleOrderImportMapper(Component):
         return {"amount_tax": total_tax} if total_tax else {}
 
     @mapping
-    def update_order_id(self, record):
-        """Update the order_id"""
-        self.options.update(order_id=record.get("id"))
+    def woo_order_status(self, record):
+        """Mapping for Order Status"""
+        status = record.get("status")
+        return {"woo_order_status": status} if status else {}
+
+    @mapping
+    def update_woo_order_id(self, record):
+        """Update the woo_order_id"""
+        woo_order_id = record.get("id")
+        if not woo_order_id:
+            raise MappingError(_("WooCommerce Order ID not found Please check!!!"))
+        self.options.update(woo_order_id=woo_order_id)
+        return {"woo_order_id": woo_order_id}
 
 
 class WooSaleOrderImporter(Component):
@@ -224,12 +234,10 @@ class WooSaleOrderLineImportMapper(Component):
         return {"name": name}
 
     @mapping
-    def order_id(self, record):
-        """Mapping for Order"""
-        order_id = self.options.get("order_id")
-        if not order_id:
-            raise MappingError(_("Order Line Order Id not found Please check!!!"))
-        return {"order_id": order_id}
+    def woo_order_id(self, record):
+        """Mapping for Woo Order ID"""
+        woo_order_id = self.options.get("woo_order_id")
+        return {"woo_order_id": woo_order_id}
 
 
 class WooSaleOrderLineImporter(Component):

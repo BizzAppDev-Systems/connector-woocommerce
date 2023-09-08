@@ -43,7 +43,7 @@
                                 name="import_sale_orders"
                                 type="object"
                                 class="oe_highlight"
-                                string="Import Orders in Background"
+                                string="Import Sale Orders"
                             />
                         </div>
                     </group>
