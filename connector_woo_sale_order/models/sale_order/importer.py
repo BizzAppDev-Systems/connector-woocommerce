@@ -236,8 +236,7 @@ class WooSaleOrderLineImportMapper(Component):
     @mapping
     def woo_order_id(self, record):
         """Mapping for Woo Order ID"""
-        woo_order_id = self.options.get("woo_order_id")
-        return {"woo_order_id": woo_order_id}
+        return {"woo_order_id": self.options.get("woo_order_id")}
 
 
 class WooSaleOrderLineImporter(Component):
