@@ -154,9 +154,9 @@ class WooProductProductImportMapper(Component):
         binder = self.binder_for("woo.product.category")
         for category in woo_product_categories:
             woo_binding = binder.to_internal(category.get("id"))
-            if woo_binding:
-                category_ids.append(woo_binding.id)
+            if not woo_binding:
                 continue
+            category_ids.append(woo_binding.id)
         return {"woo_product_categ_ids": [(6, 0, category_ids)]} if category_ids else {}
 
 
@@ -173,5 +173,6 @@ class WooProductProductImporter(Component):
         for category in record.get("categories", []):
             _logger.debug("category: %s", category)
             category_id = category.get("id")
-            if category_id:
-                self._import_dependency(category_id, "woo.product.category")
+            if not category_id:
+                continue
+            self._import_dependency(category_id, "woo.product.category")
