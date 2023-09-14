@@ -106,15 +106,59 @@ class WooImporter(AbstractComponent):
         """
         Import the dependencies for the record
         Import of dependencies can be done manually or by calling
-        :meth:`_import_dependency` for each dependency.
+        :meth:`_import_dependency` for each dependency and handle advisory locks.
+
+        Dependencies are related records that need to be imported before
+        the main record can be successfully created or updated. This method
+        iterates through the defined dependencies and imports them while
+        ensuring advisory locks to prevent concurrency issues.
+
+        An advisory lock is acquired to ensure that multiple import processes
+        do not simultaneously attempt to import the same dependency, which
+        could lead to inconsistent data or conflicts. The lock name is based
+        on the backend, the main record's model, and the external ID of the
+        dependency being imported.
+
+        Example:
+        Suppose we are importing a product with dependencies on product categories.
+        If a product category needs to be imported for the product, this method
+        will be called to import the category. It will acquire an advisory lock
+        to prevent concurrent import processes from importing the same category.
+
+        In case of an advisory lock conflict, one of the processes will wait until
+        the lock is released and then proceed with the import.
+
+        This ensures that dependencies are imported in a controlled manner,
+        avoiding data inconsistencies and conflicts.
         """
         if not hasattr(self.backend_adapter, "_model_dependencies"):
             return
+
         for dependency in self.backend_adapter._model_dependencies:
             record = self.remote_record
             model, key = dependency
-            external_id = record.get(key)
-            self._import_dependency(external_id=external_id, binding_model=model)
+            datas = record.get(key)
+            if not isinstance(datas, (list, tuple)):
+                datas = [{"id": datas}]
+            for data in datas:
+                external_id = data.get("id")
+                lock_name = "import({}, {}, {}, {})".format(
+                    self.backend_record._name,
+                    self.backend_record.id,
+                    model,
+                    external_id,
+                )
+                self.advisory_lock_or_retry(lock_name)
+
+        for dependency in self.backend_adapter._model_dependencies:
+            record = self.remote_record
+            model, key = dependency
+            datas = record.get(key)
+            if not isinstance(datas, (list, tuple)):
+                datas = [{"id": datas}]
+            for data in datas:
+                external_id = data.get("id")
+                self._import_dependency(external_id=external_id, binding_model=model)
 
     def _map_data(self):
         """
