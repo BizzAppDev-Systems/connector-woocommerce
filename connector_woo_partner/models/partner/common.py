@@ -44,15 +44,8 @@ class ResPartner(models.Model):
     def _prepare_child_partner_vals(self, data, address_type=None):
         """Prepare values for child_ids"""
         country = data.get("country")
-        state = data.get("state")
-        if "-" in state:
-            state = state.split("-")[0]
         country = self.env["res.country"].search(
-            [("code", "=ilike", country)],
-            limit=1,
-        )
-        state = self.env["res.country.state"].search(
-            [("code", "=ilike", state)],
+            [("code", "=", country)],
             limit=1,
         )
         vals = {
@@ -70,7 +63,6 @@ class ResPartner(models.Model):
             "street2": data.get("address_2"),
             "zip": data.get("postcode"),
             "phone": data.get("phone"),
-            "state_id": state.id if state else False,
             "country_id": country.id if country else False,
             "city": data.get("city"),
         }
