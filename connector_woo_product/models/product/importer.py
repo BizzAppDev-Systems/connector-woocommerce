@@ -52,7 +52,7 @@ class WooProductProductImportMapper(Component):
         """Mapped product default code."""
         default_code = record.get("sku")
         if not default_code and not self.backend_record.without_sku:
-            raise MappingError(_("SKU is Missing!"))
+            raise MappingError(_("SKU is Missing for the %s !", record.get("name")))
         return {"default_code": default_code} if default_code else {}
 
     @mapping
@@ -169,7 +169,7 @@ class WooProductProductImporter(Component):
 
     def _import_dependencies(self):
         """Added dependencies for Product Category"""
-        #TODO: support me generic way
+        # TODO: support me generic way
         record = self.remote_record
         for category in record.get("categories", []):
             _logger.debug("category: %s", category)
