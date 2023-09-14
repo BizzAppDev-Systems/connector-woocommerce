@@ -64,7 +64,6 @@ class WooProductAttributeValueAdapter(Component):
 
     def search(self, filters=None, **kwargs):
         """Method to get the records from woo"""
-        # TODO: add generic logic in search common adapter based on argument.
         resource_path = "{}/{}/terms".format(self._woo_model, filters.get("attribute"))
         result = self._call(
             resource_path=resource_path, arguments=filters, http_method="get"

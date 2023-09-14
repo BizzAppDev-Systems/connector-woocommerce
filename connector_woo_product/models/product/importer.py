@@ -2,6 +2,8 @@ import logging
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
 from odoo import _
+# from odoo.exceptions import ValidationError
+# from odoo.addons.queue_job.job import identity_exact
 from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
@@ -154,9 +156,9 @@ class WooProductProductImportMapper(Component):
         binder = self.binder_for("woo.product.category")
         for category in woo_product_categories:
             woo_binding = binder.to_internal(category.get("id"))
-            if not woo_binding:
+            if woo_binding:
+                category_ids.append(woo_binding.id)
                 continue
-            category_ids.append(woo_binding.id)
         return {"woo_product_categ_ids": [(6, 0, category_ids)]} if category_ids else {}
 
 
@@ -166,14 +168,3 @@ class WooProductProductImporter(Component):
     _name = "woo.product.product.importer"
     _inherit = "woo.importer"
     _apply_on = "woo.product.product"
-
-    def _import_dependencies(self):
-        """Added dependencies for Product Category"""
-        # TODO: support me generic way
-        record = self.remote_record
-        for category in record.get("categories", []):
-            _logger.debug("category: %s", category)
-            category_id = category.get("id")
-            if not category_id:
-                continue
-            self._import_dependency(category_id, "woo.product.category")

@@ -96,3 +96,13 @@ class WooProductProductAdapter(Component):
     _apply_on = "woo.product.product"
     _woo_model = "products"
     _woo_ext_id_key = "id"
+    _model_dependencies = {
+        (
+            "woo.product.category",
+            "categories",
+        ),
+        # (
+        #     "woo.product.attribute",
+        #     "attributes",
+        # ),
+    }
