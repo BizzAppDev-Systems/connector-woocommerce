@@ -246,12 +246,9 @@ class GenericAdapter(AbstractComponent):
 
     def read(self, external_id=None, attributes=None):
         """Method to get a data for specified record"""
-        print("44444444444=---------", external_id)
         resource_path = "{}/{}".format(self._woo_model, external_id)
-        print("------------", resource_path)
         result = self._call(resource_path, http_method="get")
         result = result.get("data", [])
-        print("4444444444444444", result)
         return result
 
     def create(self, data):

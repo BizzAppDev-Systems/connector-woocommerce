@@ -112,28 +112,26 @@ class WooImporter(AbstractComponent):
         the main record can be successfully created or updated. This method
         iterates through the defined dependencies and imports them while
         ensuring advisory locks to prevent concurrency issues.
-
-        An advisory lock is acquired to ensure that multiple import processes
-        do not simultaneously attempt to import the same dependency, which
-        could lead to inconsistent data or conflicts. The lock name is based
-        on the backend, the main record's model, and the external ID of the
-        dependency being imported.
-
-        Example:
-        Suppose we are importing a product with dependencies on product categories.
-        If a product category needs to be imported for the product, this method
-        will be called to import the category. It will acquire an advisory lock
-        to prevent concurrent import processes from importing the same category.
-
-        In case of an advisory lock conflict, one of the processes will wait until
-        the lock is released and then proceed with the import.
-
-        This ensures that dependencies are imported in a controlled manner,
-        avoiding data inconsistencies and conflicts.
         """
         if not hasattr(self.backend_adapter, "_model_dependencies"):
             return
+        # An advisory lock is acquired to ensure that multiple import processes
+        # do not simultaneously attempt to import the same dependency, which
+        # could lead to inconsistent data or conflicts. The lock name is based
+        # on the backend, the main record's model, and the external ID of the
+        # dependency being imported.
 
+        # Example:
+        # Suppose we are importing a product with dependencies on product categories.
+        # If a product category needs to be imported for the product, this method
+        # will be called to import the category. It will acquire an advisory lock
+        # to prevent concurrent import processes from importing the same category.
+
+        # In case of an advisory lock conflict, one of the processes will wait until
+        # the lock is released and then proceed with the import.
+
+        # This ensures that dependencies are imported in a controlled manner,
+        # avoiding data inconsistencies and conflicts.
         for dependency in self.backend_adapter._model_dependencies:
             record = self.remote_record
             model, key = dependency
