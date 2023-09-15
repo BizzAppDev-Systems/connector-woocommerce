@@ -61,6 +61,8 @@ class WooProductAttribute(models.Model):
                 "attribute": self.external_id,
             }
         )
+        # TODO: with_delay only if context has delay key passed from after import. Else
+        # it should be without delay
         self.env["woo.product.attribute.value"].with_delay(priority=5).import_batch(
             self.backend_id, filters=filters
         )
