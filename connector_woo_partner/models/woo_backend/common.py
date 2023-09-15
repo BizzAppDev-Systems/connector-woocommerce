@@ -6,7 +6,10 @@ class WooBackend(models.Model):
 
     _inherit = "woo.backend"
     import_partners_from_date = fields.Datetime(string="Import partners from date")
-    without_email = fields.Boolean(string="Allow Partners without Email")
+    without_email = fields.Boolean(
+        string="Allow Partners without Email",
+        help="Import Partners That Does Not Have Email Id",
+    )
 
     def import_partners(self):
         """Import Partners from backend"""
