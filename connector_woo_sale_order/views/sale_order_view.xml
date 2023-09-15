@@ -45,7 +45,7 @@
                 position="after"
             >
                 <field name="woo_order_status" readonly="1" />
-                <field name="tax_different" />
+                <field name="tax_different" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='order_line']//tree" position="attributes">
                 <attribute name="editable" />
@@ -78,7 +78,6 @@
                                     <group>
                                         <field name="backend_id" widget="selection" />
                                         <field name="external_id" />
-                                        <field name="price_unit" />
                                         <field name="subtotal_line" />
                                     </group>
                                     <group>
@@ -120,7 +119,6 @@
                                 <group>
                                     <field name="backend_id" widget="selection" />
                                     <field name="external_id" />
-                                    <field name="price_unit" />
                                     <field name="price_subtotal" />
                                     <field name="discount_total" />
                                     <field name="woo_amount_total" />
