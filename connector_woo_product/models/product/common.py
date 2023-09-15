@@ -101,8 +101,8 @@ class WooProductProductAdapter(Component):
             "woo.product.category",
             "categories",
         ),
-        # (
-        #     "woo.product.attribute",
-        #     "attributes",
-        # ),
+        (
+            "woo.product.attribute",
+            "attributes",
+        ),
     }

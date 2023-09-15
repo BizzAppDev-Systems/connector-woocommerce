@@ -2,6 +2,7 @@ import logging
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
 from odoo import _
+
 # from odoo.exceptions import ValidationError
 # from odoo.addons.queue_job.job import identity_exact
 from odoo.addons.connector.components.mapper import mapping
@@ -42,12 +43,14 @@ class WooProductProductImportMapper(Component):
     @mapping
     def price(self, record):
         """Mapping for Standard Price"""
-        return {"price": record.get("price")}
+        price = record.get("price")
+        return {"price": price} if price else {}
 
     @mapping
     def regular_price(self, record):
         """Mapping for Regular Price"""
-        return {"price": record.get("regular_price")}
+        regular_price = record.get("regular_price")
+        return {"regular_price": regular_price} if regular_price else {}
 
     @mapping
     def default_code(self, record):

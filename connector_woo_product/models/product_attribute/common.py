@@ -42,26 +42,28 @@ class WooProductAttribute(models.Model):
         ondelete="restrict",
     )
 
-    def sync_attribute_values_from_woo(self):
-        """sync Attribute values from woocommerce"""
-        self.ensure_one()
-        if not self.backend_id:
-            raise ValidationError(_("No Backend found on Product Attribute."))
-        if not self.external_id:
-            raise ValidationError(_("No External Id found in backend"))
-        filters = {
-            "per_page": self.backend_id.default_limit,
-            "page": 1,
-            "attribute": self.external_id,
-        }
-        self.env["woo.product.attribute.value"].with_delay(priority=5).import_batch(
-            self.backend_id, filters=filters
-        )
-
     def __init__(self, name, bases, attrs):
         """Bind Odoo Product Attribute"""
         WooModelBinder._apply_on.append(self._name)
         super(WooProductAttribute, self).__init__(name, bases, attrs)
+
+    def sync_attribute_values_from_woo(self):
+        """sync Attribute values from woocommerce"""
+        self.ensure_one()
+        filters = {"page": 1}
+        if not self.backend_id:
+            raise ValidationError(_("No Backend found on Product Attribute."))
+        if not self.external_id:
+            raise ValidationError(_("No External Id found in backend"))
+        filters.update(
+            {
+                "per_page": self.backend_id.default_limit,
+                "attribute": self.external_id,
+            }
+        )
+        self.env["woo.product.attribute.value"].with_delay(priority=5).import_batch(
+            self.backend_id, filters=filters
+        )
 
 
 class WooProductAttributeAdapter(Component):
