@@ -10,7 +10,10 @@ class WooBackend(models.Model):
     _inherit = "woo.backend"
 
     import_products_from_date = fields.Datetime(string="Import products from date")
-    without_sku = fields.Boolean(string="Allow Product without SKU")
+    without_sku = fields.Boolean(
+        string="Allow Product without SKU",
+        help="Import Products That Does Not Consist Any SKU",
+    )
     product_categ_id = fields.Many2one(
         comodel_name="product.category",
         string="Product Category",
