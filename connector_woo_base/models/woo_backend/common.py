@@ -101,10 +101,8 @@ class WooBackend(models.Model):
             job_options["priority"] = priority
         from_date = self[from_date_field]
         if from_date:
-            filters["after"] = self.import_products_from_date
-            from_date = fields.Datetime.from_string(from_date)
-        else:
-            from_date = None
+            filters["after"] = fields.Datetime.to_string(from_date)
+            filters['dates_are_gmt'] = True
         self.env[model].with_delay(**job_options or {}).import_batch(
             backend=self, filters=filters
         )

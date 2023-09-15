@@ -302,17 +302,6 @@ class WooBatchImporter(AbstractComponent):
         except Exception as err:
             raise ValidationError(_("Error : %s") % err) from err
 
-    def _import_record(self, external_id, job_options=None, data=None, **kwargs):
-        """
-        Import a record directly or delay the import of the record.
-        Method to implement in sub-classes.
-        """
-        job_options = job_options or {}
-        if "identity_key" not in job_options:
-            job_options["identity_key"] = identity_exact
-        delayable = self.model.with_delay(**job_options or {})
-        delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
-
     def process_next_page(self, filters=None, job_options=None, **kwargs):
         """Method to trigger batch import for Next page"""
         if not filters:
@@ -324,6 +313,17 @@ class WooBatchImporter(AbstractComponent):
         model.import_batch(
             self.backend_record, filters=filters, job_options=job_options, **kwargs
         )
+
+    def _import_record(self, external_id, job_options=None, data=None, **kwargs):
+        """
+        Import a record directly or delay the import of the record.
+        Method to implement in sub-classes.
+        """
+        job_options = job_options or {}
+        if "identity_key" not in job_options:
+            job_options["identity_key"] = identity_exact
+        delayable = self.model.with_delay(**job_options or {})
+        delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
 
 
 class WooDirectBatchImporter(AbstractComponent):
