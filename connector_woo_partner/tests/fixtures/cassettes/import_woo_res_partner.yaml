@@ -7,7 +7,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/customers
+      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/customers/237660088
     response:
       body:
         {
@@ -19,7 +19,7 @@ interactions:
                 "first_name": "John",
                 "last_name": "Doe",
                 "role": "customer",
-                "username": "",
+                "username": "John Doe",
                 "billing": {
                     "first_name": "",
                     "last_name": "",
