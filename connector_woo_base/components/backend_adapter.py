@@ -1,18 +1,15 @@
-import json
+# import json
 import logging
 import socket
 import urllib
 from datetime import datetime
-from urllib.parse import urljoin
 
 import requests
-from requests.auth import HTTPBasicAuth
 
 from odoo.addons.component.core import AbstractComponent
-from odoo.addons.connector.exception import (
-    NetworkRetryableError,
-    RetryableJobError,
-)
+from odoo.addons.connector.exception import NetworkRetryableError, RetryableJobError
+
+from woocommerce import API
 
 _logger = logging.getLogger(__name__)
 
@@ -30,71 +27,7 @@ class WooLocation(object):
 
     @property
     def location(self):
-        location = "{location}/wp-json/wc/{version}/".format(
-            location=self._location, version=self.version
-        )
-        return location
-
-
-class WooClient(object):
-    def __init__(self, location, client_id, client_secret, version, test_mode):
-        """
-        :param location: Woocommerce location for data
-        :type location: :class:`WooLocation`
-        """
-        self._location = location
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self._version = version
-        self._test_mode = test_mode
-
-    def get_data(self, arguments):
-        """Data for the woo api"""
-        if arguments is not None:
-            data = json.dumps(arguments)
-            return data
-        return None
-
-    def call(self, resource_path, arguments, http_method=None):
-        """send/get request/response to/from remote system"""
-        if resource_path is None:
-            _logger.exception("Remote System API called without resource path")
-            raise NotImplementedError
-        url = urljoin(self._location, resource_path)
-        kwargs = {"headers": {"content-type": "application/json"}}
-        if http_method == "get":
-            kwargs["params"] = arguments
-        if http_method == "post":
-            kwargs["params"] = {"email": arguments.get("email")}
-            kwargs["data"] = self.get_data(arguments)
-        auth = HTTPBasicAuth(self.client_id, self.client_secret)
-        kwargs["auth"] = auth
-        function = getattr(requests, http_method)
-        response = function(url, **kwargs)
-        status_code = response.status_code
-        if status_code == 201:
-            return response
-        if status_code == 200:
-            json_response = response.json()
-            record_count = response.headers.get("X-WP-Total")
-            return {"record_count": record_count, "data": json_response}
-
-        if (
-            status_code == 400
-            or status_code == 401
-            or status_code == 404
-            or status_code == 500
-        ):
-            # From Woo on invalid data we get a 400 error
-            # From Woo on Authentication or permission error we get a 401 error,
-            # e.g. incorrect API keys
-            # From Woo on record don't exist or are missing we get a 404 error
-            # but raise_for_status treats it as a network error (which is retryable)
-            raise requests.HTTPError(
-                url, response.status_code, response._content, __name__
-            )
-        response.raise_for_status()
-        return response
+        return self._location
 
 
 class WooAPI(object):
@@ -109,12 +42,12 @@ class WooAPI(object):
     @property
     def api(self):
         if self._api is None:
-            woocommerce_client = WooClient(
-                self._location.location,
-                self._location.client_id,
-                self._location.client_secret,
-                self._location.test_mode,
-                self._location.version,
+            woocommerce_client = API(
+                url=self._location.location,
+                consumer_key=self._location.client_id,
+                consumer_secret=self._location.client_secret,
+                version=self._location.version,
+                wp_api=True,
             )
             self._api = woocommerce_client
         return self._api
@@ -123,7 +56,7 @@ class WooAPI(object):
         """Adjust available arguments per API"""
         if not self.api:
             return self.api
-        return self.api.call(resource_path, arguments, http_method=http_method)
+        return self.api.get(resource_path, params=arguments)
 
     def __enter__(self):
         # we do nothing, api is lazy
@@ -154,8 +87,32 @@ class WooAPI(object):
                     result,
                     (datetime.now() - start).seconds,
                 )
-            # Uncomment to record requests/responses in ``recorder``
-            # record(method, arguments, result)
+            status_code = result.status_code
+            if status_code == 201:
+                return result
+            if status_code == 200:
+                json_response = result.json()
+                record_count = result.headers.get("X-WP-Total")
+                return {"record_count": record_count, "data": json_response}
+
+            if (
+                status_code == 400
+                or status_code == 401
+                or status_code == 404
+                or status_code == 500
+            ):
+                # From Woo on invalid data we get a 400 error
+                # From Woo on Authentication or permission error we get a 401 error,
+                # e.g. incorrect API keys
+                # From Woo on record don't exist or are missing we get a 404 error
+                # but raise_for_status treats it as a network error (which is retryable)
+                raise requests.HTTPError(
+                    self._location.location,
+                    result.status_code,
+                    result._content,
+                    __name__,
+                )
+            result.raise_for_status()
             return result
         except (socket.gaierror, socket.error, socket.timeout) as err:
             raise NetworkRetryableError(

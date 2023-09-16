@@ -1,10 +1,10 @@
 import logging
 from contextlib import contextmanager
+from datetime import datetime, timedelta
 
 from odoo import fields, models
 
 from ...components.backend_adapter import WooAPI, WooLocation
-from datetime import datetime, timedelta
 
 _logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ class WooBackend(models.Model):
         string="Name", required=True, help="Enter the name of the WooCommerce backend."
     )
     version = fields.Selection(
-        selection=[("v3", "V3")],
+        selection=[("wc/v3", "V3")],
         default="v3",
         required=True,
         string="Version",
@@ -101,8 +101,8 @@ class WooBackend(models.Model):
             job_options["priority"] = priority
         from_date = self[from_date_field]
         if from_date:
-            filters["after"] = fields.Datetime.to_string(from_date)
-            filters['dates_are_gmt'] = True
+            filters["modified_after"] = fields.Datetime.to_string(from_date)
+            filters["dates_are_gmt"] = True
         self.env[model].with_delay(**job_options or {}).import_batch(
             backend=self, filters=filters
         )

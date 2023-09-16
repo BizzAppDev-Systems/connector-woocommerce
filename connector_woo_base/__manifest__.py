@@ -14,4 +14,7 @@
         "views/woo_backend_view.xml",
         "views/connector_woo_base_menu.xml",
     ],
+    "external_dependencies": {
+        "python": ["woocommerce"],
+    },
 }
