@@ -155,10 +155,19 @@ class WooSaleOrderImporter(Component):
     def _import_dependencies(self):
         """Added dependencies for Product"""
         record = self.remote_record
-        for line in record.get("items", []):
+        for line in record.get("line_items", []):
+            lock_name = "import({}, {}, {}, {})".format(
+                self.backend_record._name,
+                self.backend_record.id,
+                "woo.product.product",
+                line["product_id"],
+            )
+            self.advisory_lock_or_retry(lock_name)
+        for line in record.get("line_items", []):
             _logger.debug("line: %s", line)
             if "product_id" in line:
-                self._import_dependency(line["id"], "woo.product.product")
+                self._import_dependency(line["product_id"], "woo.product.product")
+        return super(WooSaleOrderImporter, self)._import_dependencies()
 
 
 # Sale Order Line
@@ -181,7 +190,7 @@ class WooSaleOrderLineImportMapper(Component):
             return {}
         binder = self.binder_for("woo.product.product")
         product = binder.to_internal(product_rec, unwrap=True)
-        return {"product_id": product.id}
+        return {"product_id": product.id, "product_uom": product.uom_id.id}
 
     @mapping
     def product_uom_qty(self, record):
