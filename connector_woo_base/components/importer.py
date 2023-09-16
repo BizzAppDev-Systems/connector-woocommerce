@@ -141,6 +141,8 @@ class WooImporter(AbstractComponent):
                 datas = [{"id": datas}]
             for data in datas:
                 external_id = data.get("id")
+                if not external_id:
+                    continue
                 lock_name = "import({}, {}, {}, {})".format(
                     self.backend_record._name,
                     self.backend_record.id,
@@ -157,6 +159,8 @@ class WooImporter(AbstractComponent):
                 datas = [{"id": datas}]
             for data in datas:
                 external_id = data.get("id")
+                if not external_id:
+                    continue
                 self._import_dependency(external_id=external_id, binding_model=model)
 
     def _map_data(self):
