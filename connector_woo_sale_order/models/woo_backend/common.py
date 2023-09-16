@@ -8,8 +8,16 @@ class WooBackend(models.Model):
 
     _inherit = "woo.backend"
 
-    mark_completed = fields.Boolean(string="Mark Order Completed On Delivery")
-    tracking_info = fields.Boolean(string="Send Tracking Information")
+    mark_completed = fields.Boolean(
+        string="Mark Order Completed On Delivery",
+        help="""If Mark Completed is True,
+        We can update the sale order status export functionality to WooCommerce who's status is not completed.""",
+    )
+    tracking_info = fields.Boolean(
+        string="Send Tracking Information",
+        help=""""If Mark Completed is True, This field will be visible.
+        We can add traking information in DO level to update the sale order status to WooCommerce""",
+    )
     import_orders_from_date = fields.Datetime(string="Import Orders from date")
     order_prefix = fields.Char(string="Sale Order Prefix", default="WOO_")
 
@@ -41,7 +49,7 @@ class WooBackend(models.Model):
                 [("woo_bind_ids.backend_id", "=", backend.id)]
             )
             for sale_order in sale_orders:
-                sale_order.export_delivery_status()
+                sale_order.with_delay(priority=5).export_delivery_status()
 
     @api.model
     def cron_export_sale_order_status(self, domain=None):

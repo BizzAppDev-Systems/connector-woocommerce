@@ -128,7 +128,6 @@ class WooSaleOrder(models.Model):
     cart_tax = fields.Float()
     total_tax = fields.Float()
     price_unit = fields.Float()
-    price_subtotal = fields.Float()
     woo_amount_total = fields.Float()
 
     def __init__(self, name, bases, attrs):
@@ -183,7 +182,7 @@ class WooSaleOrderLine(models.Model):
         ondelete="restrict",
     )
     total_tax_line = fields.Float()
-    price_subtotal_line = fields.Float()
+    price_subtotal_line = fields.Float(string="Total Line")
     subtotal_tax_line = fields.Float()
     subtotal_line = fields.Float()
 

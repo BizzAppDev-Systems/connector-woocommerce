@@ -23,7 +23,7 @@
                                     class="fa fa-exclamation-triangle"
                                     style="font-size:20px;"
                                 />
-                                Price Tax and Total Tax is Different
+                                Price Tax and Total Tax not Matching
                             </span>
                         </div>
                     </div>
@@ -78,13 +78,14 @@
                                     <group>
                                         <field name="backend_id" widget="selection" />
                                         <field name="external_id" />
-                                        <field name="subtotal_line" />
+                                        <field name="price_unit"/>
+                                        <field name="product_uom_qty" />
                                     </group>
                                     <group>
-                                        <field name="product_uom_qty" />
-                                        <field name="price_subtotal_line" />
-                                        <field name="total_tax_line" />
+                                        <field name="subtotal_line" />
                                         <field name="subtotal_tax_line" />
+                                        <field name="total_tax_line" />
+                                        <field name="price_subtotal_line" />
                                     </group>
                                 </group>
                             </form>
@@ -119,7 +120,6 @@
                                 <group>
                                     <field name="backend_id" widget="selection" />
                                     <field name="external_id" />
-                                    <field name="price_subtotal" />
                                     <field name="discount_total" />
                                     <field name="woo_amount_total" />
                                 </group>
