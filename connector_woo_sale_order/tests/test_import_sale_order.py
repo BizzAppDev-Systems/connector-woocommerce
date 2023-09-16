@@ -28,6 +28,7 @@ class TestImportSaleOrder(BaseWooTestCase):
         sale_order1 = self.env["woo.sale.order"].search(
             [("external_id", "=", external_id)]
         )
+
         self.assertEqual(len(sale_order1), 1)
         self.assertTrue(sale_order1, "Woo Sale Order is not imported!")
         self.assertEqual(

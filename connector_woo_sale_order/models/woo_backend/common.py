@@ -11,12 +11,14 @@ class WooBackend(models.Model):
     mark_completed = fields.Boolean(
         string="Mark Order Completed On Delivery",
         help="""If Mark Completed is True,
-        We can update the sale order status export functionality to WooCommerce who's status is not completed.""",
+        we can update the sale order status export functionality
+        for WooCommerce orders whose status is not completed.""",
     )
     tracking_info = fields.Boolean(
         string="Send Tracking Information",
-        help=""""If Mark Completed is True, This field will be visible.
-        We can add traking information in DO level to update the sale order status to WooCommerce""",
+        help="""If Mark Completed is True, this field will be visible,
+        and we can add tracking information at the DO (Delivery Order) level to
+        update the sale order status as well as Tracking Info in WooCommerce.""",
     )
     import_orders_from_date = fields.Datetime(string="Import Orders from date")
     order_prefix = fields.Char(string="Sale Order Prefix", default="WOO_")
