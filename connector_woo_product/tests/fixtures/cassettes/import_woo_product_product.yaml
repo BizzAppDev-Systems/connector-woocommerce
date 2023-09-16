@@ -7,7 +7,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products
+      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/60
     response:
       body:
         {
@@ -76,12 +76,12 @@ interactions:
               "_links": {
                   "self": [
                       {
-                          "href": "https://woo-loudly-free-influencer.wpcomstaging.com/wp-json/wc/v3/products/60"
+                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/60"
                       }
                   ],
                   "collection": [
                       {
-                          "href": "https://woo-loudly-free-influencer.wpcomstaging.com/wp-json/wc/v3/products"
+                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products"
                       }
                   ]
               }

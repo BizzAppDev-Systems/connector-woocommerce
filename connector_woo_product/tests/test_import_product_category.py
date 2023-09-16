@@ -21,11 +21,13 @@ class TestImportProductCategory(BaseWooTestCase):
         """Test Assertions for Product Category"""
         external_id = "1374"
         with recorder.use_cassette("import_woo_product_category"):
-            self.env["woocommerce.product.category"].import_record(
+            self.env["woo.product.category"].import_record(
                 external_id=external_id, backend=self.backend
             )
-        self.product_model = self.env["woocommerce.product.category"]
-        productcategory1 = self.product_model.search([("external_id", "=", external_id)])
+        self.product_model = self.env["woo.product.category"]
+        productcategory1 = self.product_model.search(
+            [("external_id", "=", external_id)]
+        )
         self.assertEqual(len(productcategory1), 1)
         self.assertTrue(productcategory1, "Woo Product Category is not imported!")
         self.assertEqual(

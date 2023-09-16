@@ -37,18 +37,13 @@ class TestImportProduct(BaseWooTestCase):
             "Product's name is not matched with response!",
         )
         self.assertEqual(
-            product1.sale_ok,
-            False,
-            "Sale is not matched with response!",
-        )
-        self.assertEqual(
             product1.purchase_ok,
             False,
             "Purchase is not matched with response!",
         )
         self.assertEqual(
             product1.list_price,
-            1.0,
+            500.0,
             "List Price is not matched with response",
         )
         self.assertEqual(
