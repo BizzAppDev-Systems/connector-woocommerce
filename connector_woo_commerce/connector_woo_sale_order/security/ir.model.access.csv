@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+connector_woo_sale_order.access_woo_sale_order,access_woo_sale_order,connector_woo_sale_order.model_woo_sale_order,base.group_user,1,0,0,0
+access_woo_sale_order_connector_manager,access_woo_sale_order_connector_manager,model_woo_sale_order,connector.group_connector_manager,1,1,1,1
+connector_woo_sale_order.access_woo_sale_order_line,access_woo_sale_order_line,connector_woo_sale_order.model_woo_sale_order_line,base.group_user,1,1,1,1
