@@ -1,5 +1,4 @@
 from odoo import models, fields, api
-from datetime import datetime, timedelta
 
 IMPORT_DELTA_BUFFER = 30  # seconds
 
@@ -12,7 +11,7 @@ class WooBackend(models.Model):
     import_products_from_date = fields.Datetime(string="Import products from date")
     without_sku = fields.Boolean(
         string="Allow Product without SKU",
-        help="Import All Products That Doen't Consist Any SKU",
+        help="If this Boolean is True then it will import those products that do not have assigned SKU.",
     )
     product_categ_id = fields.Many2one(
         comodel_name="product.category",

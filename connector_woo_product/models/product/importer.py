@@ -2,9 +2,6 @@ import logging
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
 from odoo import _
-
-# from odoo.exceptions import ValidationError
-# from odoo.addons.queue_job.job import identity_exact
 from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
