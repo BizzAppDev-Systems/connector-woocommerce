@@ -39,7 +39,7 @@ class SaleOrder(models.Model):
         default="any",
     )
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
-    total_tax_different = fields.Boolean(compute="_compute_total_tax_diffrent")
+    total_amount_different = fields.Boolean(compute="_compute_total_amount_diffrent")
 
     @api.depends(
         "woo_bind_ids",
@@ -74,16 +74,16 @@ class SaleOrder(models.Model):
             order.tax_different = tax_different
 
     @api.depends("amount_total", "woo_bind_ids.woo_amount_total")
-    def _compute_total_tax_diffrent(self):
+    def _compute_total_amount_diffrent(self):
         """
-        Compute the 'total_tax_different' field for each record in the current recordset.
+        Compute the 'total_amount_different' field for each record in the current recordset.
 
         This method is used to calculate whether there is a difference in the total amount between the
-        current sales order and its related WooCommerce bindings. The 'total_tax_different' field
+        current sales order and its related WooCommerce bindings. The 'total_amount_different' field
         indicates whether the total amounts differ among the bindings.
         """
         for order in self:
-            tax_different_total = False
+            amount_total_different = False
             if any(
                 [
                     float_compare(
@@ -95,8 +95,8 @@ class SaleOrder(models.Model):
                     for binding in order.mapped("woo_bind_ids")
                 ]
             ):
-                tax_different_total = True
-            order.total_tax_different = tax_different_total
+                amount_total_different = True
+            order.total_amount_different = amount_total_different
 
     @api.depends("picking_ids", "picking_ids.state")
     def _compute_has_done_picking(self):
