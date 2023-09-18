@@ -200,7 +200,7 @@ class WooSaleOrderLineImportMapper(Component):
             raise MappingError(
                 _("Order Line Product Quantity not found Please check!!!")
             )
-        return {"product_uom_qty": record.get("quantity")}
+        return {"product_uom_qty": product_qty}
 
     @mapping
     def price_unit(self, record):

@@ -45,7 +45,7 @@
                                     class="fa fa-exclamation-triangle"
                                     style="font-size:20px;"
                                 />
-                                The WooCommerce Amount Total is different then Ammount
+                                The WooCommerce Amount Total is different then Amount
                                 Total of Odoo.
                             </span>
                         </div>
