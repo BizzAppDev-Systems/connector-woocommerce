@@ -11,7 +11,7 @@ class WooBackend(models.Model):
     import_products_from_date = fields.Datetime(string="Import products from date")
     without_sku = fields.Boolean(
         string="Allow Product without SKU",
-        help="If this Boolean is True then it will import those products that do not have assigned SKU.",
+        help="If this Boolean is set to True, the system will import products that do not have an assigned SKU. Please enable this option if you want to include products without SKU in the import process.",
     )
     product_categ_id = fields.Many2one(
         comodel_name="product.category",
