@@ -150,17 +150,6 @@ class WooImporter(AbstractComponent):
                     external_id,
                 )
                 self.advisory_lock_or_retry(lock_name)
-
-        for dependency in self.backend_adapter._model_dependencies:
-            record = self.remote_record
-            model, key = dependency
-            datas = record.get(key)
-            if not isinstance(datas, (list, tuple)):
-                datas = [{"id": datas}]
-            for data in datas:
-                external_id = data.get("id")
-                if not external_id:
-                    continue
                 self._import_dependency(external_id=external_id, binding_model=model)
 
     def _map_data(self):

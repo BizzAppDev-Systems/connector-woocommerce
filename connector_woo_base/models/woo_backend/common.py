@@ -24,9 +24,8 @@ class WooBackend(models.Model):
     )
     version = fields.Selection(
         selection=[("wc/v3", "V3")],
-        default="v3",
+        default="wc/v3",
         required=True,
-        string="Version",
         help="Select the WooCommerce API version you want to use.",
     )
     default_limit = fields.Integer(
