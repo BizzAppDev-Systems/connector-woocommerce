@@ -8,7 +8,7 @@ class WooBackend(models.Model):
     import_partners_from_date = fields.Datetime(string="Import partners from date")
     without_email = fields.Boolean(
         string="Allow Partners without Email",
-        help="Import All Partners That Doesn't Have Email",
+        help="When the boolean is 'True,' partners can be imported without needing an email address.",
     )
 
     def import_partners(self):
