@@ -8,6 +8,8 @@
         "sale_management",
         "connector_woo_product",
         "connector_woo_partner",
+        "sale_stock",
+        "delivery",
     ],
     "license": "LGPL-3",
     "data": [

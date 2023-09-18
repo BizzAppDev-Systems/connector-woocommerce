@@ -4,7 +4,7 @@
     <record id="sale_order_form_view_inherit_woocommerce" model="ir.ui.view">
         <field name="name">sale.order.form.view</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="connector_ecommerce.view_order_connector_form" />
+        <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             <xpath expr="//form/sheet/div[hasclass('oe_button_box')]" position="inside">
                 <div
@@ -23,7 +23,30 @@
                                     class="fa fa-exclamation-triangle"
                                     style="font-size:20px;"
                                 />
-                                The Price Tax and Total Tax do not match
+                                The WooCommerce Price Tax is different then Total Tax of
+                                Odoo.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                    attrs="{'invisible': [('total_tax_different', '=', False)]}"
+                >
+                    <div class="o_row">
+                        <div
+                            class="col-1 text-center"
+                            style="padding-left: unset;padding-right: unset;"
+                        >
+                            <span style="font-size:20px;">
+                                <i
+                                    title="Tax Different"
+                                    class="fa fa-exclamation-triangle"
+                                    style="font-size:20px;"
+                                />
+                                The WooCommerce Amount Total is different then Ammount
+                                Total of Odoo.
                             </span>
                         </div>
                     </div>
@@ -45,7 +68,8 @@
                 position="after"
             >
                 <field name="woo_order_status" readonly="1" />
-                <field name="tax_different" invisible="1"/>
+                <field name="tax_different" invisible="1" />
+                <field name="total_tax_different" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']//tree" position="attributes">
                 <attribute name="editable" />
@@ -78,7 +102,7 @@
                                     <group>
                                         <field name="backend_id" widget="selection" />
                                         <field name="external_id" />
-                                        <field name="price_unit"/>
+                                        <field name="price_unit" />
                                         <field name="product_uom_qty" />
                                     </group>
                                     <group>

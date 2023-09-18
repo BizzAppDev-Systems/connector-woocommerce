@@ -48,7 +48,11 @@ class WooBackend(models.Model):
         for backend in self:
             filters.update({"per_page": backend.default_limit})
             sale_orders = self.env["sale.order"].search(
-                [("woo_bind_ids.backend_id", "=", backend.id)]
+                [
+                    ("woo_bind_ids.backend_id", "=", backend.id),
+                    ("woo_order_status", "!=", "completed"),
+                    ("picking_ids.state", "=", "done"),
+                ]
             )
             for sale_order in sale_orders:
                 sale_order.with_delay(priority=5).export_delivery_status()

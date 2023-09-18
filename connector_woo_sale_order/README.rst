@@ -47,7 +47,8 @@
   - Added related sale order amount field at binding level of sale order.
   - Added 'Export Delivery Status' button at sale order level and it will export the Status of sale order to 'Completed' state and carrier_tracking_ref which is located at Stock Picking level in 'Additional info' tab.
   - At backend level,'Mark Order Completed On Delivery' boolean which is located at connectors > WooCommerce > Advanced Configuration tab if 'Mark Order Completed On Delivery' is True then 'Send Tracking Information' will be visible and if 'Mark Order Completed On Delivery' True then State will set 'Completed' in WooCommerce of that Order if 'Mark Order Completed On Delivery' and 'Send Tracking Information' then it will set Order to 'Completed' state and also tracking info will also send in WooCommerce.
-  -When the Price Tax, recorded at the Order Line level, differs from the Total Tax Line value, recorded at the Order Line's binding level, a 'The Price Tax and Total Tax do not match' Danger Banner will be displayed at the sale order level.
+  -When the Price Tax, recorded at the Order Line level, differs from the Total Tax Line value, recorded at the Order Line's binding level, a 'The WooCommerce Price Tax is different then Total Tax of Odoo.' Danger Banner will be displayed at the sale order level.
+  -When the Amount Total, recorded at the Order level, differs from the woo Amount Total value, recorded at the Order binding level, a 'The WooCommerce Amount Total is different then Ammount Total of Odoo.' Danger Banner will be displayed at the sale order level.
 
 
 **Known issues/Roadmap**

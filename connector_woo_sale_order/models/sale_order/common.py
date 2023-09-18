@@ -2,6 +2,7 @@ import logging
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import float_compare
 
 from odoo.addons.component.core import Component
 from odoo.addons.connector_woo_base.components.binder import WooModelBinder
@@ -19,7 +20,7 @@ class SaleOrder(models.Model):
         copy=False,
     )
     has_done_picking = fields.Boolean(
-        string="Has Done Picking", compute="_compute_has_done_picking"
+        string="Has Done Picking", compute="_compute_has_done_picking", store=True
     )
     # TODO: phase 2 convert me to compute.
     woo_order_status = fields.Selection(
@@ -38,6 +39,7 @@ class SaleOrder(models.Model):
         default="any",
     )
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
+    total_tax_different = fields.Boolean(compute="_compute_total_tax_diffrent")
 
     @api.depends(
         "woo_bind_ids",
@@ -57,7 +59,12 @@ class SaleOrder(models.Model):
             tax_different = False
             if any(
                 [
-                    line.price_tax != line.total_tax_line
+                    float_compare(
+                        line.price_tax,
+                        line.total_tax_line,
+                        precision_rounding=order.currency_id.rounding,
+                    )
+                    != 0
                     for line in order.mapped("woo_bind_ids").mapped(
                         "woo_order_line_ids"
                     )
@@ -65,6 +72,31 @@ class SaleOrder(models.Model):
             ):
                 tax_different = True
             order.tax_different = tax_different
+
+    @api.depends("amount_total", "woo_bind_ids.woo_amount_total")
+    def _compute_total_tax_diffrent(self):
+        """
+        Compute the 'total_tax_different' field for each record in the current recordset.
+
+        This method is used to calculate whether there is a difference in the total amount between the
+        current sales order and its related WooCommerce bindings. The 'total_tax_different' field
+        indicates whether the total amounts differ among the bindings.
+        """
+        for order in self:
+            tax_different_total = False
+            if any(
+                [
+                    float_compare(
+                        order.amount_total,
+                        binding.woo_amount_total,
+                        precision_rounding=order.currency_id.rounding,
+                    )
+                    != 0
+                    for binding in order.mapped("woo_bind_ids")
+                ]
+            ):
+                tax_different_total = True
+            order.total_tax_different = tax_different_total
 
     @api.depends("picking_ids", "picking_ids.state")
     def _compute_has_done_picking(self):
@@ -85,17 +117,16 @@ class SaleOrder(models.Model):
         picking_ids = self.picking_ids.filtered(lambda p: p.state == "done")
         if not picking_ids:
             raise ValidationError(_("No delivery orders in 'done' state."))
+        if self.woo_order_status == "completed":
+            raise ValidationError(
+                _("WooCommerce Sale Order is already in Completed Status.")
+            )
 
     def export_delivery_status(self):
         """Change state of a sales order on WooCommerce"""
         for binding in self.woo_bind_ids:
-            if self._context.get("state"):
-                binding.with_delay(
-                    priority=5,
-                ).update_woo_order_fulfillment_status()
-            else:
-                self.validate_delivery_orders_done()
-                binding.update_woo_order_fulfillment_status()
+            self.validate_delivery_orders_done()
+            binding.update_woo_order_fulfillment_status()
 
 
 class WooSaleOrder(models.Model):
@@ -121,14 +152,14 @@ class WooSaleOrder(models.Model):
     woo_order_id = fields.Integer(
         string="WooCommerce Order ID", help="'order_id' field in WooCommerce"
     )
-    discount_total = fields.Float()
-    discount_tax = fields.Float()
-    shipping_total = fields.Float()
-    shipping_tax = fields.Float()
-    cart_tax = fields.Float()
-    total_tax = fields.Float()
-    price_unit = fields.Float()
-    woo_amount_total = fields.Float()
+    discount_total = fields.Monetary()
+    discount_tax = fields.Monetary()
+    shipping_total = fields.Monetary()
+    shipping_tax = fields.Monetary()
+    cart_tax = fields.Monetary()
+    total_tax = fields.Monetary()
+    price_unit = fields.Monetary()
+    woo_amount_total = fields.Monetary()
 
     def __init__(self, name, bases, attrs):
         """Bind Odoo Partner"""
@@ -181,10 +212,10 @@ class WooSaleOrderLine(models.Model):
         required=True,
         ondelete="restrict",
     )
-    total_tax_line = fields.Float()
-    price_subtotal_line = fields.Float(string="Total Line")
-    subtotal_tax_line = fields.Float()
-    subtotal_line = fields.Float()
+    total_tax_line = fields.Monetary()
+    price_subtotal_line = fields.Monetary(string="Total Line")
+    subtotal_tax_line = fields.Monetary()
+    subtotal_line = fields.Monetary()
 
     def __init__(self, name, bases, attrs):
         """Bind Odoo Sale Order Line"""
