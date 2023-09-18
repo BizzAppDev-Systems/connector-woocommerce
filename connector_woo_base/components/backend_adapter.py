@@ -56,7 +56,13 @@ class WooAPI(object):
         """Adjust available arguments per API"""
         if not self.api:
             return self.api
-        return self.api.get(resource_path, params=arguments)
+        http_method = http_method.lower()
+        additional_data = {}
+        if http_method == "get":
+            additional_data.update(params=arguments)
+        else:
+            additional_data.update(data=arguments)
+        return getattr(self.api, http_method)(resource_path, **additional_data)
 
     def __enter__(self):
         # we do nothing, api is lazy
