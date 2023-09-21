@@ -32,7 +32,7 @@
                 <div
                     class="alert alert-danger"
                     role="alert"
-                    attrs="{'invisible': [('total_tax_different', '=', False)]}"
+                    attrs="{'invisible': [('total_amount_different', '=', False)]}"
                 >
                     <div class="o_row">
                         <div
@@ -69,7 +69,7 @@
             >
                 <field name="woo_order_status" readonly="1" />
                 <field name="tax_different" invisible="1" />
-                <field name="total_tax_different" invisible="1" />
+                <field name="total_amount_different" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']//tree" position="attributes">
                 <attribute name="editable" />

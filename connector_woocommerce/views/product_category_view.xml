@@ -65,12 +65,4 @@
         <field name="view_mode">tree,form</field>
          <field name="view_id" ref="view_woo_product_category_tree" />
     </record>
-
-    <!-- Define the menu item product category at backend level-->
-    <menuitem
-        id="menu_woo_product_category"
-        name="WooCommerce Product Categories"
-        parent="connector_woo_base.menu_woo_root"
-        action="action_woo_product_category"
-    />
 </odoo>

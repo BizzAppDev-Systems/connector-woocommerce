@@ -3,7 +3,7 @@ import logging
 from odoo import fields, models, _
 from odoo.exceptions import ValidationError
 from odoo.addons.component.core import Component
-from odoo.addons.connector_woo_base.components.binder import WooModelBinder
+from ...components.binder import WooModelBinder
 
 _logger = logging.getLogger(__name__)
 

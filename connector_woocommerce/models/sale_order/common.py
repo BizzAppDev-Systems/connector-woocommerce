@@ -5,7 +5,7 @@ from odoo.exceptions import ValidationError
 from odoo.tools import float_compare
 
 from odoo.addons.component.core import Component
-from odoo.addons.connector_woo_base.components.binder import WooModelBinder
+from ...components.binder import WooModelBinder
 
 _logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class SaleOrder(models.Model):
     has_done_picking = fields.Boolean(
         string="Has Done Picking", compute="_compute_has_done_picking", store=True
     )
-    # TODO: phase 2 convert me to compute.
+    # TODO: phase 2 convert me to m2o to new object with migration script.
     woo_order_status = fields.Selection(
         selection=[
             ("completed", "Completed"),
@@ -57,12 +57,13 @@ class SaleOrder(models.Model):
         """
         for order in self:
             tax_different = False
+            rounding = order.currency_id.rounding
             if any(
                 [
                     float_compare(
                         line.price_tax,
                         line.total_tax_line,
-                        precision_rounding=order.currency_id.rounding,
+                        precision_rounding=rounding,
                     )
                     != 0
                     for line in order.mapped("woo_bind_ids").mapped(
@@ -84,12 +85,13 @@ class SaleOrder(models.Model):
         """
         for order in self:
             amount_total_different = False
+            rounding = order.currency_id.rounding
             if any(
                 [
                     float_compare(
                         order.amount_total,
                         binding.woo_amount_total,
-                        precision_rounding=order.currency_id.rounding,
+                        precision_rounding=rounding,
                     )
                     != 0
                     for binding in order.mapped("woo_bind_ids")
@@ -106,7 +108,7 @@ class SaleOrder(models.Model):
                 order.has_done_picking = False
             else:
                 order.has_done_picking = all(
-                    picking.state == "done" for picking in order.picking_ids
+                    picking.state in ["done", "cancel"] for picking in order.picking_ids
                 )
 
     def export_delivery_status(self):
@@ -157,10 +159,12 @@ class WooSaleOrder(models.Model):
         Add validations on creation and process of fulfillment orders
         based on delivery order state.
         """
-        picking_ids = self.mapped("picking_ids").filtered(lambda p: p.state == "done")
+        picking_ids = self.mapped("picking_ids").filtered(
+            lambda p: p.state in ["done", "cancel"]
+        )
         if not picking_ids:
             raise ValidationError(_("No delivery orders in 'done' state."))
-        if "completed" in self.mapped('woo_order_status'):
+        if "completed" in self.mapped("woo_order_status"):
             raise ValidationError(
                 _("WooCommerce Sale Order is already in Completed Status.")
             )
@@ -225,6 +229,14 @@ class WooSaleOrderLine(models.Model):
 
     @api.model_create_multi
     def create(self, vals):
+        """
+        Create multiple WooSaleOrderLine records.
+
+        :param vals: List of dictionaries containing values for record creation.
+        :type vals: list of dict
+        :return: Created WooSaleOrderLine records.
+        :rtype: woo.sale.order.line
+        """
         for value in vals:
             existing_record = self.search(
                 [

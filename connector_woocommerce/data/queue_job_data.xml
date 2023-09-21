@@ -11,18 +11,18 @@
             id="job_function_woo_import_res_partner_record"
             model="queue.job.function"
         >
-            <field name="model_id" ref="connector_woo_partner.model_woo_res_partner" />
+            <field name="model_id" ref="connector_woocommerce.model_woo_res_partner" />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!-- Import Partners related action queue job -->
         <record
             id="job_function_woo_import_res_partner_batch"
             model="queue.job.function"
         >
-            <field name="model_id" ref="connector_woo_partner.model_woo_res_partner" />
+            <field name="model_id" ref="connector_woocommerce.model_woo_res_partner" />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!-- Import Product Batch related action queue job -->
         <record
@@ -31,10 +31,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_product.model_woo_product_product"
+                ref="connector_woocommerce.model_woo_product_product"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!-- Import Product Attribute Batch related action queue job -->
         <record
@@ -43,10 +43,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_product.model_woo_product_attribute"
+                ref="connector_woocommerce.model_woo_product_attribute"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!-- Import Product Attribute Value Batch related action queue job -->
         <record
@@ -55,10 +55,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_product.model_woo_product_attribute_value"
+                ref="connector_woocommerce.model_woo_product_attribute_value"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
 
         <!-- Import Product Category Batch related action queue job -->
@@ -68,10 +68,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_product.model_woo_product_category"
+                ref="connector_woocommerce.model_woo_product_category"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!-- Import Products related action queue job -->
         <record
@@ -80,10 +80,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_product.model_woo_product_product"
+                ref="connector_woocommerce.model_woo_product_product"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!-- Import Product Attributes related action queue job -->
         <record
@@ -92,10 +92,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_product.model_woo_product_attribute"
+                ref="connector_woocommerce.model_woo_product_attribute"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!-- Import Product Attribute Value terms related action queue job -->
         <record
@@ -104,10 +104,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_product.model_woo_product_attribute_value"
+                ref="connector_woocommerce.model_woo_product_attribute_value"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
 
         <!-- Import Product Categories related action queue job -->
@@ -117,10 +117,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_product.model_woo_product_category"
+                ref="connector_woocommerce.model_woo_product_category"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!-- Sale Order Import Batch related action queue job -->
         <record
@@ -129,10 +129,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_sale_order.model_woo_sale_order"
+                ref="connector_woocommerce.model_woo_sale_order"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!-- Import Orders related action queue job -->
         <record
@@ -141,10 +141,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_sale_order.model_woo_sale_order"
+                ref="connector_woocommerce.model_woo_sale_order"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!-- Import Sale Order Line related action queue job -->
         <record
@@ -153,10 +153,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_sale_order.model_woo_sale_order_line"
+                ref="connector_woocommerce.model_woo_sale_order_line"
             />
             <field name="method">import_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!-- Import Batch related action queue job -->
         <record
@@ -165,10 +165,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_sale_order.model_woo_sale_order_line"
+                ref="connector_woocommerce.model_woo_sale_order_line"
             />
             <field name="method">import_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!--Sale Order Status Export Batch related action queue job -->
         <record
@@ -177,10 +177,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_sale_order.model_woo_sale_order"
+                ref="connector_woocommerce.model_woo_sale_order"
             />
             <field name="method">export_batch</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
         <!--Sale Order Status Export Record related action queue job -->
         <record
@@ -189,10 +189,10 @@
         >
             <field
                 name="model_id"
-                ref="connector_woo_sale_order.model_woo_sale_order"
+                ref="connector_woocommerce.model_woo_sale_order"
             />
             <field name="method">export_record</field>
-            <field name="channel_id" ref="connector_woo_base.channel_woocommerce" />
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
     </data>
 </odoo>
