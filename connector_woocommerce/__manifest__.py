@@ -28,6 +28,7 @@
         "views/sale_order_view.xml",
         "views/connector_woo_base_menu.xml",
     ],
+    "images": ["static/description/banner.gif"],
     "external_dependencies": {
         "python": ["woocommerce"],
     },
