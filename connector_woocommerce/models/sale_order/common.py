@@ -5,6 +5,7 @@ from odoo.exceptions import ValidationError
 from odoo.tools import float_compare
 
 from odoo.addons.component.core import Component
+
 from ...components.binder import WooModelBinder
 
 _logger = logging.getLogger(__name__)
@@ -77,11 +78,13 @@ class SaleOrder(models.Model):
     @api.depends("amount_total", "woo_bind_ids.woo_amount_total")
     def _compute_total_amount_diffrent(self):
         """
-        Compute the 'total_amount_different' field for each record in the current recordset.
+        Compute the 'total_amount_different' field for each record in the current
+        recordset.
 
-        This method is used to calculate whether there is a difference in the total amount between the
-        current sales order and its related WooCommerce bindings. The 'total_amount_different' field
-        indicates whether the total amounts differ among the bindings.
+        This method is used to calculate whether there is a difference in the total
+        amount between the current sales order and its related WooCommerce bindings.
+        The 'total_amount_different' field indicates whether the total amounts differ
+        among the bindings.
         """
         for order in self:
             amount_total_different = False
@@ -168,15 +171,22 @@ class WooSaleOrder(models.Model):
             raise ValidationError(
                 _("WooCommerce Sale Order is already in Completed Status.")
             )
+        for woo_order in self:
+            no_tracking_do = picking_ids.filtered(lambda p: not p.carrier_tracking_ref)
+            if woo_order.backend_id.tracking_info and no_tracking_do:
+                do_names = ", ".join(no_tracking_do.mapped("name"))
+                raise ValidationError(
+                    _("Tracking Reference not found in Delivery Order! %s" % do_names)
+                )
 
     def update_woo_order_fulfillment_status(self):
         """Change status of a sales order on WooCommerce"""
-
+        woo_model = self.env["woo.sale.order"]
+        if self._context.get("execute_from_cron"):
+            woo_model = woo_model.with_delay()
         for woo_order in self:
             woo_order.validate_delivery_orders_done()
-            if self._context.get("execute_from_cron"):
-                woo_order = woo_order.with_delay()
-            woo_order.export_record(woo_order.backend_id, woo_order)
+            woo_model.export_record(woo_order.backend_id, woo_order)
 
 
 class WooSaleOrderAdapter(Component):

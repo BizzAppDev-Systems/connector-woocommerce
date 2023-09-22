@@ -101,10 +101,7 @@
                             />
                         </group>
                         <notebook>
-                            <page
-                                name="import"
-                                string="Imports"
-                            >
+                            <page name="import" string="Imports">
                                 <p class="oe_grey oe_inline">
                                     By clicking on the buttons,
                                 you will initiate the synchronizations
@@ -124,7 +121,9 @@
                                         />
                                     </group>
                                     <group>
-                                        <div style="min-width: 300px; max-width: 300px;">
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
                                             <button
                                                 name="import_partners"
                                                 type="object"
@@ -144,14 +143,16 @@
                                         />
                                     </group>
                                     <group>
-                                        <div style="min-width: 300px; max-width: 300px;">
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
                                             <button
                                                 name="import_product_attributes"
                                                 type="object"
                                                 class="oe_highlight"
                                                 string="Import Product Attributes"
                                             />
-                                         </div>
+                                        </div>
                                     </group>
                                 </group>
                                 <group>
@@ -164,14 +165,16 @@
                                         />
                                     </group>
                                     <group>
-                                        <div style="min-width: 300px; max-width: 300px;">
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
                                             <button
                                                 name="import_product_categories"
                                                 type="object"
                                                 class="oe_highlight"
                                                 string="Import Product Categories"
                                             />
-                                         </div>
+                                        </div>
                                     </group>
                                 </group>
                                 <group>
@@ -189,14 +192,16 @@
                                         />
                                     </group>
                                     <group>
-                                        <div style="min-width: 300px; max-width: 300px;">
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
                                             <button
                                                 name="import_products"
                                                 type="object"
                                                 class="oe_highlight"
                                                 string="Import Products"
                                             />
-                                         </div>
+                                        </div>
                                     </group>
                                 </group>
                                 <group>
@@ -214,7 +219,9 @@
                                         />
                                     </group>
                                     <group>
-                                        <div style="min-width: 300px; max-width: 300px;">
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
                                             <button
                                                 name="import_sale_orders"
                                                 type="object"
@@ -236,17 +243,29 @@
                                     >
                                         <field name="default_limit" />
                                     </group>
-                                    <group name="Partner_configuration" string="Customers Configuration">
+                                    <group
+                                        name="Partner_configuration"
+                                        string="Customers Configuration"
+                                    >
                                         <field name="without_email" />
                                     </group>
-                                    <group name="product_configuration" string="Products Configuration">
+                                    <group
+                                        name="product_configuration"
+                                        string="Products Configuration"
+                                    >
                                         <field name="without_sku" />
-                                        <field name="product_categ_id"/>
+                                        <field name="product_categ_id" />
                                     </group>
-                                    <group name="sale_order_configuration" string="Orders Configuration">
+                                    <group
+                                        name="sale_order_configuration"
+                                        string="Orders Configuration"
+                                    >
                                         <field name="order_prefix" />
                                         <field name="mark_completed" />
-                                        <field name="tracking_info" attrs="{'invisible': [('mark_completed', '=', False)]}" />
+                                        <field
+                                            name="tracking_info"
+                                            attrs="{'invisible': [('mark_completed', '=', False)]}"
+                                        />
                                     </group>
                                 </group>
                             </page>

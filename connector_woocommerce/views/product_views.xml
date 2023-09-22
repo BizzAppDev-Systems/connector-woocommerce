@@ -33,19 +33,28 @@
                                 <group>
                                     <field name="backend_id" widget="selection" />
                                     <field name="external_id" />
-                                    <field name="status"/>
-                                    <field name="tax_status"/>
+                                    <field name="status" />
+                                    <field name="tax_status" />
                                 </group>
                                 <group>
-                                    <field name="stock_status"/>
-                                    <field name="price"/>
-                                    <field name="regular_price"/>
+                                    <field name="stock_status" />
+                                    <field name="price" />
+                                    <field name="regular_price" />
                                 </group>
-                                <label for="woo_product_categ_ids" string="WooCommerce Product Categories"/>
+                                <label
+                                    for="woo_product_categ_ids"
+                                    string="WooCommerce Product Categories"
+                                />
                                 <field name="woo_product_categ_ids" />
-                                <label for="woo_attribute_ids" string="WooCommerce Attributes"/>
+                                <label
+                                    for="woo_attribute_ids"
+                                    string="WooCommerce Attributes"
+                                />
                                 <field name="woo_attribute_ids" />
-                                <label for="woo_product_attribute_value_ids" string="WooCommerce Product Attribute Values"/>
+                                <label
+                                    for="woo_product_attribute_value_ids"
+                                    string="WooCommerce Product Attribute Values"
+                                />
                                 <field name="woo_product_attribute_value_ids" />
                             </group>
                         </form>

@@ -5,6 +5,7 @@ from odoo import _, fields, models
 
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
+
 from ...components.binder import WooModelBinder
 
 _logger = logging.getLogger(__name__)
@@ -70,7 +71,8 @@ class ResPartner(models.Model):
 
     def _process_address_data(self, data, address_type, partner_ext_id, backend_id):
         """
-        Process address data, generate hash key, and handle partner creation or retrieval.
+        Process address data, generate hash key, and handle partner creation or
+        retrieval.
         """
         hash_attributes = (
             data.get("username"),

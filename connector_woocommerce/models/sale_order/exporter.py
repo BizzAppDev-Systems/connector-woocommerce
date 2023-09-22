@@ -1,8 +1,10 @@
 import logging
+
 from odoo import _
+
 from odoo.addons.component.core import Component
-from odoo.addons.connector.exception import MappingError
 from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.exception import MappingError
 
 _logger = logging.getLogger(__name__)
 
@@ -28,11 +30,16 @@ class WooSaleOrderExporterMapper(Component):
         done_pickings = record.picking_ids.filtered(
             lambda picking: picking.state == "done"
         )
+        if not done_pickings:
+            raise _("No Delivery Order Found!")
         if (
             self.backend_record.tracking_info
             and not done_pickings[0].carrier_tracking_ref
         ):
-            raise MappingError(_("Tracking Info not found!"))
+            raise MappingError(
+                _("Tracking Reference not found in Delivery Order! %s")
+                % done_pickings[0].name
+            )
         tracking_number = done_pickings[0].carrier_tracking_ref
         return {
             "meta_data": [

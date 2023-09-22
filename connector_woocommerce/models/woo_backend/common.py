@@ -2,7 +2,7 @@ import logging
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 
-from odoo import fields, models, api
+from odoo import api, fields, models
 
 from ...components.backend_adapter import WooAPI, WooLocation
 
@@ -76,7 +76,9 @@ class WooBackend(models.Model):
     import_products_from_date = fields.Datetime(string="Import products from date")
     without_sku = fields.Boolean(
         string="Allow Product without SKU",
-        help="If this Boolean is set to True, the system will import products that do not have an assigned SKU. Please enable this option if you want to include products without SKU in the import process.",
+        help="""If this Boolean is set to True, the system will import products
+        that do not have an assigned SKU. Please enable this option if you want
+        to include products without SKU in the import process.""",
     )
     product_categ_id = fields.Many2one(
         comodel_name="product.category",
@@ -87,7 +89,8 @@ class WooBackend(models.Model):
     import_partners_from_date = fields.Datetime(string="Import partners from date")
     without_email = fields.Boolean(
         string="Allow Partners without Email",
-        help="When the boolean is 'True,' partners can be imported without needing an email address.",
+        help="""When the boolean is 'True,' partners can be imported without needing
+        an email address.""",
     )
 
     def _import_from_date(self, model, from_date_field, priority=None, filters=None):
