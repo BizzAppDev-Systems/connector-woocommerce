@@ -183,6 +183,7 @@ class WooSaleOrderLineImportMapper(Component):
     ]
 
     def get_product(self, record):
+        """Get The Binding of Product"""
         product_rec = record.get("product_id")
         if not product_rec:
             return False
