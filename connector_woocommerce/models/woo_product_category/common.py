@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 
 class WooProductCategory(models.Model):
     _name = "woo.product.category"
-    _description = "Product Category"
+    _description = "WooCommerce Product Category"
     _inherit = "woo.binding"
     _parent_name = "parent_id"
     _parent_store = True

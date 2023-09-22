@@ -307,7 +307,7 @@ class WooDirectBatchExporter(AbstractComponent):
         if "description" in job_options:
             description = self.backend_record.get_queue_job_description(
                 prefix=self.model.export_record.__doc__ or "Record Export Of",
-                model=self.model._name,
+                model=self.model._description,
             )
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
@@ -328,7 +328,7 @@ class WooDelayedBatchExporter(AbstractComponent):
         if "description" in job_options:
             description = self.backend_record.get_queue_job_description(
                 prefix=self.model.export_record.__doc__ or "Record Export Of",
-                model=self.model._name,
+                model=self.model._description,
             )
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})

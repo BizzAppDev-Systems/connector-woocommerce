@@ -21,6 +21,8 @@ class QueueJob(models.Model):
                     record = record.odoo_id
             else:
                 record = self.args[1]
+                if hasattr(record, "odoo_id"):
+                    record = record.odoo_id
         elif self.kwargs:
             external_id = self.kwargs.get("external_id")
             if not external_id:

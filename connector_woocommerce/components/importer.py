@@ -316,7 +316,7 @@ class WooBatchImporter(AbstractComponent):
         if "description" not in kwargs:
             description = self.backend_record.get_queue_job_description(
                 prefix=self.model.import_batch.__doc__ or "Preparing Batch Import Of",
-                model=self.model._name,
+                model=self.model._description,
             )
             job_options["description"] = description
         if not kwargs.get("no_delay"):
@@ -336,7 +336,7 @@ class WooBatchImporter(AbstractComponent):
         if "description" not in kwargs:
             description = self.backend_record.get_queue_job_description(
                 prefix=self.model.import_record.__doc__ or "Record Import Of",
-                model=self.model._name,
+                model=self.model._description,
             )
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})

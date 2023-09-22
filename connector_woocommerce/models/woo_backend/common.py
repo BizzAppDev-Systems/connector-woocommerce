@@ -144,7 +144,7 @@ class WooBackend(models.Model):
                     or "Preparing Batch Import Of"
                 )
                 job_options["description"] = self.get_queue_job_description(
-                    description, model
+                    description, binding_model._description
                 )
             if priority or priority == 0:
                 job_options["priority"] = priority
@@ -176,18 +176,14 @@ class WooBackend(models.Model):
             self.update_backend_vals(backend_vals, **kwargs)
 
     def update_backend_vals(self, backend_vals, **kwargs):
-        """ Method to write the backend values"""
+        """Method to write the backend values"""
         self.write(backend_vals)
 
     def get_queue_job_description(self, prefix, model):
         """New method that returns the queue job description"""
         if not prefix or not model:
             _logger.warning("Queue Job description may not be appropriate!")
-        model = model.replace("woo.", "")
-        formate = "from WooCommerce"
-        return "{} {} {}".format(
-            prefix or "", (model or "").replace(".", " ").title(), formate
-        )
+        return "{} {}".format(prefix or "", model)
 
     def _import_from_date(
         self, model, from_date_field, priority=None, filters=None, job_options=None

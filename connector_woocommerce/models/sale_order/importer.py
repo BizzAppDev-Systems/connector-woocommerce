@@ -182,14 +182,21 @@ class WooSaleOrderLineImportMapper(Component):
         ("name", "name"),
     ]
 
+    def get_product(self, record):
+        product_rec = record.get("product_id")
+        if not product_rec:
+            return False
+        binder = self.binder_for("woo.product.product")
+        product = binder.to_internal(product_rec, unwrap=True)
+        return product
+
     @mapping
     def product_id(self, record):
         """Return Product excited in Woo order line and pre-check validations."""
         product_rec = record.get("product_id")
         if not product_rec:
             return {}
-        binder = self.binder_for("woo.product.product")
-        product = binder.to_internal(product_rec, unwrap=True)
+        product = self.get_product(record)
         return {"product_id": product.id, "product_uom": product.uom_id.id}
 
     @mapping
@@ -197,18 +204,22 @@ class WooSaleOrderLineImportMapper(Component):
         """Mapping for Product Uom qty"""
         product_qty = record.get("quantity")
         if not product_qty:
-            raise MappingError(
-                _("Order Line Product Quantity not found Please check!!!")
+            product = self.get_product(record)
+            error_message = (
+                f"Order Line Product Quantity not found for Product: {product.name}"
             )
+            raise MappingError(error_message)
         return {"product_uom_qty": product_qty}
 
     @mapping
     def price_unit(self, record):
         """Mapping for Price Unit"""
         unit_price = record.get("price")
-        product_id = record.get("product_id")
         if not unit_price:
-            error_message = f"Order Line Price Unit not found for Product ID {product_id} Please Check! "
+            product = self.get_product(record)
+            error_message = (
+                f"Order Line Price Unit not found for Product: {product.name}"
+            )
             raise MappingError(error_message)
         return {"price_unit": unit_price}
 

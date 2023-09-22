@@ -34,7 +34,7 @@ class WooProductAttribute(models.Model):
     _name = "woo.product.attribute"
     _inherit = "woo.binding"
     _inherits = {"product.attribute": "odoo_id"}
-    _description = "Woo Product Attribute"
+    _description = "WooCommerce Product Attribute"
 
     _rec_name = "name"
 

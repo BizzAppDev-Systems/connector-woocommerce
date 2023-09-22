@@ -1,6 +1,7 @@
 from os.path import dirname, join
 
 from vcr import VCR
+
 from .test_woo_backend import BaseWooTestCase
 
 recorder = VCR(

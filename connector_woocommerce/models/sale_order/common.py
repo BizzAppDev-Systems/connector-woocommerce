@@ -179,11 +179,18 @@ class WooSaleOrder(models.Model):
                     _("Tracking Reference not found in Delivery Order! %s" % do_names)
                 )
 
-    def update_woo_order_fulfillment_status(self):
+    def update_woo_order_fulfillment_status(self, job_options=None):
         """Change status of a sales order on WooCommerce"""
         woo_model = self.env["woo.sale.order"]
         if self._context.get("execute_from_cron"):
-            woo_model = woo_model.with_delay()
+            if job_options is None:
+                job_options = {}
+            if "description" not in job_options:
+                description = self.export_record.__doc__
+                job_options["description"] = self.backend_id.get_queue_job_description(
+                    description, self._description
+                )
+            woo_model = woo_model.with_delay(**job_options or {})
         for woo_order in self:
             woo_order.validate_delivery_orders_done()
             woo_model.export_record(woo_order.backend_id, woo_order)
