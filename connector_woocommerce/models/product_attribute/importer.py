@@ -52,3 +52,10 @@ class WooProductAttributeImporter(Component):
         # TODO: Pass context for delay
         binding.sync_attribute_values_from_woo()
         return super(WooProductAttributeImporter, self)._after_import(binding, **kwargs)
+
+    def _must_skip(self):
+        """Skipped Records which have not_real set to be True."""
+        product_attribute = self.env["product.attribute"].not_real
+        if product_attribute:
+            return _("This Attribute is exclusively assigned to a specific product.")
+        return super(WooProductAttributeImporter, self)._must_skip()

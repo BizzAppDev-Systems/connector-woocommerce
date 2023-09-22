@@ -20,6 +20,7 @@ class ProductAttribute(models.Model):
         copy=False,
     )
     has_archives = fields.Boolean()
+    not_real = fields.Boolean()
 
     def import_product_attribute_value(self):
         """Import Product Attribute Value of account move."""
@@ -52,21 +53,22 @@ class WooProductAttribute(models.Model):
     def sync_attribute_values_from_woo(self):
         """sync Attribute values from woocommerce"""
         self.ensure_one()
-        filters = {"page": 1}
+        filters = {}
         if not self.backend_id:
             raise ValidationError(_("No Backend found on Product Attribute."))
         if not self.external_id:
             raise ValidationError(_("No External Id found in backend"))
         filters.update(
             {
-                "per_page": self.backend_id.default_limit,
                 "attribute": self.external_id,
             }
         )
         # TODO: with_delay only if context has delay key passed from after import. Else
         # it should be without delay
-        self.env["woo.product.attribute.value"].with_delay(priority=5).import_batch(
-            self.backend_id, filters=filters
+        self.backend_id._sync_from_date(
+            model="woo.product.attribute.value",
+            priority=5,
+            filters=filters,
         )
 
 

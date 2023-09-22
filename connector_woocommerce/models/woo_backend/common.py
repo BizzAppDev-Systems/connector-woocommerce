@@ -93,31 +93,109 @@ class WooBackend(models.Model):
         an email address.""",
     )
 
-    def _import_from_date(self, model, from_date_field, priority=None, filters=None):
-        """Method to add a filter based on the date."""
-        import_start_time = datetime.now()
-        job_options = {}
-        if priority or priority == 0:
-            job_options["priority"] = priority
-        from_date = self[from_date_field]
+    def get_filters(self, model=None):
+        """New Method: Returns the filter"""
+        # model: In case we want to update the filter based on the model name
+        return {}
+
+    def get_job_options(self, model=None, export=False, batch=True):
+        """New Method: Returns the filter"""
+        # model: In case we want to update the job options based on the model name
+        return {}
+
+    def get_additional_filter(self):
+        """Add Filter"""
+        return {"page": 1, "per_page": self.default_limit}
+
+    def _sync_from_date(
+        self,
+        model,
+        from_date_field=None,
+        filters=None,
+        priority=None,
+        date_field=None,
+        export=False,
+        with_delay=True,
+        force=False,
+        force_update_field=None,
+        job_options=None,
+        **kwargs
+    ):
+        """New Method: Generic Method to import/export records based on the params"""
+        self.ensure_one()
+        filters = filters or self.get_filters(model)
+        filters.update(self.get_additional_filter())
+        start_time = datetime.now()
+        backend_vals = {}
+        binding_model = self.env[model]
+        from_date = self[from_date_field] if from_date_field else False
         if from_date:
             filters["modified_after"] = fields.Datetime.to_string(from_date)
             filters["dates_are_gmt"] = True
+        if with_delay:
+            job_options = job_options or self.get_job_options(
+                binding_model, export=export, batch=True
+            )
+            if "description" not in job_options:
+                description = (
+                    binding_model.export_batch.__doc__ or "Preparing Batch Export Of"
+                    if export
+                    else binding_model.import_batch.__doc__
+                    or "Preparing Batch Import Of"
+                )
+                job_options["description"] = self.get_queue_job_description(
+                    description, model
+                )
+            if priority or priority == 0:
+                job_options["priority"] = priority
+            binding_model = binding_model.with_delay(**job_options or {})
+        if export:
+            self._export_from_date(
+                binding_model,
+                start_time,
+                from_date_field=from_date_field,
+                filters=filters,
+                date_field=date_field,
+                job_options=job_options,
+                **kwargs
+            )
+        else:
+            force = self[force_update_field] if force_update_field else False
+            self._import_from_date(
+                model=model,
+                from_date_field=from_date_field,
+                filters=filters,
+                job_options=job_options,
+            )
+            if force:
+                backend_vals[force_update_field] = False
+        if from_date_field:
+            start_time = start_time - timedelta(seconds=IMPORT_DELTA_BUFFER)
+            start_time = fields.Datetime.to_string(start_time)
+            backend_vals.update({from_date_field: start_time})
+            self.update_backend_vals(backend_vals, **kwargs)
+
+    def update_backend_vals(self, backend_vals, **kwargs):
+        """ Method to write the backend values"""
+        self.write(backend_vals)
+
+    def get_queue_job_description(self, prefix, model):
+        """New method that returns the queue job description"""
+        if not prefix or not model:
+            _logger.warning("Queue Job description may not be appropriate!")
+        model = model.replace("woo.", "")
+        formate = "from WooCommerce"
+        return "{} {} {}".format(
+            prefix or "", (model or "").replace(".", " ").title(), formate
+        )
+
+    def _import_from_date(
+        self, model, from_date_field, priority=None, filters=None, job_options=None
+    ):
+        """Method to add a filter based on the date."""
         self.env[model].with_delay(**job_options or {}).import_batch(
             backend=self, filters=filters
         )
-        # Records from Woo are imported based on their `created_at`
-        # date.  This date is set on Woo at the beginning of a
-        # transaction, so if the import is run between the beginning and
-        # the end of a transaction, the import of a record may be
-        # missed.  That's why we add a small buffer back in time where
-        # the eventually missed records will be retrieved.  This also
-        # means that we'll have jobs that import twice the same records,
-        # but this is not a big deal because they will be skipped when
-        # the last `sync_date` is the same.
-        next_time = import_start_time - timedelta(seconds=IMPORT_DELTA_BUFFER)
-        next_time = fields.Datetime.to_string(next_time)
-        self.write({from_date_field: next_time})
 
     def toggle_test_mode(self):
         """Test Mode"""
@@ -153,12 +231,13 @@ class WooBackend(models.Model):
 
     def import_partners(self):
         """Import Partners from backend"""
-        filters = {"page": 1}
         for backend in self:
-            filters.update({"per_page": backend.default_limit})
-            backend.env["woo.res.partner"].with_delay(priority=5).import_batch(
-                backend=backend, filters=filters
+            backend._sync_from_date(
+                model="woo.res.partner",
+                priority=5,
+                export=False,
             )
+        return True
 
     @api.model
     def cron_import_partners(self, domain=None):
@@ -167,14 +246,12 @@ class WooBackend(models.Model):
 
     def import_products(self):
         """Import Products from backend"""
-        filters = {"page": 1}
         for backend in self:
-            filters.update({"per_page": backend.default_limit})
-            backend._import_from_date(
+            backend._sync_from_date(
                 model="woo.product.product",
                 from_date_field="import_products_from_date",
                 priority=5,
-                filters=filters,
+                export=False,
             )
         return True
 
@@ -186,12 +263,13 @@ class WooBackend(models.Model):
 
     def import_product_attributes(self):
         """Import Product Attribute from backend"""
-        filters = {"page": 1}
         for backend in self:
-            filters.update({"per_page": backend.default_limit})
-            backend.env["woo.product.attribute"].with_delay(priority=5).import_batch(
-                backend=backend, filters=filters
+            backend._sync_from_date(
+                model="woo.product.attribute",
+                priority=5,
+                export=False,
             )
+        return True
 
     @api.model
     def cron_import_product_attributes(self, domain=None):
@@ -201,12 +279,13 @@ class WooBackend(models.Model):
 
     def import_product_categories(self):
         """Import Product Category from backend"""
-        filters = {"page": 1}
         for backend in self:
-            filters.update({"per_page": backend.default_limit})
-            backend.env["woo.product.category"].with_delay(priority=5).import_batch(
-                backend=backend, filters=filters
+            backend._sync_from_date(
+                model="woo.product.category",
+                priority=5,
+                export=False,
             )
+        return True
 
     @api.model
     def cron_import_product_categories(self, domain=None):
@@ -216,14 +295,11 @@ class WooBackend(models.Model):
 
     def import_sale_orders(self):
         """Import Orders from backend"""
-        filters = {"page": 1}
         for backend in self:
-            filters.update({"per_page": backend.default_limit})
-            backend._import_from_date(
+            backend._sync_from_date(
                 model="woo.sale.order",
                 from_date_field="import_orders_from_date",
                 priority=5,
-                filters=filters,
             )
         return True
 

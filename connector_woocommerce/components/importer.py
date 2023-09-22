@@ -287,7 +287,7 @@ class WooBatchImporter(AbstractComponent):
     _inherit = ["base.importer", "connector.woo.base"]
     _usage = "batch.importer"
 
-    def run(self, filters=None, force=None):
+    def run(self, filters=None, force=None, job_options=None):
         """Run the synchronization"""
         filters = filters or {}
         if "record_count" not in filters:
@@ -297,13 +297,13 @@ class WooBatchImporter(AbstractComponent):
             records = data.get("data", [])
             for record in records:
                 external_id = record.get(self.backend_adapter._woo_ext_id_key)
-                self._import_record(external_id, data=record)
+                self._import_record(external_id, job_options, data=record)
             filters["record_count"] += len(records)
             record_count = data.get("record_count", 0)
             filters_record_count = filters.get("record_count", 0)
             if int(record_count) > int(filters_record_count):
                 filters.update({"page": filters.get("page", 1) + 1})
-                self.process_next_page(filters)
+                self.process_next_page(filters=filters, job_options=job_options)
         except Exception as err:
             raise ValidationError(_("Error : %s") % err) from err
 
@@ -313,6 +313,12 @@ class WooBatchImporter(AbstractComponent):
             filters = {}
         job_options = job_options or {}
         model = self.env[self.model._name]
+        if "description" not in kwargs:
+            description = self.backend_record.get_queue_job_description(
+                prefix=self.model.import_batch.__doc__ or "Preparing Batch Import Of",
+                model=self.model._name,
+            )
+            job_options["description"] = description
         if not kwargs.get("no_delay"):
             model = model.with_delay(**job_options or {})
         model.import_batch(
@@ -327,6 +333,12 @@ class WooBatchImporter(AbstractComponent):
         job_options = job_options or {}
         if "identity_key" not in job_options:
             job_options["identity_key"] = identity_exact
+        if "description" not in kwargs:
+            description = self.backend_record.get_queue_job_description(
+                prefix=self.model.import_record.__doc__ or "Record Import Of",
+                model=self.model._name,
+            )
+            job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
         delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
 

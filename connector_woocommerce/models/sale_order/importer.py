@@ -206,8 +206,10 @@ class WooSaleOrderLineImportMapper(Component):
     def price_unit(self, record):
         """Mapping for Price Unit"""
         unit_price = record.get("price")
+        product_id = record.get("product_id")
         if not unit_price:
-            raise MappingError(_("Order Line Price Unit not found Please check!!!"))
+            error_message = f"Order Line Price Unit not found for Product ID {product_id} Please Check! "
+            raise MappingError(error_message)
         return {"price_unit": unit_price}
 
     @mapping

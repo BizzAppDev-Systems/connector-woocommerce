@@ -304,6 +304,12 @@ class WooDirectBatchExporter(AbstractComponent):
         job_options = job_options or {}
         if "identity_key" not in job_options:
             job_options["identity_key"] = identity_exact
+        if "description" in job_options:
+            description = self.backend_record.get_queue_job_description(
+                prefix=self.model.export_record.__doc__ or "Record Export Of",
+                model=self.model._name,
+            )
+            job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
         delayable.export_record(self.backend_record, record, **kwargs)
 
@@ -319,5 +325,11 @@ class WooDelayedBatchExporter(AbstractComponent):
         job_options = job_options or {}
         if "identity_key" not in job_options:
             job_options["identity_key"] = identity_exact
+        if "description" in job_options:
+            description = self.backend_record.get_queue_job_description(
+                prefix=self.model.export_record.__doc__ or "Record Export Of",
+                model=self.model._name,
+            )
+            job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
         delayable.export_record(self.backend_record, record, **kwargs)

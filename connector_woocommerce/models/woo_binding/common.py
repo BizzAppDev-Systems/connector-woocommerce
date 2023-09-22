@@ -25,7 +25,7 @@ class WooBinding(models.AbstractModel):
 
     @api.model
     def import_batch(self, backend, filters=None, job_options=None, force=False):
-        """Prepare the import of records modified on woo"""
+        """Preparing Batch Import of"""
         if filters is None:
             filters = filters or {}
         with backend.work_on(self._name) as work:
@@ -34,14 +34,14 @@ class WooBinding(models.AbstractModel):
 
     @api.model
     def import_record(self, backend, external_id, data=None, force=False):
-        """Import a record from Woocommerce"""
+        """Import Record Of"""
         with backend.work_on(self._name) as work:
             importer = work.component(usage="record.importer")
             return importer.run(external_id, data=data)
 
     @api.model
     def export_batch(self, backend, filters=None):
-        """Prepare the import of records modified on woo"""
+        """Preparing Batch Export of"""
         if filters is None:
             filters = {}
         with backend.work_on(self._name) as work:
@@ -49,7 +49,7 @@ class WooBinding(models.AbstractModel):
             return exporter.run(filters=filters)
 
     def export_record(self, backend, record, fields=None):
-        """Export a record on woo"""
+        """Export Record To"""
         record.ensure_one()
         with backend.work_on(self._name) as work:
             exporter = work.component(usage="record.exporter")

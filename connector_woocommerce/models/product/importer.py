@@ -30,8 +30,12 @@ class WooProductProductImportMapper(Component):
     def name(self, record):
         """Mapping for Name"""
         name = record.get("name")
+        product_id = record.get("id")
         if not name:
-            raise MappingError(_("Product name doesn't exist please check !!!"))
+            error_message = (
+                f"Product name doesn't exist for Product ID {product_id} Please check!"
+            )
+            raise MappingError(error_message)
         return {"name": name}
 
     @mapping
@@ -108,6 +112,7 @@ class WooProductProductImportMapper(Component):
                     "name": attribute_name,
                     "backend_id": self.backend_record.id,
                     "external_id": created_id,
+                    "not_real": True,
                 }
             )
         return product_attribute
