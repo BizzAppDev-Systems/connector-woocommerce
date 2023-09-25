@@ -21,11 +21,6 @@ class WooSaleOrderExporterMapper(Component):
             raise MappingError(
                 _("WooCommerce Sale Order is already in Completed Status.")
             )
-        picking_ids = record.mapped("picking_ids").filtered(
-            lambda p: p.state == "done"
-        )
-        if not picking_ids:
-            raise MappingError(_("No delivery orders in 'done' state."))
         if not self.backend_record.mark_completed:
             raise MappingError(
                 _(
@@ -39,11 +34,13 @@ class WooSaleOrderExporterMapper(Component):
     def tracking_number(self, record):
         """Mapping for tracking number"""
         tracking_number = False
+        if not self.backend_record.tracking_info:
+            return {}
         done_pickings = record.picking_ids.filtered(
             lambda picking: picking.state == "done"
         )
         if not done_pickings:
-            raise _("No Delivery Order Found!")
+            raise _("No delivery orders in 'done' state.")
         if (
             self.backend_record.tracking_info
             and not done_pickings[0].carrier_tracking_ref
@@ -53,22 +50,18 @@ class WooSaleOrderExporterMapper(Component):
                 % done_pickings[0].name
             )
         tracking_number = done_pickings[0].carrier_tracking_ref
-        return (
-            {
-                "meta_data": [
-                    {
-                        "key": "_wc_shipment_tracking_items",
-                        "value": [
-                            {
-                                "tracking_number": tracking_number,
-                            }
-                        ],
-                    }
-                ]
-            }
-            if self.backend_record.tracking_info
-            else {}
-        )
+        return {
+            "meta_data": [
+                {
+                    "key": "_wc_shipment_tracking_items",
+                    "value": [
+                        {
+                            "tracking_number": tracking_number,
+                        }
+                    ],
+                }
+            ]
+        }
 
 
 class WooSaleOrderBatchExporter(Component):
