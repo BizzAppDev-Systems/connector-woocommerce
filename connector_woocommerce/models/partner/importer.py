@@ -35,7 +35,7 @@ class WooResPartnerImportMapper(Component):
         name = f"{first_name} {last_name}" if first_name or last_name else username
         if not name:
             raise MappingError(_("Username not found!"))
-        return {"name": name}
+        return {"name": name.strip()}
 
     @mapping
     def firstname(self, record):

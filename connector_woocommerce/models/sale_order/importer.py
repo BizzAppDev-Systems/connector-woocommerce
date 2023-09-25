@@ -216,7 +216,7 @@ class WooSaleOrderLineImportMapper(Component):
     def price_unit(self, record):
         """Mapping for Price Unit"""
         unit_price = record.get("price")
-        return {"price_unit": unit_price} if unit_price else {}
+        return {"price_unit": unit_price}
 
     @mapping
     def price_subtotal_line(self, record):
