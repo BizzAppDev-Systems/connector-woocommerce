@@ -321,5 +321,8 @@ class WooBackend(models.Model):
     @api.model
     def cron_export_sale_order_status(self, domain=None):
         """Cron of Export sale order status"""
-        backend_ids = self.search(domain or [])
+        if domain is None:
+            domain = []
+        domain.append(("mark_completed", "=", "True"))
+        backend_ids = self.search(domain)
         backend_ids.export_sale_order_status()
