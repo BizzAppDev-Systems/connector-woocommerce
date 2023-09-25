@@ -117,6 +117,13 @@ class SaleOrder(models.Model):
     def export_delivery_status(self):
         """Change state of a sales order on WooCommerce"""
         for binding in self.woo_bind_ids:
+            if not binding.backend_id.mark_completed:
+                raise ValidationError(
+                    _(
+                        "Export Delivery Status is Not Allow from WooCommerce Backend '%s'.",
+                        binding.backend_id.name,
+                    )
+                )
             binding.update_woo_order_fulfillment_status()
 
 
