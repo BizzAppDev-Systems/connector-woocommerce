@@ -308,23 +308,13 @@ class WooBackend(models.Model):
     def export_sale_order_status(self):
         """Export Sale Order Status"""
         for backend in self:
-            if backend.mark_completed and not backend.tracking_info:
-                sale_orders = self.env["sale.order"].search(
-                    [
-                        ("woo_bind_ids.backend_id", "=", backend.id),
-                        ("woo_order_status", "!=", "completed"),
-                        ("picking_ids.state", "=", "done"),
-                    ]
-                )
-            if backend.mark_completed and backend.tracking_info:
-                sale_orders = self.env["sale.order"].search(
-                    [
-                        ("woo_bind_ids.backend_id", "=", backend.id),
-                        ("woo_order_status", "!=", "completed"),
-                        ("picking_ids.state", "=", "done"),
-                        ("picking_ids.carrier_tracking_ref", "!=", False),
-                    ]
-                )
+            sale_orders = self.env["sale.order"].search(
+                [
+                    ("woo_bind_ids.backend_id", "=", backend.id),
+                    ("woo_order_status", "!=", "completed"),
+                    ("picking_ids.state", "=", "done"),
+                ]
+            )
             for sale_order in sale_orders:
                 sale_order.with_context(execute_from_cron=True).export_delivery_status()
 
@@ -333,6 +323,6 @@ class WooBackend(models.Model):
         """Cron of Export sale order status"""
         if domain is None:
             domain = []
-        domain.append(("mark_completed", "=", "True"))
-        backend_ids = self.search(domain)
+        domain.append([("mark_completed", "=", "True")])
+        backend_ids = self.search(domain or [])
         backend_ids.export_sale_order_status()
