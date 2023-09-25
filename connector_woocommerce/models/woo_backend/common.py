@@ -323,6 +323,6 @@ class WooBackend(models.Model):
         """Cron of Export sale order status"""
         if domain is None:
             domain = []
-        domain.append([("mark_completed", "=", "True")])
+        domain.append(("mark_completed", "=", "True"))
         backend_ids = self.search(domain or [])
         backend_ids.export_sale_order_status()

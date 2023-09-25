@@ -199,7 +199,8 @@ class WooSaleOrder(models.Model):
                 )
             woo_model = woo_model.with_delay(**job_options or {})
         for woo_order in self:
-            woo_order.validate_delivery_orders_done()
+            if not self._context.get("execute_from_cron"):
+                woo_order.validate_delivery_orders_done()
             woo_model.export_record(woo_order.backend_id, woo_order)
 
 

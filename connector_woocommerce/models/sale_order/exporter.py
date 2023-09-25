@@ -17,11 +17,23 @@ class WooSaleOrderExporterMapper(Component):
     @mapping
     def status(self, record):
         """Mapping for Status"""
-        return (
-            {"status": "completed"}
-            if record.picking_ids.state == "done" and self.backend_record.mark_completed
-            else {}
+        if record.woo_order_status == "completed":
+            raise MappingError(
+                _("WooCommerce Sale Order is already in Completed Status.")
+            )
+        picking_ids = record.mapped("picking_ids").filtered(
+            lambda p: p.state == "done"
         )
+        if not picking_ids:
+            raise MappingError(_("No delivery orders in 'done' state."))
+        if not self.backend_record.mark_completed:
+            raise MappingError(
+                _(
+                    "Export Delivery Status is Not Allow from WooCommerce Backend '%s'.",
+                    self.backend_record.name,
+                )
+            )
+        return {"status": "completed"}
 
     @mapping
     def tracking_number(self, record):
@@ -41,18 +53,22 @@ class WooSaleOrderExporterMapper(Component):
                 % done_pickings[0].name
             )
         tracking_number = done_pickings[0].carrier_tracking_ref
-        return {
-            "meta_data": [
-                {
-                    "key": "_wc_shipment_tracking_items",
-                    "value": [
-                        {
-                            "tracking_number": tracking_number,
-                        }
-                    ],
-                }
-            ]
-        } if self.backend_record.tracking_info else {}
+        return (
+            {
+                "meta_data": [
+                    {
+                        "key": "_wc_shipment_tracking_items",
+                        "value": [
+                            {
+                                "tracking_number": tracking_number,
+                            }
+                        ],
+                    }
+                ]
+            }
+            if self.backend_record.tracking_info
+            else {}
+        )
 
 
 class WooSaleOrderBatchExporter(Component):
