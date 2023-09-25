@@ -195,7 +195,7 @@ class WooSaleOrder(models.Model):
             if "description" not in job_options:
                 description = self.export_record.__doc__
                 job_options["description"] = self.backend_id.get_queue_job_description(
-                    description, self._description
+                    description, "Sale Order Status on WooCommerce"
                 )
             woo_model = woo_model.with_delay(**job_options or {})
         for woo_order in self:

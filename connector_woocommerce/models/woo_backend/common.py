@@ -305,18 +305,33 @@ class WooBackend(models.Model):
         backend_ids = self.search(domain or [])
         backend_ids.import_sale_orders()
 
+    def _export_sale_order_status(self, backend, additional_condition=None):
+        """Export Sale Order Status for a specific backend with an optional additional condition"""
+        common_domain = [
+            ("woo_bind_ids.backend_id", "=", backend.id),
+            ("woo_order_status", "!=", "completed"),
+            ("picking_ids.state", "=", "done"),
+        ]
+        if additional_condition:
+            common_domain.append(additional_condition)
+        sale_orders = self.env["sale.order"].search(common_domain)
+        for sale_order in sale_orders:
+            sale_order.with_context(execute_from_cron=True).export_delivery_status()
+
     def export_sale_order_status(self):
         """Export Sale Order Status"""
         for backend in self:
-            sale_orders = self.env["sale.order"].search(
-                [
-                    ("woo_bind_ids.backend_id", "=", backend.id),
-                    ("woo_order_status", "!=", "completed"),
-                    ("picking_ids.state", "=", "done"),
-                ]
-            )
-            for sale_order in sale_orders:
-                sale_order.with_context(execute_from_cron=True).export_delivery_status()
+            if not backend.mark_completed:
+                continue
+            if backend.tracking_info:
+                additional_condition = (
+                    "picking_ids.carrier_tracking_ref",
+                    "!=",
+                    False,
+                )
+            else:
+                additional_condition = None
+            self._export_sale_order_status(backend, additional_condition)
 
     @api.model
     def cron_export_sale_order_status(self, domain=None):

@@ -52,7 +52,7 @@ class WooSaleOrderExporterMapper(Component):
                     ],
                 }
             ]
-        }
+        } if self.backend_record.tracking_info else {}
 
 
 class WooSaleOrderBatchExporter(Component):
