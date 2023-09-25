@@ -25,8 +25,9 @@ class TestImportProduct(BaseWooTestCase):
             self.env["woo.product.product"].import_record(
                 external_id=external_id, backend=self.backend
             )
-        self.product_model = self.env["woo.product.product"]
-        product1 = self.product_model.search([("external_id", "=", external_id)])
+        product1 = self.env["woo.product.product"].search(
+            [("external_id", "=", external_id)]
+        )
         self.assertEqual(len(product1), 1)
         self.assertTrue(product1, "Woo Product is not imported!")
         self.assertEqual(
@@ -44,7 +45,7 @@ class TestImportProduct(BaseWooTestCase):
         )
         self.assertEqual(
             product1.list_price,
-            500.0,
+            500,
             "List Price is not matched with response",
         )
         self.assertEqual(
@@ -61,4 +62,24 @@ class TestImportProduct(BaseWooTestCase):
             product1.description,
             "<p>shirt.</p>\n",
             "description is not matched with response",
+        )
+        self.assertEqual(
+            product1.regular_price,
+            "599",
+            "regular price is not matched with response",
+        )
+        self.assertEqual(
+            product1.status,
+            "publish",
+            "status is not matched with response",
+        )
+        self.assertEqual(
+            product1.tax_status,
+            "taxable",
+            "tax status is not matched with response",
+        )
+        self.assertEqual(
+            product1.stock_status,
+            "instock",
+            "stock status is not matched with response",
         )

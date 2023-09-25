@@ -24,7 +24,7 @@ interactions:
               "short_description": "<p>shirt.</p>\n",
               "sku": "shirt-sku",
               "price": 500,
-              "regular_price": "",
+              "regular_price": "599",
               "sale_price": "",
               "on_sale": false,
               "purchasable": false,
