@@ -49,7 +49,7 @@ class WooBinding(models.AbstractModel):
             return exporter.run(filters=filters)
 
     def export_record(self, backend, record, fields=None):
-        """Export"""
+        """Export Record To"""
         record.ensure_one()
         with backend.work_on(self._name) as work:
             exporter = work.component(usage="record.exporter")
