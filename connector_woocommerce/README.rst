@@ -1,5 +1,5 @@
-**Connector Woo Base**
-======================
+**Connector Woocommerce**
+=========================
 
 **Description**
 ***************
