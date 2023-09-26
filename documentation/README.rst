@@ -31,7 +31,7 @@ Author
 Installation
 ------------
 
-Under applications, the application `connector_woocommerce` can be installed/uninstalled.
+Under applications, the application `bad_connector_woocommerce` can be installed/uninstalled.
 
 Known issues/Roadmap
 ---------------------
