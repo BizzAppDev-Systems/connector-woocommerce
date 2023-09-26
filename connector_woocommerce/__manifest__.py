@@ -2,7 +2,7 @@
     "name": "Connector Woocommerce",
     "version": "16.0.1.0.0",
     "category": "Connector",
-    "author": "BizzAppDev",
+    "author": "BizzAppDev Systems Pvt. Ltd.",
     "website": "http://www.bizzappdev.com",
     "depends": [
         "connector",
@@ -32,4 +32,6 @@
     "external_dependencies": {
         "python": ["woocommerce"],
     },
+    "price": 50,
+    "currency": "EUR",
 }
