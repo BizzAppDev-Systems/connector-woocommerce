@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherit product view to add connector page and  Binding -->
+    <record id="product_product_form_view" model="ir.ui.view">
+        <field name="name">product.product.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page
+                    string="WooCommerce Connector"
+                    name="woo_connector"
+                    attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                    groups="connector.group_connector_manager"
+                >
+                    <field name="woo_bind_ids" nolabel="1" readonly="1">
+                        <tree
+                            string="WooCommerce Product"
+                            delete="false"
+                            edit="false"
+                            create="false"
+                        >
+                            <field name="backend_id" widget="selection" />
+                            <field name="external_id" />
+                        </tree>
+                        <form
+                            string="WooCommerce Product"
+                            delete="false"
+                            edit="false"
+                            create="false"
+                        >
+                            <group>
+                                <group>
+                                    <field name="backend_id" widget="selection" />
+                                    <field name="external_id" />
+                                    <field name="status" />
+                                    <field name="tax_status" />
+                                </group>
+                                <group>
+                                    <field name="stock_status" />
+                                    <field name="price" />
+                                    <field name="regular_price" />
+                                </group>
+                                <label
+                                    for="woo_product_categ_ids"
+                                    string="WooCommerce Product Categories"
+                                />
+                                <field name="woo_product_categ_ids" />
+                                <label
+                                    for="woo_attribute_ids"
+                                    string="WooCommerce Attributes"
+                                />
+                                <field name="woo_attribute_ids" />
+                                <label
+                                    for="woo_product_attribute_value_ids"
+                                    string="WooCommerce Product Attribute Values"
+                                />
+                                <field name="woo_product_attribute_value_ids" />
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
