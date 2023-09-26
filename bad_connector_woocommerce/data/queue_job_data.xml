@@ -11,7 +11,7 @@
             id="job_function_woo_import_res_partner_record"
             model="queue.job.function"
         >
-            <field name="model_id" ref="connector_woocommerce.model_woo_res_partner" />
+            <field name="model_id" ref="bad_connector_woocommerce.model_woo_res_partner" />
             <field name="method">import_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
@@ -20,7 +20,7 @@
             id="job_function_woo_import_res_partner_batch"
             model="queue.job.function"
         >
-            <field name="model_id" ref="connector_woocommerce.model_woo_res_partner" />
+            <field name="model_id" ref="bad_connector_woocommerce.model_woo_res_partner" />
             <field name="method">import_batch</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
@@ -31,7 +31,7 @@
         >
             <field
                 name="model_id"
-                ref="connector_woocommerce.model_woo_product_product"
+                ref="bad_connector_woocommerce.model_woo_product_product"
             />
             <field name="method">import_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
@@ -43,7 +43,7 @@
         >
             <field
                 name="model_id"
-                ref="connector_woocommerce.model_woo_product_attribute"
+                ref="bad_connector_woocommerce.model_woo_product_attribute"
             />
             <field name="method">import_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
@@ -55,7 +55,7 @@
         >
             <field
                 name="model_id"
-                ref="connector_woocommerce.model_woo_product_attribute_value"
+                ref="bad_connector_woocommerce.model_woo_product_attribute_value"
             />
             <field name="method">import_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
@@ -68,7 +68,7 @@
         >
             <field
                 name="model_id"
-                ref="connector_woocommerce.model_woo_product_category"
+                ref="bad_connector_woocommerce.model_woo_product_category"
             />
             <field name="method">import_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
@@ -80,7 +80,7 @@
         >
             <field
                 name="model_id"
-                ref="connector_woocommerce.model_woo_product_product"
+                ref="bad_connector_woocommerce.model_woo_product_product"
             />
             <field name="method">import_batch</field>
             <field name="channel_id" ref="channel_woocommerce" />
@@ -92,7 +92,7 @@
         >
             <field
                 name="model_id"
-                ref="connector_woocommerce.model_woo_product_attribute"
+                ref="bad_connector_woocommerce.model_woo_product_attribute"
             />
             <field name="method">import_batch</field>
             <field name="channel_id" ref="channel_woocommerce" />
@@ -104,7 +104,7 @@
         >
             <field
                 name="model_id"
-                ref="connector_woocommerce.model_woo_product_attribute_value"
+                ref="bad_connector_woocommerce.model_woo_product_attribute_value"
             />
             <field name="method">import_batch</field>
             <field name="channel_id" ref="channel_woocommerce" />
@@ -117,7 +117,7 @@
         >
             <field
                 name="model_id"
-                ref="connector_woocommerce.model_woo_product_category"
+                ref="bad_connector_woocommerce.model_woo_product_category"
             />
             <field name="method">import_batch</field>
             <field name="channel_id" ref="channel_woocommerce" />
@@ -127,7 +127,7 @@
             id="job_function_woo_import_sale_order_record"
             model="queue.job.function"
         >
-            <field name="model_id" ref="connector_woocommerce.model_woo_sale_order" />
+            <field name="model_id" ref="bad_connector_woocommerce.model_woo_sale_order" />
             <field name="method">import_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
@@ -136,7 +136,7 @@
             id="job_function_woo_import_sale_order_batch"
             model="queue.job.function"
         >
-            <field name="model_id" ref="connector_woocommerce.model_woo_sale_order" />
+            <field name="model_id" ref="bad_connector_woocommerce.model_woo_sale_order" />
             <field name="method">import_batch</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
@@ -147,7 +147,7 @@
         >
             <field
                 name="model_id"
-                ref="connector_woocommerce.model_woo_sale_order_line"
+                ref="bad_connector_woocommerce.model_woo_sale_order_line"
             />
             <field name="method">import_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
@@ -159,7 +159,7 @@
         >
             <field
                 name="model_id"
-                ref="connector_woocommerce.model_woo_sale_order_line"
+                ref="bad_connector_woocommerce.model_woo_sale_order_line"
             />
             <field name="method">import_batch</field>
             <field name="channel_id" ref="channel_woocommerce" />
@@ -169,7 +169,7 @@
             id="job_function_woo_sale_order_status_export_batch"
             model="queue.job.function"
         >
-            <field name="model_id" ref="connector_woocommerce.model_woo_sale_order" />
+            <field name="model_id" ref="bad_connector_woocommerce.model_woo_sale_order" />
             <field name="method">export_batch</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
@@ -178,7 +178,7 @@
             id="job_function_woo_sale_order_status_export_record"
             model="queue.job.function"
         >
-            <field name="model_id" ref="connector_woocommerce.model_woo_sale_order" />
+            <field name="model_id" ref="bad_connector_woocommerce.model_woo_sale_order" />
             <field name="method">export_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>

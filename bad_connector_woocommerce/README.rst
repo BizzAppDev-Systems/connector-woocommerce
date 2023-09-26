@@ -1,16 +1,16 @@
-**Connector Woocommerce**
+**BAD Connector Woocommerce**
 =========================
 
 **Description**
 ***************
 
-* Technical name: connector_woocommerce.
+* Technical name: bad_connector_woocommerce.
 * Add new menu in Connectors > Woocommerce > WooCommerce Backends.
 * Add new menu in Connectors > Configrations > Settings.
 * Add object woo.backend and woo.product.category on submenu Connectors.
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
-* Create a module named connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
+* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
 * Add "Import Partners","Import Products","Import Product Attributes","Import Product Category" and "Import Orders" at backend level.
 * Required field to Import the Products,Product Attributes, and Product Category are Location,Client Id,Client Secret,Product Category.
 
@@ -29,7 +29,7 @@
 **Installation**
 ****************
 
-* Under applications, the application connector_woocommerce can be installed/uninstalled.
+* Under applications, the application bad_connector_woocommerce can be installed/uninstalled.
 
 
 **Configuration**
@@ -79,29 +79,29 @@
 * This module, 'Connector Woocommerce,' acts as a connector or integration tool for facilitating interaction between the Woocommerce platform and Odoo.
 
 * Import of Partner Data:
-  - Enable the import functionality in connector_woocommerce to transfer partners from Woocommerce to Odoo.
+  - Enable the import functionality in bad_connector_woocommerce to transfer partners from Woocommerce to Odoo.
   - Handle mapping of partner data at time of Import Partners.
   - Added filter base of binding.
 
 * Import of Product Data:
-  - Enable the import functionality in connector_woocommerce to transfer products from WooCommerce to Odoo.
+  - Enable the import functionality in bad_connector_woocommerce to transfer products from WooCommerce to Odoo.
   - Handle mapping of product data during the import process.
   - Introduces "import_products_from_date" field at the backend level, allowing import from a specified date for getting updated products.
   - Implements import of Attributes and Categories during the product import.
   - Added woo_product_categ_ids and woo_attribute_ids in product binding level.
 
 * Import of Product Attribute:
-  - Enable the import functionality in connector_woocommerce to transfer product Attributes from WooCommerce to Odoo.
+  - Enable the import functionality in bad_connector_woocommerce to transfer product Attributes from WooCommerce to Odoo.
   * Import of Product Attribute Value:
-  - Enable the import functionality in connector_woocommerce to transfer product Attribute Values from WooCommerce to Odoo.
+  - Enable the import functionality in bad_connector_woocommerce to transfer product Attribute Values from WooCommerce to Odoo.
   - Handle mapping of product attribute data during the import process.
 
 * Import of Product Categories:
-  - Enable the import functionality in connector_woocommerce to transfer product Categories from WooCommerce to Odoo.
+  - Enable the import functionality in bad_connector_woocommerce to transfer product Categories from WooCommerce to Odoo.
   - Handle mapping of product categories data during the import process.
 
 * Import of Order Data:
-  - Enable the import functionality in connector_woocommerce to transfer Orders from Woocommerce to Odoo.
+  - Enable the import functionality in bad_connector_woocommerce to transfer Orders from Woocommerce to Odoo.
   - Handle mapping of sale order data at time of Import Orders.
   - Enable the form of Sale Order Line and added 'WooCommarce Connector' in sale order line level and added related line calculated field at binding level of sale oder line.
   - Added related sale order amount field at binding level of sale order.
