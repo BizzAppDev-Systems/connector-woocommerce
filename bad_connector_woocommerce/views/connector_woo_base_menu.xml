@@ -38,4 +38,10 @@
         parent="menu_woo_root"
         action="action_woo_product_category"
     />
+    <menuitem
+        id="menu_woo_sale_status"
+        name="WooCommerce Sale Status"
+        parent="menu_woo_root"
+        action="action_woo_sale_status"
+    />
 </odoo>

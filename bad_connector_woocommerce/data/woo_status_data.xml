@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Insert data for woo.sale.status -->
+        <record id="woo_sale_status_demo_1" model="woo.sale.status">
+            <field name="name">pending</field>
+            <field name="description">Order is pending processing.</field>
+        </record>
+        <record id="woo_sale_status_demo_2" model="woo.sale.status">
+            <field name="name">processing</field>
+            <field name="description">Order is being processed.</field>
+        </record>
+        <record id="woo_sale_status_demo_3" model="woo.sale.status">
+            <field name="name">on-hold</field>
+            <field name="description">Order is on hold.</field>
+        </record>
+        <record id="woo_sale_status_demo_4" model="woo.sale.status">
+            <field name="name">completed</field>
+            <field name="description">Order is Completed.</field>
+        </record>
+        <record id="woo_sale_status_demo_5" model="woo.sale.status">
+            <field name="name">cancelled</field>
+            <field name="description">Order is Cancelled.</field>
+        </record>
+        <record id="woo_sale_status_demo_6" model="woo.sale.status">
+            <field name="name">refunded</field>
+            <field name="description">Order is Refunded.</field>
+        </record>
+        <record id="woo_sale_status_demo_7" model="woo.sale.status">
+            <field name="name">failed</field>
+            <field name="description">Order is Failed.</field>
+        </record>
+        <record id="woo_sale_status_demo_8" model="woo.sale.status">
+            <field name="name">trash</field>
+            <field name="description">Order is Trash.</field>
+        </record>
+        <record id="woo_sale_status_demo_9" model="woo.sale.status">
+            <field name="name">auto-draft</field>
+            <field name="description">Order is Auto-Draft.</field>
+        </record>
+    </data>
+</odoo>
