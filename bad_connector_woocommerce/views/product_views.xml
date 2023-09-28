@@ -56,6 +56,9 @@
                                     string="WooCommerce Product Attribute Values"
                                 />
                                 <field name="woo_product_attribute_value_ids" />
+                                <group>
+                                    <field name="woo_data" />
+                                </group>
                             </group>
                         </form>
                     </field>

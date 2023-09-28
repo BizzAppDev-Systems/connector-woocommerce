@@ -1,3 +1,5 @@
+import json
+
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.components.mapper import mapping
 
@@ -17,7 +19,7 @@ class WooImporttMapper(AbstractComponent):
     @mapping
     def woo_data(self, record):
         """Return woo data."""
-        return {"woo_data": record}
+        return {"woo_data": json.dumps(record, indent=2)}
 
 
 class WooExportMapper(AbstractComponent):
