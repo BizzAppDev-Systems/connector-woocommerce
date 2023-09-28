@@ -1,10 +1,10 @@
 import logging
 
 from odoo import _
-
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
+from odoo.addons.connector.components.mapper import only_create
 
 # pylint: disable=W7950
 
@@ -99,6 +99,13 @@ class WooProductProductImportMapper(Component):
         """Mapping for Odoo category"""
         product_category = self.backend_record.product_categ_id
         return {"categ_id": product_category.id} if product_category else {}
+
+    @only_create
+    @mapping
+    def detailed_type(self, record):
+        """Mapping for detailed_type"""
+        default_product_type = self.backend_record.default_product_type
+        return {"detailed_type": default_product_type}
 
     def _get_product_attribute(self, attribute_id, record):
         """Get the product attribute"""

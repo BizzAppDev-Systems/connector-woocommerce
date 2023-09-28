@@ -254,6 +254,7 @@
                                         string="Products Configuration"
                                     >
                                         <field name="without_sku" />
+                                        <field name="default_product_type"/>
                                         <field name="product_categ_id" />
                                     </group>
                                     <group

@@ -92,6 +92,15 @@ class WooBackend(models.Model):
         help="""When the boolean is 'True,' partners can be imported without needing
         an email address.""",
     )
+    default_product_type = fields.Selection(
+        [
+            ("consu", "Consumable"),
+            ("service", "Service"),
+            ("product", "Storable Product"),
+        ],
+        string="Default Product Type",
+        default="consu"
+    )
 
     def get_filters(self, model=None):
         """New Method: Returns the filter"""
