@@ -104,8 +104,7 @@ class WooProductProductImportMapper(Component):
     @mapping
     def detailed_type(self, record):
         """Mapping for detailed_type"""
-        default_product_type = self.backend_record.default_product_type
-        return {"detailed_type": default_product_type}
+        return {"detailed_type": self.backend_record.default_product_type}
 
     def _get_product_attribute(self, attribute_id, record):
         """Get the product attribute"""
