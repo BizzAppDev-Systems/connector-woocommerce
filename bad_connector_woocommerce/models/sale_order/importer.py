@@ -140,6 +140,12 @@ class WooSaleOrderImportMapper(Component):
         self.options.update(woo_order_id=woo_order_id)
         return {"woo_order_id": woo_order_id}
 
+    @mapping
+    def company_id(self, record):
+        """Mapping for company id"""
+        company = self.backend_record.company_id.id
+        return {"company_id": company} if company else {}
+
 
 class WooSaleOrderImporter(Component):
     _name = "woo.sale.order.importer"
