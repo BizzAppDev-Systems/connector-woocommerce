@@ -2,7 +2,7 @@
 <odoo>
     <data noupdate="1">
         <!-- Insert data for woo.sale.status -->
-        <record id="woo_sale_status_panding_data" model="woo.sale.status">
+        <record id="woo_sale_status_pending_data" model="woo.sale.status">
             <field name="name">pending</field>
             <field name="description">Order is pending processing.</field>
         </record>
