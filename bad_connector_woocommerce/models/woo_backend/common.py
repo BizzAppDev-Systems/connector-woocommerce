@@ -99,7 +99,8 @@ class WooBackend(models.Model):
             ("product", "Storable Product"),
         ],
         string="Default Product Type",
-        default="consu"
+        default="consu",
+        required=True,
     )
 
     def get_filters(self, model=None):
