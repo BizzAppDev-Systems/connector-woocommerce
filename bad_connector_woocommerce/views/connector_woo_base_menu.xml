@@ -38,4 +38,11 @@
         parent="menu_woo_root"
         action="action_woo_product_category"
     />
+    <!-- Define the menu item WooCommerce product Image URL -->
+    <menuitem
+        id="menu_woo_product_image_url"
+        name="WooCommerce Product Image URL"
+        parent="menu_woo_root"
+        action="action_woo_product_image_url"
+    />
 </odoo>

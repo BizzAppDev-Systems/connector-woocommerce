@@ -177,3 +177,11 @@ class WooProductProductImporter(Component):
     _name = "woo.product.product.importer"
     _inherit = "woo.importer"
     _apply_on = "woo.product.product"
+
+    def _after_import(self, binding, **kwargs):
+        print(self.remote_record.get("images"), "aaaaaaaaaaaaaaaaaaa")
+        image_record = self.remote_record.get("images")
+        print(self,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        print(self.external_id,"aaaaaksodkodkdokdsodksodksodksdokdosdksodkodkodskod")
+        # image_importer = self.env["woo.product.image.url"].component(usage="product.image.importer")
+        self.env["woo.product.image.url"].run(self.external_id, image_record)
