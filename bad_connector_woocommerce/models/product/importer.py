@@ -6,6 +6,8 @@ from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
 
+# from ...components.importer import WooProductProductImageUrl
+
 # pylint: disable=W7950
 
 _logger = logging.getLogger(__name__)
@@ -171,17 +173,23 @@ class WooProductProductImportMapper(Component):
         return {"woo_product_categ_ids": [(6, 0, category_ids)]} if category_ids else {}
 
 
-class WooProductProductImporter(Component):
+class WooProductProductImageUrl(Component):
     """Importer the WooCommerce Product"""
 
-    _name = "woo.product.product.importer"
+    _name = "woo.product.product.image.url"
     _inherit = "woo.importer"
-    _apply_on = "woo.product.product"
+    _apply_on = ["woo.product.product"]
 
     def _after_import(self, binding, **kwargs):
-        print(self.remote_record.get("images"), "aaaaaaaaaaaaaaaaaaa")
         image_record = self.remote_record.get("images")
-        print(self,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-        print(self.external_id,"aaaaaksodkodkdokdsodksodksodksdokdosdksodkodkodskod")
-        # image_importer = self.env["woo.product.image.url"].component(usage="product.image.importer")
-        self.env["woo.product.image.url"].run(self.external_id, image_record)
+        image_importer = self.component(usage="product.image.importer")
+        image = image_importer.run(self.external_id, binding, image_record)
+        binding.write({"image_1920": image})
+        # else:
+        #     self.env["woo.product.image.url"].create(
+        #         {
+        #             "name": image_info.get("name"),
+        #             "url": image_url,
+        #             "description": image_info.get("alt"),
+        #         }
+        #     )

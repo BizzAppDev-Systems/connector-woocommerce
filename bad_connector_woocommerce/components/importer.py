@@ -1,9 +1,9 @@
 import logging
-
+import base64
 from odoo import _, fields
 from odoo.exceptions import ValidationError
-
-from odoo.addons.component.core import AbstractComponent
+from . import utils
+from odoo.addons.component.core import AbstractComponent, Component
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.exception import NothingToDoJob
 from odoo.addons.queue_job.job import identity_exact
@@ -369,3 +369,38 @@ class WooDelayedBatchImporter(AbstractComponent):
             job_options["identity_key"] = identity_exact
         delayable = self.model.with_delay(**job_options or {})
         delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
+
+
+class ProductImageUrlImporter(Component):
+    """Import translations for a record.
+
+    Usually called from importers, in ``_after_import``.
+    For instance from the products and products' categories importers.
+    """
+
+    _name = "product.image.url.importer"
+    _inherit = "woo.importer"
+    _usage = "product.image.importer"
+
+    def run(self, external_id, binding, image_data):
+        if not image_data:
+            return
+        binding = self.env["woo.product.product"].browse(external_id)
+        for index, image_info in enumerate(image_data):
+            image_url = image_info.get("src")
+            if image_url:
+                binary_data = utils.fetch_image_data(image_url)
+                if binary_data:
+                    return binary_data
+                    # if index == 0:
+                    #     # decoded_binary_data = base64.b64decode(binary_data)
+                    #     print(binding.odoo_id, "ppppppasswwwwewe")
+                    #     binding.write({"image_1920": binary_data})
+                    # else:
+                    #     self.env["woo.product.image.url"].create(
+                    #         {
+                    #             "name": image_info.get("name"),
+                    #             "url": image_url,
+                    #             "description": image_info.get("alt"),
+                    #         }
+                    #     )
