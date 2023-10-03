@@ -261,6 +261,7 @@
                                         string="Orders Configuration"
                                     >
                                         <field name="order_prefix" />
+                                        <field name="sale_team_id" />
                                         <field name="mark_completed" />
                                         <field
                                             name="tracking_info"
