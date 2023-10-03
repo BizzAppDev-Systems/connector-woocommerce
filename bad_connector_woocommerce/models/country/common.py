@@ -33,5 +33,5 @@ class WooResCountryAdapter(Component):
     _name = "woo.res.country.adapter"
     _inherit = "woo.adapter"
     _apply_on = "woo.res.country"
-    _woo_model = "customers"
+    _woo_model = "data/countries"
     _odoo_ext_id_key = "id"

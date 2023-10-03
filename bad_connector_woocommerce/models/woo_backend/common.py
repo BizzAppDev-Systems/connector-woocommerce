@@ -326,5 +326,14 @@ class WooBackend(models.Model):
         domain.append(("mark_completed", "=", "True"))
         backend_ids = self.search(domain or [])
         backend_ids.export_sale_order_status()
+
     def sync_metadata(self):
-        pass
+        """Import the data"""
+        for backend in self:
+            pass
+
+    @api.model
+    def cron_import_metadata(self, domain=None):
+        """Cron for sync_metadata"""
+        backend_ids = self.search(domain or [])
+        backend_ids.sync_metadata()
