@@ -266,7 +266,10 @@
                                             name="tracking_info"
                                             attrs="{'invisible': [('mark_completed', '=', False)]}"
                                         />
-                                        <field name="woo_sale_status_ids" widget="many2many_tags" />
+                                        <field
+                                            name="woo_sale_status_ids"
+                                            widget="many2many_tags"
+                                        />
                                     </group>
                                 </group>
                             </page>

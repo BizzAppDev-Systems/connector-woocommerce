@@ -94,7 +94,10 @@ class WooBackend(models.Model):
     )
     woo_sale_status_ids = fields.Many2many(
         comodel_name="woo.sale.status",
-        string="Sale Order Status To Be Filtered",
+        string="Filter Sale Orders Based on their Status",
+        help="""Select the sale order statuses to filter during import.
+        Only orders with the selected statuses will be imported.
+        This allows you to narrow down which orders are imported based on their status.""",
     )
 
     def get_filters(self, model=None):
@@ -298,7 +301,7 @@ class WooBackend(models.Model):
         for backend in self:
             filters = {}
             if backend.woo_sale_status_ids:
-                status = backend.mapped("woo_sale_status_ids").mapped("name")
+                status = backend.mapped("woo_sale_status_ids").mapped("code")
                 filters = {
                     "status": ",".join(status),
                 }

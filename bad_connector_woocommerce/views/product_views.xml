@@ -50,10 +50,13 @@
                                     for="woo_attribute_ids"
                                     string="WooCommerce Attributes"
                                 />
-                                <field name="woo_attribute_ids" >
+                                <field name="woo_attribute_ids">
                                     <tree>
-                                        <field name="name"/>
-                                        <field name="value_ids" widget="many2many_tags"/>
+                                        <field name="name" />
+                                        <field
+                                            name="value_ids"
+                                            widget="many2many_tags"
+                                        />
                                     </tree>
                                 </field>
                                 <label

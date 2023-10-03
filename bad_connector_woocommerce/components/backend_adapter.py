@@ -4,11 +4,10 @@ import urllib
 from datetime import datetime
 
 import requests
+from woocommerce import API
 
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import NetworkRetryableError, RetryableJobError
-
-from woocommerce import API
 
 _logger = logging.getLogger(__name__)
 
