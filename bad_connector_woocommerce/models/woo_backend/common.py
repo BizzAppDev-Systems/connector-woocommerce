@@ -326,3 +326,5 @@ class WooBackend(models.Model):
         domain.append(("mark_completed", "=", "True"))
         backend_ids = self.search(domain or [])
         backend_ids.export_sale_order_status()
+    def sync_metadata(self):
+        pass
