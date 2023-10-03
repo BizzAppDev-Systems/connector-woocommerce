@@ -89,6 +89,7 @@
   - Introduces "import_products_from_date" field at the backend level, allowing import from a specified date for getting updated products.
   - Implements import of Attributes and Categories during the product import.
   - Added woo_product_categ_ids and woo_attribute_ids in product binding level.
+  - Added mapping of woo_product_attribute_value_ids in product binding level.
 
 * Import of Product Attribute:
   - Enable the import functionality in bad_connector_woocommerce to transfer product Attributes from WooCommerce to Odoo.
