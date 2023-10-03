@@ -39,12 +39,34 @@ class WooResCountryImportMapper(Component):
     @mapping
     def state_ids(self, record):
         """Mapping for State"""
-        states = record.get("states")
+        state_ids = []
+        states = record.get("states", [])
         for state in states:
             state = self.env["res.country.state"].search(
-                [("code", "=", state.get("code"))]
+                [
+                    ("code", "=", state.get("code")),
+                    ("country_id.code", "=", record.get("code")),
+                ]
             )
-            pass
+            if not state:
+                state_base_on_name = self.env["res.country.state"].search(
+                    [
+                        ("name", "=", state.get("name")),
+                        ("country_id.code", "=", record.get("code")),
+                    ]
+                )
+                if not state_base_on_name:
+                    country_state = self.env["res.country.state"].create(
+                        {
+                            "name": state.get("name"),
+                            "code": state.get("code"),
+                            # "country_id":,
+                        }
+                    )
+                    state_ids.append(country_state.id)
+                state_ids.append(state_base_on_name.id)
+            state_ids.append(state.id)
+        return {"state_ids": [(6, 0, state_ids)]} if state_ids else {}
 
 
 class WooResCountryImporter(Component):

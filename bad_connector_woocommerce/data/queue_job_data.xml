@@ -193,5 +193,26 @@
                 </field>
             </field>
         </record>
+        <!-- Import Country and State related action queue job -->
+        <record
+            id="job_function_woo_import_res_country_batch"
+            model="queue.job.function"
+        >
+            <field name="model_id" ref="bad_connector_woocommerce.model_woo_res_country" />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!-- Import Res Country related action queue job -->
+        <record
+            id="job_function_woo_import_res_country_import_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_res_country"
+            />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
     </data>
 </odoo>

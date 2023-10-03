@@ -327,10 +327,12 @@ class WooBackend(models.Model):
         backend_ids = self.search(domain or [])
         backend_ids.export_sale_order_status()
 
-    def sync_metadata(self):
-        """Import the data"""
+    def sync_metadata(self, filters=None, job_options=None):
+        """Import the data regarding country and state"""
         for backend in self:
-            pass
+            backend.env["woo.res.country"].with_delay(**job_options or {}).import_batch(
+                backend=self, filters=filters
+            )
 
     @api.model
     def cron_import_metadata(self, domain=None):
