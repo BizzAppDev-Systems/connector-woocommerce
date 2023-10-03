@@ -6,5 +6,5 @@ class WooProductImageUrl(models.Model):
     _description = "WooCommerce Product Image URL"
 
     name = fields.Char(required=True)
-    url = fields.Char(string="URL")
-    description = fields.Html(translate=True)
+    url = fields.Char(string="URL", required=True)
+    description = fields.Html()

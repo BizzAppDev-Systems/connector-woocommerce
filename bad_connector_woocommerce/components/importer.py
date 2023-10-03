@@ -388,19 +388,60 @@ class ProductImageUrlImporter(Component):
 
     def run(self, external_id, binding, image_data):
         """
-        Fetch binary image data from an image URL and return it as base64.
-        It checks if an image with the same name and URL already exists in the system,
-        and if so, it reuses the existing image.
-        If the image doesn't exist or cannot be fetched, it returns None
+        Import and associate product images.
+        :param image_data: List of image information.
         """
-        name = image_data.get("name")
-        image_url = image_data.get("src")
-        existing_image = self.env["woo.product.image.url"].search(
-            [("name", "=", name), ("url", "=", image_url)], limit=1
+        image_ids = []
+        for index, image_info in enumerate(image_data):
+            if index == 0:
+                self._import_primary_image(binding, image_info)
+            else:
+                secondary_image_record = self._import_secondary_image(image_info)
+                image_ids.append(secondary_image_record.id)
+        if image_ids:
+            binding.write({"woo_product_image_url_ids": [(6, 0, image_ids)]})
+
+    def _find_existing_image(self, name, url):
+        """
+        Find an existing image record based on name and URL.
+        :param name: The name of the image.
+        :param url: The URL of the image.
+        :return: Existing image record or None if not found.
+        """
+        return self.env["woo.product.image.url"].search(
+            [("name", "=", name), ("url", "=", url)], limit=1
         )
+
+    def _import_primary_image(self, binding, image_info):
+        """
+        Import primary product image.
+        :param image_info: Information about the primary image.
+        """
+        name = image_info.get("name")
+        image_url = image_info.get("src")
+        existing_image = self._find_existing_image(name, image_url)
         if existing_image:
             image_url = existing_image.url
         binary_data = utils.fetch_image_data(image_url)
         if not binary_data:
             return
-        return binary_data
+        return binding.write({"image_1920": binary_data})
+
+    def _import_secondary_image(self, image_info):
+        """
+        Get or create a secondary image record.
+        :param image_info: Information about the secondary image.
+        :return: Secondary image record.
+        """
+        name = image_info.get("name")
+        url = image_info.get("src")
+        description = image_info.get("alt")
+        existing_image = self._find_existing_image(name, url)
+        image_values = {
+            "name": name,
+            "url": url,
+            "description": description,
+        }
+        if not existing_image:
+            return self.env["woo.product.image.url"].create(image_values)
+        return existing_image
