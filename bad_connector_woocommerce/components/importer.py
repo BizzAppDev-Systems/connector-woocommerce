@@ -295,6 +295,7 @@ class WooBatchImporter(AbstractComponent):
         try:
             data = self.backend_adapter.search(filters)
             records = data.get("data", [])
+            print(records,"lkodkwokwodiwowiowiwoeiwoeiwoeiowei")
             for record in records:
                 external_id = record.get(self.backend_adapter._woo_ext_id_key)
                 self._import_record(external_id, job_options, data=record)
