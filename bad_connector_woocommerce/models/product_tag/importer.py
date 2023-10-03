@@ -43,5 +43,7 @@ class WooProductTagImportMapper(Component):
         """Mapping for Name"""
         name = record.get("name")
         if not name:
-            raise MappingError(_("Tag Name doesn't exist please check !!!"))
+            raise MappingError(
+                _("Tag Name doesn't exist for %s !!!") % record.get("id")
+            )
         return {"name": name}
