@@ -143,8 +143,8 @@ class WooSaleOrderImportMapper(Component):
     @mapping
     def team_id(self, record):
         """Mapping for team_id"""
-        sale_team = self.backend_record.sale_team_id.id
-        return {"team_id": sale_team} if sale_team else {}
+        sale_team_id = self.backend_record.sale_team_id.id
+        return {"team_id": sale_team_id} if sale_team_id else {}
 
 
 class WooSaleOrderImporter(Component):
