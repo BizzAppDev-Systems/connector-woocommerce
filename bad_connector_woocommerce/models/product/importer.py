@@ -170,6 +170,19 @@ class WooProductProductImportMapper(Component):
             category_ids.append(woo_binding.id)
         return {"woo_product_categ_ids": [(6, 0, category_ids)]} if category_ids else {}
 
+    @mapping
+    def product_tag_ids(self, record):
+        """Mapping for product_tag_ids"""
+        tag_ids = []
+        product_tag_ids = record.get("tags", [])
+        binder = self.binder_for("woo.product.tag")
+        for tags in product_tag_ids:
+            woo_binding = binder.to_internal(tags.get("id"))
+            if not woo_binding:
+                continue
+            tag_ids.append(woo_binding.id)
+        return {"product_tag_ids": [(6, 0, tag_ids)]} if tag_ids else {}
+
 
 class WooProductProductImporter(Component):
     """Importer the WooCommerce Product"""
