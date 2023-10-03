@@ -175,12 +175,15 @@ class WooProductProductImportMapper(Component):
         """Mapping for product_tag_ids"""
         tag_ids = []
         product_tag_ids = record.get("tags", [])
-        binder = self.binder_for("woo.product.tag")
         for tags in product_tag_ids:
-            woo_binding = binder.to_internal(tags.get("id"))
-            if not woo_binding:
+            tag = tags.get("name")
+            product_tag = self.env["product.tag"].search(
+                [("name", "=", tag)],
+                limit=1,
+            )
+            if not product_tag:
                 continue
-            tag_ids.append(woo_binding.id)
+            tag_ids.append(product_tag.id)
         return {"product_tag_ids": [(6, 0, tag_ids)]} if tag_ids else {}
 
 

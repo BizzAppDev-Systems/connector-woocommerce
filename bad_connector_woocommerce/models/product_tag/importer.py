@@ -3,7 +3,7 @@ import logging
 from odoo import _
 
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.components.mapper import mapping, only_create
 from odoo.addons.connector.exception import MappingError
 
 _logger = logging.getLogger(__name__)
@@ -27,6 +27,16 @@ class WooProductTagImportMapper(Component):
     _name = "woo.product.tag.import.mapper"
     _inherit = "woo.import.mapper"
     _apply_on = ["woo.product.tag"]
+
+    @only_create
+    @mapping
+    def odoo_id(self, record):
+        """Creating odoo id"""
+        tag = record.get("name")
+        product_tag = self.env["product.tag"].search([("name", "=", tag)])
+        if not product_tag:
+            return {}
+        return {"odoo_id": product_tag.id}
 
     @mapping
     def name(self, record):

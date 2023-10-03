@@ -257,6 +257,16 @@ class WooBackend(models.Model):
         backend_ids = self.search(domain or [])
         backend_ids.import_products()
 
+    def import_product_tags(self):
+        """Import Product Tags from backend"""
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.product.tag",
+                priority=5,
+                export=False,
+            )
+        return True
+
     def import_product_attributes(self):
         """Import Product Attribute from backend"""
         for backend in self:
