@@ -172,8 +172,7 @@ class WooProductProductImportMapper(Component):
 
 
 class WooProductProductImageUrl(Component):
-    """Importer the WooCommerce Product"""
-
+    """Importer for the WooCommerce Product Image"""
     _name = "woo.product.product.image.url"
     _inherit = "woo.importer"
     _apply_on = ["woo.product.product"]
@@ -227,7 +226,6 @@ class WooProductProductImageUrl(Component):
             "url": url,
             "description": description,
         }
-        if existing_image:
-            return existing_image
-        else:
+        if not existing_image:
             return self.env["woo.product.image.url"].create(image_values)
+        return existing_image

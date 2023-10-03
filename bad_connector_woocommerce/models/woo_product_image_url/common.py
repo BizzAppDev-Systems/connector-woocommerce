@@ -7,4 +7,4 @@ class WooProductImageUrl(models.Model):
 
     name = fields.Char(required=True)
     url = fields.Char(string="URL")
-    description = fields.Html(string="Description", translate=True)
+    description = fields.Html(translate=True)
