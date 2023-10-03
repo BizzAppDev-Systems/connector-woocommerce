@@ -38,7 +38,6 @@ class WooBackend(models.Model):
         comodel_name="crm.team",
         string="Sales Team",
         help="Select the Sales Team to associate it with Sale Order.",
-        required=True,
     )
     location = fields.Char(
         string="Location(Live)", help="Enter the Live Location for WooCommerce."
