@@ -144,7 +144,9 @@ class WooSaleOrderImportMapper(Component):
     def team_id(self, record):
         """Mapping for team_id"""
         sale_team_id = self.backend_record.sale_team_id.id
-        return {"team_id": sale_team_id} if sale_team_id else {}
+        if not sale_team_id:
+            raise MappingError(_("Sales Team ID not found Please check!!!"))
+        return {"team_id": sale_team_id}
 
 
 class WooSaleOrderImporter(Component):
