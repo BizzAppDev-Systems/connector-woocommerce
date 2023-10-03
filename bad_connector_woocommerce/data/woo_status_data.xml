@@ -36,7 +36,7 @@
         </record>
         <record id="woo_sale_status_auto_draft_data" model="woo.sale.status">
             <field name="name">Draft</field>
-            <field name="code">auto-draft.</field>
+            <field name="code">auto-draft</field>
         </record>
     </data>
 </odoo>
