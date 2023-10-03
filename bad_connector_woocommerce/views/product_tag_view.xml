@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <!-- Inherited product.tag form view to add backend -->
+        <record id="inherited_product_tag_form_form" model="ir.ui.view">
+            <field name="name">inherited.product.tag.form</field>
+            <field name="model">product.tag</field>
+            <field name="inherit_id" ref="product.product_tag_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="after">
+                    <group>
+                        <field name="slug" groups="connector.group_connector_manager" />
+                        <field
+                            name="description"
+                            groups="connector.group_connector_manager"
+                        />
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

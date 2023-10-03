@@ -47,3 +47,15 @@ class WooProductTagImportMapper(Component):
                 _("Tag Name doesn't exist for %s !!!") % record.get("id")
             )
         return {"name": name}
+
+    @mapping
+    def slug(self, record):
+        """Mapping for Slug"""
+        slug = record.get("slug")
+        return {"slug": slug} if slug else {}
+
+    @mapping
+    def description(self, record):
+        """Mapping for Description"""
+        description = record.get("description")
+        return {"description": description} if description else {}

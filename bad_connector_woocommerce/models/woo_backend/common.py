@@ -267,6 +267,12 @@ class WooBackend(models.Model):
             )
         return True
 
+    @api.model
+    def cron_import_product_tags(self, domain=None):
+        """Cron for import_product_tags"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_product_tags()
+
     def import_product_attributes(self):
         """Import Product Attribute from backend"""
         for backend in self:

@@ -19,6 +19,9 @@ class ProductTag(models.Model):
         copy=False,
     )
 
+    slug = fields.Char()
+    description = fields.Text()
+
 
 class WooProductTag(models.Model):
     """Woocommerce product tag"""
