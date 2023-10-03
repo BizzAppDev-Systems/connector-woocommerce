@@ -1,12 +1,14 @@
 import logging
-import base64
+
 from odoo import _, fields
 from odoo.exceptions import ValidationError
-from . import utils
+
 from odoo.addons.component.core import AbstractComponent, Component
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.exception import NothingToDoJob
 from odoo.addons.queue_job.job import identity_exact
+
+from . import utils
 
 _logger = logging.getLogger(__name__)
 
@@ -375,7 +377,9 @@ class ProductImageUrlImporter(Component):
     """Import translations for a record.
 
     Usually called from importers, in ``_after_import``.
-    For instance from the products and products' categories importers.
+    For instance from the products and products' Image importers.
+    This importer is responsible for fetching image data from an external
+    source based on the provided image URL.
     """
 
     _name = "product.image.url.importer"
@@ -383,24 +387,20 @@ class ProductImageUrlImporter(Component):
     _usage = "product.image.importer"
 
     def run(self, external_id, binding, image_data):
-        if not image_data:
+        """
+        Fetch binary image data from an image URL and return it as base64.
+        It checks if an image with the same name and URL already exists in the system,
+        and if so, it reuses the existing image.
+        If the image doesn't exist or cannot be fetched, it returns None
+        """
+        name = image_data.get("name")
+        image_url = image_data.get("src")
+        existing_image = self.env["woo.product.image.url"].search(
+            [("name", "=", name), ("url", "=", image_url)], limit=1
+        )
+        if existing_image:
+            image_url = existing_image.url
+        binary_data = utils.fetch_image_data(image_url)
+        if not binary_data:
             return
-        binding = self.env["woo.product.product"].browse(external_id)
-        for index, image_info in enumerate(image_data):
-            image_url = image_info.get("src")
-            if image_url:
-                binary_data = utils.fetch_image_data(image_url)
-                if binary_data:
-                    return binary_data
-                    # if index == 0:
-                    #     # decoded_binary_data = base64.b64decode(binary_data)
-                    #     print(binding.odoo_id, "ppppppasswwwwewe")
-                    #     binding.write({"image_1920": binary_data})
-                    # else:
-                    #     self.env["woo.product.image.url"].create(
-                    #         {
-                    #             "name": image_info.get("name"),
-                    #             "url": image_url,
-                    #             "description": image_info.get("alt"),
-                    #         }
-                    #     )
+        return binary_data

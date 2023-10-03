@@ -6,8 +6,6 @@ from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
 
-# from ...components.importer import WooProductProductImageUrl
-
 # pylint: disable=W7950
 
 _logger = logging.getLogger(__name__)
@@ -181,15 +179,55 @@ class WooProductProductImageUrl(Component):
     _apply_on = ["woo.product.product"]
 
     def _after_import(self, binding, **kwargs):
+        """
+        Override the _after_import Method to handle the import of multiple images.
+        This method is called after importing product data from WooCommerce.
+
+        It processes the imported image data,
+        including primary and secondary images, and associates them with the
+        corresponding product binding.
+        """
+        image_ids = []
         image_record = self.remote_record.get("images")
+        if not image_record:
+            return
+        for index, image_info in enumerate(image_record):
+            if index == 0:
+                self._import_primary_image(binding, image_info)
+            else:
+                secoundary_image_record = self._import_secondary_image(image_info)
+                image_ids.append(secoundary_image_record.id)
+        if image_ids:
+            binding.write({"woo_product_image_url_ids": [(6, 0, image_ids)]})
+        return super(WooProductProductImageUrl, self)._after_import(binding, **kwargs)
+
+    def _import_primary_image(self, binding, image_info):
+        """
+        Import primary product image.
+        :param image_info: Information about the primary image.
+        """
         image_importer = self.component(usage="product.image.importer")
-        image = image_importer.run(self.external_id, binding, image_record)
+        image = image_importer.run(self.external_id, binding, image_info)
         binding.write({"image_1920": image})
-        # else:
-        #     self.env["woo.product.image.url"].create(
-        #         {
-        #             "name": image_info.get("name"),
-        #             "url": image_url,
-        #             "description": image_info.get("alt"),
-        #         }
-        #     )
+
+    def _import_secondary_image(self, image_info):
+        """
+        Get or create a secondary image record.
+        :param image_info: Information about the secondary image.
+        :return: Secondary image record.
+        """
+        name = image_info.get("name")
+        url = image_info.get("src")
+        description = image_info.get("alt")
+        existing_image = self.env["woo.product.image.url"].search(
+            [("name", "=", name), ("url", "=", url)], limit=1
+        )
+        image_values = {
+            "name": name,
+            "url": url,
+            "description": description,
+        }
+        if existing_image:
+            return existing_image
+        else:
+            return self.env["woo.product.image.url"].create(image_values)

@@ -7,7 +7,7 @@
 * Technical name: bad_connector_woocommerce.
 * Add new menu in Connectors > Woocommerce > WooCommerce Backends.
 * Add new menu in Connectors > Configrations > Settings.
-* Add object woo.backend and woo.product.category on submenu Connectors.
+* Add object woo.backend, woo.product.category and woo.product.image.url on submenu Connectors.
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
 * Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
@@ -52,6 +52,7 @@
     - At the WooCommerce backend level, in 'Advanced Configuration' tab there is 'Product Category' from that select any category in which you have to keep your Product.
     - Added a Price,Regular Price,Stock Status,Tax Status,WooCommerce Product Attribute Values, and Status at the binding level.
     - Added 'Product Category' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Category for imported WooCommerce Product.
+    - Added 'WooCommerce Product Image URL' which is located at Produt Binding level,  designed to store Other Product Images instead of initial image which will store in woo.product.image.url object.
 
 * Product Attributes Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
