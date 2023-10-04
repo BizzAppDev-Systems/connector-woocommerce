@@ -7,13 +7,8 @@
         <field name="arch" type="xml">
             <form string="WooCommerce Sale Status">
                 <sheet>
-                    <div class="oe_title">
-                        <label for="name" string="Sale Status" />
-                        <h1>
-                            <field name="name" placeholder="e.g. Completed" />
-                        </h1>
-                    </div>
                     <group>
+                        <field name="name" placeholder="e.g. Completed" />
                         <field name="code" placeholder="e.g. completed" />
                     </group>
                 </sheet>

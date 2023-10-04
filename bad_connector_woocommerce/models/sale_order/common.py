@@ -27,8 +27,7 @@ class SaleOrder(models.Model):
     woo_order_status = fields.Selection(
         selection=[
             ("completed", "Completed"),
-            ("any", "Any"),
-            ("pending", "Pending"),
+            ("pending", "Pending payment"),
             ("processing", "Processing"),
             ("on-hold", "On hold"),
             ("cancelled", "Cancelled"),
@@ -37,7 +36,6 @@ class SaleOrder(models.Model):
             ("trash", "Trash"),
         ],
         string="WooCommerce Order Status",
-        default="any",
     )
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
     total_amount_different = fields.Boolean(compute="_compute_total_amount_diffrent")
