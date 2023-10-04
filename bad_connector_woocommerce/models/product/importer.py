@@ -5,6 +5,7 @@ from odoo import _
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
+from ...components import utils
 
 # pylint: disable=W7950
 
@@ -17,6 +18,80 @@ class WooProductProductBatchImporter(Component):
     _name = "woo.product.product.batch.importer"
     _inherit = "woo.batch.importer"
     _apply_on = "woo.product.product"
+
+
+class ProductImageUrlImporter(Component):
+    """Import translations for a record.
+
+    Usually called from importers, in ``_after_import``.
+    For instance from the products and products' Image importers.
+    This importer is responsible for fetching image data from an external
+    source based on the provided image URL.
+    """
+
+    _name = "product.image.url.importer"
+    _inherit = "woo.importer"
+    _usage = "product.image.importer"
+
+    def run(self, external_id, binding, image_data):
+        """
+        Import and associate product images.
+        :param image_data: List of image information.
+        """
+        image_ids = []
+        for index, image_info in enumerate(image_data):
+            if index == 0:
+                self._import_primary_image(binding, image_info)
+            else:
+                secondary_image_record = self._import_secondary_image(image_info)
+                image_ids.append(secondary_image_record.id)
+        if image_ids:
+            binding.write({"woo_product_image_url_ids": [(6, 0, image_ids)]})
+
+    def _find_existing_image(self, name, url):
+        """
+        Find an existing image record based on name and URL.
+        :param name: The name of the image.
+        :param url: The URL of the image.
+        :return: Existing image record or None if not found.
+        """
+        return self.env["woo.product.image.url"].search(
+            [("name", "=", name), ("url", "=", url)], limit=1
+        )
+
+    def _import_primary_image(self, binding, image_info):
+        """
+        Import primary product image.
+        :param image_info: Information about the primary image.
+        """
+        name = image_info.get("name")
+        image_url = image_info.get("src")
+        existing_image = self._find_existing_image(name, image_url)
+        if existing_image:
+            image_url = existing_image.url
+        binary_data = utils.fetch_image_data(image_url)
+        if not binary_data:
+            return
+        return binding.write({"image_1920": binary_data})
+
+    def _import_secondary_image(self, image_info):
+        """
+        Get or create a secondary image record.
+        :param image_info: Information about the secondary image.
+        :return: Secondary image record.
+        """
+        name = image_info.get("name")
+        url = image_info.get("src")
+        description = image_info.get("alt")
+        existing_image = self._find_existing_image(name, url)
+        image_values = {
+            "name": name,
+            "url": url,
+            "description": description,
+        }
+        if not existing_image:
+            return self.env["woo.product.image.url"].create(image_values)
+        return existing_image
 
 
 class WooProductProductImportMapper(Component):
@@ -173,6 +248,7 @@ class WooProductProductImportMapper(Component):
 
 class WooProductProductImageUrl(Component):
     """Importer for the WooCommerce Product Image"""
+
     _name = "woo.product.product.image.url"
     _inherit = "woo.importer"
     _apply_on = ["woo.product.product"]
@@ -182,9 +258,10 @@ class WooProductProductImageUrl(Component):
         Override the _after_import Method to handle the import of multiple images.
         This method is called after importing product data from WooCommerce.
         """
+        result = super(WooProductProductImageUrl, self)._after_import(binding, **kwargs)
         image_record = self.remote_record.get("images")
         if not image_record:
-            return
+            return result
         image_importer = self.component(usage="product.image.importer")
         image_importer.run(self.external_id, binding, image_record)
-        return super(WooProductProductImageUrl, self)._after_import(binding, **kwargs)
+        return result
