@@ -22,6 +22,10 @@ class WooResCountryImportMapper(Component):
     _inherit = "woo.import.mapper"
     _apply_on = "woo.res.country"
 
+    children = [
+        ("line_items", "woo_order_line_ids", "woo.sale.order.line"),
+    ]
+
     @mapping
     def name(self, record):
         """Mapping for Name"""
@@ -36,38 +40,6 @@ class WooResCountryImportMapper(Component):
         country_code = record.get("code")
         return {"code": country_code} if country_code else {}
 
-    @mapping
-    def state_ids(self, record):
-        """Mapping for State"""
-        state_ids = []
-        states = record.get("states", [])
-        for state in states:
-            state = self.env["res.country.state"].search(
-                [
-                    ("code", "=", state.get("code")),
-                    ("country_id.code", "=", record.get("code")),
-                ]
-            )
-            if not state:
-                state_base_on_name = self.env["res.country.state"].search(
-                    [
-                        ("name", "=", state.get("name")),
-                        ("country_id.code", "=", record.get("code")),
-                    ]
-                )
-                if not state_base_on_name:
-                    country_state = self.env["res.country.state"].create(
-                        {
-                            "name": state.get("name"),
-                            "code": state.get("code"),
-                            # "country_id":,
-                        }
-                    )
-                    state_ids.append(country_state.id)
-                state_ids.append(state_base_on_name.id)
-            state_ids.append(state.id)
-        return {"state_ids": [(6, 0, state_ids)]} if state_ids else {}
-
 
 class WooResCountryImporter(Component):
     """Importer the WooCommerce Country"""
@@ -75,3 +47,94 @@ class WooResCountryImporter(Component):
     _name = "woo.res.country.importer"
     _inherit = "woo.importer"
     _apply_on = "woo.res.country"
+
+
+class WooResCountryStateImportMapper(Component):
+    _name = "woo.res.country.state.mapper"
+    _inherit = "woo.import.mapper"
+    _apply_on = "woo.res.country.state"
+
+    direct = [
+        ("id", "woo_line_id"),
+        ("id", "external_id"),
+        ("name", "name"),
+    ]
+
+    def get_product(self, record):
+        """Get The Binding of Product"""
+        product_rec = record.get("product_id")
+        if not product_rec:
+            return False
+        binder = self.binder_for("woo.product.product")
+        product = binder.to_internal(product_rec, unwrap=True)
+        return product
+
+    @mapping
+    def product_id(self, record):
+        """Return Product excited in Woo order line and pre-check validations."""
+        product_rec = record.get("product_id")
+        if not product_rec:
+            return {}
+        product = self.get_product(record)
+        return {"product_id": product.id, "product_uom": product.uom_id.id}
+
+    @mapping
+    def product_uom_qty(self, record):
+        """Mapping for Product Uom qty"""
+        product_qty = record.get("quantity")
+        if not product_qty:
+            product = self.get_product(record)
+            error_message = (
+                f"Order Line Product Quantity not found for Product: {product.name}"
+            )
+            raise MappingError(error_message)
+        return {"product_uom_qty": product_qty}
+
+    @mapping
+    def price_unit(self, record):
+        """Mapping for Price Unit"""
+        unit_price = record.get("price")
+        return {"price_unit": unit_price}
+
+    @mapping
+    def price_subtotal_line(self, record):
+        """Mapping for Price Subtotal"""
+        total = record.get("total")
+        return {"price_subtotal_line": total} if total else {}
+
+    @mapping
+    def subtotal_line(self, record):
+        """Mapping for Subtotal Line"""
+        subtotal = record.get("subtotal")
+        return {"subtotal_line": subtotal} if subtotal else {}
+
+    @mapping
+    def subtotal_tax_line(self, record):
+        """Mapping for Subtotal Tax"""
+        subtotal_tax = record.get("subtotal_tax")
+        return {"subtotal_tax_line": subtotal_tax} if subtotal_tax else {}
+
+    @mapping
+    def total_tax_line(self, record):
+        """Mapping for Total Tax Line"""
+        total_tax = record.get("total_tax")
+        return {"total_tax_line": total_tax} if total_tax else {}
+
+    @mapping
+    def name(self, record):
+        """Mapping for Name"""
+        name = record.get("name")
+        if not name:
+            raise MappingError(_("Order Line Name not found Please check!!!"))
+        return {"name": name}
+
+    @mapping
+    def woo_order_id(self, record):
+        """Mapping for Woo Order ID"""
+        return {"woo_order_id": self.options.get("woo_order_id")}
+
+
+class WooSaleOrderLineImporter(Component):
+    _name = "woo.sale.order.line.importer"
+    _inherit = "woo.map.child.import"
+    _apply_on = "woo.sale.order.line"
