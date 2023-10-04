@@ -255,8 +255,9 @@ class WooProductProductImageUrl(Component):
 
     def _after_import(self, binding, **kwargs):
         """
-        Override the _after_import Method to handle the import of multiple images.
-        This method is called after importing product data from WooCommerce.
+        This method is Overrides the default behavior of _after_import when importing
+        images from a remote record. If no image records are found in the remote record,
+        it returns the result of the super class's '_after_import' method.
         """
         result = super(WooProductProductImageUrl, self)._after_import(binding, **kwargs)
         image_record = self.remote_record.get("images")
