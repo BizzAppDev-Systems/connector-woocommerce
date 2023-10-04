@@ -4,11 +4,10 @@ import urllib
 from datetime import datetime
 
 import requests
+from woocommerce import API
 
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import NetworkRetryableError, RetryableJobError
-
-from woocommerce import API
 
 _logger = logging.getLogger(__name__)
 
@@ -98,7 +97,11 @@ class WooAPI(object):
             if status_code == 200:
                 json_response = result.json()
                 record_count = result.headers.get("X-WP-Total")
+                # if record_count:
+                #     print(record_count, "pppppppppppppppppppppppppppppppppppp")
                 return {"record_count": record_count, "data": json_response}
+                # print("hhhhhhhhhhhhhhheeeeeeeeellllllllllllloooooooooooooo")
+                # return json_response
 
             if (
                 status_code == 400

@@ -295,16 +295,20 @@ class WooBatchImporter(AbstractComponent):
         try:
             data = self.backend_adapter.search(filters)
             records = data.get("data", [])
-            print(records,"lkodkwokwodiwowiowiwoeiwoeiwoeiowei")
-            for record in records:
-                external_id = record.get(self.backend_adapter._woo_ext_id_key)
-                self._import_record(external_id, job_options, data=record)
-            filters["record_count"] += len(records)
-            record_count = data.get("record_count", 0)
-            filters_record_count = filters.get("record_count", 0)
-            if int(record_count) > int(filters_record_count):
-                filters.update({"page": filters.get("page", 1) + 1})
-                self.process_next_page(filters=filters, job_options=job_options)
+            if filters.get("record_count") != 0:
+                for record in records:
+                    external_id = record.get(self.backend_adapter._woo_ext_id_key)
+                    self._import_record(external_id, job_options, data=record)
+                filters["record_count"] += len(records)
+                record_count = data.get("record_count", 0)
+                filters_record_count = filters.get("record_count", 0)
+                if int(record_count) > int(filters_record_count):
+                    filters.update({"page": filters.get("page", 1) + 1})
+                    self.process_next_page(filters=filters, job_options=job_options)
+            else:
+                for record in records:
+                    external_id = record.get(self.backend_adapter._woo_ext_id_key)
+                    self._import_record(external_id, job_options, data=record)
         except Exception as err:
             raise ValidationError(_("Error : %s") % err) from err
 
