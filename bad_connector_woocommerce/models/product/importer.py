@@ -170,6 +170,26 @@ class WooProductProductImportMapper(Component):
             category_ids.append(woo_binding.id)
         return {"woo_product_categ_ids": [(6, 0, category_ids)]} if category_ids else {}
 
+    @mapping
+    def woo_product_attribute_value_ids(self, record):
+        """Mapping for woo_product_attribute_value_ids"""
+        attribute_value_ids = []
+        woo_attributes = record.get("attributes", [])
+        for attribute in woo_attributes:
+            options = attribute.get("options", [])
+            if not options:
+                continue
+            for option in options:
+                attribute_value = self.env["woo.product.attribute.value"].search(
+                    [("odoo_id.name", "=", option)],
+                    limit=1,
+                )
+                if not attribute_value:
+                    continue
+
+                attribute_value_ids.append(attribute_value.id)
+        return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
+
 
 class WooProductProductImporter(Component):
     """Importer the WooCommerce Product"""

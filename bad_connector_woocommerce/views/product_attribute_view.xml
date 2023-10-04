@@ -14,6 +14,7 @@
                     <field name="woo_bind_ids" invisible="1" />
                     <button
                         name="import_product_attribute_value"
+                        title="Import/Update attribute value from Woocommerce."
                         type="object"
                         class="oe_highlight"
                         string="Import Attribute Value"
