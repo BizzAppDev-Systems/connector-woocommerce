@@ -68,18 +68,19 @@ class WooProductImageUrlImporter(Component):
         name = image_info.get("name")
         image_url = image_info.get("src")
         alt = image_info.get("alt")
-        existing_image = self._find_existing_image(name, image_url)
-        if not existing_image:
+        image_record = self._find_existing_image(name, image_url)
+        if not image_record:
             image_values = {
                 "name": name,
                 "url": image_url,
                 "alt": alt,
             }
-            self.env["woo.product.image.url"].create(image_values)
+            image_record = self.env["woo.product.image.url"].create(image_values)
         binary_data = utils.fetch_image_data(image_url)
         if not binary_data:
-            return
-        return binding.write({"image_1920": binary_data})
+            return image_record
+        binding.write({"image_1920": binary_data})
+        return image_record
 
     def _import_secondary_image(self, image_info):
         """
