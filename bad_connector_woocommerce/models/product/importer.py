@@ -67,9 +67,17 @@ class WooProductImageUrlImporter(Component):
         """
         name = image_info.get("name")
         image_url = image_info.get("src")
+        alt = image_info.get("alt")
         existing_image = self._find_existing_image(name, image_url)
         if existing_image:
             image_url = existing_image.url
+        else:
+            image_values = {
+                "name": name,
+                "url": image_url,
+                "alt": alt,
+            }
+            self.env["woo.product.image.url"].create(image_values)
         binary_data = utils.fetch_image_data(image_url)
         if not binary_data:
             return
@@ -83,12 +91,12 @@ class WooProductImageUrlImporter(Component):
         """
         name = image_info.get("name")
         url = image_info.get("src")
-        description = image_info.get("alt")
+        alt = image_info.get("alt")
         existing_image = self._find_existing_image(name, url)
         image_values = {
             "name": name,
             "url": url,
-            "description": description,
+            "alt": alt,
         }
         if not existing_image:
             return self.env["woo.product.image.url"].create(image_values)

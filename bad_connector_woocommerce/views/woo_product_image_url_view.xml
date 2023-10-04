@@ -5,31 +5,15 @@
         <field name="name">woo.product.image.url.form</field>
         <field name="model">woo.product.image.url</field>
         <field name="arch" type="xml">
-            <form string="WooCommerce Product Image Url">
+            <form string="WooCommerce Product Image URL">
                 <sheet>
-                    <div class="oe_title">
-                        <label for="name" string="Image" />
-                        <h1>
-                            <field name="name" placeholder="e.g. Image Toy" />
-                        </h1>
-                    </div>
                     <group>
                         <group>
+                            <field name="name" placeholder="e.g. Image Toy" />
                             <field name="url" />
+                            <field name="alt" />
                         </group>
                     </group>
-                    <notebook>
-                        <page string="General Information" name="general_information">
-                            <group string="Internal Notes">
-                                <field
-                                    colspan="2"
-                                    name="description"
-                                    nolabel="1"
-                                    placeholder="This note is only for internal purposes."
-                                />
-                            </group>
-                        </page>
-                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -47,7 +31,7 @@
     </record>
     <!-- Define the action for the menu item -->
     <record id="action_woo_product_image_url" model="ir.actions.act_window">
-        <field name="name">Woo Product Image Url</field>
+        <field name="name">Woo Product Image URL</field>
         <field name="res_model">woo.product.image.url</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_woo_product_image_url_tree" />
