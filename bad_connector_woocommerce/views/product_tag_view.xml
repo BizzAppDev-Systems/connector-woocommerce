@@ -7,16 +7,70 @@
             <field name="model">product.tag</field>
             <field name="inherit_id" ref="product.product_tag_form_view" />
             <field name="arch" type="xml">
-                <xpath expr="//sheet" position="after">
+                <xpath expr="//group" position="after">
                     <group>
                         <field name="slug" groups="connector.group_connector_manager" />
-                        <field
-                            name="description"
-                            groups="connector.group_connector_manager"
-                        />
                     </group>
+                </xpath>
+                <xpath expr="//sheet" position="inside">
+                    <notebook>
+                        <page string="General Information" name="general_information">
+                            <group string="Internal Notes">
+                                <field
+                                    colspan="2"
+                                    name="description"
+                                    nolabel="1"
+                                    placeholder="This note is only for internal purposes."
+                                />
+                            </group>
+                        </page>
+                        <page
+                            string="WooCommerce Connector"
+                            name="woo_connector"
+                            attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                            groups="connector.group_connector_manager"
+                        >
+                            <field name="woo_bind_ids" nolabel="1" readonly="1">
+                                <tree
+                                    string="WooCommerce Product Tag"
+                                    delete="false"
+                                    edit="false"
+                                    create="false"
+                                >
+                                    <field name="backend_id" widget="selection" />
+                                    <field name="external_id" />
+                                </tree>
+                                <form
+                                    string="WooCommerce Product Tag"
+                                    delete="false"
+                                    edit="false"
+                                    create="false"
+                                >
+                                    <group>
+                                        <group>
+                                            <field
+                                                name="backend_id"
+                                                widget="selection"
+                                            />
+                                            <field name="external_id" />
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
                 </xpath>
             </field>
         </record>
+
+        <!-- Product Tag menu button -->
+        <menuitem
+            id="inherited_menu_product_tag_action"
+            action="product.product_tag_action"
+            name="Product Tags"
+            parent="sale.prod_config_main"
+            groups="connector.group_connector_manager"
+            sequence="10"
+        />
     </data>
 </odoo>
