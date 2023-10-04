@@ -37,7 +37,11 @@ class WooProductTagImportMapper(Component):
     def odoo_id(self, record):
         """Creating odoo id"""
         tag = record.get("name")
-        product_tag = self.env["product.tag"].search([("name", "=", tag)])
+        if not tag:
+            raise MappingError(
+                _("Tag Name doesn't exist for %s !!!") % record.get("id")
+            )
+        product_tag = self.env["product.tag"].search([("name", "=", tag)], limit=1)
         if not product_tag:
             return {}
         return {"odoo_id": product_tag.id}

@@ -7,23 +7,8 @@
             <field name="model">product.tag</field>
             <field name="inherit_id" ref="product.product_tag_form_view" />
             <field name="arch" type="xml">
-                <xpath expr="//group" position="after">
-                    <group>
-                        <field name="slug" groups="connector.group_connector_manager" />
-                    </group>
-                </xpath>
                 <xpath expr="//sheet" position="inside">
                     <notebook>
-                        <page string="General Information" name="general_information">
-                            <group string="Internal Notes">
-                                <field
-                                    colspan="2"
-                                    name="description"
-                                    nolabel="1"
-                                    placeholder="This note is only for internal purposes."
-                                />
-                            </group>
-                        </page>
                         <page
                             string="WooCommerce Connector"
                             name="woo_connector"
@@ -48,6 +33,8 @@
                                 >
                                     <group>
                                         <group>
+                                            <field name="slug" />
+                                            <field name="description" />
                                             <field
                                                 name="backend_id"
                                                 widget="selection"

@@ -21,9 +21,6 @@ class ProductTag(models.Model):
         copy=False,
     )
 
-    slug = fields.Char()
-    description = fields.Text()
-
 
 class WooProductTag(models.Model):
     """Woocommerce product tag"""
@@ -41,6 +38,9 @@ class WooProductTag(models.Model):
         required=True,
         ondelete="restrict",
     )
+
+    slug = fields.Char()
+    description = fields.Text()
 
     def __init__(self, name, bases, attrs):
         """Bind Odoo Product Tag"""
