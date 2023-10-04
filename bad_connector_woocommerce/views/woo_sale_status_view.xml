@@ -13,7 +13,9 @@
                             <field name="name" placeholder="e.g. Completed" />
                         </h1>
                     </div>
-                    <field name="code" placeholder="e.g. completed" />
+                    <group>
+                        <field name="code" placeholder="e.g. completed" />
+                    </group>
                 </sheet>
             </form>
         </field>

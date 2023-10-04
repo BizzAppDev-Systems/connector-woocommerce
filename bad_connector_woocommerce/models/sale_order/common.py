@@ -30,7 +30,7 @@ class SaleOrder(models.Model):
             ("any", "Any"),
             ("pending", "Pending"),
             ("processing", "Processing"),
-            ("on-hold", "Hold"),
+            ("on-hold", "On hold"),
             ("cancelled", "Cancelled"),
             ("refunded", "Refunded"),
             ("failed", "Failed"),

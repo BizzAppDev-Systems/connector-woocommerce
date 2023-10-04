@@ -6,4 +6,4 @@ class WooSaleStatus(models.Model):
     _description = "WooCommerce Sale Order Status"
 
     name = fields.Char(required=True)
-    code = fields.Char()
+    code = fields.Char(string="Status Code")
