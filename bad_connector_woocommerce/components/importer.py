@@ -3,12 +3,10 @@ import logging
 from odoo import _, fields
 from odoo.exceptions import ValidationError
 
-from odoo.addons.component.core import AbstractComponent, Component
+from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.exception import NothingToDoJob
 from odoo.addons.queue_job.job import identity_exact
-
-from . import utils
 
 _logger = logging.getLogger(__name__)
 

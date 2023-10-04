@@ -5,6 +5,7 @@ from odoo import _
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
+
 from ...components import utils
 
 # pylint: disable=W7950
@@ -20,7 +21,7 @@ class WooProductProductBatchImporter(Component):
     _apply_on = "woo.product.product"
 
 
-class ProductImageUrlImporter(Component):
+class WooProductImageUrlImporter(Component):
     """Import translations for a record.
 
     Usually called from importers, in ``_after_import``.
@@ -29,7 +30,7 @@ class ProductImageUrlImporter(Component):
     source based on the provided image URL.
     """
 
-    _name = "product.image.url.importer"
+    _name = "woo.product.image.url.importer"
     _inherit = "woo.importer"
     _usage = "product.image.importer"
 
@@ -246,10 +247,10 @@ class WooProductProductImportMapper(Component):
         return {"woo_product_categ_ids": [(6, 0, category_ids)]} if category_ids else {}
 
 
-class WooProductProductImageUrl(Component):
-    """Importer for the WooCommerce Product Image"""
+class WooProductProductImporter(Component):
+    """Importer the WooCommerce Product"""
 
-    _name = "woo.product.product.image.url"
+    _name = "woo.product.product.importer"
     _inherit = "woo.importer"
     _apply_on = ["woo.product.product"]
 
@@ -259,7 +260,7 @@ class WooProductProductImageUrl(Component):
         images from a remote record. If no image records are found in the remote record,
         it returns the result of the super class's '_after_import' method.
         """
-        result = super(WooProductProductImageUrl, self)._after_import(binding, **kwargs)
+        result = super(WooProductProductImporter, self)._after_import(binding, **kwargs)
         image_record = self.remote_record.get("images")
         if not image_record:
             return result
