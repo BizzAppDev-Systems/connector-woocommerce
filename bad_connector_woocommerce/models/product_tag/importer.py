@@ -18,12 +18,16 @@ class WooProductTagBatchImporter(Component):
 
 
 class WooProductTagImporter(Component):
+    """Importer of WooCommerce Product Tag"""
+
     _name = "woo.product.tag.importer"
     _inherit = "woo.importer"
     _apply_on = "woo.product.tag"
 
 
 class WooProductTagImportMapper(Component):
+    """Importer Mapper for the WooCommerce Product Tag"""
+
     _name = "woo.product.tag.import.mapper"
     _inherit = "woo.import.mapper"
     _apply_on = ["woo.product.tag"]

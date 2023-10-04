@@ -10,6 +10,8 @@ _logger = logging.getLogger(__name__)
 
 
 class ProductTag(models.Model):
+    """Product Tag"""
+
     _inherit = "product.tag"
 
     woo_bind_ids = fields.One2many(
@@ -47,7 +49,7 @@ class WooProductTag(models.Model):
 
 
 class WooProductTagAdapter(Component):
-    """Adapter for WooCommerce Product Attribute"""
+    """Adapter for WooCommerce Product Tag"""
 
     _name = "woo.product.tag.adapter"
     _inherit = "woo.adapter"
