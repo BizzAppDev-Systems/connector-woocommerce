@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 
 class WooProductTagBatchImporter(Component):
-    """Batch Importer the WooCommerce Product Tag"""
+    """Batch Importer for the WooCommerce Product Tag"""
 
     _name = "woo.product.tag.batch.importer"
     _inherit = "woo.batch.importer"
