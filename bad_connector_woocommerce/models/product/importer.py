@@ -252,7 +252,7 @@ class WooProductProductImporter(Component):
 
     _name = "woo.product.product.importer"
     _inherit = "woo.importer"
-    _apply_on = ["woo.product.product"]
+    _apply_on = "woo.product.product"
 
     def _after_import(self, binding, **kwargs):
         """
