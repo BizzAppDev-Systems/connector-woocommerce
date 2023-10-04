@@ -42,10 +42,10 @@ class WooProductImageUrlImporter(Component):
         image_ids = []
         for index, image_info in enumerate(image_data):
             if index == 0:
-                self._import_primary_image(binding, image_info)
+                image_record = self._import_primary_image(binding, image_info)
             else:
-                secondary_image_record = self._import_secondary_image(image_info)
-                image_ids.append(secondary_image_record.id)
+                image_record = self._import_secondary_image(image_info)
+            image_ids.append(image_record.id)
         if image_ids:
             binding.write({"woo_product_image_url_ids": [(6, 0, image_ids)]})
 
@@ -69,9 +69,7 @@ class WooProductImageUrlImporter(Component):
         image_url = image_info.get("src")
         alt = image_info.get("alt")
         existing_image = self._find_existing_image(name, image_url)
-        if existing_image:
-            image_url = existing_image.url
-        else:
+        if not existing_image:
             image_values = {
                 "name": name,
                 "url": image_url,
