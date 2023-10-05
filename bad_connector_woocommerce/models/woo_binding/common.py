@@ -37,6 +37,7 @@ class WooBinding(models.AbstractModel):
         """Import Record Of"""
         with backend.work_on(self._name) as work:
             importer = work.component(usage="record.importer")
+            print(external_id, "aaaaaaaaaqwwwwwwwwwwwwwwwwwwwwwwwwqqqqqqq")
             return importer.run(external_id, data=data)
 
     @api.model

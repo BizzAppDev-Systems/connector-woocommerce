@@ -8,6 +8,13 @@ from ...components.binder import WooModelBinder
 class ResCountry(models.Model):
     _inherit = "res.country"
 
+    woo_bind_ids = fields.One2many(
+        comodel_name="woo.res.country",
+        inverse_name="odoo_id",
+        string="WooCommerce Bindings",
+        copy=False,
+    )
+
 
 class WooResCountry(models.Model):
     _name = "woo.res.country"
@@ -44,7 +51,8 @@ class WooResCountryAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.res.country"
     _woo_model = "data/countries"
-    _odoo_ext_id_key = "id"
+    _woo_ext_id_key = "code"
+    # _odoo_ext_id_key = "code"
 
 
 class WooResCountryState(models.Model):
@@ -68,32 +76,31 @@ class WooResCountryState(models.Model):
     )
 
     def __init__(self, name, bases, attrs):
-        """Bind Odoo Sale Order Line"""
+        """Bind Odoo Country State Line"""
         WooModelBinder._apply_on.append(self._name)
         super(WooResCountryState, self).__init__(name, bases, attrs)
 
     @api.model_create_multi
     def create(self, vals):
-        """
-        Create multiple WooSaleOrderLine records.
-
-        :param vals: List of dictionaries containing values for record creation.
-        :type vals: list of dict
-        :return: Created WooSaleOrderLine records.
-        :rtype: woo.sale.order.line
-        """
         for value in vals:
-            print(value, "//////////////////////////////////////////////")
-        #     existing_record = self.search(
-        #         [
-        #             ("external_id", "=", value.get("external_id")),
-        #             ("backend_id", "=", value.get("backend_id")),
-        #         ]
-        #     )
-        #     if not existing_record:
-        #         binding = self.env["woo.res.country"].browse(value["woo_country_id"])
-        #         value["order_id"] = binding.odoo_id.id
-        # return super(WooResCountryState, self).create(vals)
+            record_country_state = self.env["res.country.state"].search(
+                [
+                    ("code", "=", value.get("code")),
+                    ("name", "=", value.get("name")),
+                ],
+                limit=1,
+            )
+            existing_record = self.search(
+                [
+                    ("external_id", "=", value.get("external_id")),
+                    ("backend_id", "=", value.get("backend_id")),
+                ]
+            )
+            if not record_country_state and not existing_record:
+                # if not existing_record:
+                binding = self.env["woo.res.country"].browse(value["woo_country_id"])
+                value["country_id"] = binding.odoo_id.id
+        return super(WooResCountryState, self).create(vals)
 
 
 class ResCountryState(models.Model):

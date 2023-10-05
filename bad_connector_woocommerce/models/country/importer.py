@@ -1,7 +1,7 @@
 from odoo import _
 
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.components.mapper import mapping, only_create
 from odoo.addons.connector.exception import MappingError
 
 # pylint: disable=W7950
@@ -25,6 +25,21 @@ class WooResCountryImportMapper(Component):
     children = [
         ("states", "woo_state_line_ids", "woo.res.country.state"),
     ]
+    direct = [("code", "external_id"), ("country_id", "woo_country_id")]
+
+    @only_create
+    @mapping
+    def odoo_id(self, record):
+        """Creating odoo id"""
+        country_code = record.get("code")
+        if not country_code:
+            raise MappingError(
+                _("Country doesn't exist for %s !!!") % record.get("code")
+            )
+        country = self.env["res.country"].search([("code", "=", country_code)], limit=1)
+        if not country:
+            return {}
+        return {"odoo_id": country.id}
 
     @mapping
     def name(self, record):
@@ -39,6 +54,18 @@ class WooResCountryImportMapper(Component):
         """Mapping for Code"""
         country_code = record.get("code")
         return {"code": country_code} if country_code else {}
+
+    @mapping
+    def update_woo_country_id(self, record):
+        """Update the woo_country_id"""
+        woo_country_id = record.get("code")
+        if not woo_country_id:
+            raise MappingError(_("WooCommerce Country ID not found Please check!!!"))
+        woo_country = self.env["woo.res.country"].search(
+            [("odoo_id.code", "=", woo_country_id)], limit=1
+        )
+        self.options.update(woo_country_id=woo_country.id, record=record)
+        return {"woo_country_id": woo_country.id}
 
 
 class WooResCountryImporter(Component):
@@ -55,83 +82,64 @@ class WooResCountryStateImportMapper(Component):
     _apply_on = "woo.res.country.state"
 
     direct = [
-        ("id", "woo_state_id"),
-        ("id", "external_id"),
+        ("code", "woo_state_id"),
+        ("code", "external_id"),
         ("name", "name"),
     ]
 
-    # def get_product(self, record):
-    #     """Get The Binding of Product"""
-    #     product_rec = record.get("product_id")
-    #     if not product_rec:
-    #         return False
-    #     binder = self.binder_for("woo.product.product")
-    #     product = binder.to_internal(product_rec, unwrap=True)
-    #     return product
+    @only_create
+    @mapping
+    def odoo_id(self, record):
+        """Creating odoo id"""
+        state_code = record.get("code")
+        binder_country = self.binder_for("woo.res.country")
+        woo_binding_country = binder_country.to_internal(record.get("code"))
+        if woo_binding_country:
+            return {}
+        if not state_code:
+            raise MappingError(
+                _("Country doesn't exist for %s !!!") % record.get("code")
+            )
+        country_state = self.env["res.country.state"].search(
+            [
+                ("code", "=", state_code),
+                ("country_id", "=", woo_binding_country.odoo_id.id),
+            ],
+            limit=1,
+        )
+        if not country_state:
+            return {}
+        return {"odoo_id": country_state.id}
 
-    # @mapping
-    # def product_id(self, record):
-    #     """Return Product excited in Woo order line and pre-check validations."""
-    #     product_rec = record.get("product_id")
-    #     if not product_rec:
-    #         return {}
-    #     product = self.get_product(record)
-    #     return {"product_id": product.id, "product_uom": product.uom_id.id}
+    def get_country(self, record):
+        country_rec = record.get("code")
+        if not country_rec:
+            return False
+        binder = self.binder_for("woo.res.country")
+        country = binder.to_internal(country_rec)
+        return country
 
-    # @mapping
-    # def product_uom_qty(self, record):
-    #     """Mapping for Product Uom qty"""
-    #     product_qty = record.get("quantity")
-    #     if not product_qty:
-    #         product = self.get_product(record)
-    #         error_message = (
-    #             f"Order Line Product Quantity not found for Product: {product.name}"
-    #         )
-    #         raise MappingError(error_message)
-    #     return {"product_uom_qty": product_qty}
+    @mapping
+    def country_id(self, record):
+        country_rec = record.get("code")
+        if not country_rec:
+            return {}
+        country = self.get_country(record)
+        return {"country_id": country.id}
 
-    # @mapping
-    # def price_unit(self, record):
-    #     """Mapping for Price Unit"""
-    #     unit_price = record.get("price")
-    #     return {"price_unit": unit_price}
+    @mapping
+    def code(self, record):
+        country_rec = record.get("code")
+        if not country_rec:
+            raise MappingError(
+                _("State Code doesn't exist for %s !!!") % record.get("code")
+            )
+        return {"code": country_rec}
 
-    # @mapping
-    # def price_subtotal_line(self, record):
-    #     """Mapping for Price Subtotal"""
-    #     total = record.get("total")
-    #     return {"price_subtotal_line": total} if total else {}
-
-    # @mapping
-    # def subtotal_line(self, record):
-    #     """Mapping for Subtotal Line"""
-    #     subtotal = record.get("subtotal")
-    #     return {"subtotal_line": subtotal} if subtotal else {}
-
-    # @mapping
-    # def subtotal_tax_line(self, record):
-    #     """Mapping for Subtotal Tax"""
-    #     subtotal_tax = record.get("subtotal_tax")
-    #     return {"subtotal_tax_line": subtotal_tax} if subtotal_tax else {}
-
-    # @mapping
-    # def total_tax_line(self, record):
-    #     """Mapping for Total Tax Line"""
-    #     total_tax = record.get("total_tax")
-    #     return {"total_tax_line": total_tax} if total_tax else {}
-
-    # @mapping
-    # def name(self, record):
-    #     """Mapping for Name"""
-    #     name = record.get("name")
-    #     if not name:
-    #         raise MappingError(_("Order Line Name not found Please check!!!"))
-    #     return {"name": name}
-
-    # @mapping
-    # def woo_order_id(self, record):
-    #     """Mapping for Woo Order ID"""
-    #     return {"woo_order_id": self.options.get("woo_order_id")}
+    @mapping
+    def woo_country_id(self, record):
+        """Mapping for Woo Country ID"""
+        return {"woo_country_id": self.options.get("woo_country_id")}
 
 
 class WooResCountryStateImporter(Component):
