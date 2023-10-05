@@ -57,7 +57,7 @@
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Product Attributes.
     - Click the 'Import Product Attributes' button to import Product Attributes from WooCommerce.
-    - After Import Product Attribute immediately Attribute Value will be imported and another way to Import Attribute Value is Click the 'Import Attribute Value' button to import Product Attribute Values from WooCommerce.
+    - After Import Product Attribute immediately Attribute Value will be imported and another way to Import and Update the Attribute Value is to Click the 'Import Attribute Value' button located in Product Attribute's form view.
     - The 'Product Attributes Value' menu item is located at Sale > Configuration > Product.
     - Product Attribute Value, add a "Group By" based on the Attribute.
 

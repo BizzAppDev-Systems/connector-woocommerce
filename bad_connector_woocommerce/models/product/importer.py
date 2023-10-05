@@ -103,13 +103,12 @@ class WooProductProductImportMapper(Component):
     def _get_product_attribute(self, attribute_id, record):
         """Get the product attribute"""
         binder = self.binder_for("woo.product.attribute")
-        attribute_name = attribute_id.get("name")
-        created_id = "{}-{}".format(attribute_name, record.get("id"))
+        created_id = self.get_attribute_format(attribute_id, record)
         product_attribute = binder.to_internal(created_id)
         if not product_attribute and not attribute_id.get("id"):
             product_attribute = self.env["woo.product.attribute"].create(
                 {
-                    "name": attribute_name,
+                    "name": attribute_id.get("name"),
                     "backend_id": self.backend_record.id,
                     "external_id": created_id,
                     "not_real": True,
@@ -181,8 +180,7 @@ class WooProductProductImportMapper(Component):
         for attribute in woo_attributes:
             attribute_id = attribute.get("id")
             if attribute_id == 0:
-                attribute_name = attribute.get("name")
-                attribute_id = "{}-{}".format(attribute_name, record.get("id"))
+                attribute_id = self.get_attribute_format(attribute, record)
             woo_binding = binder.to_internal(attribute_id)
             options = attribute.get("options", [])
             for option in options:
@@ -197,6 +195,11 @@ class WooProductProductImportMapper(Component):
                     raise MappingError(_("No attribute value found for '%s'") % option)
                 attribute_value_ids.append(attribute_value.id)
         return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
+
+    def get_attribute_format(self, attribute, record):
+        attribute_name = attribute.get("name")
+        attribute_id = "{}-{}".format(attribute_name, record.get("id"))
+        return attribute_id
 
 
 class WooProductProductImporter(Component):
