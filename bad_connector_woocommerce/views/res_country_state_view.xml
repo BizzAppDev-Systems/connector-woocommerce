@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!-- Inherited res.country.state to-->
+        <record id="res_country_state_tree_view" model="ir.ui.view">
+            <field name="name">res.country.state.tree</field>
+            <field name="model">res.country.state</field>
+            <field name="inherit_id" ref="base.view_country_state_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="inside" >
+                    <button name="action_open_form" string="Open Form" type="object" icon="fa-file"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="res_country_state_form_view" model="ir.ui.view">
+            <field name="name">res.country.state.form</field>
+            <field name="model">res.country.state</field>
+            <field name="inherit_id" ref="base.view_country_state_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet" position="inside" >
+                    <notebook>
+                        <page
+                            string="WooCommerce Connector"
+                            name="woo_connector"
+                            attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                            groups="connector.group_connector_manager"
+                        >
+                            <field name="woo_bind_ids" nolabel="1" readonly="1">
+                                <tree
+                                    string="WooCommerce State"
+                                    delete="false"
+                                    edit="false"
+                                    create="false"
+                                >
+                                    <field name="backend_id" widget="selection" />
+                                    <field name="external_id" />
+                                </tree>
+                                <form
+                                    string="WooCommerce State"
+                                    delete="false"
+                                    edit="false"
+                                    create="false"
+                                >
+                                    <group>
+                                        <group>
+                                            <field name="backend_id" widget="selection" />
+                                            <field name="external_id" />
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

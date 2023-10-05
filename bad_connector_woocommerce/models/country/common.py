@@ -55,6 +55,29 @@ class WooResCountryAdapter(Component):
     # _odoo_ext_id_key = "code"
 
 
+class ResCountryState(models.Model):
+    _inherit = "res.country.state"
+
+    woo_bind_ids = fields.One2many(
+        comodel_name="woo.res.country.state",
+        inverse_name="odoo_id",
+        string="WooCommerce Bindings",
+        copy=False,
+    )
+
+    def action_open_form(self):
+        """Define the action to open the form view"""
+        action = {
+            "type": "ir.actions.act_window",
+            "res_model": "res.country.state",
+            "view_mode": "form",
+            "view_type": "form",
+            "res_id": self.id,
+            "target": "current",
+        }
+        return action
+
+
 class WooResCountryState(models.Model):
     _name = "woo.res.country.state"
     _inherit = "woo.binding"

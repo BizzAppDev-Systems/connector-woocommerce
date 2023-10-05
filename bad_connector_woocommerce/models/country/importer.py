@@ -117,6 +117,7 @@ class WooResCountryStateImportMapper(Component):
             return False
         binder = self.binder_for("woo.res.country")
         country = binder.to_internal(country_rec)
+        print(country,"))))))))))))))))))))))))))))))))")
         return country
 
     @mapping
@@ -125,6 +126,7 @@ class WooResCountryStateImportMapper(Component):
         if not country_rec:
             return {}
         country = self.get_country(record)
+        print(country,"osqosqosiqosqioqsiqosiqsoqioqsiqosisoioqsiqosiosqiosioqsiosiqso")
         return {"country_id": country.id}
 
     @mapping
