@@ -100,7 +100,7 @@ class WooProductProductImportMapper(Component):
         product_category = self.backend_record.product_categ_id
         return {"categ_id": product_category.id} if product_category else {}
 
-    def get_attribute_format(self, attribute, record, option=""):
+    def _get_attribute_id_format(self, attribute, record, option=None):
         """Return the attribute and attribute value's unique id"""
         if not option:
             return "{}-{}".format(attribute.get("name"), record.get("id"))
@@ -109,7 +109,7 @@ class WooProductProductImportMapper(Component):
     def _get_product_attribute(self, attribute_id, record):
         """Get the product attribute that contains id as zero"""
         binder = self.binder_for("woo.product.attribute")
-        created_id = self.get_attribute_format(attribute_id, record)
+        created_id = self._get_attribute_id_format(attribute_id, record)
         product_attribute = binder.to_internal(created_id)
         if not (product_attribute or attribute_id.get("id")):
             product_attribute = self.env["woo.product.attribute"].create(
@@ -126,7 +126,7 @@ class WooProductProductImportMapper(Component):
         """Create attribute value binding that doesn't contain ids"""
         binder = self.binder_for("woo.product.attribute.value")
         for option in options:
-            created_id = self.get_attribute_format(attribute, record, option)
+            created_id = self._get_attribute_id_format(attribute, record, option)
             product_attribute_value = binder.to_internal(created_id)
             if not product_attribute_value:
                 self.env["woo.product.attribute.value"].create(
@@ -184,14 +184,14 @@ class WooProductProductImportMapper(Component):
         for attribute in woo_attributes:
             attribute_id = attribute.get("id")
             if attribute_id == 0:
-                attribute_id = self.get_attribute_format(attribute, record)
-            woo_binding = binder.to_internal(attribute_id)
+                attribute_id = self._get_attribute_id_format(attribute, record)
+            woo_binding = binder.to_internal(attribute_id, unwrap=True)
             options = attribute.get("options", [])
             for option in options:
                 attribute_value = self.env["woo.product.attribute.value"].search(
                     [
                         ("name", "=", option),
-                        ("odoo_id.attribute_id", "=", woo_binding.odoo_id.id),
+                        ("attribute_id", "=", woo_binding.id),
                     ],
                     limit=1,
                 )
