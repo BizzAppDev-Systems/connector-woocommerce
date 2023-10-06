@@ -122,6 +122,25 @@
             <field name="method">import_batch</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
+        <!-- Account Tax Import Batch related action queue job  -->
+        <record
+            id="job_function_woo_import_tax_record"
+            model="queue.job.function"
+        >
+            <field name="model_id" ref="bad_connector_woocommerce.model_woo_tax" />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!-- Import Taxes related action queue job -->
+        <record
+            id="job_function_woo_import_tax_batch"
+            model="queue.job.function"
+        >
+            <field name="model_id" ref="bad_connector_woocommerce.model_woo_tax" />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+
         <!-- Sale Order Import Batch related action queue job -->
         <record
             id="job_function_woo_import_sale_order_record"

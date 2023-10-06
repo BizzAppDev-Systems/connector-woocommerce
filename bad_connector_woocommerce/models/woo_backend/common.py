@@ -72,6 +72,7 @@ class WooBackend(models.Model):
         update the sale order status as well as Tracking Info in WooCommerce.""",
     )
     import_orders_from_date = fields.Datetime(string="Import Orders from date")
+    import_taxes_from_date = fields.Datetime(string="Import Taxes from date")
     order_prefix = fields.Char(string="Sale Order Prefix", default="WOO_")
     import_products_from_date = fields.Datetime(string="Import products from date")
     without_sku = fields.Boolean(
@@ -288,6 +289,22 @@ class WooBackend(models.Model):
         """Cron for import_product_categories"""
         backend_ids = self.search(domain or [])
         backend_ids.import_product_categories()
+
+    def import_taxes(self):
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.tax",
+                from_date_field="import_taxes_from_date",
+                priority=5,
+                export=False,
+            )
+        return True
+
+    @api.model
+    def cron_import_account_tax(self, domain=None):
+        """Cron for import_taxes"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_taxes()
 
     def import_sale_orders(self):
         """Import Orders from backend"""
