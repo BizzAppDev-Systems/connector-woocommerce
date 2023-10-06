@@ -101,12 +101,13 @@ class WooProductProductImportMapper(Component):
         binder = self.binder_for("woo.product.category")
         for category in record.get("categories", []):
             woo_binding = binder.to_internal(category.get("id"))
-            if woo_binding and woo_binding.odoo_id:
-                category_ids.append(woo_binding.odoo_id.id)
-        if category_ids:
-            return {"categ_id": category_ids[0]}
-        product_category = self.backend_record.product_categ_id
-        return {"categ_id": product_category.id} if product_category else {}
+            if not (woo_binding and woo_binding.odoo_id):
+                continue
+            category_ids.append(woo_binding.odoo_id.id)
+        if not category_ids:
+            product_category = self.backend_record.product_categ_id
+            return {"categ_id": product_category.id}
+        return {"categ_id": category_ids[0]}
 
     def _get_product_attribute(self, attribute_id, record):
         """Get the product attribute"""

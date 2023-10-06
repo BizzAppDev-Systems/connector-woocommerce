@@ -38,9 +38,7 @@ class WooProductCategoryImportMapper(Component):
         product_category = self.env["product.category"].search(
             [("name", "=", category_name)], limit=1
         )
-        if not product_category:
-            return {}
-        return {"odoo_id": product_category.id}
+        return {"odoo_id": product_category.id} if product_category else {}
 
     @mapping
     def name(self, record):
