@@ -27,7 +27,6 @@
         "views/product_category_view.xml",
         "views/res_partner_views.xml",
         "views/sale_order_view.xml",
-        "views/res_country_state_view.xml",
         "views/connector_woo_base_menu.xml",
     ],
     "images": ["static/description/banner.gif"],

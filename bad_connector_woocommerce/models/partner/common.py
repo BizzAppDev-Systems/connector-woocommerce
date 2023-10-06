@@ -45,9 +45,13 @@ class ResPartner(models.Model):
     def _prepare_child_partner_vals(self, data, address_type=None):
         """Prepare values for child_ids"""
         country = data.get("country")
-        country = self.env["res.country"].search(
+        state = data.get("state")
+        country_record = self.env["res.country"].search(
             [("code", "=", country)],
             limit=1,
+        )
+        state_record = self.env["res.country.state"].search(
+            [("code", "=", state), ("country_id", "=", country_record.id)]
         )
         vals = {
             "name": data.get("username")
@@ -64,7 +68,8 @@ class ResPartner(models.Model):
             "street2": data.get("address_2"),
             "zip": data.get("postcode"),
             "phone": data.get("phone"),
-            "country_id": country.id if country else False,
+            "country_id": country_record.id if country_record else False,
+            "state_id": state_record.id if state_record else False,
             "city": data.get("city"),
         }
         return vals
@@ -83,6 +88,7 @@ class ResPartner(models.Model):
             data.get("address_2"),
             data.get("city"),
             data.get("country"),
+            data.get("state"),
             address_type,
             data.get("postcode"),
             data.get("phone"),

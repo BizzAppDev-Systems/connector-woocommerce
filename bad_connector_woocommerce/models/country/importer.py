@@ -22,10 +22,7 @@ class WooResCountryImportMapper(Component):
     _inherit = "woo.import.mapper"
     _apply_on = "woo.res.country"
 
-    children = [
-        ("states", "woo_state_line_ids", "woo.res.country.state"),
-    ]
-    direct = [("code", "external_id"), ("country_id", "woo_country_id")]
+    direct = [("code", "external_id")]
 
     @only_create
     @mapping
@@ -56,13 +53,43 @@ class WooResCountryImportMapper(Component):
         return {"code": country_code} if country_code else {}
 
     @mapping
-    def update_woo_country_id(self, record):
-        """Update the woo_country_id"""
-        country_code = record.get("code")
-        if not country_code:
-            raise MappingError(_("WooCommerce Country ID not found Please check!!!"))
-        country = self.env["res.country"].search([("code", "=", country_code)], limit=1)
-        self.options.update(country=country)
+    def state_ids(self, record):
+        """Mapper for state_ids"""
+        state_ids = []
+        states = record.get("states", [])
+        if not states:
+            return {}
+        country_record = self.env["res.country"].search(
+            [
+                ("code", "=", record.get("code")),
+            ],
+            limit=1,
+        )
+        for state in states:
+            state_record = self.env["res.country.state"].search(
+                [
+                    ("code", "=", state.get("code")),
+                    ("country_id.code", "=", record.get("code")),
+                ],
+                limit=1,
+            )
+            if not state_record:
+                state_record = self.env["res.country.state"].search(
+                    [
+                        ("name", "=", state.get("name")),
+                        ("country_id.code", "=", record.get("code")),
+                    ],
+                    limit=1,
+                )
+                if not state_record:
+                    record_state = {
+                        "name": state.get("code"),
+                        "code": state.get("code"),
+                        "country_id": country_record.id,
+                    }
+                    state_record = self.env["res.country.state"].create(record_state)
+            state_ids.append((4, state_record.id, 0))
+        return {"state_ids": state_ids} if state_ids else {}
 
 
 class WooResCountryImporter(Component):
@@ -71,92 +98,3 @@ class WooResCountryImporter(Component):
     _name = "woo.res.country.importer"
     _inherit = "woo.importer"
     _apply_on = "woo.res.country"
-
-
-class WooResCountryStateImportMapper(Component):
-    _name = "woo.res.country.state.mapper"
-    _inherit = "woo.import.mapper"
-    _apply_on = "woo.res.country.state"
-
-    direct = [
-        ("code", "woo_state_id"),
-        ("code", "external_id"),
-        ("name", "name"),
-    ]
-
-    @only_create
-    @mapping
-    def odoo_id(self, record):
-        """Creating odoo id"""
-        state_code = record.get("code")
-        state_name = record.get("name")
-        country = self.options.get("country")
-        self.binder_for("woo.res.country")
-        if state_code == "BE":
-            import pdb
-
-            pdb.set_trace()
-        if not country:
-            return {}
-        if not state_code:
-            raise MappingError(
-                _("Country doesn't exist for %s !!!") % record.get("code")
-            )
-        country_state = self.env["res.country.state"].search(
-            [
-                ("code", "=", state_code),
-                ("country_id", "=", country.id),
-            ],
-            limit=1,
-        )
-        if not country_state:
-            country_state = self.env["res.country.state"].search(
-                [
-                    ("name", "=", state_name),
-                    ("country_id", "=", country.id),
-                ],
-                limit=1,
-            )
-        if not country_state:
-            return {}
-        return {"odoo_id": country_state.id}
-
-    def get_country(self, record):
-        country_rec = record.get("code")
-        if not country_rec:
-            return False
-        binder = self.binder_for("woo.res.country")
-        country = binder.to_internal(country_rec)
-        print(country, "))))))))))))))))))))))))))))))))")
-        return country
-
-    @mapping
-    def country_id(self, record):
-        country_rec = record.get("code")
-        if not country_rec:
-            return {}
-        country = self.get_country(record)
-        print(
-            country, "osqosqosiqosqioqsiqosiqsoqioqsiqosisoioqsiqosiosqiosioqsiosiqso"
-        )
-        return {"country_id": country.id}
-
-    @mapping
-    def code(self, record):
-        country_rec = record.get("code")
-        if not country_rec:
-            raise MappingError(
-                _("State Code doesn't exist for %s !!!") % record.get("code")
-            )
-        return {"code": country_rec}
-
-    @mapping
-    def woo_country_id(self, record):
-        """Mapping for Woo Country ID"""
-        return {"woo_country_id": self.options.get("woo_country_id")}
-
-
-class WooResCountryStateImporter(Component):
-    _name = "woo.res.country.state.importer"
-    _inherit = "woo.map.child.import"
-    _apply_on = "woo.res.country.state"
