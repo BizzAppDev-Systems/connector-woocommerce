@@ -17,7 +17,13 @@ class WooTax(models.Model):
     # _parent_store = True
 
     name = fields.Char(required=True)
-    amount = fields.Monetary()
+    woo_amount = fields.Float()
+    woo_bind_ids = fields.One2many(
+        comodel_name="woo.sale.order",
+        inverse_name="odoo_id",
+        string="WooCommerce Bindings",
+        copy=False,
+    )
     # display = fields.Char()
     # menu_order = fields.Integer()
     # count = fields.Integer(readonly=True)
@@ -29,9 +35,7 @@ class WooTax(models.Model):
     #     ondelete="cascade",
     # )
     # description = fields.Html(string="Description", translate=True)
-    # odoo_id = fields.Many2one(
-    #     string="Product Category", comodel_name="woo.product.category"
-    # )
+    odoo_id = fields.Many2one(string="Taxes", comodel_name="woo.tax")
     # woo_parent_id = fields.Many2one(
     #     comodel_name="woo.product.category",
     #     string="WooCommerce Parent Category",
