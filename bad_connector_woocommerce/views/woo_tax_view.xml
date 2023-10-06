@@ -12,43 +12,11 @@
                             <field name="name" />
                             <field name="woo_amount" />
                         </group>
+                        <group>
+                            <field name="backend_id" widget="selection" />
+                            <field name="external_id" />
+                        </group>
                     </group>
-                    <notebook>
-                        <page
-                            string="WooCommerce Connector"
-                            name="woo_connector"
-                            attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
-                            groups="connector.group_connector_manager"
-                        >
-                            <field name="woo_bind_ids" nolabel="1" readonly="1">
-                                <tree
-                                    string="WooCommerce Taxes"
-                                    delete="false"
-                                    edit="false"
-                                    create="false"
-                                >
-                                    <field name="backend_id" widget="selection" />
-                                    <field name="external_id" />
-                                </tree>
-                                <form
-                                    string="WooCommerce Taxes"
-                                    delete="false"
-                                    edit="false"
-                                    create="false"
-                                >
-                                    <group>
-                                        <group>
-                                            <field
-                                                name="backend_id"
-                                                widget="selection"
-                                            />
-                                            <field name="external_id" />
-                                        </group>
-                                    </group>
-                                </form>
-                            </field>
-                        </page>
-                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -64,7 +32,6 @@
             </tree>
         </field>
     </record>
-
     <!-- Define the action for the menu item -->
     <record id="action_woo_tax" model="ir.actions.act_window">
         <field name="name">WooCommerce Tax</field>

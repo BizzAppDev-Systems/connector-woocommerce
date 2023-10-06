@@ -29,11 +29,9 @@ class WooTaxImportMapper(Component):
     @only_create
     @mapping
     def odoo_id(self, record):
-        total_rate = record.get("rate")
-        tax = self.env["account.tax"].search([("account", "=", total_rate)], limit=1)
-        if not tax:
-            return {}
-        return {"odoo_id": tax.id}
+        rate = record.get("rate")
+        tax = self.env["account.tax"].search([("amount", "=", rate)], limit=1)
+        return {"odoo_id": tax.id} if tax else {}
 
     @mapping
     def name(self, record):
@@ -44,9 +42,9 @@ class WooTaxImportMapper(Component):
         return {"name": name}
 
     @mapping
-    def amount(self, record):
+    def woo_amount(self, record):
         """Mapping for amount"""
-        return {"amount": record.get("rate")} if record.get("rate") else {}
+        return {"woo_amount": record.get("rate")} if record.get("rate") else {}
 
 
 class WooTaxImporter(Component):
