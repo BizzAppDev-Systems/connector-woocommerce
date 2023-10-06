@@ -100,12 +100,18 @@ class WooProductProductImportMapper(Component):
         product_category = self.backend_record.product_categ_id
         return {"categ_id": product_category.id} if product_category else {}
 
+    def get_attribute_format(self, attribute, record, option=""):
+        """Return the attribute and attribute value's unique id"""
+        if not option:
+            return "{}-{}".format(attribute.get("name"), record.get("id"))
+        return "{}-{}-{}".format(option, attribute.get("id"), record.get("id"))
+
     def _get_product_attribute(self, attribute_id, record):
-        """Get the product attribute"""
+        """Get the product attribute that contains id as zero"""
         binder = self.binder_for("woo.product.attribute")
         created_id = self.get_attribute_format(attribute_id, record)
         product_attribute = binder.to_internal(created_id)
-        if not product_attribute and not attribute_id.get("id"):
+        if not (product_attribute or attribute_id.get("id")):
             product_attribute = self.env["woo.product.attribute"].create(
                 {
                     "name": attribute_id.get("name"),
@@ -116,13 +122,11 @@ class WooProductProductImportMapper(Component):
             )
         return product_attribute
 
-    def _create_attribute_values(
-        self, options, product_attribute, attribute_id, record
-    ):
-        """Create attribute value"""
+    def _create_attribute_values(self, options, product_attribute, attribute, record):
+        """Create attribute value binding that doesn't contain ids"""
         binder = self.binder_for("woo.product.attribute.value")
         for option in options:
-            created_id = "{}-{}-{}".format(option, attribute_id, record.get("id"))
+            created_id = self.get_attribute_format(attribute, record, option)
             product_attribute_value = binder.to_internal(created_id)
             if not product_attribute_value:
                 self.env["woo.product.attribute.value"].create(
@@ -153,7 +157,7 @@ class WooProductProductImportMapper(Component):
             product_attribute = self._get_product_attribute(attribute, record)
             if "options" in attribute:
                 self._create_attribute_values(
-                    attribute["options"], product_attribute, attribute_id, record
+                    attribute["options"], product_attribute, attribute, record
                 )
             attribute_ids.append(product_attribute.id)
         return {"woo_attribute_ids": [(6, 0, attribute_ids)]}
@@ -195,11 +199,6 @@ class WooProductProductImportMapper(Component):
                     raise MappingError(_("No attribute value found for '%s'") % option)
                 attribute_value_ids.append(attribute_value.id)
         return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
-
-    def get_attribute_format(self, attribute, record):
-        attribute_name = attribute.get("name")
-        attribute_id = "{}-{}".format(attribute_name, record.get("id"))
-        return attribute_id
 
 
 class WooProductProductImporter(Component):
