@@ -31,10 +31,6 @@ class WooProductCategoryImportMapper(Component):
     def odoo_id(self, record):
         """Creating odoo id"""
         category_name = record.get("name")
-        if not category_name:
-            raise MappingError(
-                _("Category Name doesn't exist for %s !!!") % record.get("id")
-            )
         product_category = self.env["product.category"].search(
             [("name", "=", category_name)], limit=1
         )
