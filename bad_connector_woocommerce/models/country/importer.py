@@ -58,14 +58,11 @@ class WooResCountryImportMapper(Component):
     @mapping
     def update_woo_country_id(self, record):
         """Update the woo_country_id"""
-        woo_country_id = record.get("code")
-        if not woo_country_id:
+        country_code = record.get("code")
+        if not country_code:
             raise MappingError(_("WooCommerce Country ID not found Please check!!!"))
-        woo_country = self.env["woo.res.country"].search(
-            [("odoo_id.code", "=", woo_country_id)], limit=1
-        )
-        self.options.update(woo_country_id=woo_country.id, record=record)
-        return {"woo_country_id": woo_country.id}
+        country = self.env["res.country"].search([("code", "=", country_code)], limit=1)
+        self.options.update(country=country)
 
 
 class WooResCountryImporter(Component):
@@ -92,9 +89,14 @@ class WooResCountryStateImportMapper(Component):
     def odoo_id(self, record):
         """Creating odoo id"""
         state_code = record.get("code")
-        binder_country = self.binder_for("woo.res.country")
-        woo_binding_country = binder_country.to_internal(record.get("code"))
-        if woo_binding_country:
+        state_name = record.get("name")
+        country = self.options.get("country")
+        self.binder_for("woo.res.country")
+        if state_code == "BE":
+            import pdb
+
+            pdb.set_trace()
+        if not country:
             return {}
         if not state_code:
             raise MappingError(
@@ -103,10 +105,18 @@ class WooResCountryStateImportMapper(Component):
         country_state = self.env["res.country.state"].search(
             [
                 ("code", "=", state_code),
-                ("country_id", "=", woo_binding_country.odoo_id.id),
+                ("country_id", "=", country.id),
             ],
             limit=1,
         )
+        if not country_state:
+            country_state = self.env["res.country.state"].search(
+                [
+                    ("name", "=", state_name),
+                    ("country_id", "=", country.id),
+                ],
+                limit=1,
+            )
         if not country_state:
             return {}
         return {"odoo_id": country_state.id}
@@ -117,7 +127,7 @@ class WooResCountryStateImportMapper(Component):
             return False
         binder = self.binder_for("woo.res.country")
         country = binder.to_internal(country_rec)
-        print(country,"))))))))))))))))))))))))))))))))")
+        print(country, "))))))))))))))))))))))))))))))))")
         return country
 
     @mapping
@@ -126,7 +136,9 @@ class WooResCountryStateImportMapper(Component):
         if not country_rec:
             return {}
         country = self.get_country(record)
-        print(country,"osqosqosiqosqioqsiqosiqsoqioqsiqosisoioqsiqosiosqiosioqsiosiqso")
+        print(
+            country, "osqosqosiqosqioqsiqosiqsoqioqsiqosisoioqsiqosiosqiosioqsiosiqso"
+        )
         return {"country_id": country.id}
 
     @mapping
