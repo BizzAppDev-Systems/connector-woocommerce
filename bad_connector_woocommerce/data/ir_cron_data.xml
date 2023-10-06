@@ -67,7 +67,7 @@
             <field name="numbercall">-1</field>
             <field name="doall" eval="False" />
         </record>
-        <!--  Import data/country and there States-->
+        <!--  Import Country and there States-->
         <record id="ir_cron_woocommerce_import_country_state" model="ir.cron">
             <field name="name">Woocommerce: Import Metadata</field>
             <field name="model_id" ref="model_woo_backend" />
@@ -76,7 +76,6 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
         </record>
     </data>
 </odoo>

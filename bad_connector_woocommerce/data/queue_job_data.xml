@@ -202,7 +202,7 @@
             <field name="method">import_batch</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
-        <!-- Import Res Country related action queue job -->
+        <!-- Import Res Country and there States related action queue job -->
         <record
             id="job_function_woo_import_res_country_import_record"
             model="queue.job.function"
