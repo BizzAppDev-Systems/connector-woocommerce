@@ -57,107 +57,66 @@ class WooResPartnerImportMapper(Component):
             raise MappingError(_("No Email found in Response"))
         return {"email": email}
 
-    @mapping
-    def country_id(self, record):
+    def _get_field_value(self, record, field_name):
+        """Get the value of a field from a record."""
         billing = record.get("billing")
         shipping = record.get("shipping")
         if any(billing.values()):
-            woo_country = billing.get("country")
+            return billing.get(field_name)
+        elif any(shipping.values()):
+            return shipping.get(field_name)
+        return None
+
+    @mapping
+    def country_id(self, record):
+        """Mapping for country_id"""
+        woo_country = self._get_field_value(record, "country")
+        if woo_country:
             country = self.env["res.country"].search(
                 [("code", "=", woo_country)], limit=1
             )
-            return {"country_id": country.id}
-        elif any(shipping.values()):
-            woo_state = billing.get("state")
-            country = self.env["res.country"].search(
-                [("code", "=", woo_state)], limit=1
-            )
-            return {"country_id": country.id}
-        else:
-            return {}
+            return {"country_id": country.id} if country else {}
+        return {}
 
     @mapping
     def state_id(self, record):
-        billing = record.get("billing")
-        shipping = record.get("shipping")
-        if any(billing.values()):
-            woo_state = billing.get("state")
-            woo_country = billing.get("country")
+        """Mapping for state_id"""
+        woo_state = self._get_field_value(record, "state")
+        woo_country = self._get_field_value(record, "country")
+        if woo_state and woo_country:
             country_record = self.env["res.country"].search(
-                [("code", "=", woo_country)],
-                limit=1,
+                [("code", "=", woo_country)], limit=1
             )
             state = self.env["res.country.state"].search(
                 [("code", "=", woo_state), ("country_id", "=", country_record.id)],
                 limit=1,
             )
-            return {"state_id": state.id}
-        elif any(shipping.values()):
-            woo_state = shipping.get("state")
-            woo_country = shipping.get("shipping")
-            country_record = self.env["res.country"].search(
-                [("code", "=", woo_country)],
-                limit=1,
-            )
-            state = self.env["res.country.state"].search(
-                [("code", "=", woo_state), ("country_id", "=", country_record.id)],
-                limit=1,
-            )
-            return {"state_id": state.id}
-        else:
-            return {}
+            return {"state_id": state.id} if state else {}
+        return {}
 
     @mapping
     def street(self, record):
-        billing = record.get("billing")
-        shipping = record.get("shipping")
-        if any(billing.values()):
-            woo_address = billing.get("address_1")
-            return {"street": woo_address}
-        elif any(shipping.values()):
-            woo_address = billing.get("address_1")
-            return {"street": woo_address}
-        else:
-            return {}
+        """Mapping for street"""
+        woo_address = self._get_field_value(record, "address_1")
+        return {"street": woo_address} if woo_address else {}
 
     @mapping
     def street2(self, record):
-        billing = record.get("billing")
-        shipping = record.get("shipping")
-        if any(billing.values()):
-            woo_address2 = billing.get("address_2")
-            return {"street2": woo_address2}
-        elif any(shipping.values()):
-            woo_address2 = billing.get("address_2")
-            return {"street2": woo_address2}
-        else:
-            return {}
+        """Mapping for street2"""
+        woo_address2 = self._get_field_value(record, "address_2")
+        return {"street2": woo_address2} if woo_address2 else {}
 
     @mapping
     def zip(self, record):
-        billing = record.get("billing")
-        shipping = record.get("shipping")
-        if any(billing.values()):
-            woo_zip = billing.get("zip")
-            return {"zip": woo_zip}
-        elif any(shipping.values()):
-            woo_zip = billing.get("zip")
-            return {"zip": woo_zip}
-        else:
-            return {}
+        """Mapping for zip"""
+        woo_zip = self._get_field_value(record, "zip")
+        return {"zip": woo_zip} if woo_zip else {}
 
     @mapping
     def city(self, record):
-        billing = record.get("billing")
-        shipping = record.get("shipping")
-        if any(billing.values()):
-            woo_city = billing.get("city")
-            return {"city": woo_city}
-        elif any(shipping.values()):
-            woo_city = billing.get("city")
-            return {"zip": woo_city}
-        else:
-            return {}
+        """Mapping for city"""
+        woo_city = self._get_field_value(record, "city")
+        return {"city": woo_city} if woo_city else {}
 
     @mapping
     def addresses(self, record):
