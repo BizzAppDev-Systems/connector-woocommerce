@@ -29,10 +29,6 @@ class WooResCountryImportMapper(Component):
     def odoo_id(self, record):
         """Creating odoo id"""
         country_code = record.get("code")
-        if not country_code:
-            raise MappingError(
-                _("Country doesn't exist for %s !!!") % record.get("code")
-            )
         country = self.env["res.country"].search([("code", "=", country_code)], limit=1)
         if not country:
             return {}
