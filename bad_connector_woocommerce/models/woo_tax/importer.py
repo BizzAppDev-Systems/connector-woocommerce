@@ -1,6 +1,6 @@
 import logging
 
-from odoo import _
+from odoo import _, api
 
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping, only_create
@@ -26,12 +26,18 @@ class WooTaxImportMapper(Component):
     _inherit = "woo.import.mapper"
     _apply_on = "woo.tax"
 
+    @api.model
+    def get_tax(self, rate):
+        tax = self.env["account.tax"].search([("amount", "=", rate)], limit=1)
+        return tax
+
     @only_create
     @mapping
     def odoo_id(self, record):
-        rate = record.get("rate")
-        tax = self.env["account.tax"].search([("amount", "=", rate)], limit=1)
-        return {"odoo_id": tax.id} if tax else {}
+        tax = self.get_tax(record.get("rate"))
+        if not tax:
+            return {}
+        return {"odoo_id": tax.id}
 
     @mapping
     def name(self, record):
