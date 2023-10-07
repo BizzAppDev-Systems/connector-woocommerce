@@ -22,7 +22,7 @@ class WooTax(models.Model):
         string="WooCommerce Bindings",
         copy=False,
     )
-    odoo_id = fields.Many2one(string="Taxes", comodel_name="woo.tax")
+    odoo_id = fields.Many2one(string="Taxes", comodel_name="account.tax")
 
     def __init__(self, name, bases, attrs):
         """Bind Odoo WooCommerce Taxes"""
