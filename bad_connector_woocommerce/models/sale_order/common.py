@@ -41,6 +41,7 @@ class SaleOrder(models.Model):
     )
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
     total_amount_different = fields.Boolean(compute="_compute_total_amount_diffrent")
+    woo_coupon = fields.Char()
 
     @api.depends(
         "woo_bind_ids",

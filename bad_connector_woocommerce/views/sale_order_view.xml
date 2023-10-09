@@ -68,6 +68,11 @@
                 position="after"
             >
                 <field name="woo_order_status" readonly="1" />
+                <field
+                    name="woo_coupon"
+                    readonly="1"
+                    attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                />
                 <field name="tax_different" invisible="1" />
                 <field name="total_amount_different" invisible="1" />
             </xpath>
