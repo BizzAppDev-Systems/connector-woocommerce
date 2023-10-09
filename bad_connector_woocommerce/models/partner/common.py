@@ -53,7 +53,7 @@ class ResPartner(models.Model):
         if country and not country_record:
             raise MappingError(_(f"Country '{country}' not found in Odoo records."))
         state_record = self.env["res.country.state"].search(
-            [("code", "=", state), ("country_id", "=", country_record.id)]
+            [("code", "=", state), ("country_id", "=", country_record.id)], limit=1
         )
         if state and not state_record:
             raise MappingError(

@@ -77,17 +77,8 @@ class WooResCountryImportMapper(Component):
                 limit=1,
             )
             if not state_record:
-                state_name = state.get("name")
-                state_record = self.env["res.country.state"].search(
-                    [
-                        ("name", "=", state_name),
-                        ("country_id.code", "=", country_code),
-                    ],
-                    limit=1,
-                )
-            if not state_record:
                 state_vals = {
-                    "name": state_name,
+                    "name": state.get("name"),
                     "code": state_code,
                     "country_id": country_record.id,
                 }
