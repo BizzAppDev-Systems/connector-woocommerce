@@ -100,9 +100,9 @@ class WooProductProductImportMapper(Component):
         category_id = self.backend_record.product_categ_id.id
         binder = self.binder_for("woo.product.category")
         for category in record.get("categories", []):
-            woo_binding = binder.to_internal(category.get("id"))
-            if woo_binding and woo_binding.odoo_id:
-                category_id = woo_binding.odoo_id.id
+            product_category = binder.to_internal(category.get("id"), unwrap=True)
+            if product_category:
+                category_id = product_category.id
                 break
         return {"categ_id": category_id}
 
