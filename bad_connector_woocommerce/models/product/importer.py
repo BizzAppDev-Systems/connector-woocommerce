@@ -111,7 +111,7 @@ class WooProductProductImportMapper(Component):
         binder = self.binder_for("woo.product.attribute")
         created_id = self._get_attribute_id_format(attribute_id, record)
         product_attribute = binder.to_internal(created_id)
-        if not (product_attribute or attribute_id.get("id")):
+        if not product_attribute and not attribute_id.get("id"):
             product_attribute = self.env["woo.product.attribute"].create(
                 {
                     "name": attribute_id.get("name"),
@@ -181,22 +181,25 @@ class WooProductProductImportMapper(Component):
         attribute_value_ids = []
         woo_attributes = record.get("attributes", [])
         binder = self.binder_for("woo.product.attribute")
-        for attribute in woo_attributes:
-            attribute_id = attribute.get("id")
+        for woo_attribute in woo_attributes:
+            attribute_id = woo_attribute.get("id")
             if attribute_id == 0:
-                attribute_id = self._get_attribute_id_format(attribute, record)
-            woo_binding = binder.to_internal(attribute_id, unwrap=True)
-            options = attribute.get("options", [])
+                attribute_id = self._get_attribute_id_format(woo_attribute, record)
+            attribute = binder.to_internal(attribute_id, unwrap=True)
+            options = woo_attribute.get("options", [])
             for option in options:
                 attribute_value = self.env["woo.product.attribute.value"].search(
                     [
                         ("name", "=", option),
-                        ("attribute_id", "=", woo_binding.id),
+                        ("attribute_id", "=", attribute.id),
                     ],
                     limit=1,
                 )
                 if not attribute_value:
-                    raise MappingError(_("No attribute value found for '%s'") % option)
+                    raise MappingError(
+                        _("'%s' attribute value not found!Import Attribute first.")
+                        % option
+                    )
                 attribute_value_ids.append(attribute_value.id)
         return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
 
