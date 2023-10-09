@@ -97,16 +97,14 @@ class WooProductProductImportMapper(Component):
     @mapping
     def categ_id(self, record):
         """Mapping for Odoo category"""
-        category_id = []
+        category_id = self.backend_record.product_categ_id.id
         binder = self.binder_for("woo.product.category")
         for category in record.get("categories", []):
             woo_binding = binder.to_internal(category.get("id"))
             if woo_binding and woo_binding.odoo_id:
-                category_id.append(woo_binding.odoo_id.id)
+                category_id = woo_binding.odoo_id.id
                 break
-        if not category_id:
-            category_id = [self.backend_record.product_categ_id.id]
-        return {"categ_id": category_id[0]}
+        return {"categ_id": category_id}
 
     def _get_product_attribute(self, attribute_id, record):
         """Get the product attribute"""
