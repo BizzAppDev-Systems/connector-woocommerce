@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherit account.tax view to add fields,add connector page and  Binding -->
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">account.tax.form</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='advanced_options']" position="after">
+                <page
+                    name="WooCommerce Tax"
+                    string="WooCommerce Bindings"
+                    attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                    groups="connector.group_connector_manager"
+                >
+                    <field name="woo_bind_ids" nolabel="1" readonly="1">
+                        <tree
+                            string="WooCommerce Tax"
+                            delete="false"
+                            edit="false"
+                            create="false"
+                        >
+                            <field name="backend_id" widget="selection" />
+                            <field name="external_id" />
+                        </tree>
+                        <form
+                            name="woo_tax"
+                            string="WooCommerce Tax"
+                            delete="false"
+                            edit="false"
+                        >
+                            <group>
+                                <group>
+                                    <field name="backend_id" widget="selection" />
+                                    <field name="external_id" />
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

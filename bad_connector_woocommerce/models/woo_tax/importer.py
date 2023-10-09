@@ -28,7 +28,15 @@ class WooTaxImportMapper(Component):
 
     @api.model
     def get_tax(self, rate):
-        tax = self.env["account.tax"].search([("amount", "=", rate)], limit=1)
+        company = self.backend_record.company_id
+        tax = self.env["account.tax"].search(
+            [
+                ("amount", "=", rate),
+                ("type_tax_use", "in", ["sale", "none"]),
+                ("company_id", "=", company.id),
+            ],
+            limit=1,
+        )
         return tax
 
     @only_create
@@ -43,14 +51,66 @@ class WooTaxImportMapper(Component):
     def name(self, record):
         """Mapping for name of tax"""
         name = record.get("name")
+        rate_to_float = float(record.get("rate"))
+        rate = round(rate_to_float, 2)
         if not name:
             raise MappingError(_("No Tax Name found in Response"))
-        return {"name": name}
+        return {"name": f"{name} {rate}%"}
 
     @mapping
     def woo_amount(self, record):
         """Mapping for amount"""
         return {"woo_amount": record.get("rate")} if record.get("rate") else {}
+
+    @mapping
+    def woo_rate(self, record):
+        """Mapping for amount"""
+        return {"woo_rate": record.get("rate")} if record.get("rate") else {}
+
+    @mapping
+    def woo_tax_name(self, record):
+        """Mapping for amount"""
+        return {"woo_tax_name": record.get("name")} if record.get("name") else {}
+
+    @mapping
+    def priority(self, record):
+        """Mapping for amount"""
+        return {"priority": record.get("priority")} if record.get("priority") else {}
+
+    @mapping
+    def shipping(self, record):
+        """Mapping for amount"""
+        return {"shipping": record.get("shipping")} if record.get("shipping") else {}
+
+    @mapping
+    def woo_class(self, record):
+        """Mapping for amount"""
+        return {"woo_class": record.get("class")} if record.get("class") else {}
+
+    @mapping
+    def compound(self, record):
+        """Mapping for amount"""
+        return {"compound": record.get("compound")} if record.get("compound") else {}
+
+    @mapping
+    def state(self, record):
+        """Mapping for amount"""
+        return {"state": record.get("state")} if record.get("state") else {}
+
+    @mapping
+    def city(self, record):
+        """Mapping for amount"""
+        return {"city": record.get("city")} if record.get("city") else {}
+
+    # @mapping
+    # def cities(self, record):
+    #     """Mapping for amount"""
+    #     return {"cities": record.get("rate")} if record.get("rate") else {}
+
+    @mapping
+    def postcode(self, record):
+        """Mapping for amount"""
+        return {"postcode": record.get("postcode")} if record.get("postcode") else {}
 
 
 class WooTaxImporter(Component):

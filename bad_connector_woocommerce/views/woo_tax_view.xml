@@ -11,10 +11,21 @@
                         <group>
                             <field name="name" />
                             <field name="woo_amount" />
+                            <field name="woo_tax_name" />
+                            <field name="state" />
+                            <field name="city" />
+                            <field name="cities" />
+                            <field name="postcode" />
+                            <field name="odoo_id" />
                         </group>
                         <group>
                             <field name="backend_id" widget="selection" />
                             <field name="external_id" />
+                            <field name="compound" />
+                            <field name="woo_rate" />
+                            <field name="priority" />
+                            <field name="shipping" />
+                            <field name="woo_class" />
                         </group>
                     </group>
                 </sheet>

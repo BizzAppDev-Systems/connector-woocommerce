@@ -11,11 +11,26 @@ _logger = logging.getLogger(__name__)
 
 class WooTax(models.Model):
     _name = "woo.tax"
-    _description = "WooCommerce Taxes"
     _inherit = "woo.binding"
+    _description = "WooCommerce Taxes"
 
     name = fields.Char(required=True)
     woo_amount = fields.Float()
+    woo_rate = fields.Char()
+    woo_tax_name = fields.Char(string="WooCommerce Tax Name")
+    priority = fields.Char()
+    shipping = fields.Char()
+    woo_class = fields.Char()
+    compound = fields.Char()
+    state = fields.Char()
+    city = fields.Char()
+    cities = fields.Char()
+    postcode = fields.Char()
+    tax_id = fields.Many2one(
+        string="Related Tax",
+        comodel_name="account.tax",
+        ondelete="cascade",
+    )
     woo_bind_ids = fields.One2many(
         comodel_name="woo.tax",
         inverse_name="odoo_id",
