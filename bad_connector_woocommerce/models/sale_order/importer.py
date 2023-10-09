@@ -143,8 +143,10 @@ class WooSaleOrderImportMapper(Component):
     @mapping
     def woo_coupon(self, record):
         """Mapping for woo_coupon"""
-        coupon_lines = record.get("coupon_lines", [])
-        coupon_codes = [coupon.get("code") for coupon in coupon_lines]
+        woo_coupons = record.get("coupon_lines", [])
+        if not woo_coupons:
+            return {}
+        coupon_codes = [coupon.get("code") for coupon in woo_coupons]
         return {"woo_coupon": ", ".join(coupon_codes)}
 
 
