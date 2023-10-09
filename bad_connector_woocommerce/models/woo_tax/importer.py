@@ -28,6 +28,9 @@ class WooTaxImportMapper(Component):
 
     @api.model
     def get_tax(self, rate):
+        """
+        Get a tax record based on the given rate,company_id and type_tax_use.
+        """
         company = self.backend_record.company_id
         tax = self.env["account.tax"].search(
             [
@@ -42,6 +45,7 @@ class WooTaxImportMapper(Component):
     @only_create
     @mapping
     def odoo_id(self, record):
+        """Mapping for odoo_id"""
         tax = self.get_tax(record.get("rate"))
         if not tax:
             return {}
@@ -59,57 +63,90 @@ class WooTaxImportMapper(Component):
 
     @mapping
     def woo_amount(self, record):
-        """Mapping for amount"""
+        """Mapping for woo_amount"""
         return {"woo_amount": record.get("rate")} if record.get("rate") else {}
 
     @mapping
     def woo_rate(self, record):
-        """Mapping for amount"""
+        """Mapping for woo_rate"""
         return {"woo_rate": record.get("rate")} if record.get("rate") else {}
 
     @mapping
     def woo_tax_name(self, record):
-        """Mapping for amount"""
+        """Mapping for woo_tax_name"""
         return {"woo_tax_name": record.get("name")} if record.get("name") else {}
 
     @mapping
     def priority(self, record):
-        """Mapping for amount"""
+        """Mapping for priority"""
         return {"priority": record.get("priority")} if record.get("priority") else {}
 
     @mapping
     def shipping(self, record):
-        """Mapping for amount"""
+        """Mapping for shipping"""
         return {"shipping": record.get("shipping")} if record.get("shipping") else {}
 
     @mapping
     def woo_class(self, record):
-        """Mapping for amount"""
+        """Mapping for woo_class"""
         return {"woo_class": record.get("class")} if record.get("class") else {}
 
     @mapping
     def compound(self, record):
-        """Mapping for amount"""
+        """Mapping for compound"""
         return {"compound": record.get("compound")} if record.get("compound") else {}
 
     @mapping
-    def state(self, record):
-        """Mapping for amount"""
-        return {"state": record.get("state")} if record.get("state") else {}
+    def country_id(self, record):
+        """Mapping for country_id"""
+        woo_country = record.get("country")
+        if not woo_country:
+            return {}
+        country = self.env["res.country"].search([("code", "=", woo_country)], limit=1)
+        return {"country_id": country.id} if country else {}
+
+    @mapping
+    def state_id(self, record):
+        """Mapping for state_id"""
+        woo_state = record.get("state")
+        if not woo_state:
+            return {}
+        country = self.env["res.country"].search(
+            [("code", "=", record.get("country"))], limit=1
+        )
+        state = self.env["res.country.state"].search(
+            [("code", "=", woo_state), ("country_id.code", "=", country.id)]
+        )
+        return {"state_id": state}
 
     @mapping
     def city(self, record):
-        """Mapping for amount"""
+        """Mapping for city"""
         return {"city": record.get("city")} if record.get("city") else {}
 
-    # @mapping
-    # def cities(self, record):
-    #     """Mapping for amount"""
-    #     return {"cities": record.get("rate")} if record.get("rate") else {}
+    @mapping
+    def company_id(self, record):
+        """Mapping for company_id"""
+        company = self.backend_record.company_id
+        return {"company_id": company.id} if company else {}
+
+    @mapping
+    def cities(self, record):
+        """Mapping for Cities"""
+        cities_list = record.get("cities", [])
+        cities = [city for city in cities_list]
+        return {"cities": ", ".join(cities)} if cities else {}
+
+    @mapping
+    def postcodes(self, record):
+        """Mapping for postcodes"""
+        postcode_list = record.get("postcodes", [])
+        postcodes = [postcode for postcode in postcode_list]
+        return {"postcodes": ", ".join(postcodes)} if postcodes else {}
 
     @mapping
     def postcode(self, record):
-        """Mapping for amount"""
+        """Mapping for postcode"""
         return {"postcode": record.get("postcode")} if record.get("postcode") else {}
 
 

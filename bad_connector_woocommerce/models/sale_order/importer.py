@@ -137,7 +137,7 @@ class WooSaleOrderImportMapper(Component):
         woo_order_id = record.get("id")
         if not woo_order_id:
             raise MappingError(_("WooCommerce Order ID not found Please check!!!"))
-        self.options.update(woo_order_id=woo_order_id)
+        self.options.update(woo_order_id=woo_order_id, data=record)
         return {"woo_order_id": woo_order_id}
 
     @mapping
@@ -173,6 +173,10 @@ class WooSaleOrderImporter(Component):
             _logger.debug("line: %s", line)
             if "product_id" in line:
                 self._import_dependency(line["product_id"], "woo.product.product")
+            if "taxes" in line:
+                for tax_line in line["taxes"]:
+                    if "id" in tax_line:
+                        self._import_dependency(tax_line["id"], "woo.tax")
         return super(WooSaleOrderImporter, self)._import_dependencies()
 
 
@@ -255,6 +259,37 @@ class WooSaleOrderLineImportMapper(Component):
         if not name:
             raise MappingError(_("Order Line Name not found Please check!!!"))
         return {"name": name}
+
+    @mapping
+    def tax_id(self, record):
+        """Mapping for Tax_id"""
+        rec = self.options.get("data")
+        tax_lines = rec.get("tax_lines", [])
+        taxes = record.get("taxes", [])
+        result = []
+        for tax in taxes:
+            tax_binder = self.binder_for(model="woo.tax")
+            woo_tax = tax_binder.to_internal(tax.get("id"))
+            if woo_tax and woo_tax.odoo_id:
+                result.append(woo_tax.odoo_id.id)
+                continue
+            for tax_line in tax_lines:
+                rate_id = tax_line.get("rate_id")
+                if tax.get("id") != rate_id:
+                    continue
+                if not woo_tax:
+                    company = self.backend_record.company_id
+                    tax = self.env["account.tax"].search(
+                        [
+                            ("company_id", "=", company.id),
+                            ("type_tax_use", "in", ["sale", "none"]),
+                            ("amount", "=", tax_line.get("rate_percent")),
+                        ],
+                        limit=1,
+                    )
+                    result.append(tax.id)
+                    break
+        return {"tax_id": [(6, 0, result)]}
 
     @mapping
     def woo_order_id(self, record):
