@@ -141,25 +141,10 @@ class WooSaleOrderImportMapper(Component):
         return {"woo_order_id": woo_order_id}
 
     @mapping
-    def tax_lines(self, record):
-        """Mapping for Tax Lines"""
-        tax_lines = []
-        taxes = record.get("taxes", [])
-        for tax in taxes:
-            # if "id" in tax and "total" in tax:
-            tax_id = tax.get("id")
-            tax_total = tax.get("total")
-            tax_lines.append(
-                (
-                    0,
-                    0,
-                    {
-                        "tax_id": tax_id,
-                        "amount": tax_total,
-                    },
-                )
-            )
-        return {"tax_line_ids": tax_lines}
+    def company_id(self, record):
+        """Mapping for company id"""
+        company = self.backend_record.company_id.id
+        return {"company_id": company} if company else {}
 
 
 class WooSaleOrderImporter(Component):
