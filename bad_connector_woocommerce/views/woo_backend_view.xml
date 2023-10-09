@@ -212,11 +212,6 @@
                                             style="font-weight:bold;"
                                             class="oe_inline"
                                         />
-                                        <field
-                                            name="import_taxes_from_date"
-                                            nolabel="1"
-                                            class="oe_inline"
-                                        />
                                     </group>
                                     <group>
                                         <div

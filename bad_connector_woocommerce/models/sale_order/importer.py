@@ -263,8 +263,7 @@ class WooSaleOrderLineImportMapper(Component):
     @mapping
     def tax_id(self, record):
         """Mapping for Tax_id"""
-        rec = self.options.get("data")
-        tax_lines = rec.get("tax_lines", [])
+        tax_lines = self.options.get("data", {}).get("tax_lines", [])
         taxes = record.get("taxes", [])
         result = []
         for tax in taxes:
