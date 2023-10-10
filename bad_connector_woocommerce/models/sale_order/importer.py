@@ -275,7 +275,7 @@ class WooSaleOrderLineImportMapper(Component):
 
     def fetch_list_of_tax(self, taxes, tax_lines):
         """
-        Fetch or create tax IDs based on the provided taxes and tax lines.
+        Fetch tax IDs based on the provided taxes and tax lines.
         """
         result = []
         fetched_taxes = {}
