@@ -152,6 +152,15 @@ class WooSaleOrderImportMapper(Component):
         sale_team_id = self.backend_record.sale_team_id.id
         return {"team_id": sale_team_id} if sale_team_id else {}
 
+    @mapping
+    def woo_coupon(self, record):
+        """Mapping for woo_coupon"""
+        woo_coupons = record.get("coupon_lines", [])
+        if not woo_coupons:
+            return {}
+        coupon_codes = [coupon.get("code") for coupon in woo_coupons]
+        return {"woo_coupon": ", ".join(coupon_codes)}
+
 
 class WooSaleOrderImporter(Component):
     _name = "woo.sale.order.importer"
