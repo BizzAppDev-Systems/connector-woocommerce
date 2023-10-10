@@ -111,4 +111,8 @@ class WooProductProductAdapter(Component):
             "woo.product.attribute",
             "attributes",
         ),
+        (
+            "woo.product.tag",
+            "tags",
+        ),
     }

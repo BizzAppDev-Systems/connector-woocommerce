@@ -70,6 +70,11 @@
     - Click the 'Import Product Categories' button to import Product Categories from WooCommerce.
     - The 'WooCommerce Product Categories' menu item is located at Connector > WooCommerce > WooCommerce Product Categories.
 
+* Product Tags Import:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Product Tags.
+    - Click the 'Import Product Tags' button to import Product Tags from WooCommerce.
+
 * Orders Import:
     - - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Orders.
@@ -102,6 +107,10 @@
 * Import of Product Categories:
   - Enable the import functionality in bad_connector_woocommerce to transfer product Categories from WooCommerce to Odoo.
   - Handle mapping of product categories data during the import process.
+
+* Import of Product Tags:
+  - Enable the import functionality in bad_connector_woocommerce to transfer product Tags from WooCommerce to Odoo.
+  - Handle mapping of product tags data during the import process.
 
 * Import of Order Data:
   - Enable the import functionality in bad_connector_woocommerce to transfer Orders from Woocommerce to Odoo.

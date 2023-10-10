@@ -180,6 +180,28 @@
                                 <group>
                                     <group>
                                         <label
+                                            for="import_product_tags"
+                                            string="Import Product Tags"
+                                            style="font-weight:bold; white-space: nowrap;"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="import_product_tags"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Import Product Tags"
+                                            />
+                                        </div>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <label
                                             for="import_products"
                                             string="Import Products"
                                             style="font-weight:bold; white-space: nowrap;"
