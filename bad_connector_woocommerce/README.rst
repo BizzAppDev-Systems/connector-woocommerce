@@ -107,6 +107,7 @@
   - Enable the import functionality in bad_connector_woocommerce to transfer Orders from Woocommerce to Odoo.
   - By selecting company in woocommerce backend, we can import sale order for that specific company.
   - Handle mapping of sale order data at time of Import Orders.
+  - By selecting sale team in woocommerce backend, we can use it as default sale team while importing sale orders.
   - Enable the form of Sale Order Line and added 'WooCommarce Connector' in sale order line level and added related line calculated field at binding level of sale oder line.
   - Added related sale order amount field at binding level of sale order.
   - Added 'Export Delivery Status' button at sale order level and it will export the Status of sale order to 'Completed' state and carrier_tracking_ref which is located at Stock Picking level in 'Additional info' tab.
