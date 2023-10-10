@@ -67,6 +67,7 @@
                                                         widget="selection"
                                                     />
                                                     <field name="external_id" />
+                                                    <field name="woo_data" />
                                                 </group>
                                             </group>
                                         </form>

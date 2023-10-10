@@ -111,6 +111,9 @@
                                         <field name="total_tax_line" />
                                         <field name="price_subtotal_line" />
                                     </group>
+                                    <group>
+                                        <field name="woo_data" />
+                                    </group>
                                 </group>
                             </form>
                         </field>
@@ -153,6 +156,9 @@
                                     <field name="shipping_tax" />
                                     <field name="cart_tax" />
                                     <field name="total_tax" />
+                                </group>
+                                <group>
+                                    <field name="woo_data" />
                                 </group>
                             </group>
                         </form>

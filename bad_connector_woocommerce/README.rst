@@ -112,6 +112,10 @@
   - When the Amount Total, recorded at the Order level, differs from the woo Amount Total value, recorded at the Order binding level, a 'The WooCommerce Amount Total is different then Amount Total of Odoo.' Danger Banner will be displayed at the sale order level.
   - At the backend level, within the 'Connectors' section, specifically under 'WooCommerce' > 'WooCommerce Backends' in the 'Advanced Configuration' tab, there is a 'Filter Sale Orders Based on their Status' Many2many Field. When this field is populated with specific sale order statuses, it will filter and retrieve those sale orders from WooCommerce that match the statuses provided in the 'Filter Sale Orders Based on their Status' field.
 
+* Payload Information:
+    - At Partner, Product, Product Attribute, Product Attribute Value and Sale order binding form view level the co-responding payload
+    can we viewed in "Woo Data" field.
+
 **Known issues/Roadmap**
 ************************
 
