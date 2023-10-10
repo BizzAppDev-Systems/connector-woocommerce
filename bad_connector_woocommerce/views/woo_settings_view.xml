@@ -12,10 +12,7 @@
                             <field name="name" placeholder="e.g. Lamps" />
                             <field name="woo_type" />
                             <field name="default" />
-                            <field name="tip" />
                             <field name="value" />
-                            <field name="options" />
-                            <field name="description" />
                         </group>
                         <group>
                             <field name="backend_id" widget="selection" />

@@ -17,10 +17,7 @@ class WooSettings(models.Model):
     name = fields.Char(required=True)
     woo_type = fields.Char()
     default = fields.Char()
-    tip = fields.Char()
     value = fields.Char()
-    options = fields.Char()
-    description = fields.Char()
     odoo_id = fields.Many2one(
         string="WooCommerce Settings", comodel_name="woo.settings"
     )
