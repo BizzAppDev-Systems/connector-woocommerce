@@ -168,12 +168,6 @@ class WooSaleOrderImporter(Component):
                 line["product_id"],
             )
             self.advisory_lock_or_retry(lock_name)
-        for line in record.get("line_items", []):
-            _logger.debug("line: %s", line)
-            if "product_id" in line:
-                self._import_dependency(line["product_id"], "woo.product.product")
-
-        for line in record.get("line_items", []):
             for tax in line.get("taxes", []):
                 lock_name = "import({}, {}, {}, {})".format(
                     self.backend_record._name,
@@ -183,13 +177,13 @@ class WooSaleOrderImporter(Component):
                 )
                 self.advisory_lock_or_retry(lock_name)
         for line in record.get("line_items", []):
+            _logger.debug("line: %s", line)
+            if "product_id" in line:
+                self._import_dependency(line["product_id"], "woo.product.product")
             for tax in line.get("taxes", []):
-                if "taxes" not in line:
+                if "id" not in tax:
                     continue
-                for tax_line in line["taxes"]:
-                    if "id" not in tax_line:
-                        continue
-                    self._import_dependency(tax_line["id"], "woo.tax")
+                self._import_dependency(tax["id"], "woo.tax")
         return super(WooSaleOrderImporter, self)._import_dependencies()
 
 
