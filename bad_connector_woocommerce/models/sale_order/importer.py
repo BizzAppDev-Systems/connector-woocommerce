@@ -260,35 +260,51 @@ class WooSaleOrderLineImportMapper(Component):
             raise MappingError(_("Order Line Name not found Please check!!!"))
         return {"name": name}
 
-    @mapping
-    def tax_id(self, record):
-        """Mapping for Tax_id"""
-        tax_lines = self.options.get("data", {}).get("tax_lines", [])
-        taxes = record.get("taxes", [])
+    def fetch_or_create_tax_ids(self, taxes, tax_lines):
+        """
+        Fetch or create tax IDs based on the provided taxes and tax lines.
+        """
         result = []
+        fetched_taxes = {}
+        tax_binder = self.binder_for(model="woo.tax")
         for tax in taxes:
-            tax_binder = self.binder_for(model="woo.tax")
             woo_tax = tax_binder.to_internal(tax.get("id"))
             if woo_tax and woo_tax.odoo_id:
                 result.append(woo_tax.odoo_id.id)
                 continue
-            for tax_line in tax_lines:
-                rate_id = tax_line.get("rate_id")
-                if tax.get("id") != rate_id:
-                    continue
-                if not woo_tax:
-                    company = self.backend_record.company_id
+            rate_id = tax.get("id")
+            tax_line = next(
+                (tl for tl in tax_lines if tl.get("rate_id") == rate_id), None
+            )
+            if not woo_tax and tax_line:
+                rate_percent = tax_line.get("rate_percent")
+                company = self.backend_record.company_id
+                if rate_percent in fetched_taxes:
+                    result.append(fetched_taxes[rate_percent].id)
+                else:
                     tax = self.env["account.tax"].search(
                         [
                             ("company_id", "=", company.id),
                             ("type_tax_use", "in", ["sale", "none"]),
-                            ("amount", "=", tax_line.get("rate_percent")),
+                            ("amount", "=", rate_percent),
                         ],
                         limit=1,
                     )
-                    result.append(tax.id)
-                    break
-        return {"tax_id": [(6, 0, result)]}
+                    if tax:
+                        result.append(tax.id)
+                        fetched_taxes[rate_percent] = tax
+        return result
+
+    @mapping
+    def tax_id(self, record):
+        """
+        Mapping for Tax_id. Calls fetch_or_create_tax_ids method to
+        fetch or create tax IDs.
+        """
+        tax_lines = self.options.get("data", {}).get("tax_lines", [])
+        taxes = record.get("taxes", [])
+        tax_ids = self.fetch_or_create_tax_ids(taxes, tax_lines)
+        return {"tax_id": [(6, 0, tax_ids)]}
 
     @mapping
     def woo_order_id(self, record):

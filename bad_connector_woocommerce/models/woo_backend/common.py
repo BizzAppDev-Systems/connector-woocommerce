@@ -33,7 +33,9 @@ class WooBackend(models.Model):
         default=10,
         help="Set the default limit for data imports.",
     )
-    company_id = fields.Many2one(comodel_name="res.company", string="Company")
+    company_id = fields.Many2one(
+        comodel_name="res.company", required=True, string="Company"
+    )
     location = fields.Char(
         string="Location(Live)", help="Enter the Live Location for WooCommerce."
     )
