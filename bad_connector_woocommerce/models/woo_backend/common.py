@@ -102,7 +102,8 @@ class WooBackend(models.Model):
         string="Filter Sale Orders Based on their Status",
         help="""Select the sale order statuses to filter during import.
         Only orders with the selected statuses will be imported.
-        This allows you to narrow down which orders are imported based on their status.""",
+        This allows you to narrow down which orders are imported based
+        on their status.""",
     )
     default_product_type = fields.Selection(
         [
@@ -113,6 +114,19 @@ class WooBackend(models.Model):
         string="Default Product Type",
         default="consu",
         required=True,
+    )
+
+    default_shipping_method_id = fields.Many2one(
+        comodel_name="delivery.carrier",
+        string="Default Shipping Method",
+        help="Select the default shipping method for imported orders.",
+    )
+
+    default_fee_product_id = fields.Many2one(
+        comodel_name="product.product",
+        string="Default Fee Product",
+        domain=[("type", "=", "service")],
+        help="Select the default fee product for imported orders.",
     )
 
     def get_filters(self, model=None):

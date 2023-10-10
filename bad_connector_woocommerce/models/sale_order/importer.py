@@ -31,6 +31,59 @@ class WooSaleOrderImportMapper(Component):
         ("line_items", "woo_order_line_ids", "woo.sale.order.line"),
     ]
 
+    def _prepare_lines(self, product, price, qty):
+        return {
+            "product_id": product.id,
+            "price_unit": price,
+            "product_uom_qty": qty,
+            "product_uom": product.uom_id.id,
+        }
+
+    def _get_shipping_lines(self, map_record, values):
+        """Get the Shipping Lines"""
+        shipping_lines = []
+        record = map_record.source
+        for shipping_line in record.get("shipping_lines", []):
+            shipping_values = {"is_delivery": True}
+            woo_shipping_id = shipping_line.get("method_id")
+            if not woo_shipping_id:
+                shipping_id = self.backend_record.default_shipping_method_id
+            else:
+                binder = self.binder_for("woo.delivery.carrier")
+                shipping_id = binder.to_internal(woo_shipping_id, unwrap=True)
+            shipping_values.update(
+                self._prepare_lines(
+                    shipping_id.product_id,
+                    shipping_line.get("total"),
+                    1,
+                )
+            )
+            shipping_lines.append((0, 0, shipping_values))
+        return shipping_lines
+
+    def _get_fee_lines(self, map_record, values):
+        """Get fee lines"""
+        fee_lines = []
+        record = map_record.source
+        for fee_line in record.get("fee_lines", []):
+            fee_product = self.backend_record.default_fee_product_id
+            fee_lines.append(
+                (0, 0, self._prepare_lines(fee_product, fee_line.get("total"), 1))
+            )
+        return fee_lines
+
+    def finalize(self, map_record, values):
+        """Inherit the method to add the shipping and fee product lines."""
+        shippilg_lines = self._get_shipping_lines(map_record, values)
+        woo_order_line_ids = values.get("woo_order_line_ids", [])
+        if shippilg_lines:
+            woo_order_line_ids += shippilg_lines
+        fee_lines = self._get_fee_lines(map_record, values)
+        if fee_lines:
+            woo_order_line_ids += fee_lines
+        values.update({"woo_order_line_ids": woo_order_line_ids})
+        return super(WooSaleOrderImportMapper, self).finalize(map_record, values)
+
     @mapping
     def name(self, record):
         """Return name data with sale prefix."""
@@ -184,10 +237,25 @@ class WooSaleOrderImporter(Component):
                 line["product_id"],
             )
             self.advisory_lock_or_retry(lock_name)
+        for shipping_line in record.get("shipping_lines", []):
+            lock_name = "import({}, {}, {}, {})".format(
+                self.backend_record._name,
+                self.backend_record.id,
+                "woo.delivery.carrier",
+                shipping_line["method_id"],
+            )
+            self.advisory_lock_or_retry(lock_name)
         for line in record.get("line_items", []):
             _logger.debug("line: %s", line)
             if "product_id" in line:
                 self._import_dependency(line["product_id"], "woo.product.product")
+
+        for shipping_line in record.get("shipping_lines", []):
+            _logger.debug("shipping_line: %s", shipping_line)
+            if "method_id" in shipping_line:
+                self._import_dependency(
+                    shipping_line["method_id"], "woo.delivery.carrier"
+                )
         return super(WooSaleOrderImporter, self)._import_dependencies()
 
 
