@@ -143,15 +143,7 @@ class WooSaleOrderImportMapper(Component):
     @mapping
     def company_id(self, record):
         """Mapping for company id"""
-        company = self.backend_record.company_id.id
-        if not company:
-            raise MappingError(
-                _(
-                    "Company is not set in the Backend Name '%s'.",
-                    self.backend_record.name,
-                )
-            )
-        return {"company_id": company}
+        return {"company_id": self.backend_record.company_id.id}
 
 
 class WooSaleOrderImporter(Component):
