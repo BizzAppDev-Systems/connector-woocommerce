@@ -25,6 +25,7 @@
         "views/product_attribute_view.xml",
         "views/product_views.xml",
         "views/product_category_view.xml",
+        "views/woo_product_image_url_view.xml",
         "views/res_partner_views.xml",
         "views/sale_order_view.xml",
         "views/woo_sale_status_view.xml",

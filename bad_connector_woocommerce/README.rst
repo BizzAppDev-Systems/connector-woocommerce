@@ -7,7 +7,7 @@
 * Technical name: bad_connector_woocommerce.
 * Add new menu in Connectors > Woocommerce > WooCommerce Backends.
 * Add new menu in Connectors > Configrations > Settings.
-* Add object woo.backend, woo.product.category,and woo.sale.status on submenu Connectors.
+* Add object woo.backend, woo.product.category, woo.product.image.url and woo.sale.status on submenu Connectors.
 * Submenu of Configrations > WooCommerce Sale Status which is use to store all the WooCommerce Sale Order Status.
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
@@ -54,6 +54,7 @@
     - Added a Price,Regular Price,Stock Status,Tax Status,WooCommerce Product Attribute Values, and Status at the binding level.
     - Added 'Product Category' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Category for imported WooCommerce Product.
     - Added 'Default Product Type' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Type for imported WooCommerce Product.
+    - Added 'WooCommerce Product Image URL' which is located at Product Binding level, designed to store Other Product Images which will store in woo.product.image.url object instead of initial Image.
 
 * Product Attributes Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.

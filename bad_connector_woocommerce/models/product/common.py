@@ -82,6 +82,11 @@ class WooProductProduct(models.Model):
     )
     price = fields.Char()
     regular_price = fields.Char()
+    woo_product_image_url_ids = fields.Many2many(
+        comodel_name="woo.product.image.url",
+        string="WooCommerce Product Image URL",
+        ondelete="restrict",
+    )
 
     def __init__(self, name, bases, attrs):
         """Bind Odoo Product"""
