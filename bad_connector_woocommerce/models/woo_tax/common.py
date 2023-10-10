@@ -27,11 +27,6 @@ class WooTax(models.Model):
     cities = fields.Char()
     postcode = fields.Char()
     postcodes = fields.Char()
-    company_id = fields.Many2one(comodel_name="res.company", string="Company")
-    tax_id = fields.Many2one(
-        string="Related Tax",
-        comodel_name="account.tax",
-    )
     country_id = fields.Many2one(
         string="Country",
         comodel_name="res.country",

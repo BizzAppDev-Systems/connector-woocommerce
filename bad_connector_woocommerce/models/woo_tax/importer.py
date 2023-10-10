@@ -125,11 +125,6 @@ class WooTaxImportMapper(Component):
         return {"city": record.get("city")} if record.get("city") else {}
 
     @mapping
-    def company_id(self, record):
-        """Mapping for company_id"""
-        return {"company_id": self.backend_record.company_id.id}
-
-    @mapping
     def cities(self, record):
         """Mapping for Cities"""
         cities_list = record.get("cities", [])

@@ -12,7 +12,6 @@
                             <field name="name" />
                             <field name="woo_amount" />
                             <field name="woo_tax_name" />
-                            <field name="company_id" />
                             <field name="state" />
                             <field name="city" />
                             <field name="cities" />

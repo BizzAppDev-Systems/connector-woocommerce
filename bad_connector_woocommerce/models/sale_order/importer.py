@@ -172,12 +172,24 @@ class WooSaleOrderImporter(Component):
             _logger.debug("line: %s", line)
             if "product_id" in line:
                 self._import_dependency(line["product_id"], "woo.product.product")
-            if "taxes" not in line:
-                continue
-            for tax_line in line["taxes"]:
-                if "id" not in tax_line:
+
+        for line in record.get("line_items", []):
+            for tax in line.get("taxes", []):
+                lock_name = "import({}, {}, {}, {})".format(
+                    self.backend_record._name,
+                    self.backend_record.id,
+                    "woo.tax",
+                    tax["id"],
+                )
+                self.advisory_lock_or_retry(lock_name)
+        for line in record.get("line_items", []):
+            for tax in line.get("taxes", []):
+                if "taxes" not in line:
                     continue
-                self._import_dependency(tax_line["id"], "woo.tax")
+                for tax_line in line["taxes"]:
+                    if "id" not in tax_line:
+                        continue
+                    self._import_dependency(tax_line["id"], "woo.tax")
         return super(WooSaleOrderImporter, self)._import_dependencies()
 
 
@@ -277,24 +289,25 @@ class WooSaleOrderLineImportMapper(Component):
             tax_line = next(
                 (tl for tl in tax_lines if tl.get("rate_id") == rate_id), None
             )
-            if not woo_tax and tax_line:
-                rate_percent = tax_line.get("rate_percent")
-                company = self.backend_record.company_id
-                if rate_percent in fetched_taxes:
-                    result.append(fetched_taxes[rate_percent].id)
-                else:
-                    tax = self.env["account.tax"].search(
-                        [
-                            ("company_id", "=", company.id),
-                            ("type_tax_use", "in", ["sale", "none"]),
-                            ("amount", "=", rate_percent),
-                        ],
-                        limit=1,
-                    )
-                    if not tax:
-                        continue
-                    result.append(tax.id)
-                    fetched_taxes[rate_percent] = tax
+            if woo_tax and not tax_line:
+                continue
+            rate_percent = tax_line.get("rate_percent")
+            company = self.backend_record.company_id
+            if rate_percent not in fetched_taxes:
+                tax = self.env["account.tax"].search(
+                    [
+                        ("company_id", "=", company.id),
+                        ("type_tax_use", "in", ["sale", "none"]),
+                        ("amount", "=", rate_percent),
+                    ],
+                    limit=1,
+                )
+                if not tax:
+                    continue
+                result.append(tax.id)
+                fetched_taxes[rate_percent] = tax
+                continue
+            result.append(fetched_taxes[rate_percent].id)
         return result
 
     @mapping
