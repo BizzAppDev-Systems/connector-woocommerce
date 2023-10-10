@@ -38,4 +38,4 @@ class WooSettingsAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.settings"
     _woo_model = "settings/tax"
-    _woo_ext_id_key = "woocommerce_prices_include_tax"
+    _woo_ext_id_key = "id"
