@@ -31,6 +31,15 @@
         parent="menu_action_connector_configuration"
         sequence="0"
     />
+    <!-- Added Submenu WooCommerce Sale Status -->
+    <menuitem
+        id="menu_woo_sale_status"
+        action="action_woo_sale_status"
+        name="WooCommerce Sale Status"
+        active="True"
+        parent="menu_action_connector_configuration"
+        sequence="1"
+    />
     <!-- Define the menu item WooCommerce product category -->
     <menuitem
         id="menu_woo_product_category"

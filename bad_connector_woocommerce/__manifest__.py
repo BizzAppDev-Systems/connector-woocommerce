@@ -16,6 +16,7 @@
     "data": [
         "data/queue_job_data.xml",
         "data/ir_cron_data.xml",
+        "data/woo_status_data.xml",
         "security/ir.model.access.csv",
         "views/res_company_views.xml",
         "views/res_config_settings_view.xml",
@@ -26,6 +27,7 @@
         "views/product_category_view.xml",
         "views/res_partner_views.xml",
         "views/sale_order_view.xml",
+        "views/woo_sale_status_view.xml",
         "views/connector_woo_base_menu.xml",
     ],
     "images": ["static/description/banner.gif"],

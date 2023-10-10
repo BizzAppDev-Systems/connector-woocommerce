@@ -92,6 +92,13 @@ class WooBackend(models.Model):
         help="""When the boolean is 'True,' partners can be imported without needing
         an email address.""",
     )
+    woo_sale_status_ids = fields.Many2many(
+        comodel_name="woo.sale.status",
+        string="Filter Sale Orders Based on their Status",
+        help="""Select the sale order statuses to filter during import.
+        Only orders with the selected statuses will be imported.
+        This allows you to narrow down which orders are imported based on their status.""",
+    )
 
     def get_filters(self, model=None):
         """New Method: Returns the filter"""
@@ -292,10 +299,17 @@ class WooBackend(models.Model):
     def import_sale_orders(self):
         """Import Orders from backend"""
         for backend in self:
+            filters = {}
+            if backend.woo_sale_status_ids:
+                status = backend.mapped("woo_sale_status_ids").mapped("code")
+                filters = {
+                    "status": ",".join(status),
+                }
             backend._sync_from_date(
                 model="woo.sale.order",
                 from_date_field="import_orders_from_date",
                 priority=5,
+                filters=filters,
             )
         return True
 
