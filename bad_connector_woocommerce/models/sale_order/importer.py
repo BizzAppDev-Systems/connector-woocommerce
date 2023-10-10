@@ -144,7 +144,14 @@ class WooSaleOrderImportMapper(Component):
     def company_id(self, record):
         """Mapping for company id"""
         company = self.backend_record.company_id.id
-        return {"company_id": company} if company else {}
+        if not company:
+            raise MappingError(
+                _(
+                    "Company is not set in the Backend Name '%s'.",
+                    self.backend_record.name,
+                )
+            )
+        return {"company_id": company}
 
 
 class WooSaleOrderImporter(Component):
@@ -173,10 +180,12 @@ class WooSaleOrderImporter(Component):
             _logger.debug("line: %s", line)
             if "product_id" in line:
                 self._import_dependency(line["product_id"], "woo.product.product")
-            if "taxes" in line:
-                for tax_line in line["taxes"]:
-                    if "id" in tax_line:
-                        self._import_dependency(tax_line["id"], "woo.tax")
+            if "taxes" not in line:
+                continue
+            for tax_line in line["taxes"]:
+                if "id" not in tax_line:
+                    continue
+                self._import_dependency(tax_line["id"], "woo.tax")
         return super(WooSaleOrderImporter, self)._import_dependencies()
 
 
@@ -260,7 +269,7 @@ class WooSaleOrderLineImportMapper(Component):
             raise MappingError(_("Order Line Name not found Please check!!!"))
         return {"name": name}
 
-    def fetch_or_create_tax_ids(self, taxes, tax_lines):
+    def fetch_list_of_tax(self, taxes, tax_lines):
         """
         Fetch or create tax IDs based on the provided taxes and tax lines.
         """
@@ -290,20 +299,21 @@ class WooSaleOrderLineImportMapper(Component):
                         ],
                         limit=1,
                     )
-                    if tax:
-                        result.append(tax.id)
-                        fetched_taxes[rate_percent] = tax
+                    if not tax:
+                        continue
+                    result.append(tax.id)
+                    fetched_taxes[rate_percent] = tax
         return result
 
     @mapping
     def tax_id(self, record):
         """
-        Mapping for Tax_id. Calls fetch_or_create_tax_ids method to
+        Mapping for Tax_id. Calls fetch_list_of_tax method to
         fetch or create tax IDs.
         """
         tax_lines = self.options.get("data", {}).get("tax_lines", [])
         taxes = record.get("taxes", [])
-        tax_ids = self.fetch_or_create_tax_ids(taxes, tax_lines)
+        tax_ids = self.fetch_list_of_tax(taxes, tax_lines)
         return {"tax_id": [(6, 0, tax_ids)]}
 
     @mapping

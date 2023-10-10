@@ -128,7 +128,14 @@ class WooTaxImportMapper(Component):
     def company_id(self, record):
         """Mapping for company_id"""
         company = self.backend_record.company_id
-        return {"company_id": company.id} if company else {}
+        if not company:
+            raise MappingError(
+                _(
+                    "Company is not set in the Backend Name '%s'.",
+                    self.backend_record.name,
+                )
+            )
+        return {"company_id": company.id}
 
     @mapping
     def cities(self, record):
