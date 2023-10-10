@@ -131,6 +131,8 @@
     - At Partner, Product, Product Attribute, Product Attribute Value and Sale order binding form view level the co-responding payload
     can we viewed in "Woo Data" field.
 
+* Add search.
+
 **Known issues/Roadmap**
 ************************
 
