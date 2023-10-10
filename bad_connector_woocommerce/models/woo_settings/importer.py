@@ -81,5 +81,5 @@ class WooSettingsImporter(Component):
             and binding.value == "yes"
         ):
             include_tax = True
-        binding.backend_id.write({"include_tax": include_tax})
+            binding.backend_id.write({"include_tax": include_tax})
         return result
