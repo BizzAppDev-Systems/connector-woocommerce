@@ -103,6 +103,7 @@
 
 * Import of Order Data:
   - Enable the import functionality in bad_connector_woocommerce to transfer Orders from Woocommerce to Odoo.
+  - By selecting company in woocommerce backend, we can import sale order for that specific company.
   - Handle mapping of sale order data at time of Import Orders.
   - Enable the form of Sale Order Line and added 'WooCommarce Connector' in sale order line level and added related line calculated field at binding level of sale oder line.
   - Added related sale order amount field at binding level of sale order.
