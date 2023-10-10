@@ -24,7 +24,7 @@ class WooResCountry(models.Model):
 
     odoo_id = fields.Many2one(
         comodel_name="res.country",
-        string="Partner",
+        string="Country",
         required=True,
         ondelete="restrict",
     )

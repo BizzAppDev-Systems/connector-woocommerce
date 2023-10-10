@@ -63,13 +63,13 @@ class ResPartner(models.Model):
             )
         vals = {
             "name": data.get("username", "")
-            or data.get("first_name")
-            and data.get("last_name")
+            or data.get("first_name", "")
+            and data.get("last_name", "")
             and f"{data.get('first_name')} {data.get('last_name')}"
-            or data.get("first_name")
-            or data.get("email"),
-            "firstname": data.get("first_name"),
-            "lastname": data.get("last_name"),
+            or data.get("first_name", "")
+            or data.get("email", ""),
+            "firstname": data.get("first_name", ""),
+            "lastname": data.get("last_name", ""),
             "email": data.get("email", ""),
             "type": address_type or "",
             "street": data.get("address_1"),
