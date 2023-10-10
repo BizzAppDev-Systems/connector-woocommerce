@@ -14,6 +14,7 @@
                             <field name="woo_tax_name" />
                             <field name="state" />
                             <field name="city" />
+                            <field name="country" />
                             <field name="cities" />
                             <field name="postcode" />
                             <field name="postcodes" />
@@ -22,8 +23,6 @@
                         <group>
                             <field name="backend_id" widget="selection" />
                             <field name="external_id" />
-                            <field name="country_id" />
-                            <field name="state_id" />
                             <field name="compound" />
                             <field name="woo_rate" />
                             <field name="priority" />

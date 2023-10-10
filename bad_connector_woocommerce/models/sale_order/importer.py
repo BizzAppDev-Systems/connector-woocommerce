@@ -181,8 +181,6 @@ class WooSaleOrderImporter(Component):
             if "product_id" in line:
                 self._import_dependency(line["product_id"], "woo.product.product")
             for tax in line.get("taxes", []):
-                if "id" not in tax:
-                    continue
                 self._import_dependency(tax["id"], "woo.tax")
         return super(WooSaleOrderImporter, self)._import_dependencies()
 

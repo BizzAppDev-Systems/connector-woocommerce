@@ -97,27 +97,14 @@ class WooTaxImportMapper(Component):
         return {"compound": record.get("compound")} if record.get("compound") else {}
 
     @mapping
-    def country_id(self, record):
-        """Mapping for country_id"""
-        woo_country = record.get("country")
-        if not woo_country:
-            return {}
-        country = self.env["res.country"].search([("code", "=", woo_country)], limit=1)
-        return {"country_id": country.id} if country else {}
+    def country(self, record):
+        """Mapping for country"""
+        return {"country": record.get("country")} if record.get("country") else {}
 
     @mapping
-    def state_id(self, record):
-        """Mapping for state_id"""
-        woo_state = record.get("state")
-        if not woo_state:
-            return {}
-        country = self.env["res.country"].search(
-            [("code", "=", record.get("country"))], limit=1
-        )
-        state = self.env["res.country.state"].search(
-            [("code", "=", woo_state), ("country_id.code", "=", country.id)]
-        )
-        return {"state_id": state}
+    def state(self, record):
+        """Mapping for state"""
+        return {"state": record.get("state")} if record.get("state") else {}
 
     @mapping
     def city(self, record):

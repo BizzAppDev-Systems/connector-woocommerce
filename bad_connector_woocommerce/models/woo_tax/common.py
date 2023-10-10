@@ -24,17 +24,10 @@ class WooTax(models.Model):
     compound = fields.Char()
     state = fields.Char()
     city = fields.Char()
+    country = fields.Char()
     cities = fields.Char()
     postcode = fields.Char()
     postcodes = fields.Char()
-    country_id = fields.Many2one(
-        string="Country",
-        comodel_name="res.country",
-    )
-    state_id = fields.Many2one(
-        string="State",
-        comodel_name="res.country.state",
-    )
     woo_bind_ids = fields.One2many(
         comodel_name="woo.tax",
         inverse_name="odoo_id",
