@@ -129,6 +129,16 @@ class WooProductProductImportMapper(Component):
             created_id = self._get_attribute_id_format(attribute, record, option)
             product_attribute_value = binder.to_internal(created_id)
             if not product_attribute_value:
+                attribute_id = self._get_attribute_id_format(attribute, record)
+                binder = self.binder_for("woo.product.attribute")
+                product_attr = binder.to_internal(attribute_id, unwrap=True)
+                attribute_value = self.env["product.attribute.value"].search(
+                    [
+                        ("name", "=", option),
+                        ("attribute_id", "=", product_attr.id),
+                    ],
+                    limit=1,
+                )
                 self.env["woo.product.attribute.value"].create(
                     {
                         "name": option,
@@ -136,6 +146,7 @@ class WooProductProductImportMapper(Component):
                         "woo_attribute_id": product_attribute.id,
                         "backend_id": self.backend_record.id,
                         "external_id": created_id,
+                        "odoo_id": attribute_value.id if attribute_value else None,
                     }
                 )
         return True
