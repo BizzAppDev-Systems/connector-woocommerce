@@ -64,7 +64,7 @@ class WooSettingsImporter(Component):
         if binding.external_id == "woocommerce_prices_include_tax":
             if binding.value == "yes":
                 include_tax = True
-            elif binding.value == "no":
+            else:
                 include_tax = False
             binding.backend_id.write({"include_tax": include_tax})
         return result
