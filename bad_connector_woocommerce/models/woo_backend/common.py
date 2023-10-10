@@ -121,7 +121,13 @@ class WooBackend(models.Model):
         string="Default Shipping Method",
         help="Select the default shipping method for imported orders.",
     )
-
+    default_carrier_product_id = fields.Many2one(
+        comodel_name="product.product",
+        string="Default Carrier Product",
+        domain=[("type", "=", "service")],
+        help="""Select the default product delivery carrier for imported
+        shipping methods.""",
+    )
     default_fee_product_id = fields.Many2one(
         comodel_name="product.product",
         string="Default Fee Product",
@@ -385,3 +391,20 @@ class WooBackend(models.Model):
         domain.append(("mark_completed", "=", "True"))
         backend_ids = self.search(domain or [])
         backend_ids.export_sale_order_status()
+
+    def import_shipping_methods(self):
+        """Import Shipping Methods from backend"""
+        # TODO Call me from sync metadata
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.delivery.carrier",
+                priority=5,
+                export=False,
+            )
+        return True
+
+    @api.model
+    def cron_import_shipping_methods(self, domain=None):
+        """Cron of Import Shipping Methods"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_shipping_methods()

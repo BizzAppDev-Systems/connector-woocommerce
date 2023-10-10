@@ -31,13 +31,20 @@ class WooSaleOrderImportMapper(Component):
         ("line_items", "woo_order_line_ids", "woo.sale.order.line"),
     ]
 
-    def _prepare_lines(self, product, price, qty):
-        return {
+    def _prepare_lines(self, product, price, qty, ext_id, description="", total_tax=0):
+
+        vals = {
             "product_id": product.id,
             "price_unit": price,
             "product_uom_qty": qty,
             "product_uom": product.uom_id.id,
+            "backend_id": self.backend_record.id,
+            "external_id": ext_id,
+            "total_tax_line": total_tax,
         }
+        if description:
+            vals.update({"name": description})
+        return vals
 
     def _get_shipping_lines(self, map_record, values):
         """Get the Shipping Lines"""
@@ -56,6 +63,9 @@ class WooSaleOrderImportMapper(Component):
                     shipping_id.product_id,
                     shipping_line.get("total"),
                     1,
+                    shipping_line.get("id"),
+                    shipping_line.get("method_title"),
+                    shipping_line.get("total_tax"),
                 )
             )
             shipping_lines.append((0, 0, shipping_values))
@@ -68,7 +78,18 @@ class WooSaleOrderImportMapper(Component):
         for fee_line in record.get("fee_lines", []):
             fee_product = self.backend_record.default_fee_product_id
             fee_lines.append(
-                (0, 0, self._prepare_lines(fee_product, fee_line.get("total"), 1))
+                (
+                    0,
+                    0,
+                    self._prepare_lines(
+                        fee_product,
+                        fee_line.get("total"),
+                        1,
+                        fee_line.get("id"),
+                        fee_line.get("name"),
+                        fee_line.get("total_tax"),
+                    ),
+                )
             )
         return fee_lines
 
