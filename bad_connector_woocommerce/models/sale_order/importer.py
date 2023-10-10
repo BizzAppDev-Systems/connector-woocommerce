@@ -50,6 +50,7 @@ class WooSaleOrderImportMapper(Component):
         """Get the Shipping Lines"""
         shipping_lines = []
         record = map_record.source
+        shipping_id = False
         for shipping_line in record.get("shipping_lines", []):
             shipping_values = {"is_delivery": True}
             woo_shipping_id = shipping_line.get("method_id")
@@ -58,6 +59,7 @@ class WooSaleOrderImportMapper(Component):
             else:
                 binder = self.binder_for("woo.delivery.carrier")
                 shipping_id = binder.to_internal(woo_shipping_id, unwrap=True)
+
             shipping_values.update(
                 self._prepare_lines(
                     shipping_id.product_id,
@@ -69,7 +71,7 @@ class WooSaleOrderImportMapper(Component):
                 )
             )
             shipping_lines.append((0, 0, shipping_values))
-        return shipping_lines
+        return shipping_id, shipping_lines
 
     def _get_fee_lines(self, map_record, values):
         """Get fee lines"""
@@ -95,10 +97,12 @@ class WooSaleOrderImportMapper(Component):
 
     def finalize(self, map_record, values):
         """Inherit the method to add the shipping and fee product lines."""
-        shippilg_lines = self._get_shipping_lines(map_record, values)
+        shipping_id, shippilg_lines = self._get_shipping_lines(map_record, values)
         woo_order_line_ids = values.get("woo_order_line_ids", [])
         if shippilg_lines:
             woo_order_line_ids += shippilg_lines
+        if shipping_id:
+            values.update({"carrier_id": shipping_id.id})
         fee_lines = self._get_fee_lines(map_record, values)
         if fee_lines:
             woo_order_line_ids += fee_lines
