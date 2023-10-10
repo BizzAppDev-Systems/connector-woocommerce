@@ -137,7 +137,7 @@ class WooSaleOrderImportMapper(Component):
         woo_order_id = record.get("id")
         if not woo_order_id:
             raise MappingError(_("WooCommerce Order ID not found Please check!!!"))
-        self.options.update(woo_order_id=woo_order_id, data=record)
+        self.options.update(woo_order_id=woo_order_id, order_record=record)
         return {"woo_order_id": woo_order_id}
 
     @mapping
@@ -316,7 +316,7 @@ class WooSaleOrderLineImportMapper(Component):
         Mapping for Tax_id. Calls fetch_list_of_tax method to
         fetch or create tax IDs.
         """
-        tax_lines = self.options.get("data", {}).get("tax_lines", [])
+        tax_lines = self.options.get("order_record", {}).get("tax_lines", [])
         taxes = record.get("taxes", [])
         tax_ids = self.fetch_list_of_tax(taxes, tax_lines)
         return {"tax_id": [(6, 0, tax_ids)]}
