@@ -22,6 +22,7 @@
         "views/woo_backend_view.xml",
         "views/product_attribute_value_view.xml",
         "views/product_attribute_view.xml",
+        "views/woo_tax_view.xml",
         "views/product_views.xml",
         "views/res_country_view.xml",
         "views/product_category_view.xml",

@@ -7,11 +7,11 @@
 * Technical name: bad_connector_woocommerce.
 * Add new menu in Connectors > Woocommerce > WooCommerce Backends.
 * Add new menu in Connectors > Configrations > Settings.
-* Add object woo.backend and woo.product.category on submenu Connectors.
+* Add object woo.backend, woo.product.category, and woo.tax on submenu Connectors.
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
-* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
-* Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders", and "Sync Metadata" at backend level.
+* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories","Taxes", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
+* Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes" at backend level.
 * Required field to Import the Products,Product Attributes, and Product Category are Location,Client Id,Client Secret,Product Category.
 
 **Author**
@@ -68,7 +68,7 @@
     - The 'WooCommerce Product Categories' menu item is located at Connector > WooCommerce > WooCommerce Product Categories.
 
 * Orders Import:
-    - - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Orders.
     - Click 'Import Orders' button to Import the Orders from Woocommerce.
 
@@ -76,6 +76,10 @@
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Metadata which contains Country and there States.
     - Click the 'Sync Metadata' button to import Country and there States from WooCommerce.
+* Taxes Import:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Taxes.
+    - Click 'Import Taxes' button to Import the Taxes from Woocommerce.
 
 **Usage**
 *********
@@ -106,6 +110,7 @@
 
 * Import of Order Data:
   - Enable the import functionality in bad_connector_woocommerce to transfer Orders from Woocommerce to Odoo.
+  - By selecting company in woocommerce backend, we can import sale order for that specific company.
   - Handle mapping of sale order data at time of Import Orders.
   - Enable the form of Sale Order Line and added 'WooCommarce Connector' in sale order line level and added related line calculated field at binding level of sale oder line.
   - Added related sale order amount field at binding level of sale order.
@@ -118,6 +123,9 @@
   - Enable the import functionality in bad_connector_woocommerce to transfer Country and there States from WooCommerce to Odoo.
   - Handle Mapping of Country and State data during the import process.
   - Added Mapping for State in Customers.
+* Import of Taxes:
+  - Enable the import functionality in bad_connector_woocommerce to transfer Taxes from WooCommerce to Odoo.
+  - Handle mapping of taxes data during the import process.
 
 **Known issues/Roadmap**
 ************************

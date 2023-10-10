@@ -215,6 +215,28 @@
                                 <group>
                                     <group>
                                         <label
+                                            for="import_taxes"
+                                            string="Import Taxes"
+                                            style="font-weight:bold;"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="import_taxes"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Import Taxes"
+                                            />
+                                        </div>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <label
                                             for="import_sale_orders"
                                             string="Import Orders"
                                             style="font-weight:bold;"
@@ -269,6 +291,7 @@
                                         string="Orders Configuration"
                                     >
                                         <field name="order_prefix" />
+                                        <field name="company_id" />
                                         <field name="mark_completed" />
                                         <field
                                             name="tracking_info"
