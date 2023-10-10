@@ -23,6 +23,7 @@
         "views/product_attribute_value_view.xml",
         "views/product_attribute_view.xml",
         "views/product_views.xml",
+        "views/res_country_view.xml",
         "views/product_category_view.xml",
         "views/res_partner_views.xml",
         "views/sale_order_view.xml",
