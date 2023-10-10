@@ -11,7 +11,7 @@
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
 * Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
-* Add "Import Partners","Import Products","Import Product Attributes","Import Product Category" and "Import Orders" at backend level.
+* Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders", and "Sync Metadata" at backend level.
 * Required field to Import the Products,Product Attributes, and Product Category are Location,Client Id,Client Secret,Product Category.
 
 **Author**
@@ -72,6 +72,10 @@
     - Add Backend Credentials to Import Orders.
     - Click 'Import Orders' button to Import the Orders from Woocommerce.
 
+* Country and States Import:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Metadata which contains Country and there States.
+    - Click the 'Sync Metadata' button to import Country and there States from WooCommerce.
 
 **Usage**
 *********
@@ -110,7 +114,10 @@
   -When the Price Tax, recorded at the Order Line level, differs from the Total Tax Line value, recorded at the Order Line's binding level, a 'The WooCommerce Price Tax is different then Total Tax of Odoo.' Danger Banner will be displayed at the sale order level.
   -When the Amount Total, recorded at the Order level, differs from the woo Amount Total value, recorded at the Order binding level, a 'The WooCommerce Amount Total is different then Amount Total of Odoo.' Danger Banner will be displayed at the sale order level.
 
- -Mapping for Include tax.
+* Import of Country and States:
+  - Enable the import functionality in bad_connector_woocommerce to transfer Country and there States from WooCommerce to Odoo.
+  - Handle Mapping of Country and State data during the import process.
+  - Added Mapping for State in Customers.
 
 **Known issues/Roadmap**
 ************************
