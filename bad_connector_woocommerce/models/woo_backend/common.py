@@ -99,6 +99,16 @@ class WooBackend(models.Model):
         Only orders with the selected statuses will be imported.
         This allows you to narrow down which orders are imported based on their status.""",
     )
+    default_product_type = fields.Selection(
+        [
+            ("consu", "Consumable"),
+            ("service", "Service"),
+            ("product", "Storable Product"),
+        ],
+        string="Default Product Type",
+        default="consu",
+        required=True,
+    )
 
     def get_filters(self, model=None):
         """New Method: Returns the filter"""
