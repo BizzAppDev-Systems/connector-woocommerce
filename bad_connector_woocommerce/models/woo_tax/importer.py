@@ -34,12 +34,11 @@ class WooTaxImportMapper(Component):
         company = self.backend_record.company_id
         include_tax = self.backend_record.include_tax
         search_conditions = [
+            ("price_include", "=", include_tax),
             ("amount", "=", rate),
             ("type_tax_use", "in", ["sale", "none"]),
             ("company_id", "=", company.id),
         ]
-        if include_tax:
-            search_conditions.append(("price_include", "=", True))
         tax = self.env["account.tax"].search(search_conditions, limit=1)
         return tax
 

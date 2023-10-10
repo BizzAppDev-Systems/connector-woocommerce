@@ -288,12 +288,11 @@ class WooSaleOrderLineImportMapper(Component):
             if rate_percent not in fetched_taxes:
                 include_tax = self.backend_record.include_tax
                 search_conditions = [
+                    ("price_include", "=", include_tax),
                     ("amount", "=", rate_percent),
                     ("type_tax_use", "in", ["sale", "none"]),
                     ("company_id", "=", company.id),
                 ]
-                if include_tax:
-                    search_conditions.append(("price_include", "=", True))
                 tax = self.env["account.tax"].search(search_conditions, limit=1)
                 if not tax:
                     continue
