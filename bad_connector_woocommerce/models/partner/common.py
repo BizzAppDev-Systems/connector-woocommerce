@@ -57,10 +57,12 @@ class ResPartner(models.Model):
         )
         if state and not state_record:
             raise MappingError(
-                _(f"State '{state}' not found in Odoo records for country '{country}'.")
+                _(
+                    f"State code '{state}' not found in Odoo records for country '{country}'."
+                )
             )
         vals = {
-            "name": data.get("username")
+            "name": data.get("username", "")
             or data.get("first_name")
             and data.get("last_name")
             and f"{data.get('first_name')} {data.get('last_name')}"
@@ -68,7 +70,7 @@ class ResPartner(models.Model):
             or data.get("email"),
             "firstname": data.get("first_name"),
             "lastname": data.get("last_name"),
-            "email": data.get("email"),
+            "email": data.get("email", ""),
             "type": address_type or "",
             "street": data.get("address_1"),
             "street2": data.get("address_2"),
