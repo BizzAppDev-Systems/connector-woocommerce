@@ -328,10 +328,14 @@ class WooBackend(models.Model):
         backend_ids.export_sale_order_status()
 
     def sync_metadata(self):
-        """Import the data regarding country and state"""
+        """Import the data regarding country, state and settings"""
         for backend in self:
             backend._sync_from_date(
                 model="woo.res.country",
+                priority=5,
+            )
+            backend._sync_from_date(
+                model="woo.settings",
                 priority=5,
             )
 

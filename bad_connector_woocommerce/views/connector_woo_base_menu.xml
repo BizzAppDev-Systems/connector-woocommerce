@@ -31,6 +31,15 @@
         parent="menu_action_connector_configuration"
         sequence="0"
     />
+    <!-- Added Submenu for WooCommerce Settings -->
+    <menuitem
+        id="menu_action_woo_settings"
+        action="action_woo_settings"
+        name="WooCommerce Settings"
+        active="True"
+        parent="menu_action_connector_configuration"
+        sequence="1"
+    />
     <!-- Define the menu item WooCommerce product category -->
     <menuitem
         id="menu_woo_product_category"

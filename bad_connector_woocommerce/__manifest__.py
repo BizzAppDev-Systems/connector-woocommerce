@@ -27,6 +27,7 @@
         "views/product_category_view.xml",
         "views/res_partner_views.xml",
         "views/sale_order_view.xml",
+        "views/woo_settings_view.xml",
         "views/connector_woo_base_menu.xml",
     ],
     "images": ["static/description/banner.gif"],
