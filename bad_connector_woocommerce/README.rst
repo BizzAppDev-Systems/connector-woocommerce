@@ -107,6 +107,7 @@
 * Import of Product Categories:
   - Enable the import functionality in bad_connector_woocommerce to transfer product Categories from WooCommerce to Odoo.
   - Handle mapping of product categories data during the import process.
+  - Set Product Category to category id in product if Woocommerce category matched with odoo categories.
 
 * Import of Product Tags:
   - Enable the import functionality in bad_connector_woocommerce to transfer product Tags from WooCommerce to Odoo.

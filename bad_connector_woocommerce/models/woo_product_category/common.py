@@ -30,7 +30,7 @@ class WooProductCategory(models.Model):
     )
     description = fields.Html(string="Description", translate=True)
     odoo_id = fields.Many2one(
-        string="Product Category", comodel_name="woo.product.category"
+        string="Product Category", comodel_name="product.category"
     )
     woo_parent_id = fields.Many2one(
         comodel_name="woo.product.category",
