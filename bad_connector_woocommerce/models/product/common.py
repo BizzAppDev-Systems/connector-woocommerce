@@ -4,8 +4,6 @@ from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -87,11 +85,6 @@ class WooProductProduct(models.Model):
         string="WooCommerce Product Image URL",
         ondelete="restrict",
     )
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Product"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooProductProduct, self).__init__(name, bases, attrs)
 
 
 class WooProductProductAdapter(Component):

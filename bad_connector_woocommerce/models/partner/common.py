@@ -6,8 +6,6 @@ from odoo import _, fields, models
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -138,11 +136,6 @@ class WooResPartner(models.Model):
         required=True,
         ondelete="restrict",
     )
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Partner"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooResPartner, self).__init__(name, bases, attrs)
 
 
 class WooResPartnerAdapter(Component):

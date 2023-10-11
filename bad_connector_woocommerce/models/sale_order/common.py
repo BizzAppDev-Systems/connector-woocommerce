@@ -6,8 +6,6 @@ from odoo.tools import float_compare
 
 from odoo.addons.component.core import Component
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -158,11 +156,6 @@ class WooSaleOrder(models.Model):
     price_unit = fields.Monetary()
     woo_amount_total = fields.Monetary()
 
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Partner"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooSaleOrder, self).__init__(name, bases, attrs)
-
     def validate_delivery_orders_done(self):
         """
         Add validations on creation and process of fulfillment orders
@@ -245,11 +238,6 @@ class WooSaleOrderLine(models.Model):
     price_subtotal_line = fields.Monetary(string="Total Line")
     subtotal_tax_line = fields.Monetary()
     subtotal_line = fields.Monetary()
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Sale Order Line"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooSaleOrderLine, self).__init__(name, bases, attrs)
 
     @api.model_create_multi
     def create(self, vals):

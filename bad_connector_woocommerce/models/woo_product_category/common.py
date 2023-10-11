@@ -4,8 +4,6 @@ from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -42,11 +40,6 @@ class WooProductCategory(models.Model):
         inverse_name="woo_parent_id",
         string="WooCommerce Child Categories",
     )
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo WooCommerce Product Category"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooProductCategory, self).__init__(name, bases, attrs)
 
 
 class WooProductCategoryAdapter(Component):

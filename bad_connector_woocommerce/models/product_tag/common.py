@@ -4,8 +4,6 @@ from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -41,11 +39,6 @@ class WooProductTag(models.Model):
 
     slug = fields.Char()
     description = fields.Text()
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Product Tag"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooProductTag, self).__init__(name, bases, attrs)
 
 
 class WooProductTagAdapter(Component):

@@ -4,8 +4,6 @@ from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -47,11 +45,6 @@ class WooProductAttributeValue(models.Model):
         required=True,
         ondelete="restrict",
     )
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Product Attribute Value"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooProductAttributeValue, self).__init__(name, bases, attrs)
 
 
 class WooProductAttributeValueAdapter(Component):
