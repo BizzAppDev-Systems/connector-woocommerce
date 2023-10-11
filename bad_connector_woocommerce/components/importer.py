@@ -33,13 +33,14 @@ class WooImporter(AbstractComponent):
     def _before_import(self):
         """Hook called before the import, when we have the
         data from remote system"""
+        return
 
     def get_parsed_date(self, datetime_str):
         # TODO : Support me for the Date structure.
         return datetime_str
 
     def _import_dependency(
-        self, external_id, binding_model, importer=None, always=False
+        self, external_id, binding_model, importer=None, always=False, **kwargs
     ):
         """
         Import a dependency.
@@ -76,7 +77,7 @@ class WooImporter(AbstractComponent):
                     external_id,
                 )
 
-    def _import_dependencies(self):
+    def _import_dependencies(self, **kwargs):
         """
         Import the dependencies for the record
         Import of dependencies can be done manually or by calling
@@ -136,7 +137,7 @@ class WooImporter(AbstractComponent):
                     continue
                 self._import_dependency(external_id=external_id, binding_model=model)
 
-    def _map_data(self):
+    def _map_data(self,**kwargs):
         """
         Returns an instance of
         :py:class:`~odoo.addons.connector.components.mapper.MapRecord`
@@ -153,7 +154,7 @@ class WooImporter(AbstractComponent):
         """
         return
 
-    def _must_skip(self):
+    def _must_skip(self, **kwargs):
         """
         Hook called right after we read the data from the backend.
 
@@ -218,7 +219,7 @@ class WooImporter(AbstractComponent):
             except IDMissingInBackend:
                 return _("Record does no longer exist in remote system")
 
-        skip = self._must_skip()  # pylint: disable=assignment-from-none
+        skip = self._must_skip(**kwargs)  # pylint: disable=assignment-from-none
         if skip:
             return skip
         binding = self._get_binding()
@@ -229,9 +230,9 @@ class WooImporter(AbstractComponent):
         self._before_import()
 
         # import the missing linked resources
-        self._import_dependencies()
+        self._import_dependencies(**kwargs)
 
-        map_record = self._map_data()
+        map_record = self._map_data(**kwargs)
         if binding:
             record = self._update_data(map_record)
             self._update(binding, record)
@@ -324,10 +325,10 @@ class WooDirectBatchImporter(AbstractComponent):
     _name = "woo.direct.batch.importer"
     _inherit = "woo.batch.importer"
 
-    def _import_record(self, external_id, force=None, data=None):
+    def _import_record(self, external_id, force=None, data=None, **kwargs):
         """Import the record directly"""
         self.model.import_record(
-            self.backend_record, external_id=external_id, data=data, force=force
+            self.backend_record, external_id=external_id, data=data, force=force, **kwargs
         )
 
 

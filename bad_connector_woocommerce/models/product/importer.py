@@ -22,7 +22,8 @@ class WooProductProductBatchImporter(Component):
 
 
 class WooProductImageUrlImporter(Component):
-    """Import translations for a record.
+    """
+    Import translations for a record.
 
     Usually called from importers, in ``_after_import``.
     For instance from the products and products' Image importers.

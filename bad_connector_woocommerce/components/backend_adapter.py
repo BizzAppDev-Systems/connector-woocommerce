@@ -144,7 +144,7 @@ class WooCRUDAdapter(AbstractComponent):
     _inherit = ["base.backend.adapter", "connector.woo.base"]
     _usage = "backend.adapter"
 
-    def search(self, filters=None):
+    def search(self, filters=None, **kwargs):
         """
         Search records according to some criterias
         and returns a list of ids
@@ -155,22 +155,22 @@ class WooCRUDAdapter(AbstractComponent):
         """Returns the information of a record"""
         raise NotImplementedError
 
-    def search_read(self, filters=None):
+    def search_read(self, filters=None, **kwargs):
         """
         Search records according to some criterias
         and returns their information
         """
         raise NotImplementedError
 
-    def create(self, data):
+    def create(self, data, **kwargs):
         """Create a record on the external system"""
         raise NotImplementedError
 
-    def write(self, external_id, data):
+    def write(self, external_id, data, **kwargs):
         """Update records on the external system"""
         raise NotImplementedError
 
-    def delete(self, external_id):
+    def delete(self, external_id, **kwargs):
         """Delete a record on the external system"""
         raise NotImplementedError
 
@@ -205,19 +205,19 @@ class GenericAdapter(AbstractComponent):
         )
         return result
 
-    def read(self, external_id=None, attributes=None):
+    def read(self, external_id=None, attributes=None, **kwargs):
         """Method to get a data for specified record"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
         result = self._call(resource_path, http_method="get")
         result = result.get("data", [])
         return result
 
-    def create(self, data):
+    def create(self, data, **kwargs):
         """Creates the data in remote"""
         result = self._call(self._woo_model, data, http_method="post")
         return result
 
-    def write(self, external_id, data):
+    def write(self, external_id, data, **kwargs):
         """Update records on the external system"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
         result = self._call(resource_path, data, http_method="put")

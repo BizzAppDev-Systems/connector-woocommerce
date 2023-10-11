@@ -167,13 +167,13 @@ class WooSaleOrderImporter(Component):
     _inherit = "woo.importer"
     _apply_on = "woo.sale.order"
 
-    def _must_skip(self):
+    def _must_skip(self, **kwargs):
         """Skipped Record which are already imported."""
         if self.binder.to_internal(self.external_id):
             return _("Already imported")
-        return super(WooSaleOrderImporter, self)._must_skip()
+        return super(WooSaleOrderImporter, self)._must_skip(**kwargs)
 
-    def _import_dependencies(self):
+    def _import_dependencies(self,**kwargs):
         """Added dependencies for Product"""
         record = self.remote_record
         for line in record.get("line_items", []):
@@ -188,7 +188,7 @@ class WooSaleOrderImporter(Component):
             _logger.debug("line: %s", line)
             if "product_id" in line:
                 self._import_dependency(line["product_id"], "woo.product.product")
-        return super(WooSaleOrderImporter, self)._import_dependencies()
+        return super(WooSaleOrderImporter, self)._import_dependencies(**kwargs)
 
 
 # Sale Order Line
