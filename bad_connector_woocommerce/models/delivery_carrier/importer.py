@@ -26,6 +26,7 @@ class WooDeliveryCarrierImporter(Component):
 
 
 class WooDeliveryCarrierImportMapper(Component):
+    """Importer Mapper for the WooCommerce Delivery carrier"""
 
     _name = "woo.delivery.carrier.import.mapper"
     _inherit = "woo.import.mapper"

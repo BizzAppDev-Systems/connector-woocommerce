@@ -13,6 +13,4 @@ class WooModelBinder(Component):
 
     _name = "woo.binder"
     _inherit = ["base.binder", "connector.woo.base"]
-    _apply_on = [
-        "woo.delivery.carrier",
-    ]
+    _apply_on = []

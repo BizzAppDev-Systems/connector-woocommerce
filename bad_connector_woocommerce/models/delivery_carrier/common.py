@@ -4,6 +4,8 @@ from odoo.addons.component.core import Component
 
 
 class DeliveryCarrier(models.Model):
+    """Delivery Carrier"""
+
     _inherit = "delivery.carrier"
 
     woo_bind_ids = fields.One2many(
@@ -15,6 +17,8 @@ class DeliveryCarrier(models.Model):
 
 
 class WooDeliveryCarrier(models.Model):
+    """Woocommerce Delivery Carrier"""
+
     _name = "woo.delivery.carrier"
     _inherit = "woo.binding"
     _inherits = {"delivery.carrier": "odoo_id"}
@@ -36,6 +40,8 @@ class WooDeliveryCarrier(models.Model):
 
 
 class WooDeliveryCarrierAdapter(Component):
+    """Adapter for Woocommerce Delivery Carrier"""
+
     _name = "woo.delivery.carrier.adapter"
     _inherit = "woo.adapter"
     _apply_on = "woo.delivery.carrier"

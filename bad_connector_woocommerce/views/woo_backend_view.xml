@@ -227,7 +227,6 @@
                                     </group>
                                 </group>
                                 <group>
-                                    <!-- Move me to sync metadata-->
                                     <group>
                                         <label
                                             for="import_shipping_methods"

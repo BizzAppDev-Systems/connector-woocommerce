@@ -32,7 +32,7 @@ class WooSaleOrderImportMapper(Component):
     ]
 
     def _prepare_lines(self, product, price, qty, ext_id, description="", total_tax=0):
-
+        """Prepare lines of shipping"""
         vals = {
             "product_id": product.id,
             "price_unit": price,
