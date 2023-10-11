@@ -32,9 +32,7 @@ class WooTaxImportMapper(Component):
         Get a tax record based on the given rate,company_id and type_tax_use.
         """
         company = self.backend_record.company_id
-        include_tax = self.backend_record.include_tax
         search_conditions = [
-            ("price_include", "=", include_tax),
             ("amount", "=", rate),
             ("type_tax_use", "in", ["sale", "none"]),
             ("company_id", "=", company.id),

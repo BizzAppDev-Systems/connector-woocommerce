@@ -18,6 +18,28 @@
                         class="oe_highlight"
                     />
                 </header>
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                    groups="base.group_system"
+                    attrs="{'invisible': [('include_tax', '=', False)]}"
+                >
+                    <div class="o_row">
+                        <div
+                            class="col-1 text-center"
+                            style="padding-left: unset;padding-right: unset;"
+                        >
+                            <span style="font-size:20px;">
+                                <i
+                                    title="Tax Different"
+                                    class="fa fa-exclamation-triangle"
+                                    style="font-size:20px;"
+                                />
+                                Warning:Enabling tax inclusion in WooCommerce may affect the total tax in Odoo, so it's advisable NOT to use tax inclusion in Odoo.
+                            </span>
+                        </div>
+                    </div>
+                </div>
                 <sheet>
                     <div name="button_box" class="oe_button_box">
                         <button
