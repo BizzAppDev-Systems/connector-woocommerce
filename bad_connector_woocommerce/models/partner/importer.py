@@ -28,7 +28,10 @@ class WooResPartnerImportMapper(Component):
 
     @mapping
     def name(self, record):
-        """Mapping for Name (combination of firstname and lastname)"""
+        """
+        Mapping for Name (Set name base on the combination of firstname and lastname
+        if firstname or lastname else it will take username)
+        """
         first_name = record.get("first_name", "")
         last_name = record.get("last_name", "")
         username = record.get("username", "")

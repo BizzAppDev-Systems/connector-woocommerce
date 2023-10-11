@@ -25,6 +25,10 @@ class ResPartner(models.Model):
     hash_key = fields.Char(string="Hash Key")
 
     def write(self, vals):
+        """
+        Update specific fields in the partner record and set 'hash_key' to False if
+        certain fields are modified.
+        """
         if set(vals.keys()) & {
             "firstname",
             "lastname",
