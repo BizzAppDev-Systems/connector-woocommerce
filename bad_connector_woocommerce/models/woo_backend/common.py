@@ -102,7 +102,8 @@ class WooBackend(models.Model):
         string="Filter Sale Orders Based on their Status",
         help="""Select the sale order statuses to filter during import.
         Only orders with the selected statuses will be imported.
-        This allows you to narrow down which orders are imported based on their status.""",
+        This allows you to narrow down which orders are imported based on their
+         status.""",
     )
     default_product_type = fields.Selection(
         [

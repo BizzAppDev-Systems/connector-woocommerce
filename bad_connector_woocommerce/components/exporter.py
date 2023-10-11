@@ -100,7 +100,7 @@ class WooExporter(AbstractComponent):
             self._delay_import()
             return
 
-        result = self._run(binding,*args, **kwargs)
+        result = self._run(binding, *args, **kwargs)
         if not self.external_id or self.external_id == "False":
             self.external_id = record.id
         self.binder.bind(self.external_id, self.binding)

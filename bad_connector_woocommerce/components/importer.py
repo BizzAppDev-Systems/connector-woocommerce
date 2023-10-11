@@ -137,7 +137,7 @@ class WooImporter(AbstractComponent):
                     continue
                 self._import_dependency(external_id=external_id, binding_model=model)
 
-    def _map_data(self,**kwargs):
+    def _map_data(self, **kwargs):
         """
         Returns an instance of
         :py:class:`~odoo.addons.connector.components.mapper.MapRecord`
@@ -328,7 +328,11 @@ class WooDirectBatchImporter(AbstractComponent):
     def _import_record(self, external_id, force=None, data=None, **kwargs):
         """Import the record directly"""
         self.model.import_record(
-            self.backend_record, external_id=external_id, data=data, force=force, **kwargs
+            self.backend_record,
+            external_id=external_id,
+            data=data,
+            force=force,
+            **kwargs
         )
 
 

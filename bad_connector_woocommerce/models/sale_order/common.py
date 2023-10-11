@@ -119,8 +119,11 @@ class SaleOrder(models.Model):
             if not binding.backend_id.mark_completed:
                 raise ValidationError(
                     _(
-                        "Export Delivery Status is Not Allow from WooCommerce Backend '%s'.",
-                        binding.backend_id.name,
+                        _(
+                            "Export Delivery Status is Not Allowed from WooCommerce"
+                            " Backend '%s'.",
+                            binding.backend_id.name,
+                        )
                     )
                 )
             binding.update_woo_order_fulfillment_status()

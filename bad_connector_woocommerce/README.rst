@@ -76,7 +76,7 @@
     - Click the 'Import Product Tags' button to import Product Tags from WooCommerce.
 
 * Orders Import:
-    - - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Orders.
     - Click 'Import Orders' button to Import the Orders from Woocommerce.
 
@@ -130,6 +130,7 @@
 * Payload Information:
     - At Partner, Product, Product Attribute, Product Attribute Value and Sale order binding form view level the co-responding payload
     can we viewed in "Woo Data" field.
+
 
 **Known issues/Roadmap**
 ************************

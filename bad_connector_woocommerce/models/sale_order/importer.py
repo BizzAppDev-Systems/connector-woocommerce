@@ -173,7 +173,7 @@ class WooSaleOrderImporter(Component):
             return _("Already imported")
         return super(WooSaleOrderImporter, self)._must_skip(**kwargs)
 
-    def _import_dependencies(self,**kwargs):
+    def _import_dependencies(self, **kwargs):
         """Added dependencies for Product"""
         record = self.remote_record
         for line in record.get("line_items", []):
