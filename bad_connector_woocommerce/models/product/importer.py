@@ -22,7 +22,8 @@ class WooProductProductBatchImporter(Component):
 
 
 class WooProductImageUrlImporter(Component):
-    """Import translations for a record.
+    """
+    Import translations for a record.
 
     Usually called from importers, in ``_after_import``.
     For instance from the products and products' Image importers.
@@ -150,7 +151,7 @@ class WooProductProductImportMapper(Component):
 
     @mapping
     def description(self, record):
-        """Mapping for discription"""
+        """Mapping for description"""
         description = record.get("description")
         return {"description": description} if description else {}
 
@@ -179,7 +180,7 @@ class WooProductProductImportMapper(Component):
 
     @mapping
     def categ_id(self, record):
-        """Mapping for Odoo category"""
+        """Mapping for Product category"""
         category_id = self.backend_record.product_categ_id.id
         binder = self.binder_for("woo.product.category")
         for category in record.get("categories", []):

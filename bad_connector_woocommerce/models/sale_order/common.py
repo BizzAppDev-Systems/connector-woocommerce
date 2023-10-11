@@ -159,7 +159,7 @@ class WooSaleOrder(models.Model):
     woo_amount_total = fields.Monetary()
 
     def __init__(self, name, bases, attrs):
-        """Bind Odoo Partner"""
+        """Bind Odoo Order"""
         WooModelBinder._apply_on.append(self._name)
         super(WooSaleOrder, self).__init__(name, bases, attrs)
 

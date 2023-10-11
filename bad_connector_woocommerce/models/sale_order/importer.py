@@ -173,7 +173,13 @@ class WooSaleOrderImporter(Component):
         return super(WooSaleOrderImporter, self)._must_skip()
 
     def _import_dependencies(self):
-        """Added dependencies for Product"""
+        """
+        Override method to import dependencies for WooCommerce sale order.
+        This method is overridden to handle the import of dependencies, particularly for
+        WooCommerce sale orders. It retrieves line items from the remote record and imports
+        the associated products as dependencies, ensuring that they are available for
+        the sale order.
+        """
         record = self.remote_record
         for line in record.get("line_items", []):
             lock_name = "import({}, {}, {}, {})".format(
@@ -262,7 +268,7 @@ class WooSaleOrderLineImportMapper(Component):
 
     @mapping
     def subtotal_tax_line(self, record):
-        """Mapping for Subtotal Tax"""
+        """Mapping for Subtotal Tax Line"""
         subtotal_tax = record.get("subtotal_tax")
         return {"subtotal_tax_line": subtotal_tax} if subtotal_tax else {}
 

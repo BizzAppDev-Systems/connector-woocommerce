@@ -25,6 +25,10 @@ class ResPartner(models.Model):
     hash_key = fields.Char(string="Hash Key")
 
     def write(self, vals):
+        """
+        Update specific fields in the partner record and set 'hash_key' to False if
+        certain fields are modified.
+        """
         if set(vals.keys()) & {
             "firstname",
             "lastname",
@@ -116,7 +120,7 @@ class ResPartner(models.Model):
         return address_data
 
     def create_get_children(self, record, partner_ext_id, backend_id):
-        """Mapping for Invoice and Shipping Addresses"""
+        """Return the Invoice and Shipping Addresses"""
         billing = record.get("billing")
         shipping = record.get("shipping")
         child_data = []
