@@ -278,13 +278,13 @@ class WooBatchExporter(AbstractComponent):
     _inherit = ["base.exporter", "connector.woo.base"]
     _usage = "batch.exporter"
 
-    def run(self, filters=None):
+    def run(self, filters=None, fields=None, job_options=None, **kwargs):
         """Run the synchronization"""
         records = self.backend_adapter.search(filters)
         for record in records:
-            self._export_record(record)
+            self._export_record(record, fields, job_options, **kwargs)
 
-    def _export_record(self, record):
+    def _export_record(self, record, fields=None, job_options=None, **kwargs):
         """
         Export a record directly or delay the export of the record.
 
@@ -299,7 +299,7 @@ class WooDirectBatchExporter(AbstractComponent):
     _name = "woo.direct.batch.exporter"
     _inherit = "woo.batch.exporter"
 
-    def _export_record(self, record, job_options=None, **kwargs):
+    def _export_record(self, record, fields=None, job_options=None, **kwargs):
         """Delay the export of the records"""
         job_options = job_options or {}
         if "identity_key" not in job_options:
@@ -311,7 +311,7 @@ class WooDirectBatchExporter(AbstractComponent):
             )
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
-        delayable.export_record(self.backend_record, record, **kwargs)
+        delayable.export_record(self.backend_record, record, fields, **kwargs)
 
 
 class WooDelayedBatchExporter(AbstractComponent):

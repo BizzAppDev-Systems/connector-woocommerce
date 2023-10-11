@@ -1,7 +1,6 @@
 import logging
 
-from odoo import _, fields
-from odoo.exceptions import ValidationError
+from odoo import _
 
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
@@ -34,36 +33,10 @@ class WooImporter(AbstractComponent):
     def _before_import(self):
         """Hook called before the import, when we have the
         data from remote system"""
-        pass
 
     def get_parsed_date(self, datetime_str):
         # TODO : Support me for the Date structure.
         return datetime_str
-
-    def _is_uptodate(self, binding):
-        """Return True if the import should be skipped because
-        it is already up-to-date in OpenERP"""
-        update_field = self.backend_adapter._last_update_field
-        if not update_field:
-            return
-        assert self.remote_record
-        if not self.remote_record.get(update_field):
-            return  # no update date on remote system, always import it.
-        if not binding:
-            return  # it does not exist so it should not be skipped
-        sync = binding.sync_date
-        if not sync:
-            return
-        from_string = fields.Datetime.from_string
-        sync_date = from_string(sync)
-        remote_date = self.get_parsed_date(self.remote_record[update_field])
-        # if the last synchronization date is greater than the last
-        # update in remote, we skip the import.
-        # Important: at the beginning of the exporters flows, we have to
-        # check if the remote_date is more recent than the sync_date
-        # and if so, schedule a new import. If we don't do that, we'll
-        # miss changes done in remote system
-        return remote_date < sync_date
 
     def _import_dependency(
         self, external_id, binding_model, importer=None, always=False
@@ -225,7 +198,7 @@ class WooImporter(AbstractComponent):
         """Hook called at the end of the import"""
         return
 
-    def run(self, external_id, data=None, force=False):
+    def run(self, external_id, data=None, force=False, **kwargs):
         """Run the synchronization
 
         :param external_id: identifier of the record on remote system
@@ -249,8 +222,6 @@ class WooImporter(AbstractComponent):
         if skip:
             return skip
         binding = self._get_binding()
-        if not force and self._is_uptodate(binding):
-            return _("Already up-to-date.")
         # Keep a lock on this import until the transaction is committed
         # The lock is kept since we have detected that the information
         # will be updated into Odoo
@@ -288,7 +259,7 @@ class WooBatchImporter(AbstractComponent):
     _inherit = ["base.importer", "connector.woo.base"]
     _usage = "batch.importer"
 
-    def run(self, filters=None, force=None, job_options=None):
+    def run(self, filters=None, force=None, job_options=None, data=None, **kwargs):
         """Run the synchronization"""
         filters = filters or {}
         if "record_count" not in filters:
@@ -305,7 +276,7 @@ class WooBatchImporter(AbstractComponent):
             filters.update({"page": filters.get("page", 1) + 1})
             self.process_next_page(filters=filters, job_options=job_options)
 
-    def process_next_page(self, filters=None, job_options=None, **kwargs):
+    def process_next_page(self, filters=None, job_options=None, force=False, **kwargs):
         """Method to trigger batch import for Next page"""
         if not filters:
             filters = {}
@@ -320,10 +291,16 @@ class WooBatchImporter(AbstractComponent):
         if not kwargs.get("no_delay"):
             model = model.with_delay(**job_options or {})
         model.import_batch(
-            self.backend_record, filters=filters, job_options=job_options, **kwargs
+            self.backend_record,
+            filters=filters,
+            job_options=job_options,
+            force=force,
+            **kwargs
         )
 
-    def _import_record(self, external_id, job_options=None, data=None, **kwargs):
+    def _import_record(
+        self, external_id, force=False, job_options=None, data=None, **kwargs
+    ):
         """
         Import a record directly or delay the import of the record.
         Method to implement in sub-classes.
@@ -347,7 +324,7 @@ class WooDirectBatchImporter(AbstractComponent):
     _name = "woo.direct.batch.importer"
     _inherit = "woo.batch.importer"
 
-    def _import_record(self, external_id, data=None, force=None):
+    def _import_record(self, external_id, force=None, data=None):
         """Import the record directly"""
         self.model.import_record(
             self.backend_record, external_id=external_id, data=data, force=force
@@ -360,10 +337,14 @@ class WooDelayedBatchImporter(AbstractComponent):
     _name = "woo.delayed.batch.importer"
     _inherit = "woo.batch.importer"
 
-    def _import_record(self, external_id, job_options=None, data=None, **kwargs):
+    def _import_record(
+        self, external_id, force=False, job_options=None, data=None, **kwargs
+    ):
         """Delay the import of the records"""
         job_options = job_options or {}
         if "identity_key" not in job_options:
             job_options["identity_key"] = identity_exact
         delayable = self.model.with_delay(**job_options or {})
-        delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
+        delayable.import_record(
+            self.backend_record, external_id, force=force, data=data, **kwargs
+        )

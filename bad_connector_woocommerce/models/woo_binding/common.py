@@ -25,33 +25,43 @@ class WooBinding(models.AbstractModel):
     ]
 
     @api.model
-    def import_batch(self, backend, filters=None, job_options=None, force=False):
+    def import_batch(
+        self, backend, filters=None, job_options=None, force=False, **kwargs
+    ):
         """Preparing Batch Import of"""
         if filters is None:
             filters = filters or {}
         with backend.work_on(self._name) as work:
             importer = work.component(usage="batch.importer")
-            return importer.run(filters=filters)
+            return importer.run(
+                filters=filters, job_options=job_options, force=force, **kwargs
+            )
 
     @api.model
-    def import_record(self, backend, external_id, data=None, force=False):
+    def import_record(
+        self, backend, external_id, data=None, force=False, job_options=None, **kwargs
+    ):
         """Import Record Of"""
         with backend.work_on(self._name) as work:
             importer = work.component(usage="record.importer")
-            return importer.run(external_id, data=data)
+            return importer.run(external_id, data=data, **kwargs)
 
     @api.model
-    def export_batch(self, backend, filters=None):
+    def export_batch(
+        self, backend, filters=None, job_options=None, fields=None, **kwargs
+    ):
         """Preparing Batch Export of"""
         if filters is None:
             filters = {}
         with backend.work_on(self._name) as work:
             exporter = work.component(usage="batch.exporter")
-            return exporter.run(filters=filters)
+            return exporter.run(
+                filters=filters, job_options=job_options, fields=fields, **kwargs
+            )
 
-    def export_record(self, backend, record, fields=None):
+    def export_record(self, backend, record, fields=None, job_options=None, **kwargs):
         """Export Record To"""
         record.ensure_one()
         with backend.work_on(self._name) as work:
             exporter = work.component(usage="record.exporter")
-            return exporter.run(self, record, fields)
+            return exporter.run(self, record, fields, **kwargs)

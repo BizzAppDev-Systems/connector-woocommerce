@@ -184,10 +184,11 @@ class WooBackend(models.Model):
         else:
             force = self[force_update_field] if force_update_field else False
             self._import_from_date(
-                model=model,
+                binding_model=binding_model,
                 from_date_field=from_date_field,
                 filters=filters,
                 job_options=job_options,
+                **kwargs
             )
             if force:
                 backend_vals[force_update_field] = False
@@ -208,11 +209,17 @@ class WooBackend(models.Model):
         return "{} {}".format(prefix or "", model)
 
     def _import_from_date(
-        self, model, from_date_field, priority=None, filters=None, job_options=None
+        self,
+        binding_model,
+        from_date_field,
+        priority=None,
+        filters=None,
+        job_options=None,
+        **kwargs
     ):
         """Method to add a filter based on the date."""
-        self.env[model].with_delay(**job_options or {}).import_batch(
-            backend=self, filters=filters
+        binding_model.import_batch(
+            backend=self, filters=filters, job_options=None, force=False, **kwargs
         )
 
     def toggle_test_mode(self):

@@ -193,7 +193,7 @@ class GenericAdapter(AbstractComponent):
     _name = "woo.adapter"
     _inherit = "woo.crud.adapter"
     _apply_on = "woo.backend"
-    _last_update_field = "date_modified_gmt"
+    _last_update_date = "date_modified"
     _woo_model = None
     _woo_ext_id_key = "id"
     _odoo_ext_id_key = "external_id"
