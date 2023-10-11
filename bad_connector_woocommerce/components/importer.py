@@ -249,7 +249,8 @@ class WooImporter(AbstractComponent):
         if skip:
             return skip
         binding = self._get_binding()
-
+        if not force and self._is_uptodate(binding):
+            return _("Already up-to-date.")
         # Keep a lock on this import until the transaction is committed
         # The lock is kept since we have detected that the information
         # will be updated into Odoo
