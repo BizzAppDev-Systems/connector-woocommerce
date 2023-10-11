@@ -37,7 +37,6 @@ class WooBackend(models.Model):
     sale_team_id = fields.Many2one(
         comodel_name="crm.team",
         string="Sales Team",
-        domain="[('company_id', '=', company_id)]",
         help="Select the Sales Team to associate it with Sale Order.",
     )
     location = fields.Char(
