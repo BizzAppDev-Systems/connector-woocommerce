@@ -20,3 +20,30 @@ class TestImportProductTag(BaseWooTestCase):
 
     def test_import_product_tag(self):
         """Test Assertions for Product Tag"""
+        external_id = "35"
+        with recorder.use_cassette("import_woo_product_tag"):
+            self.env["woo.product.tag"].import_record(
+                external_id=external_id, backend=self.backend
+            )
+        self.product_tag_model = self.env["woo.product.tag"]
+        producttag1 = self.product_tag_model.search([("external_id", "=", external_id)])
+        self.assertEqual(len(producttag1), 1)
+        self.assertTrue(producttag1, "Woo Product Tag is not imported!")
+        self.assertEqual(
+            producttag1.external_id, external_id, "External ID is different!!"
+        )
+        self.assertEqual(
+            producttag1.name,
+            "Latest",
+            "Product Tag name is not matched with response!",
+        )
+        self.assertEqual(
+            producttag1.slug,
+            "latest",
+            "slug is not match with response",
+        )
+        self.assertEqual(
+            producttag1.description,
+            "latest tag for product.",
+            "description is not match with response",
+        )

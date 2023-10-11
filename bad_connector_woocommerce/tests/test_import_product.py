@@ -83,3 +83,8 @@ class TestImportProduct(BaseWooTestCase):
             "instock",
             "stock status is not matched with response",
         )
+        # self.assertEqual(
+        #     product1.woo_product_attribute_value_ids,
+        #     "flat50",
+        #     "Order's woo amount total is not matched with response!",
+        # )

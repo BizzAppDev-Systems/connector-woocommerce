@@ -70,19 +70,103 @@ interactions:
                 "line_items": [],
                 "tax_lines": [],
                 "shipping_lines": [
+                            {
+                                "id": 43,
+                                "method_title": "Flat Rate",
+                                "method_id": "flat_rate",
+                                "instance_id": "",
+                                "total": "10.00",
+                                "total_tax": "0.00",
+                                "taxes": [],
+                                "meta_data": []
+                            }
+                        ],
+              "fee_lines": [],
+              "coupon_lines": [
                     {
-                        "id": 43,
-                        "method_title": "Flat Rate",
-                        "method_id": "flat_rate",
-                        "instance_id": "",
-                        "total": "10.00",
-                        "total_tax": "0.00",
-                        "taxes": [],
-                        "meta_data": []
+                        "id": 20,
+                        "code": "flat50",
+                        "discount": "50",
+                        "discount_tax": "9.5",
+                        "meta_data": [
+                            {
+                                "id": 135,
+                                "key": "coupon_data",
+                                "value": {
+                                    "id": 76,
+                                    "code": "flat50",
+                                    "amount": "50",
+                                    "status": "publish",
+                                    "date_created": {
+                                        "date": "2023-10-09 11:01:17.000000",
+                                        "timezone_type": 1,
+                                        "timezone": "+00:00"
+                                    },
+                                    "date_modified": {
+                                        "date": "2023-10-09 11:01:17.000000",
+                                        "timezone_type": 1,
+                                        "timezone": "+00:00"
+                                    },
+                                    "date_expires": null,
+                                    "discount_type": "fixed_cart",
+                                    "description": "",
+                                    "usage_count": 1,
+                                    "individual_use": false,
+                                    "product_ids": [],
+                                    "excluded_product_ids": [],
+                                    "usage_limit": 0,
+                                    "usage_limit_per_user": 0,
+                                    "limit_usage_to_x_items": null,
+                                    "free_shipping": false,
+                                    "product_categories": [],
+                                    "excluded_product_categories": [],
+                                    "exclude_sale_items": false,
+                                    "minimum_amount": "",
+                                    "maximum_amount": "",
+                                    "email_restrictions": [],
+                                    "virtual": false,
+                                    "meta_data": []
+                                },
+                                "display_key": "coupon_data",
+                                "display_value": {
+                                    "id": 76,
+                                    "code": "flat50",
+                                    "amount": "50",
+                                    "status": "publish",
+                                    "date_created": {
+                                        "date": "2023-10-09 11:01:17.000000",
+                                        "timezone_type": 1,
+                                        "timezone": "+00:00"
+                                    },
+                                    "date_modified": {
+                                        "date": "2023-10-09 11:01:17.000000",
+                                        "timezone_type": 1,
+                                        "timezone": "+00:00"
+                                    },
+                                    "date_expires": null,
+                                    "discount_type": "fixed_cart",
+                                    "description": "",
+                                    "usage_count": 1,
+                                    "individual_use": false,
+                                    "product_ids": [],
+                                    "excluded_product_ids": [],
+                                    "usage_limit": 0,
+                                    "usage_limit_per_user": 0,
+                                    "limit_usage_to_x_items": null,
+                                    "free_shipping": false,
+                                    "product_categories": [],
+                                    "excluded_product_categories": [],
+                                    "exclude_sale_items": false,
+                                    "minimum_amount": "",
+                                    "maximum_amount": "",
+                                    "email_restrictions": [],
+                                    "virtual": false,
+                                    "meta_data": []
+                                }
+                            }
+                        ]
                     }
                 ],
-                "fee_lines": [],
-                "coupon_lines": [],
                 "refunds": [],
                 "payment_url": "https://woo-wildly-inner-cycle.wpcomstaging.com/checkout/order-pay/71/?pay_for_order=true&key=wc_order_qzJgPfO1CWI8B",
                 "is_editable": false,

@@ -59,7 +59,19 @@ interactions:
               "categories": [],
               "tags": [],
               "images": [],
-              "attributes": [],
+              "attributes": [
+                  {
+                    "id": 0,
+                    "name": "Design",
+                    "position": 1,
+                    "visible": true,
+                    "variation": false,
+                    "options": [
+                        "Simple",
+                        "Hard"
+                    ]
+                }
+              ],
               "price_html": "",
               "stock_status": "instock",
               "has_options": false,

@@ -80,3 +80,8 @@ class TestImportSaleOrder(BaseWooTestCase):
             50.00,
             "Order's woo amount total is not matched with response!",
         )
+        self.assertEqual(
+            sale_order1.woo_coupon,
+            "flat50",
+            "Order's woo amount total is not matched with response!",
+        )
