@@ -12,7 +12,7 @@
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
 * Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
-* Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders",and "Import Taxes" at backend level.
+* Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes" at backend level.
 * Required field to Import the Products,Product Attributes,Taxes and Product Category are Location,Client Id,Client Secret,Product Category.
 
 **Author**
@@ -84,6 +84,11 @@
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Taxes.
     - Click 'Import Taxes' button to Import the Taxes from Woocommerce.
+    
+* Country and States Import:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Metadata which contains Country and there States.
+    - Click the 'Sync Metadata' button to import Country and there States from WooCommerce.
 
 **Usage**
 *********
@@ -139,6 +144,11 @@
 * Import of Taxes:
   - Enable the import functionality in bad_connector_woocommerce to transfer Taxes from WooCommerce to Odoo.
   - Handle mapping of taxes data during the import process.
+
+* Import of Country and States:
+  - Enable the import functionality in bad_connector_woocommerce to transfer Country and there States from WooCommerce to Odoo.
+  - Handle Mapping of Country and State data during the import process.
+  - Added Mapping for State in Customers.
 
 **Known issues/Roadmap**
 ************************

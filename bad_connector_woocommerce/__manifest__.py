@@ -26,6 +26,7 @@
         "views/product_tag_view.xml",
         "views/woo_tax_view.xml",
         "views/product_views.xml",
+        "views/res_country_view.xml",
         "views/product_category_view.xml",
         "views/woo_product_image_url_view.xml",
         "views/res_partner_views.xml",
