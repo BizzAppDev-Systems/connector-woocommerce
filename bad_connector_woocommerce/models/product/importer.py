@@ -1,10 +1,10 @@
 import logging
 
 from odoo import _
-
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping, only_create
+from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
+from odoo.addons.connector.components.mapper import only_create
 
 from ...components import utils
 
@@ -151,7 +151,7 @@ class WooProductProductImportMapper(Component):
 
     @mapping
     def description(self, record):
-        """Mapping for discription"""
+        """Mapping for description"""
         description = record.get("description")
         return {"description": description} if description else {}
 
@@ -180,7 +180,7 @@ class WooProductProductImportMapper(Component):
 
     @mapping
     def categ_id(self, record):
-        """Mapping for Odoo category"""
+        """Mapping for Product category"""
         category_id = self.backend_record.product_categ_id.id
         binder = self.binder_for("woo.product.category")
         for category in record.get("categories", []):

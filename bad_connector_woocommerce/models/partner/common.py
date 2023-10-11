@@ -106,7 +106,7 @@ class ResPartner(models.Model):
         return address_data
 
     def create_get_children(self, record, partner_ext_id, backend_id):
-        """Mapping for Invoice and Shipping Addresses"""
+        """Return the Invoice and Shipping Addresses"""
         billing = record.get("billing")
         shipping = record.get("shipping")
         child_data = []
