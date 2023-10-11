@@ -60,7 +60,7 @@
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Product Attributes.
     - Click the 'Import Product Attributes' button to import Product Attributes from WooCommerce.
-    - After Import Product Attribute immediately Attribute Value will be imported and another way to Import Attribute Value is Click the 'Import Attribute Value' button to import Product Attribute Values from WooCommerce.
+    - After Import Product Attribute immediately Attribute Value will be imported and another way to Import and Update the Attribute Value is to Click the 'Import Attribute Value' button located in Product Attribute's form view.
     - The 'Product Attributes Value' menu item is located at Sale > Configuration > Product.
     - Product Attribute Value, add a "Group By" based on the Attribute.
 
@@ -101,6 +101,7 @@
   - Introduces "import_products_from_date" field at the backend level, allowing import from a specified date for getting updated products.
   - Implements import of Attributes and Categories during the product import.
   - Added woo_product_categ_ids and woo_attribute_ids in product binding level.
+  - Added mapping of woo_product_attribute_value_ids in product binding level.
 
 * Import of Product Attribute:
   - Enable the import functionality in bad_connector_woocommerce to transfer product Attributes from WooCommerce to Odoo.
