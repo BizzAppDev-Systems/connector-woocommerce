@@ -7,13 +7,13 @@
 * Technical name: bad_connector_woocommerce.
 * Add new menu in Connectors > Woocommerce > WooCommerce Backends.
 * Add new menu in Connectors > Configrations > Settings.
-* Add object woo.backend, woo.product.category, woo.product.image.url and woo.sale.status on submenu Connectors.
-* Submenu of Configrations > WooCommerce Sale Status which is use to store all the WooCommerce Sale Order Status.
+* Add object woo.backend, woo.product.category, woo.product.image.url, woo.tax  and woo.sale.status on submenu Connectors.
+* Submenu of Configurations > WooCommerce Sale Status which is use to store all the WooCommerce Sale Order Status.
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
-* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
-* Add "Import Partners","Import Products","Import Product Attributes","Import Product Category" and "Import Orders" at backend level.
-* Required field to Import the Products,Product Attributes, and Product Category are Location,Client Id,Client Secret,Product Category.
+* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
+* Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders",and "Import Taxes" at backend level.
+* Required field to Import the Products,Product Attributes,Taxes and Product Category are Location,Client Id,Client Secret,Product Category.
 
 **Author**
 **********
@@ -76,10 +76,14 @@
     - Click the 'Import Product Tags' button to import Product Tags from WooCommerce.
 
 * Orders Import:
-    - - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Orders.
     - Click 'Import Orders' button to Import the Orders from Woocommerce.
 
+* Taxes Import:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Taxes.
+    - Click 'Import Taxes' button to Import the Taxes from Woocommerce.
 
 **Usage**
 *********
@@ -130,6 +134,10 @@
 * Payload Information:
     - At Partner, Product, Product Attribute, Product Attribute Value and Sale order binding form view level the co-responding payload
     can we viewed in "Woo Data" field.
+
+* Import of Taxes:
+  - Enable the import functionality in bad_connector_woocommerce to transfer Taxes from WooCommerce to Odoo.
+  - Handle mapping of taxes data during the import process.
 
 **Known issues/Roadmap**
 ************************

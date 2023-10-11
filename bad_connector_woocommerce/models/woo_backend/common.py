@@ -33,7 +33,9 @@ class WooBackend(models.Model):
         default=10,
         help="Set the default limit for data imports.",
     )
-    company_id = fields.Many2one(comodel_name="res.company", string="Company")
+    company_id = fields.Many2one(
+        comodel_name="res.company", required=True, string="Company"
+    )
     sale_team_id = fields.Many2one(
         comodel_name="crm.team",
         string="Sales Team",
@@ -102,7 +104,8 @@ class WooBackend(models.Model):
         string="Filter Sale Orders Based on their Status",
         help="""Select the sale order statuses to filter during import.
         Only orders with the selected statuses will be imported.
-        This allows you to narrow down which orders are imported based on their status.""",
+        This allows you to narrow down which orders are imported based on
+        their status.""",
     )
     default_product_type = fields.Selection(
         [
@@ -259,6 +262,7 @@ class WooBackend(models.Model):
 
     @api.model
     def cron_import_partners(self, domain=None):
+        """Cron for import_partners"""
         backend_ids = self.search(domain or [])
         backend_ids.import_partners()
 
@@ -326,6 +330,22 @@ class WooBackend(models.Model):
         """Cron for import_product_categories"""
         backend_ids = self.search(domain or [])
         backend_ids.import_product_categories()
+
+    def import_taxes(self):
+        """Import Taxes from backend"""
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.tax",
+                priority=5,
+                export=False,
+            )
+        return True
+
+    @api.model
+    def cron_import_account_tax(self, domain=None):
+        """Cron for import_taxes"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_taxes()
 
     def import_sale_orders(self):
         """Import Orders from backend"""
