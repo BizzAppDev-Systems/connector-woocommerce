@@ -58,39 +58,7 @@ interactions:
               "rating_count": 0,
               "categories": [],
               "tags": [],
-              "images":
-              [
-                  {
-                      "id": 134,
-                      "date_created": "2023-10-04T12:26:16",
-                      "date_created_gmt": "2023-10-04T12:26:16",
-                      "date_modified": "2023-10-04T12:26:16",
-                      "date_modified_gmt": "2023-10-04T12:26:16",
-                      "src": "http://localhost:8081/wp-content/uploads/2023/10/parth_timesheet.png",
-                      "name": "parth_timesheet",
-                      "alt": ""
-                  },
-                  {
-                      "id": 104,
-                      "date_created": "2023-09-27T09:55:36",
-                      "date_created_gmt": "2023-09-27T09:55:36",
-                      "date_modified": "2023-09-27T09:55:36",
-                      "date_modified_gmt": "2023-09-27T09:55:36",
-                      "src": "http://localhost:8081/wp-content/uploads/2023/09/Screenshot_2023-09-22_11-44-06.png",
-                      "name": "Screenshot_2023-09-22_11-44-06",
-                      "alt": ""
-                  },
-                  {
-                      "id": 76,
-                      "date_created": "2023-09-25T07:51:49",
-                      "date_created_gmt": "2023-09-25T07:51:49",
-                      "date_modified": "2023-09-25T07:51:49",
-                      "date_modified_gmt": "2023-09-25T07:51:49",
-                      "src": "http://localhost:8081/wp-content/uploads/2023/09/pennant-1.jpg",
-                      "name": "pennant-1.jpg",
-                      "alt": ""
-                  }
-              ],
+              "images":[],
               "attributes": [],
               "price_html": "",
               "stock_status": "instock",
