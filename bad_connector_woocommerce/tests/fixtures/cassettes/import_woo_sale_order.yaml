@@ -67,7 +67,35 @@ interactions:
                 "cart_hash": "",
                 "number": "71",
                 "meta_data": [],
-                "line_items": [],
+                "line_items": [
+                    {
+                        "id": 10,
+                        "name": "Cloth",
+                        "product_id": 14,
+                        "variation_id": 0,
+                        "quantity": 3,
+                        "tax_class": "",
+                        "subtotal": "2997.00",
+                        "subtotal_tax": "569.43",
+                        "total": "2997.00",
+                        "total_tax": "569.43",
+                        "taxes": [
+                            {
+                                "id": 1,
+                                "total": "569.43",
+                                "subtotal": "569.43"
+                            }
+                        ],
+                        "meta_data": [],
+                        "sku": "cloth-sku",
+                        "price": 999,
+                        "image": {
+                            "id": "51",
+                            "src": "http://localhost:8080/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
+                        },
+                        "parent_name": null
+                    }
+                ],
                 "tax_lines": [],
                 "shipping_lines": [
                             {
@@ -81,8 +109,8 @@ interactions:
                                 "meta_data": []
                             }
                         ],
-              "fee_lines": [],
-              "coupon_lines": [
+                "fee_lines": [],
+                "coupon_lines": [
                     {
                         "id": 20,
                         "code": "flat50",

@@ -22,7 +22,7 @@ class TestImportSaleOrder(BaseWooTestCase):
         """Test Assertions for Sale order"""
         external_id = "71"
 
-        with recorder.use_cassette("import_woo_sale_order"):
+        with recorder.use_cassette("import_woo_product_product"):
             self.env["woo.sale.order"].import_record(
                 external_id=external_id, backend=self.backend
             )
