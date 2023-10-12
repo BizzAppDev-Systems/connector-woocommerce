@@ -4,6 +4,7 @@ from io import BytesIO
 from os.path import dirname, join
 
 from vcr import VCR
+
 # from ...components import utils
 from .test_woo_backend import BaseWooTestCase
 
@@ -22,18 +23,18 @@ class TestImportProduct(BaseWooTestCase):
         """Setup configuration for Product."""
         super().setUp()
 
-    def download_image(self, image_url, product1):
-        try:
-            response = requests.get(image_url)
-            response.raise_for_status()
+    # def download_image(self, image_url, product1):
+    #     try:
+    #         response = requests.get(image_url)
+    #         response.raise_for_status()
 
-            # Check if the response contains image data
-            if "image" in response.headers["Content-Type"]:
-                # Save the image data to the image_1920 field
-                image = Image.open(BytesIO(response.content))
-                product1.image_1920 = image.tobytes()
-        except requests.exceptions.RequestException as e:
-            print(f"Error downloading image: {e}")
+    #         # Check if the response contains image data
+    #         if "image" in response.headers["Content-Type"]:
+    #             # Save the image data to the image_1920 field
+    #             image = Image.open(BytesIO(response.content))
+    #             product1.image_1920 = image.tobytes()
+    #     except requests.exceptions.RequestException as e:
+    #         print(f"Error downloading image: {e}")
 
     def test_import_product_product(self):
         """Test Assertions for Product"""
@@ -100,6 +101,11 @@ class TestImportProduct(BaseWooTestCase):
             "instock",
             "stock status is not matched with response",
         )
+        self.assertEqual(
+            product1.detailed_type,
+            self.backend.default_product_type,
+            "Product Type is not matched with response.",
+        )
         # self.assertEqual(len(product1.woo_product_image_url_ids), 1)
         # Check if the image is created in woo.product.image.url
         # image_url = (
@@ -120,6 +126,7 @@ class TestImportProduct(BaseWooTestCase):
         #     product1.image_1920, "image_1920 field is not populated with binary data!"
         # )
         # Download and store the primary image
+
     #     primary_image_url = "http://localhost:9100/media/catalog/product/i/n/ink-eater-krylon-bombear-destroyed-tee-1.jpg"
     #     primary_image_name = "ink-eater-krylon-bombear-destroyed-tee-1.jpg"
     #     self.download_and_store_image(product1, primary_image_url, primary_image_name)
