@@ -116,10 +116,9 @@ class WooBackend(models.Model):
     )
 
     @api.onchange("company_id")
-    def clear_sale_team_id(self):
-        """Onchange of company remove sale team"""
-        if self.company_id:
-            self.sale_team_id = False
+    def _onchange_company(self):
+        """Set sale team id False everytime company_id is changed"""
+        self.sale_team_id = False
 
     def get_filters(self, model=None):
         """New Method: Returns the filter"""
