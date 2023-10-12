@@ -56,6 +56,10 @@ class WooSaleOrderImportMapper(Component):
             woo_shipping_id = shipping_line.get("method_id")
             if not woo_shipping_id:
                 shipping_id = self.backend_record.default_shipping_method_id
+                if not shipping_id:
+                    raise MappingError(
+                        _("The default shipping method must be set on the backend")
+                    )
             else:
                 binder = self.binder_for("woo.delivery.carrier")
                 shipping_id = binder.to_internal(woo_shipping_id, unwrap=True)
@@ -79,6 +83,10 @@ class WooSaleOrderImportMapper(Component):
         record = map_record.source
         for fee_line in record.get("fee_lines", []):
             fee_product = self.backend_record.default_fee_product_id
+            if not fee_product:
+                raise MappingError(
+                    _("The default fee product must be set on the backend")
+                )
             fee_lines.append(
                 (
                     0,
