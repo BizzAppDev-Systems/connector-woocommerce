@@ -105,10 +105,10 @@ class WooSaleOrderImportMapper(Component):
 
     def finalize(self, map_record, values):
         """Inherit the method to add the shipping and fee product lines."""
-        shipping_id, shippilg_lines = self._get_shipping_lines(map_record, values)
+        shipping_id, shipping_lines = self._get_shipping_lines(map_record, values)
         woo_order_line_ids = values.get("woo_order_line_ids", [])
-        if shippilg_lines:
-            woo_order_line_ids += shippilg_lines
+        if shipping_lines:
+            woo_order_line_ids += shipping_lines
         if shipping_id:
             values.update({"carrier_id": shipping_id.id})
         fee_lines = self._get_fee_lines(map_record, values)

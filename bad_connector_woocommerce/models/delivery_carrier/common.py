@@ -31,12 +31,8 @@ class WooDeliveryCarrier(models.Model):
         ondelete="restrict",
     )
 
-    title = fields.Char(
-        string="Title",
-    )
-    description = fields.Text(
-        string="Description",
-    )
+    title = fields.Char()
+    description = fields.Text()
 
 
 class WooDeliveryCarrierAdapter(Component):
