@@ -83,3 +83,18 @@ class TestImportProduct(BaseWooTestCase):
             "instock",
             "stock status is not matched with response",
         )
+        self.assertEqual(len(product1.woo_product_image_url_ids), 3)
+        # Check if the image is created in woo.product.image.url
+        # image_url = (
+        #     "http://localhost:8081/wp-content/uploads/2023/10/parth_timesheet.png"
+        # )
+        # image_name = "parth_timesheet"
+        # image = self.env["woo.product.image.url"].search(
+        #     [("url", "=", image_url), ("name", "=", image_name)]
+        # )
+        # self.assertTrue(image, "Image is not created in woo.product.image.url!")
+
+        # Check if the product's image_1920 field is populated with binary data
+        self.assertTrue(
+            product1.image_1920, "image_1920 field is not populated with binary data!"
+        )
