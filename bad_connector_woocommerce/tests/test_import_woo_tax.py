@@ -21,36 +21,35 @@ class TestImportWooTax(BaseWooTestCase):
     def test_import_woo_tax(self):
         """Test Assertions for WooCommerce Tax"""
         external_id = "1"
+        tax_name = "Tax 19%"
+        tax_amount = 19.0000
+        tax_record = self.env['account.tax'].create({
+            'name': tax_name,
+            'amount': tax_amount,
+        })
         with recorder.use_cassette("import_woo_tax"):
             self.env["woo.tax"].import_record(
                 external_id=external_id, backend=self.backend
             )
-        self.product_model = self.env["woo.product.category"]
-        productcategory1 = self.product_model.search(
+        self.tax_model = self.env["woo.tax"]
+        tax1 = self.tax_model.search(
             [("external_id", "=", external_id)]
         )
-        self.assertEqual(len(productcategory1), 1)
-        self.assertTrue(productcategory1, "Woo Product Category is not imported!")
+        self.assertEqual(len(tax1), 1)
+        self.assertTrue(tax1, "WooCommerce Tax is not imported!")
         self.assertEqual(
-            productcategory1.external_id, external_id, "External ID is different!!"
+            tax1.external_id, external_id, "External ID is different!!"
         )
         self.assertEqual(
-            productcategory1.name,
-            "Men",
-            "Product Category name is not matched with response!",
+            tax1.name,
+            "Tax 19.0%",
+            "Tax name is not matched with response!",
         )
         self.assertEqual(
-            productcategory1.slug,
-            "men",
-            "Slug is not matched with response",
+            tax1.woo_amount,
+            19.0,
+            "WooCommerce Ammount is not matched with response",
         )
         self.assertEqual(
-            productcategory1.display,
-            "default",
-            "Display is not matched with response",
-        )
-        self.assertEqual(
-            productcategory1.count,
-            4,
-            "Count is not match with response",
+            tax1.odoo_id.id, tax_record.id, "Odoo Id is not found in Odoo"
         )
