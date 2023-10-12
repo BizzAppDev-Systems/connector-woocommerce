@@ -189,6 +189,7 @@ class WooBackend(models.Model):
                 from_date_field=from_date_field,
                 filters=filters,
                 job_options=job_options,
+                force=force,
                 **kwargs
             )
             if force:
@@ -216,11 +217,16 @@ class WooBackend(models.Model):
         priority=None,
         filters=None,
         job_options=None,
+        force=False,
         **kwargs
     ):
         """Method to add a filter based on the date."""
         binding_model.import_batch(
-            backend=self, filters=filters, job_options=None, force=False, **kwargs
+            backend=self,
+            filters=filters,
+            job_options=job_options,
+            force=force,
+            **kwargs
         )
 
     def toggle_test_mode(self):
