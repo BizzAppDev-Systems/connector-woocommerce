@@ -285,7 +285,7 @@
                                     >
                                         <field name="order_prefix" />
                                         <field name="company_id" />
-                                        <field name="sale_team_id" domain="[('company_id', '=', company_id)]" />
+                                        <field name="sale_team_id"  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"  />
                                         <field name="mark_completed" />
                                         <field
                                             name="tracking_info"
