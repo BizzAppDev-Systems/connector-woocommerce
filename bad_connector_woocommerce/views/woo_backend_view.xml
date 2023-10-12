@@ -276,7 +276,7 @@
                                         string="Products Configuration"
                                     >
                                         <field name="without_sku" />
-                                        <field name="default_product_type"/>
+                                        <field name="default_product_type" />
                                         <field name="product_categ_id" />
                                     </group>
                                     <group
@@ -285,7 +285,10 @@
                                     >
                                         <field name="order_prefix" />
                                         <field name="company_id" />
-                                        <field name="sale_team_id"  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"  />
+                                        <field
+                                            name="sale_team_id"
+                                            domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+                                        />
                                         <field name="mark_completed" />
                                         <field
                                             name="tracking_info"

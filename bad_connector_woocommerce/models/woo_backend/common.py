@@ -115,6 +115,11 @@ class WooBackend(models.Model):
         required=True,
     )
 
+    @api.onchange("company_id")
+    def clear_sale_team_id(self):
+        if self.company_id:
+            self.sale_team_id = False
+
     def get_filters(self, model=None):
         """New Method: Returns the filter"""
         # model: In case we want to update the filter based on the model name
