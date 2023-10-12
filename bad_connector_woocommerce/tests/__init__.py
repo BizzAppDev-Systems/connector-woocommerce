@@ -6,3 +6,4 @@ from . import test_import_product_attribute
 from . import test_import_product
 from . import test_import_sale_order
 from . import test_import_woo_tax
+from . import test_import_country_and_state
