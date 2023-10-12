@@ -117,6 +117,7 @@ class WooBackend(models.Model):
 
     @api.onchange("company_id")
     def clear_sale_team_id(self):
+        """Onchange of company remove sale team"""
         if self.company_id:
             self.sale_team_id = False
 
