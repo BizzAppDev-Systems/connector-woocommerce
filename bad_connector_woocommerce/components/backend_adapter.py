@@ -98,7 +98,6 @@ class WooAPI(object):
                 json_response = result.json()
                 record_count = result.headers.get("X-WP-Total")
                 return {"record_count": record_count, "data": json_response}
-
             if (
                 status_code == 400
                 or status_code == 401
