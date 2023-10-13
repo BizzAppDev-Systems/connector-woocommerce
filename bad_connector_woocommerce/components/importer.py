@@ -331,7 +331,7 @@ class WooBatchImporter(AbstractComponent):
         if not kwargs.get("no_delay"):
             model = model.with_delay(**job_options or {})
         model.import_batch(
-            self.backend_record,
+            backend=self.backend_record,
             filters=filters,
             job_options=job_options,
             force=force,
@@ -355,7 +355,7 @@ class WooBatchImporter(AbstractComponent):
             )
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
-        delayable.import_record(self.backend_record, external_id=external_id, data=data, **kwargs)
+        delayable.import_record(backend=self.backend_record, external_id=external_id, data=data, **kwargs)
 
 
 class WooDirectBatchImporter(AbstractComponent):
@@ -367,7 +367,7 @@ class WooDirectBatchImporter(AbstractComponent):
     def _import_record(self, external_id, force=None, data=None, **kwargs):
         """Import the record directly"""
         self.model.import_record(
-            self.backend_record,
+            backend=self.backend_record,
             external_id=external_id,
             data=data,
             force=force,
@@ -390,5 +390,5 @@ class WooDelayedBatchImporter(AbstractComponent):
             job_options["identity_key"] = identity_exact
         delayable = self.model.with_delay(**job_options or {})
         delayable.import_record(
-            self.backend_record, external_id=external_id, force=force, data=data, **kwargs
+            backend=self.backend_record, external_id=external_id, force=force, data=data, **kwargs
         )
