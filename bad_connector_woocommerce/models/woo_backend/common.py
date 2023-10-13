@@ -33,7 +33,9 @@ class WooBackend(models.Model):
         default=10,
         help="Set the default limit for data imports.",
     )
-    company_id = fields.Many2one(comodel_name="res.company", string="Company")
+    company_id = fields.Many2one(
+        comodel_name="res.company", required=True, string="Company"
+    )
     sale_team_id = fields.Many2one(
         comodel_name="crm.team",
         string="Sales Team",
@@ -102,7 +104,8 @@ class WooBackend(models.Model):
         string="Filter Sale Orders Based on their Status",
         help="""Select the sale order statuses to filter during import.
         Only orders with the selected statuses will be imported.
-        This allows you to narrow down which orders are imported based on their status.""",
+        This allows you to narrow down which orders are imported based on
+        their status.""",
     )
     default_product_type = fields.Selection(
         [
@@ -115,6 +118,24 @@ class WooBackend(models.Model):
         required=True,
     )
 
+    default_shipping_method_id = fields.Many2one(
+        comodel_name="delivery.carrier",
+        string="Default Shipping Method",
+        help="Select the default shipping method for imported orders.",
+    )
+    default_carrier_product_id = fields.Many2one(
+        comodel_name="product.product",
+        string="Default Carrier Product",
+        domain=[("type", "=", "service")],
+        help="""Select the default product delivery carrier for imported
+        shipping methods.""",
+    )
+    default_fee_product_id = fields.Many2one(
+        comodel_name="product.product",
+        string="Default Fee Product",
+        domain=[("type", "=", "service")],
+        help="Select the default fee product for imported orders.",
+    )
     @api.onchange("company_id")
     def _onchange_company(self):
         """Set sale team id False everytime company_id is changed"""
@@ -264,6 +285,7 @@ class WooBackend(models.Model):
 
     @api.model
     def cron_import_partners(self, domain=None):
+        """Cron for import_partners"""
         backend_ids = self.search(domain or [])
         backend_ids.import_partners()
 
@@ -332,6 +354,22 @@ class WooBackend(models.Model):
         backend_ids = self.search(domain or [])
         backend_ids.import_product_categories()
 
+    def import_taxes(self):
+        """Import Taxes from backend"""
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.tax",
+                priority=5,
+                export=False,
+            )
+        return True
+
+    @api.model
+    def cron_import_account_tax(self, domain=None):
+        """Cron for import_taxes"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_taxes()
+
     def import_sale_orders(self):
         """Import Orders from backend"""
         for backend in self:
@@ -376,3 +414,34 @@ class WooBackend(models.Model):
         domain.append(("mark_completed", "=", "True"))
         backend_ids = self.search(domain or [])
         backend_ids.export_sale_order_status()
+
+    def sync_metadata(self):
+        """Import the data regarding country and state"""
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.res.country",
+                priority=5,
+            )
+
+    @api.model
+    def cron_import_metadata(self, domain=None):
+        """Cron for sync_metadata"""
+        backend_ids = self.search(domain or [])
+        backend_ids.sync_metadata()
+        
+    def import_shipping_methods(self):
+        """Import Shipping Methods from backend"""
+        # TODO Call me from sync metadata
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.delivery.carrier",
+                priority=5,
+                export=False,
+            )
+        return True
+
+    @api.model
+    def cron_import_shipping_methods(self, domain=None):
+        """Cron of Import Shipping Methods"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_shipping_methods()
