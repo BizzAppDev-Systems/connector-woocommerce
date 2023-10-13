@@ -281,28 +281,6 @@
                                 <group>
                                     <group>
                                         <label
-                                            for="import_shipping_methods"
-                                            string="Import Shipping Methods"
-                                            style="font-weight:bold;"
-                                            class="oe_inline"
-                                        />
-                                    </group>
-                                    <group>
-                                        <div
-                                            style="min-width: 300px; max-width: 300px;"
-                                        >
-                                            <button
-                                                name="import_shipping_methods"
-                                                type="object"
-                                                class="oe_highlight"
-                                                string="Import Shipping Methods"
-                                            />
-                                        </div>
-                                    </group>
-                                </group>
-                                <group>
-                                    <group>
-                                        <label
                                             for="import_sale_orders"
                                             string="Import Orders"
                                             style="font-weight:bold;"
