@@ -15,7 +15,12 @@ interactions:
             '{
               "code": "BO",
               "name": "Bolivia",
-              "states": [],
+              "states": [
+                  {
+                    "code": "AL-01",
+                    "name": "Berat"
+                }
+              ],
               "_links": {
                   "self": [
                       {
