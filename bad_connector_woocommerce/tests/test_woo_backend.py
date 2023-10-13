@@ -21,6 +21,8 @@ class BaseWooTestCase(TransactionComponentCase):
                     "product.expense_product"
                 ).id,
                 "include_tax": False,
+                "mark_completed": True,
+                "tracking_info": True,
             }
         )
         self.backend_data = {
@@ -35,6 +37,8 @@ class BaseWooTestCase(TransactionComponentCase):
             "client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
             "default_carrier_product_id": self.env.ref("product.expense_product").id,
             "include_tax": False,
+            "mark_completed": True,
+            "tracking_info": True,
         }
 
     def test_backend_test_mode_true(self):

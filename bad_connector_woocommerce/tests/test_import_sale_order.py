@@ -1,7 +1,7 @@
 from os.path import dirname, join
 
 from vcr import VCR
-
+from odoo.tests import Form
 from .test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
@@ -84,4 +84,37 @@ class TestImportSaleOrder(BaseWooTestCase):
             sale_order1.woo_coupon,
             "flat50",
             "Order's woo amount total is not matched with response!",
+        )
+        sale_order_odoo = self.env["sale.order"].search(
+            [("name", "=", "WOO_71")], limit=1
+        )
+        sale_order_odoo.action_confirm()
+        delivery_order = sale_order_odoo.picking_ids
+        self.assertTrue(delivery_order, "Delivery order not created for the sale order")
+        tracking_reference = "TR12345"
+        delivery_order.write({"carrier_tracking_ref": tracking_reference})
+        self.assertEqual(
+            delivery_order.carrier_tracking_ref,
+            tracking_reference,
+            "Tracking reference not updated for the delivery order",
+        )
+        pick_dict = delivery_order.button_validate()
+        stock_immediate_transfer = Form(
+            self.env[pick_dict["res_model"]].with_context(pick_dict["context"])
+        ).save()
+        stock_immediate_transfer.process()
+        self.assertEqual(
+            sale_order1.picking_ids.state, "done", "Picking state should be done!"
+        )
+        self.assertEqual(
+            delivery_order.state,
+            "done",
+            "Delivery order should be in 'done' state after validation",
+        )
+        with recorder.use_cassette("export_woo_status_and_ref"):
+            sale_order_odoo.export_delivery_status()
+        self.assertEqual(
+            sale_order_odoo.woo_order_status,
+            "completed",
+            "Sale Order is Not in 'Completed' state in WooCommerce.",
         )
