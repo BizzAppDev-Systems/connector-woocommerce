@@ -83,8 +83,8 @@
 
 * Country and States Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
-    - Add Backend Credentials to Import Metadata which contains Country, States and Tax Settings.
-    - Click the 'Sync Metadata' button to import Country and there States and also Tax Settings from WooCommerce.
+    - Add Backend Credentials to Import Metadata which contains Country, States, Tax Settings and Shipping Methods.
+    - Click the 'Sync Metadata' button to import Country and there States, Tax Settings and Shipping Method from WooCommerce.
 
 * Taxes Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
@@ -157,8 +157,6 @@
   - Added Mapping for State in Customers.
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
-
-* Test
 
 **Known issues/Roadmap**
 ************************
