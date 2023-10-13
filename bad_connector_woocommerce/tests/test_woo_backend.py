@@ -18,6 +18,9 @@ class BaseWooTestCase(TransactionComponentCase):
                 "test_client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
                 "test_client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
                 "default_product_type": "product",
+                "default_carrier_product_id": self.env.ref(
+                    "product.expense_product"
+                ).id,
             }
         )
         self.backend_data = {
@@ -31,6 +34,7 @@ class BaseWooTestCase(TransactionComponentCase):
             "client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
             "client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
             "default_product_type": "product",
+            "default_carrier_product_id": self.env.ref("product.expense_product").id,
         }
 
     def test_backend_test_mode_true(self):

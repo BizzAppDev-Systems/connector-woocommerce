@@ -136,6 +136,10 @@ class WooBackend(models.Model):
         domain=[("type", "=", "service")],
         help="Select the default fee product for imported orders.",
     )
+    @api.onchange("company_id")
+    def _onchange_company(self):
+        """Set sale team id False everytime company_id is changed"""
+        self.sale_team_id = False
 
     def get_filters(self, model=None):
         """New Method: Returns the filter"""
