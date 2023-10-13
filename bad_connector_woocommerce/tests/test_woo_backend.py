@@ -88,3 +88,16 @@ class BaseWooTestCase(TransactionComponentCase):
 
         # Check if the test_mode is now True again
         self.assertEqual(self.backend.test_mode, True)
+
+    def test_backend_cron(self):
+        """Test case for cron method"""
+        self.backend.cron_import_partners()
+        self.backend.cron_import_product_tags()
+        self.backend.cron_import_product_attributes()
+        self.backend.cron_import_product_categories()
+        self.backend.cron_import_products()
+        self.backend.cron_import_account_tax()
+        self.backend.cron_import_sale_orders()
+        self.backend.cron_import_shipping_methods()
+        self.backend.cron_import_metadata()
+        self.backend.cron_export_sale_order_status()

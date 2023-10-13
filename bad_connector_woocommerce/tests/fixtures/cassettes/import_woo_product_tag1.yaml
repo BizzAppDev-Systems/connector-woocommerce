@@ -14,7 +14,7 @@ interactions:
           string:
             '
               {
-                "id": 35,
+                "id": 36,
                 "name": "Old",
                 "slug": "old",
                 "description": "Old tag for product.",
