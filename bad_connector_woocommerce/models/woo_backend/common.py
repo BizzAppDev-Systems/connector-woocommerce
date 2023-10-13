@@ -118,6 +118,25 @@ class WooBackend(models.Model):
         required=True,
     )
 
+    default_shipping_method_id = fields.Many2one(
+        comodel_name="delivery.carrier",
+        string="Default Shipping Method",
+        help="Select the default shipping method for imported orders.",
+    )
+    default_carrier_product_id = fields.Many2one(
+        comodel_name="product.product",
+        string="Default Carrier Product",
+        domain=[("type", "=", "service")],
+        help="""Select the default product delivery carrier for imported
+        shipping methods.""",
+    )
+    default_fee_product_id = fields.Many2one(
+        comodel_name="product.product",
+        string="Default Fee Product",
+        domain=[("type", "=", "service")],
+        help="Select the default fee product for imported orders.",
+    )
+
     def get_filters(self, model=None):
         """New Method: Returns the filter"""
         # model: In case we want to update the filter based on the model name
@@ -418,3 +437,20 @@ class WooBackend(models.Model):
         """Cron for sync_metadata"""
         backend_ids = self.search(domain or [])
         backend_ids.sync_metadata()
+        
+    def import_shipping_methods(self):
+        """Import Shipping Methods from backend"""
+        # TODO Call me from sync metadata
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.delivery.carrier",
+                priority=5,
+                export=False,
+            )
+        return True
+
+    @api.model
+    def cron_import_shipping_methods(self, domain=None):
+        """Cron of Import Shipping Methods"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_shipping_methods()

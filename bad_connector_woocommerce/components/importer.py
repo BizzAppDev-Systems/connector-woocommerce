@@ -36,6 +36,10 @@ class WooImporter(AbstractComponent):
         data from remote system"""
         return
 
+    def get_parsed_date(self, datetime_str):
+        # TODO : Support me for the Date structure.
+        return datetime_str
+
     def _is_uptodate(self, binding, **kwargs):
         """
         Return True if the import should be skipped because
