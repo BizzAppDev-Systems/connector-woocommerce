@@ -128,6 +128,19 @@
             <field name="method">import_batch</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
+        <!-- Account Tax Import Batch related action queue job  -->
+        <record id="job_function_woo_import_tax_record" model="queue.job.function">
+            <field name="model_id" ref="bad_connector_woocommerce.model_woo_tax" />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!-- Import Taxes related action queue job -->
+        <record id="job_function_woo_import_tax_batch" model="queue.job.function">
+            <field name="model_id" ref="bad_connector_woocommerce.model_woo_tax" />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+
         <!-- Sale Order Import Batch related action queue job -->
         <record
             id="job_function_woo_import_sale_order_record"
@@ -261,6 +274,30 @@
                     <attribute name="colspan">4</attribute>
                 </field>
             </field>
+        </record>
+        <!-- Import Country and State related action queue job -->
+        <record
+            id="job_function_woo_import_res_country_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_res_country"
+            />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!-- Import Res Country and there States related action queue job -->
+        <record
+            id="job_function_woo_import_res_country_import_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_res_country"
+            />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
         </record>
     </data>
 </odoo>

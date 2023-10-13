@@ -223,14 +223,13 @@ class WooSaleOrderImportMapper(Component):
         woo_order_id = record.get("id")
         if not woo_order_id:
             raise MappingError(_("WooCommerce Order ID not found Please check!!!"))
-        self.options.update(woo_order_id=woo_order_id)
+        self.options.update(woo_order_id=woo_order_id, order_record=record)
         return {"woo_order_id": woo_order_id}
 
     @mapping
     def company_id(self, record):
         """Mapping for company id"""
-        company = self.backend_record.company_id.id
-        return {"company_id": company} if company else {}
+        return {"company_id": self.backend_record.company_id.id}
 
     @mapping
     def team_id(self, record):
@@ -260,7 +259,13 @@ class WooSaleOrderImporter(Component):
         return super(WooSaleOrderImporter, self)._must_skip()
 
     def _import_dependencies(self):
-        """Added dependencies for Product"""
+        """
+        Override method to import dependencies for WooCommerce sale order.
+        This method is overridden to handle the import of dependencies, particularly for
+        WooCommerce sale orders. It retrieves line items from the remote record and imports
+        the associated products as dependencies, ensuring that they are available for
+        the sale order.
+        """
         record = self.remote_record
         for line in record.get("line_items", []):
             lock_name = "import({}, {}, {}, {})".format(
@@ -270,6 +275,14 @@ class WooSaleOrderImporter(Component):
                 line["product_id"],
             )
             self.advisory_lock_or_retry(lock_name)
+            for tax in line.get("taxes", []):
+                lock_name = "import({}, {}, {}, {})".format(
+                    self.backend_record._name,
+                    self.backend_record.id,
+                    "woo.tax",
+                    tax["id"],
+                )
+                self.advisory_lock_or_retry(lock_name)
         for shipping_line in record.get("shipping_lines", []):
             lock_name = "import({}, {}, {}, {})".format(
                 self.backend_record._name,
@@ -282,6 +295,8 @@ class WooSaleOrderImporter(Component):
             _logger.debug("line: %s", line)
             if "product_id" in line:
                 self._import_dependency(line["product_id"], "woo.product.product")
+            for tax in line.get("taxes", []):
+                self._import_dependency(tax["id"], "woo.tax")
 
         for shipping_line in record.get("shipping_lines", []):
             _logger.debug("shipping_line: %s", shipping_line)
@@ -354,7 +369,7 @@ class WooSaleOrderLineImportMapper(Component):
 
     @mapping
     def subtotal_tax_line(self, record):
-        """Mapping for Subtotal Tax"""
+        """Mapping for Subtotal Tax Line"""
         subtotal_tax = record.get("subtotal_tax")
         return {"subtotal_tax_line": subtotal_tax} if subtotal_tax else {}
 
@@ -371,6 +386,54 @@ class WooSaleOrderLineImportMapper(Component):
         if not name:
             raise MappingError(_("Order Line Name not found Please check!!!"))
         return {"name": name}
+
+    def fetch_list_of_tax(self, taxes, tax_lines):
+        """
+        Fetch tax IDs based on the provided taxes and tax lines.
+        """
+        result = []
+        fetched_taxes = {}
+        tax_binder = self.binder_for(model="woo.tax")
+        for tax in taxes:
+            woo_tax = tax_binder.to_internal(tax.get("id"))
+            if woo_tax and woo_tax.odoo_id:
+                result.append(woo_tax.odoo_id.id)
+                continue
+            rate_id = tax.get("id")
+            tax_line = next(
+                (tl for tl in tax_lines if tl.get("rate_id") == rate_id), None
+            )
+            if woo_tax and not tax_line:
+                continue
+            rate_percent = tax_line.get("rate_percent")
+            company = self.backend_record.company_id
+            if rate_percent not in fetched_taxes:
+                tax = self.env["account.tax"].search(
+                    [
+                        ("company_id", "=", company.id),
+                        ("type_tax_use", "in", ["sale", "none"]),
+                        ("amount", "=", rate_percent),
+                    ],
+                    limit=1,
+                )
+                if not tax:
+                    continue
+                result.append(tax.id)
+                fetched_taxes[rate_percent] = tax
+                continue
+            result.append(fetched_taxes[rate_percent].id)
+        return result
+
+    @mapping
+    def tax_id(self, record):
+        """
+        Mapping for Tax_id. Calls fetch_list_of_tax method to
+        fetch or create tax IDs.
+        """
+        tax_lines = self.options.get("order_record", {}).get("tax_lines", [])
+        taxes = record.get("taxes", [])
+        tax_ids = self.fetch_list_of_tax(taxes, tax_lines)
+        return {"tax_id": [(6, 0, tax_ids)]}
 
     @mapping
     def woo_order_id(self, record):

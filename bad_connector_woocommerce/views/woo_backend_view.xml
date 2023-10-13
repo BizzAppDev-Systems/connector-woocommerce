@@ -10,6 +10,14 @@
         />
         <field name="arch" type="xml">
             <form string="WooCommerce Backend">
+                <header>
+                    <button
+                        name="sync_metadata"
+                        string="Sync Metadata"
+                        type="object"
+                        class="oe_highlight"
+                    />
+                </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box">
                         <button
@@ -222,6 +230,28 @@
                                                 type="object"
                                                 class="oe_highlight"
                                                 string="Import Products"
+                                            />
+                                        </div>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <label
+                                            for="import_taxes"
+                                            string="Import Taxes"
+                                            style="font-weight:bold;"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="import_taxes"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Import Taxes"
                                             />
                                         </div>
                                     </group>

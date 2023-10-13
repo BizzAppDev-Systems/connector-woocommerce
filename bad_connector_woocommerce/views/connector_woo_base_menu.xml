@@ -54,4 +54,11 @@
         parent="menu_woo_root"
         action="action_woo_product_image_url"
     />
+    <!-- Define the menu item WooCommerce Taxes -->
+    <menuitem
+        id="menu_woo_tax"
+        name="WooCommerce Taxes"
+        parent="menu_woo_root"
+        action="action_woo_tax"
+    />
 </odoo>

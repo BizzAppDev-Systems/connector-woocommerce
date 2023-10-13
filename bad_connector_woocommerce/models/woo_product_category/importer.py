@@ -73,7 +73,7 @@ class WooProductCategoryImportMapper(Component):
 
     @mapping
     def parent_id(self, record):
-        """Mapping for Product Category"""
+        """Mapping for Parent Product Category"""
         binder = self.binder_for(model="woo.product.category")
         woo_parent = binder.to_internal(record.get("parent"), unwrap=True)
         return {"parent_id": woo_parent.id} if woo_parent else {}

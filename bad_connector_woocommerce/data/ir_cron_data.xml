@@ -51,6 +51,16 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
         </record>
+        <!-- Import Account Taxes -->
+        <record id="ir_cron_woocommerce_import_tax" model="ir.cron">
+            <field name="name">Woocommerce: Import Account Taxes</field>
+            <field name="model_id" ref="model_woo_backend" />
+            <field name="state">code</field>
+            <field name="code">model.cron_import_account_tax()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
         <!-- Import Sale Orders -->
         <record id="ir_cron_woocommerce_import_sale_order" model="ir.cron">
             <field name="name">Woocommerce: Import Sale Orders</field>
@@ -71,6 +81,15 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
         </record>
+        <!--  Import Country and there States-->
+        <record id="ir_cron_woocommerce_import_country_state" model="ir.cron">
+            <field name="name">Woocommerce: Import Metadata</field>
+            <field name="model_id" ref="model_woo_backend" />
+            <field name="state">code</field>
+            <field name="code">model.cron_import_metadata()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
         <!-- Import Delivery Carrier -->
         <record id="ir_cron_woocommerce_import_delivery_carrier" model="ir.cron">
             <field name="name">Woocommerce: Import Delivery Carrier</field>
