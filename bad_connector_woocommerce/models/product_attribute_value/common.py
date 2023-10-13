@@ -57,7 +57,11 @@ class WooProductAttributeValueAdapter(Component):
     _woo_ext_id_key = "id"
 
     def search(self, filters=None, **kwargs):
-        """Method to get the records from woo"""
+        """
+        Overrides:This method overrides the default behavior by adding the 'attribute'
+        field to each record in the search results to indicate the attribute used for
+        the search.
+        """
         # TODO: add generic logic in search common adapter based on argument.
         resource_path = "{}/{}/terms".format(self._woo_model, filters.get("attribute"))
         result = self._call(

@@ -21,7 +21,7 @@ class ProductAttribute(models.Model):
     not_real = fields.Boolean()
 
     def import_product_attribute_value(self):
-        """Import Product Attribute Value of account move."""
+        """Import Product Attribute Value"""
         for binding in self.woo_bind_ids:
             binding.sync_attribute_values_from_woo()
 

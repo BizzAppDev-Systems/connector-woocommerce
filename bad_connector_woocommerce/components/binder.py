@@ -22,4 +22,5 @@ class WooModelBinder(Component):
         "woo.sale.order",
         "woo.sale.order.line",
         "woo.product.category",
+        "woo.delivery.carrier",
     ]

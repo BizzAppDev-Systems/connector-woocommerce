@@ -34,7 +34,7 @@ class WooImporter(AbstractComponent):
     def _before_import(self):
         """Hook called before the import, when we have the
         data from remote system"""
-        pass
+        return
 
     def get_parsed_date(self, datetime_str):
         # TODO : Support me for the Date structure.
@@ -301,7 +301,11 @@ class WooBatchImporter(AbstractComponent):
             filters["record_count"] += len(records)
             record_count = data.get("record_count", 0)
             filters_record_count = filters.get("record_count", 0)
-            if int(record_count) > int(filters_record_count):
+            if (
+                record_count is not None
+                and filters_record_count is not None
+                and int(record_count) > int(filters_record_count)
+            ):
                 filters.update({"page": filters.get("page", 1) + 1})
                 self.process_next_page(filters=filters, job_options=job_options)
         except Exception as err:
