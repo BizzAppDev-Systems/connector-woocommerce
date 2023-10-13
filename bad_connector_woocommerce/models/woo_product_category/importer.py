@@ -3,7 +3,7 @@ import logging
 from odoo import _
 
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.components.mapper import mapping, only_create
 from odoo.addons.connector.exception import MappingError
 
 # pylint: disable=W7950
@@ -25,6 +25,16 @@ class WooProductCategoryImportMapper(Component):
     _name = "woo.product.category.import.mapper"
     _inherit = "woo.import.mapper"
     _apply_on = "woo.product.category"
+
+    @only_create
+    @mapping
+    def odoo_id(self, record):
+        """Creating odoo id"""
+        category_name = record.get("name")
+        product_category = self.env["product.category"].search(
+            [("name", "=", category_name)], limit=1
+        )
+        return {"odoo_id": product_category.id} if product_category else {}
 
     @mapping
     def name(self, record):
@@ -63,7 +73,7 @@ class WooProductCategoryImportMapper(Component):
 
     @mapping
     def parent_id(self, record):
-        """Mapping for Product Category"""
+        """Mapping for Parent Product Category"""
         binder = self.binder_for(model="woo.product.category")
         woo_parent = binder.to_internal(record.get("parent"), unwrap=True)
         return {"parent_id": woo_parent.id} if woo_parent else {}

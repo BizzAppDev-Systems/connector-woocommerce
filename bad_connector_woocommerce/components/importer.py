@@ -34,7 +34,7 @@ class WooImporter(AbstractComponent):
     def _before_import(self):
         """Hook called before the import, when we have the
         data from remote system"""
-        pass
+        return
 
     def get_parsed_date(self, datetime_str):
         # TODO : Support me for the Date structure.

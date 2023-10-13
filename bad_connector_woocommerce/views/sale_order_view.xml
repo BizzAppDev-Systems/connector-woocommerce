@@ -67,7 +67,12 @@
                 expr="//form/sheet/group/group/field[@name='sale_order_template_id']"
                 position="after"
             >
-                <field name="woo_order_status" readonly="1" />
+                <field name="woo_order_status" readonly="1" attrs="{'invisible': [('woo_bind_ids', '=', [])]}" />
+                <field
+                    name="woo_coupon"
+                    readonly="1"
+                    attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                />
                 <field name="tax_different" invisible="1" />
                 <field name="total_amount_different" invisible="1" />
             </xpath>
@@ -111,6 +116,9 @@
                                         <field name="total_tax_line" />
                                         <field name="price_subtotal_line" />
                                     </group>
+                                    <group>
+                                        <field name="woo_data" />
+                                    </group>
                                 </group>
                             </form>
                         </field>
@@ -153,6 +161,9 @@
                                     <field name="shipping_tax" />
                                     <field name="cart_tax" />
                                     <field name="total_tax" />
+                                </group>
+                                <group>
+                                    <field name="woo_data" />
                                 </group>
                             </group>
                         </form>

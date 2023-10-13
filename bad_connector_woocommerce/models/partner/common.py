@@ -6,8 +6,6 @@ from odoo import _, fields, models
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -25,6 +23,10 @@ class ResPartner(models.Model):
     hash_key = fields.Char(string="Hash Key")
 
     def write(self, vals):
+        """
+        Update specific fields in the partner record and set 'hash_key' to False if
+        certain fields are modified.
+        """
         if set(vals.keys()) & {
             "firstname",
             "lastname",
@@ -63,13 +65,13 @@ class ResPartner(models.Model):
             )
         vals = {
             "name": data.get("username", "")
-            or data.get("first_name")
-            and data.get("last_name")
+            or data.get("first_name", "")
+            and data.get("last_name", "")
             and f"{data.get('first_name')} {data.get('last_name')}"
-            or data.get("first_name")
-            or data.get("email"),
-            "firstname": data.get("first_name"),
-            "lastname": data.get("last_name"),
+            or data.get("first_name", "")
+            or data.get("email", ""),
+            "firstname": data.get("first_name", ""),
+            "lastname": data.get("last_name", ""),
             "email": data.get("email", ""),
             "type": address_type or "",
             "street": data.get("address_1"),
@@ -116,7 +118,7 @@ class ResPartner(models.Model):
         return address_data
 
     def create_get_children(self, record, partner_ext_id, backend_id):
-        """Mapping for Invoice and Shipping Addresses"""
+        """Return the Invoice and Shipping Addresses"""
         billing = record.get("billing")
         shipping = record.get("shipping")
         child_data = []
@@ -152,11 +154,6 @@ class WooResPartner(models.Model):
         required=True,
         ondelete="restrict",
     )
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Partner"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooResPartner, self).__init__(name, bases, attrs)
 
 
 class WooResPartnerAdapter(Component):

@@ -10,7 +10,6 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
         </record>
         <!-- Import Products -->
         <record id="ir_cron_woocommerce_import_products" model="ir.cron">
@@ -21,7 +20,6 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
         </record>
         <!-- Import Product Attributes -->
         <record id="ir_cron_woocommerce_import_product_attribute" model="ir.cron">
@@ -32,7 +30,6 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
         </record>
         <!-- Import Product Categories -->
         <record id="ir_cron_woocommerce_import_product_category" model="ir.cron">
@@ -43,7 +40,16 @@
             <field name="interval_number">15</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
+        </record>
+        <!-- Import Product Tags -->
+        <record id="ir_cron_woocommerce_import_product_tag" model="ir.cron">
+            <field name="name">Woocommerce: Import Product Tags</field>
+            <field name="model_id" ref="model_woo_backend" />
+            <field name="state">code</field>
+            <field name="code">model.cron_import_product_tags()</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
         </record>
         <!-- Import Account Taxes -->
         <record id="ir_cron_woocommerce_import_tax" model="ir.cron">
@@ -64,7 +70,6 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
         </record>
         <!-- Export Sale Order status -->
         <record id="ir_cron_woo_sale_order_export" model="ir.cron">
@@ -75,7 +80,6 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="doall" eval="False" />
         </record>
         <!--  Import Country and there States-->
         <record id="ir_cron_woocommerce_import_country_state" model="ir.cron">
@@ -83,6 +87,16 @@
             <field name="model_id" ref="model_woo_backend" />
             <field name="state">code</field>
             <field name="code">model.cron_import_metadata()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
+        <!-- Import Delivery Carrier -->
+        <record id="ir_cron_woocommerce_import_delivery_carrier" model="ir.cron">
+            <field name="name">Woocommerce: Import Delivery Carrier</field>
+            <field name="model_id" ref="model_woo_backend" />
+            <field name="state">code</field>
+            <field name="code">model.cron_import_shipping_methods()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>

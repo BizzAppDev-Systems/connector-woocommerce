@@ -213,6 +213,57 @@
             <field name="method">export_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
+
+        <!--Product Tag Import Batch related action queue job -->
+        <record
+            id="job_function_woo_import_product_tag_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_tag"
+            />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!--Product Tag Import Record related action queue job -->
+        <record
+            id="job_function_woo_import_product_tag_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_tag"
+            />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+
+        <!--Delivery Carrier Import Batch related action queue job -->
+        <record
+            id="job_function_woo_import_delivery_carrier_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_delivery_carrier"
+            />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!--Delivery Carrier Import Record related action queue job -->
+        <record
+            id="job_function_woo_import_delivery_carrier_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_delivery_carrier"
+            />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+
         <!-- Inherited queue.job form view to make Result in one line -->
         <record id="queue_job_form_inherited_view" model="ir.ui.view">
             <field name="name">queue.job.inherit.form</field>
