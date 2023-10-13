@@ -8,6 +8,7 @@
 * Add new menu in Connectors > Woocommerce > WooCommerce Backends.
 * Add new menu in Connectors > Configrations > Settings.
 * Add object woo.backend, woo.product.category, woo.product.image.url, woo.tax  and woo.sale.status on submenu Connectors.
+* Add object woo.settings on submenu Settings.
 * Submenu of Configurations > WooCommerce Sale Status which is use to store all the WooCommerce Sale Order Status.
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
@@ -80,6 +81,11 @@
     - Add Backend Credentials to Import Orders.
     - Click 'Import Orders' button to Import the Orders from Woocommerce.
 
+* Country and States Import:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Metadata which contains Country, States and Tax Settings.
+    - Click the 'Sync Metadata' button to import Country and there States and also Tax Settings from WooCommerce.
+
 * Taxes Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Taxes.
@@ -146,9 +152,11 @@
   - Handle mapping of taxes data during the import process.
 
 * Import of Country and States:
-  - Enable the import functionality in bad_connector_woocommerce to transfer Country and there States from WooCommerce to Odoo.
-  - Handle Mapping of Country and State data during the import process.
+  - Enable the import functionality in bad_connector_woocommerce to transfer Country and there States and also Tax Settings from WooCommerce to Odoo.
+  - Handle Mapping of Country, State and Tax Settings data during the import process.
   - Added Mapping for State in Customers.
+  - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
+  - Added Condition on search tax base on 'Included in Price'.
 
 **Known issues/Roadmap**
 ************************
