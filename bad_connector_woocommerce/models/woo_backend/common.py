@@ -33,9 +33,7 @@ class WooBackend(models.Model):
         default=10,
         help="Set the default limit for data imports.",
     )
-    company_id = fields.Many2one(
-        comodel_name="res.company", required=True, string="Company"
-    )
+    company_id = fields.Many2one(comodel_name="res.company", string="Company")
     location = fields.Char(
         string="Location(Live)", help="Enter the Live Location for WooCommerce."
     )
@@ -94,7 +92,6 @@ class WooBackend(models.Model):
         help="""When the boolean is 'True,' partners can be imported without needing
         an email address.""",
     )
-    include_tax = fields.Boolean(string="Tax Include", readonly=True)
 
     def get_filters(self, model=None):
         """New Method: Returns the filter"""
@@ -240,7 +237,6 @@ class WooBackend(models.Model):
 
     @api.model
     def cron_import_partners(self, domain=None):
-        """Cron for import_partners"""
         backend_ids = self.search(domain or [])
         backend_ids.import_partners()
 
@@ -293,22 +289,6 @@ class WooBackend(models.Model):
         backend_ids = self.search(domain or [])
         backend_ids.import_product_categories()
 
-    def import_taxes(self):
-        """Import Taxes from backend"""
-        for backend in self:
-            backend._sync_from_date(
-                model="woo.tax",
-                priority=5,
-                export=False,
-            )
-        return True
-
-    @api.model
-    def cron_import_account_tax(self, domain=None):
-        """Cron for import_taxes"""
-        backend_ids = self.search(domain or [])
-        backend_ids.import_taxes()
-
     def import_sale_orders(self):
         """Import Orders from backend"""
         for backend in self:
@@ -346,24 +326,3 @@ class WooBackend(models.Model):
         domain.append(("mark_completed", "=", "True"))
         backend_ids = self.search(domain or [])
         backend_ids.export_sale_order_status()
-
-    def sync_metadata(self):
-        """Import the data regarding country, state and settings"""
-        for backend in self:
-            backend._sync_from_date(
-                model="woo.res.country",
-                priority=5,
-                export=False,
-            )
-            backend._sync_from_date(
-                model="woo.settings",
-                priority=5,
-                export=False,
-            )
-        return True
-
-    @api.model
-    def cron_import_metadata(self, domain=None):
-        """Cron for sync_metadata"""
-        backend_ids = self.search(domain or [])
-        backend_ids.sync_metadata()
