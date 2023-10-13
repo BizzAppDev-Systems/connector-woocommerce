@@ -2,6 +2,7 @@ from os.path import dirname, join
 
 from vcr import VCR
 
+# from ...components import utils
 from .test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
@@ -83,8 +84,8 @@ class TestImportProduct(BaseWooTestCase):
             "instock",
             "stock status is not matched with response",
         )
-        # self.assertEqual(
-        #     product1.woo_product_attribute_value_ids,
-        #     "flat50",
-        #     "Order's woo amount total is not matched with response!",
-        # )
+        self.assertEqual(
+            product1.detailed_type,
+            self.backend.default_product_type,
+            "Product Type is not matched with response.",
+        )
