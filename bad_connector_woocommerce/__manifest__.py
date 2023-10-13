@@ -33,6 +33,7 @@
         "views/sale_order_view.xml",
         "views/woo_sale_status_view.xml",
         "views/delivery_carrier_view.xml",
+        "views/woo_settings_view.xml",
         "views/connector_woo_base_menu.xml",
     ],
     "images": ["static/description/banner.gif"],

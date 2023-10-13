@@ -13,3 +13,4 @@ from . import product_tag
 from . import woo_tax
 from . import country
 from . import delivery_carrier
+from . import woo_settings
