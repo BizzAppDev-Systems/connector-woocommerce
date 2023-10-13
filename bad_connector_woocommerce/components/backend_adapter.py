@@ -183,7 +183,9 @@ class WooCRUDAdapter(AbstractComponent):
                 "WooAPI instance to be able to use the "
                 "Backend Adapter."
             ) from None
-        return woo_api.call(resource_path, arguments, http_method=http_method)
+        return woo_api.call(
+            resource_path=resource_path, arguments=arguments, http_method=http_method
+        )
 
 
 class GenericAdapter(AbstractComponent):
@@ -207,17 +209,17 @@ class GenericAdapter(AbstractComponent):
     def read(self, external_id=None, attributes=None, **kwargs):
         """Method to get a data for specified record"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
-        result = self._call(resource_path, http_method="get")
+        result = self._call(resource_path=resource_path, http_method="get")
         result = result.get("data", [])
         return result
 
     def create(self, data, **kwargs):
         """Creates the data in remote"""
-        result = self._call(self._woo_model, data, http_method="post")
+        result = self._call(self._woo_model, data=data, http_method="post")
         return result
 
     def write(self, external_id, data, **kwargs):
         """Update records on the external system"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
-        result = self._call(resource_path, data, http_method="put")
+        result = self._call(resource_path=resource_path, data=data, http_method="put")
         return result

@@ -308,7 +308,7 @@ class WooBatchImporter(AbstractComponent):
         records = data.get("data", [])
         for record in records:
             external_id = record.get(self.backend_adapter._woo_ext_id_key)
-            self._import_record(external_id, job_options, data=record)
+            self._import_record(external_id=external_id, job_options=job_options, data=record)
         filters["record_count"] += len(records)
         record_count = data.get("record_count", 0)
         filters_record_count = filters.get("record_count", 0)
@@ -355,7 +355,7 @@ class WooBatchImporter(AbstractComponent):
             )
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
-        delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
+        delayable.import_record(self.backend_record, external_id=external_id, data=data, **kwargs)
 
 
 class WooDirectBatchImporter(AbstractComponent):
@@ -390,5 +390,5 @@ class WooDelayedBatchImporter(AbstractComponent):
             job_options["identity_key"] = identity_exact
         delayable = self.model.with_delay(**job_options or {})
         delayable.import_record(
-            self.backend_record, external_id, force=force, data=data, **kwargs
+            self.backend_record, external_id=external_id, force=force, data=data, **kwargs
         )

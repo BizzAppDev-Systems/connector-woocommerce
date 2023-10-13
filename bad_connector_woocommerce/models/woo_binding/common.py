@@ -44,7 +44,7 @@ class WooBinding(models.AbstractModel):
         """Import Record Of"""
         with backend.work_on(self._name) as work:
             importer = work.component(usage="record.importer")
-            return importer.run(external_id, data=data, **kwargs)
+            return importer.run(external_id=external_id, data=data, **kwargs)
 
     @api.model
     def export_batch(
@@ -64,4 +64,4 @@ class WooBinding(models.AbstractModel):
         record.ensure_one()
         with backend.work_on(self._name) as work:
             exporter = work.component(usage="record.exporter")
-            return exporter.run(self, record, fields, **kwargs)
+            return exporter.run(self, record=record, fields=fields, **kwargs)
