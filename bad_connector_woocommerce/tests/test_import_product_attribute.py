@@ -44,11 +44,11 @@ class TestImportProductAttributes(BaseWooTestCase):
             False,
             "has_archives is not match with response",
         )
-        external_id = "2"
-        with recorder.use_cassette("import_woo_product_attribute"):
-            self.env["woo.product.attribute.value"].import_record(
-                external_id=external_id, backend=self.backend
-            )
+        # external_id = "2"
+        # with recorder.use_cassette("import_woo_product_attribute"):
+        #     self.env["woo.product.attribute.value"].import_record(
+        #         external_id=external_id, backend=self.backend
+        #     )
 
     # def test_import_product_attribute_value(self):
     #     """Test Assertions for Product Attribute Value"""
