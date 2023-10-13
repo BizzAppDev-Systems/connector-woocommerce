@@ -5,8 +5,6 @@ from odoo.exceptions import ValidationError
 
 from odoo.addons.component.core import Component
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -44,11 +42,6 @@ class WooProductAttribute(models.Model):
         required=True,
         ondelete="restrict",
     )
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Product Attribute"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooProductAttribute, self).__init__(name, bases, attrs)
 
     def sync_attribute_values_from_woo(self):
         """sync Attribute values from woocommerce"""
