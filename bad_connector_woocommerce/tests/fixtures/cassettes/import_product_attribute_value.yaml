@@ -7,31 +7,34 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes/2
+      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes/2/terms/32
     response:
       body:
         {
           string:
-            '{
-              "id": 2,
-              "name": "colour",
-              "slug": "pa_colour",
-              "type": "select",
-              "order_by": "menu_order",
-              "has_archives": false,
-              "_links": {
-                  "self": [
-                      {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes/2"
-                      }
-                  ],
-                  "collection": [
-                      {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes"
-                      }
-                  ]
+            '
+              {
+                "id": 32,
+                "name": "Gray",
+                "slug": "gray",
+                "description": "",
+                "menu_order": 0,
+                "count": 3,
+                "_links": {
+                    "self": [
+                        {
+                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes/2/terms/32"
+                        }
+                    ],
+                    "collection": [
+                        {
+                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes/2/terms"
+                        }
+                    ]
+                }
+                "attribute": 2
               }
-            }',
+            ',
         }
       headers:
         Cache-Control: ["no-store, no-cache, must-revalidate"]

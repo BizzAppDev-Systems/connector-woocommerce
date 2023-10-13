@@ -44,26 +44,5 @@ class TestImportProductAttributes(BaseWooTestCase):
             False,
             "has_archives is not match with response",
         )
-        # external_id = "2"
-        # with recorder.use_cassette("import_woo_product_attribute"):
-        #     self.env["woo.product.attribute.value"].import_record(
-        #         external_id=external_id, backend=self.backend
-        #     )
-
-    # def test_import_product_attribute_value(self):
-    #     """Test Assertions for Product Attribute Value"""
-
-    # # self.assertTrue(productattribute1, "Woo Product Attribute is not imported!")
-    # # self.assertEqual(
-    # #     productattribute1.external_id, external_id, "External ID is different!!"
-    # # )
-    # # self.assertEqual(
-    # #     productattribute1.name,
-    # #     "colour",
-    # #     "Product Attribute name is not matched with response!",
-    # # )
-    # # self.assertEqual(
-    # #     productattribute1.has_archives,
-    # #     False,
-    # #     "has_archives is not match with response",
-    # # )
+        with recorder.use_cassette("import_product_attribute_value"):
+            productattribute1.sync_attribute_values_from_woo()

@@ -28,6 +28,8 @@ interactions:
                     "address_2": "california",
                     "postcode": "555555",
                     "city":"california city",
+                    "country": "USA",
+                    "state": "CA",
                     "email": "john@example.com",
                     "phone": "999555999"
                 },
