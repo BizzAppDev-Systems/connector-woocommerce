@@ -58,7 +58,7 @@ class TestImportCountry(BaseWooTestCase):
         self.settings_model = self.env["woo.settings"]
         settings1 = self.settings_model.search([("external_id", "=", external_id)])
         self.assertEqual(len(settings1), 1)
-        self.assertTrue(settings1, "Woo Country is not imported!")
+        self.assertTrue(settings1, "Woo Settings is not imported!")
         self.assertEqual(
             settings1.external_id, external_id, "External ID is different!!"
         )

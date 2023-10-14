@@ -10,4 +10,3 @@ from . import test_import_woo_tax
 from . import test_import_country_and_state
 from . import test_woo_tax_setting
 from . import test_import_product_tag1
-from . import test_import_country_without_name

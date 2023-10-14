@@ -19,7 +19,7 @@ class TestImportProductTag1(BaseWooTestCase):
         super().setUp()
 
     def test_import_product_tag1(self):
-        """Test Assertions for Product Tag"""
+        """Test Assertions for Product Tag which is already present in odoo"""
         external_id = "36"
         producttag = self.env["product.tag"].create({"name": "Old"})
         with recorder.use_cassette("import_woo_product_tag1"):

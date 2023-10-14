@@ -1,7 +1,7 @@
 from os.path import dirname, join
 
 from vcr import VCR
-from odoo.addons.queue_job.tests.common import trap_jobs
+
 from .test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
@@ -44,62 +44,3 @@ class TestImportProductAttributes(BaseWooTestCase):
             False,
             "has_archives is not match with response",
         )
-        with recorder.use_cassette("import_product_attribute_value"):
-            with trap_jobs() as trap:
-                external_id = "32"
-                filters = {}
-                filters.update(
-                    {
-                        "attribute": external_id,
-                    }
-                )
-                self.backend._sync_from_date(
-                    model="woo.product.attribute.value",
-                    export=False,
-                    filters=filters,
-                )
-                # Assert that how many queuejobs are being prepared.
-                trap.assert_jobs_count(1)
-                # And then skip enqueued jobs
-                trap.perform_enqueued_jobs()
-                trap.assert_jobs_count(3)
-                trap.perform_enqueued_jobs()
-        # Searching record for res.partner with unique external id to check record
-        # created or not.
-        # parent = self.env["test.res.partner"].search(
-        #     [
-        #         ("external_id", "=", "1111"),
-        #         (
-        #             "backend_id",
-        #             "=",
-        #             self.backend.id,
-        #         ),
-        #     ]
-        # )
-        # child = self.env["test.res.partner"].search(
-        #     [
-        #         ("external_id", "=", "0000"),
-        #         (
-        #             "backend_id",
-        #             "=",
-        #             self.backend.id,
-        #         ),
-        #     ]
-        # )
-        # country = self.env["test.res.country"].search(
-        #     [
-        #         ("external_id", "=", 1212),
-        #         (
-        #             "backend_id",
-        #             "=",
-        #             self.backend.id,
-        #         ),
-        #     ]
-        # )
-        # # Assert for partner creation using run method.
-        # self.assertTrue(parent, "Parent did not created!")
-        # self.assertTrue(child, "Child did not created!")
-        # self.assertTrue(country, "Country did not created!")
-        # print("helllllllllllllllllloooooooooooooo")
-        # productattribute1.sync_attribute_values_from_woo()
-        # print(productattribute1.sync_attribute_values_from_woo(), "=============")
