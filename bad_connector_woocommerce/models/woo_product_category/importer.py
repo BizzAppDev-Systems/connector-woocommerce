@@ -15,7 +15,7 @@ class WooProductCategoryBatchImporter(Component):
     """Batch Importer the WooCommerce Product"""
 
     _name = "woo.product.category.batch.importer"
-    _inherit = "woo.batch.importer"
+    _inherit = "woo.delayed.batch.importer"
     _apply_on = "woo.product.category"
 
 

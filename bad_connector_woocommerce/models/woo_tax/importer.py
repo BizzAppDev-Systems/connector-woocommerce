@@ -15,7 +15,7 @@ class WooTaxBatchImporter(Component):
     """Batch Importer for WooCommerce Tax"""
 
     _name = "woo.tax.batch.importer"
-    _inherit = "woo.batch.importer"
+    _inherit = "woo.delayed.batch.importer"
     _apply_on = "woo.tax"
 
 

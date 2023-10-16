@@ -15,7 +15,7 @@ class WooSettingsBatchImporter(Component):
     """Batch Importer the WooCommerce Settings"""
 
     _name = "woo.settings.batch.importer"
-    _inherit = "woo.batch.importer"
+    _inherit = "woo.delayed.batch.importer"
     _apply_on = "woo.settings"
 
 

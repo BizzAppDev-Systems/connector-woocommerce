@@ -105,8 +105,8 @@ class WooBackend(models.Model):
         string="Filter Sale Orders Based on their Status",
         help="""Select the sale order statuses to filter during import.
         Only orders with the selected statuses will be imported.
-        This allows you to narrow down which orders are imported based on
-        their status.""",
+        This allows you to narrow down which orders are imported based on their
+         status.""",
     )
     default_product_type = fields.Selection(
         [
@@ -137,6 +137,7 @@ class WooBackend(models.Model):
         domain=[("type", "=", "service")],
         help="Select the default fee product for imported orders.",
     )
+
     @api.onchange("company_id")
     def _onchange_company(self):
         """Set sale team id False everytime company_id is changed"""
@@ -211,7 +212,7 @@ class WooBackend(models.Model):
         else:
             force = self[force_update_field] if force_update_field else False
             self._import_from_date(
-                model=model,
+                model=binding_model,
                 from_date_field=from_date_field,
                 filters=filters,
                 job_options=job_options,
@@ -238,9 +239,7 @@ class WooBackend(models.Model):
         self, model, from_date_field, priority=None, filters=None, job_options=None
     ):
         """Method to add a filter based on the date."""
-        self.env[model].with_delay(**job_options or {}).import_batch(
-            backend=self, filters=filters
-        )
+        model.import_batch(backend=self, filters=filters)
 
     def toggle_test_mode(self):
         """Test Mode"""
@@ -429,18 +428,6 @@ class WooBackend(models.Model):
                 priority=5,
                 export=False,
             )
-        return True
-
-    @api.model
-    def cron_import_metadata(self, domain=None):
-        """Cron for sync_metadata"""
-        backend_ids = self.search(domain or [])
-        backend_ids.sync_metadata()
-        
-    def import_shipping_methods(self):
-        """Import Shipping Methods from backend"""
-        # TODO Call me from sync metadata
-        for backend in self:
             backend._sync_from_date(
                 model="woo.delivery.carrier",
                 priority=5,
@@ -449,7 +436,7 @@ class WooBackend(models.Model):
         return True
 
     @api.model
-    def cron_import_shipping_methods(self, domain=None):
-        """Cron of Import Shipping Methods"""
+    def cron_import_metadata(self, domain=None):
+        """Cron for sync_metadata"""
         backend_ids = self.search(domain or [])
-        backend_ids.import_shipping_methods()
+        backend_ids.sync_metadata()
