@@ -261,10 +261,10 @@ class WooSaleOrderImporter(Component):
     def _import_dependencies(self):
         """
         Override method to import dependencies for WooCommerce sale order.
-        This method is overridden to handle the import of dependencies, particularly for
-        WooCommerce sale orders. It retrieves line items from the remote record and imports
-        the associated products as dependencies, ensuring that they are available for
-        the sale order.
+        This method is overridden to handle the import of dependencies, particularly
+        for WooCommerce sale orders. It retrieves line items from the remote record and
+        imports the associated products as dependencies, ensuring that they are
+        available for the sale order.
         """
         record = self.remote_record
         for line in record.get("line_items", []):

@@ -175,15 +175,7 @@ class WooCRUDAdapter(AbstractComponent):
 
     def _call(self, resource_path, arguments=None, http_method=None):
         """Method to initiate the connection"""
-        try:
-            woo_api = getattr(self.work, "woo_api")
-        except AttributeError:
-            raise AttributeError(
-                "You must provide a woo_api attribute with a "
-                "WooAPI instance to be able to use the "
-                "Backend Adapter."
-            ) from None
-        return woo_api.call(resource_path, arguments, http_method=http_method)
+        return self.work.woo_api.call(resource_path, arguments, http_method=http_method)
 
 
 class GenericAdapter(AbstractComponent):
