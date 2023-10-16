@@ -99,6 +99,7 @@ class WooBackend(models.Model):
         help="""When the boolean is 'True,' partners can be imported without needing
         an email address.""",
     )
+    include_tax = fields.Boolean(string="Tax Include", readonly=True)
     woo_sale_status_ids = fields.Many2many(
         comodel_name="woo.sale.status",
         string="Filter Sale Orders Based on their Status",
@@ -136,6 +137,10 @@ class WooBackend(models.Model):
         domain=[("type", "=", "service")],
         help="Select the default fee product for imported orders.",
     )
+    @api.onchange("company_id")
+    def _onchange_company(self):
+        """Set sale team id False everytime company_id is changed"""
+        self.sale_team_id = False
 
     def get_filters(self, model=None):
         """New Method: Returns the filter"""
@@ -425,12 +430,19 @@ class WooBackend(models.Model):
         backend_ids.export_sale_order_status()
 
     def sync_metadata(self):
-        """Import the data regarding country and state"""
+        """Import the data regarding country, state and settings"""
         for backend in self:
             backend._sync_from_date(
                 model="woo.res.country",
                 priority=5,
+                export=False,
             )
+            backend._sync_from_date(
+                model="woo.settings",
+                priority=5,
+                export=False,
+            )
+        return True
 
     @api.model
     def cron_import_metadata(self, domain=None):
