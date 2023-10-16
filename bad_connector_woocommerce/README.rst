@@ -144,7 +144,7 @@
   - At the backend level, within the 'Connectors' section, specifically under 'WooCommerce' > 'WooCommerce Backends' in the 'Advanced Configuration' tab, there is a 'Filter Sale Orders Based on their Status' Many2many Field. When this field is populated with specific sale order statuses, it will filter and retrieve those sale orders from WooCommerce that match the statuses provided in the 'Filter Sale Orders Based on their Status' field.
 
 * Payload Information:
-    - At Partner, Product, Product Attribute, Product Attribute Value,Country,Delivery Carrier,Product Tags and Sale order binding form view level the co-responding payload can be viewed in "Woo Data" field.
+    - At Partner, Product, Product Attribute, Product Attribute Value, Country, Delivery Carrier, Product Tags and Sale order binding form view level the co-responding payload can be viewed in "Woo Data" field.
 
 * Import of Taxes:
   - Enable the import functionality in bad_connector_woocommerce to transfer Taxes from WooCommerce to Odoo.
