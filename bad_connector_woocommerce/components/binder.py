@@ -23,4 +23,7 @@ class WooModelBinder(Component):
         "woo.sale.order.line",
         "woo.product.category",
         "woo.delivery.carrier",
+        "woo.res.country",
+        "woo.settings",
+        "woo.tax",
     ]

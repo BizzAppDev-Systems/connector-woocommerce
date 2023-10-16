@@ -35,7 +35,9 @@
                                     class="fa fa-exclamation-triangle"
                                     style="font-size:20px;"
                                 />
-                                Warning:Enabling tax inclusion in WooCommerce may affect the total tax in Odoo, so it's advisable NOT to use tax inclusion in Odoo.
+                                Warning:Enabling tax inclusion in WooCommerce may affect
+                                the total tax in Odoo, so it's advisable NOT to use tax
+                                inclusion in Odoo.
                             </span>
                         </div>
                     </div>
@@ -339,8 +341,9 @@
                                         <field name="company_id" />
                                         <field
                                             name="sale_team_id"
-                                            domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
-                                
+                                            domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+                                        />
+
                                         <field
                                             name="default_carrier_product_id"
                                             context="{'default_detailed_type': 'service'}"
