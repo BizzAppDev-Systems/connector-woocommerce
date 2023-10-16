@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 
 class WooSaleOrderBatchImporter(Component):
     _name = "woo.sale.order.batch.importer"
-    _inherit = "woo.batch.importer"
+    _inherit = "woo.delayed.batch.importer"
     _apply_on = "woo.sale.order"
 
 
