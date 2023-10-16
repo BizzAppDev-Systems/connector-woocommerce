@@ -215,11 +215,11 @@ class GenericAdapter(AbstractComponent):
 
     def create(self, data, **kwargs):
         """Creates the data in remote"""
-        result = self._call(self._woo_model, data=data, http_method="post")
+        result = self._call(self._woo_model, arguments=data, http_method="post")
         return result
 
     def write(self, external_id, data, **kwargs):
         """Update records on the external system"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
-        result = self._call(resource_path=resource_path, data=data, http_method="put")
+        result = self._call(resource_path=resource_path, arguments=data, http_method="put")
         return result
