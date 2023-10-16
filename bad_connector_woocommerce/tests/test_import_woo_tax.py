@@ -23,23 +23,21 @@ class TestImportWooTax(BaseWooTestCase):
         external_id = "1"
         tax_name = "Tax 19%"
         tax_amount = 19.0000
-        tax_record = self.env['account.tax'].create({
-            'name': tax_name,
-            'amount': tax_amount,
-        })
+        tax_record = self.env["account.tax"].create(
+            {
+                "name": tax_name,
+                "amount": tax_amount,
+            }
+        )
         with recorder.use_cassette("import_woo_tax"):
             self.env["woo.tax"].import_record(
                 external_id=external_id, backend=self.backend
             )
         self.tax_model = self.env["woo.tax"]
-        tax1 = self.tax_model.search(
-            [("external_id", "=", external_id)]
-        )
+        tax1 = self.tax_model.search([("external_id", "=", external_id)])
         self.assertEqual(len(tax1), 1)
         self.assertTrue(tax1, "WooCommerce Tax is not imported!")
-        self.assertEqual(
-            tax1.external_id, external_id, "External ID is different!!"
-        )
+        self.assertEqual(tax1.external_id, external_id, "External ID is different!!")
         self.assertEqual(
             tax1.name,
             "Tax 19.0%",
@@ -50,6 +48,4 @@ class TestImportWooTax(BaseWooTestCase):
             19.0,
             "WooCommerce Ammount is not matched with response",
         )
-        self.assertEqual(
-            tax1.odoo_id.id, tax_record.id, "Odoo Id is not found in Odoo"
-        )
+        self.assertEqual(tax1.odoo_id.id, tax_record.id, "Odoo Id is not found in Odoo")
