@@ -4,8 +4,6 @@ from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -35,11 +33,6 @@ class WooTax(models.Model):
         copy=False,
     )
     odoo_id = fields.Many2one(string="Taxes", comodel_name="account.tax")
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo WooCommerce Taxes"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooTax, self).__init__(name, bases, attrs)
 
 
 class WooTaxAdapter(Component):

@@ -1,5 +1,8 @@
 import base64
+import logging
 import urllib.request
+
+logger = logging.getLogger(__name__)
 
 
 def fetch_image_data(image_url):
@@ -12,5 +15,5 @@ def fetch_image_data(image_url):
         else:
             return None
     except Exception as e:
-        print(f"Error downloading image: {e}")
+        logger.error(f"Error downloading image: {e}")
         return None

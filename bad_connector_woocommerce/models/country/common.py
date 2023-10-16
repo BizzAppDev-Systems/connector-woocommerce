@@ -2,8 +2,6 @@ from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
-from ...components.binder import WooModelBinder
-
 
 class ResCountry(models.Model):
     _inherit = "res.country"
@@ -28,11 +26,6 @@ class WooResCountry(models.Model):
         required=True,
         ondelete="restrict",
     )
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Country"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooResCountry, self).__init__(name, bases, attrs)
 
 
 class WooResCountryAdapter(Component):

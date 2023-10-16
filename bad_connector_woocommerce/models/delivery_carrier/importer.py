@@ -13,7 +13,7 @@ class WooDeliveryCarrierBatchImporter(Component):
     """Batch Importer the WooCommerce Delivery Method"""
 
     _name = "woo.delivery.carrier.batch.importer"
-    _inherit = "woo.batch.importer"
+    _inherit = "woo.delayed.batch.importer"
     _apply_on = "woo.delivery.carrier"
 
 

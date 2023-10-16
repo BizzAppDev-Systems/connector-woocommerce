@@ -252,13 +252,13 @@ class WooSaleOrderImporter(Component):
     _inherit = "woo.importer"
     _apply_on = "woo.sale.order"
 
-    def _must_skip(self):
+    def _must_skip(self, **kwargs):
         """Skipped Record which are already imported."""
         if self.binder.to_internal(self.external_id):
             return _("Already imported")
-        return super(WooSaleOrderImporter, self)._must_skip()
+        return super(WooSaleOrderImporter, self)._must_skip(**kwargs)
 
-    def _import_dependencies(self):
+    def _import_dependencies(self, **kwargs):
         """
         Override method to import dependencies for WooCommerce sale order.
         This method is overridden to handle the import of dependencies, particularly for

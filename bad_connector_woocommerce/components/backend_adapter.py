@@ -143,7 +143,7 @@ class WooCRUDAdapter(AbstractComponent):
     _inherit = ["base.backend.adapter", "connector.woo.base"]
     _usage = "backend.adapter"
 
-    def search(self, filters=None):
+    def search(self, filters=None, **kwargs):
         """
         Search records according to some criterias
         and returns a list of ids
@@ -154,22 +154,22 @@ class WooCRUDAdapter(AbstractComponent):
         """Returns the information of a record"""
         raise NotImplementedError
 
-    def search_read(self, filters=None):
+    def search_read(self, filters=None, **kwargs):
         """
         Search records according to some criterias
         and returns their information
         """
         raise NotImplementedError
 
-    def create(self, data):
+    def create(self, data, **kwargs):
         """Create a record on the external system"""
         raise NotImplementedError
 
-    def write(self, external_id, data):
+    def write(self, external_id, data, **kwargs):
         """Update records on the external system"""
         raise NotImplementedError
 
-    def delete(self, external_id):
+    def delete(self, external_id, **kwargs):
         """Delete a record on the external system"""
         raise NotImplementedError
 
@@ -183,7 +183,9 @@ class WooCRUDAdapter(AbstractComponent):
                 "WooAPI instance to be able to use the "
                 "Backend Adapter."
             ) from None
-        return woo_api.call(resource_path, arguments, http_method=http_method)
+        return woo_api.call(
+            resource_path=resource_path, arguments=arguments, http_method=http_method
+        )
 
 
 class GenericAdapter(AbstractComponent):
@@ -192,7 +194,7 @@ class GenericAdapter(AbstractComponent):
     _name = "woo.adapter"
     _inherit = "woo.crud.adapter"
     _apply_on = "woo.backend"
-    _last_update_field = "date_modified_gmt"
+    _last_update_date = "date_modified"
     _woo_model = None
     _woo_ext_id_key = "id"
     _odoo_ext_id_key = "external_id"
@@ -204,20 +206,20 @@ class GenericAdapter(AbstractComponent):
         )
         return result
 
-    def read(self, external_id=None, attributes=None):
+    def read(self, external_id=None, attributes=None, **kwargs):
         """Method to get a data for specified record"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
-        result = self._call(resource_path, http_method="get")
+        result = self._call(resource_path=resource_path, http_method="get")
         result = result.get("data", [])
         return result
 
-    def create(self, data):
+    def create(self, data, **kwargs):
         """Creates the data in remote"""
-        result = self._call(self._woo_model, data, http_method="post")
+        result = self._call(self._woo_model, arguments=data, http_method="post")
         return result
 
-    def write(self, external_id, data):
+    def write(self, external_id, data, **kwargs):
         """Update records on the external system"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
-        result = self._call(resource_path, data, http_method="put")
+        result = self._call(resource_path=resource_path, arguments=data, http_method="put")
         return result
