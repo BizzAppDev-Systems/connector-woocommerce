@@ -158,8 +158,6 @@
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
 
-* Test
-
 **Known issues/Roadmap**
 ************************
 

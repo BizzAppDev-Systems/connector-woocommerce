@@ -24,7 +24,8 @@ class WooSaleOrderExporterMapper(Component):
         if not self.backend_record.mark_completed:
             raise MappingError(
                 _(
-                    "Export Delivery Status is Not Allow from WooCommerce Backend '%s'.",
+                    "Export Delivery Status is Not Allow from WooCommerce"
+                    " Backend '%s'.",
                     self.backend_record.name,
                 )
             )
