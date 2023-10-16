@@ -334,17 +334,7 @@ class WooBatchImporter(AbstractComponent):
         Import a record directly or delay the import of the record.
         Method to implement in sub-classes.
         """
-        job_options = job_options or {}
-        if "identity_key" not in job_options:
-            job_options["identity_key"] = identity_exact
-        if "description" not in kwargs:
-            description = self.backend_record.get_queue_job_description(
-                prefix=self.model.import_record.__doc__ or "Record Import Of",
-                model=self.model._description,
-            )
-            job_options["description"] = description
-        delayable = self.model.with_delay(**job_options or {})
-        delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
+        raise NotImplementedError
 
 
 class WooDirectBatchImporter(AbstractComponent):
@@ -371,5 +361,11 @@ class WooDelayedBatchImporter(AbstractComponent):
         job_options = job_options or {}
         if "identity_key" not in job_options:
             job_options["identity_key"] = identity_exact
+        if "description" not in kwargs:
+            description = self.backend_record.get_queue_job_description(
+                prefix=self.model.import_record.__doc__ or "Record Import Of",
+                model=self.model._description,
+            )
+            job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
         delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
