@@ -40,6 +40,15 @@
         parent="menu_action_connector_configuration"
         sequence="1"
     />
+    <!-- Added Submenu for WooCommerce Settings -->
+    <menuitem
+        id="menu_action_woo_settings"
+        action="action_woo_settings"
+        name="WooCommerce Settings"
+        active="True"
+        parent="menu_action_connector_configuration"
+        sequence="1"
+    />
     <!-- Define the menu item WooCommerce product category -->
     <menuitem
         id="menu_woo_product_category"
@@ -53,5 +62,12 @@
         name="WooCommerce Product Image URL"
         parent="menu_woo_root"
         action="action_woo_product_image_url"
+    />
+    <!-- Define the menu item WooCommerce Taxes -->
+    <menuitem
+        id="menu_woo_tax"
+        name="WooCommerce Taxes"
+        parent="menu_woo_root"
+        action="action_woo_tax"
     />
 </odoo>
