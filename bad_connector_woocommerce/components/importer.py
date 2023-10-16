@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from odoo import _, fields
 
@@ -39,29 +40,42 @@ class WooImporter(AbstractComponent):
         # TODO : Support me for the Date structure.
         return datetime_str
 
-    def _is_uptodate(self, binding):
-        """Return True if the import should be skipped because
-        it is already up-to-date in OpenERP"""
-        update_field = self.backend_adapter._last_update_date
-        if not update_field:
-            return
+    def _is_uptodate(self, binding, **kwargs):
+        """
+        Return True if the import should be skipped because
+        it is already up-to-date in OpenERP
+        """
         assert self.remote_record
-        if not self.remote_record.get(update_field):
-            return  # no update date on remote system, always import it.
         if not binding:
             return  # it does not exist so it should not be skipped
-        sync = binding.sync_date
-        if not sync:
+        update_date = self.backend_adapter._last_update_date
+        if not update_date:
             return
+        last_update_date = self.remote_record.get(update_date, None)
+        if not last_update_date:
+            return  # no update date on WooCommerce, always import it.
         from_string = fields.Datetime.from_string
+        if self.backend_adapter._check_import_sync_date:
+            sync = binding.sync_date
+            if not sync:
+                return
+        else:
+            binding_update_date = self.backend_adapter._binding_update_date_field
+            if not binding_update_date or (
+                binding_update_date and not hasattr(binding, binding_update_date)
+            ):
+                return
+            sync = binding[binding_update_date]
+        input_date = datetime.strptime(last_update_date, "%Y-%m-%dT%H:%M:%S")
+        date = input_date.strftime("%Y-%m-%d %H:%M:%S")
+        remote_date = from_string(date)
         sync_date = from_string(sync)
-        remote_date = self.get_parsed_date(self.remote_record[update_field])
         # if the last synchronization date is greater than the last
-        # update in remote, we skip the import.
+        # update in Woocommerce, we skip the import.
         # Important: at the beginning of the exporters flows, we have to
-        # check if the remote_date is more recent than the sync_date
+        # check if the last_update_date is more recent than the sync_date
         # and if so, schedule a new import. If we don't do that, we'll
-        # miss changes done in remote system
+        # miss changes done in Woocommerce
         return remote_date < sync_date
 
     def _import_dependency(
