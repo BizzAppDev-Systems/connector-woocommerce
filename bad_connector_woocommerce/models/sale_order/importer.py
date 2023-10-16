@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 
 class WooSaleOrderBatchImporter(Component):
     _name = "woo.sale.order.batch.importer"
-    _inherit = "woo.batch.importer"
+    _inherit = "woo.delayed.batch.importer"
     _apply_on = "woo.sale.order"
 
 
@@ -261,10 +261,10 @@ class WooSaleOrderImporter(Component):
     def _import_dependencies(self):
         """
         Override method to import dependencies for WooCommerce sale order.
-        This method is overridden to handle the import of dependencies, particularly for
-        WooCommerce sale orders. It retrieves line items from the remote record and imports
-        the associated products as dependencies, ensuring that they are available for
-        the sale order.
+        This method is overridden to handle the import of dependencies, particularly
+        for WooCommerce sale orders. It retrieves line items from the remote record and
+        imports the associated products as dependencies, ensuring that they are
+        available for the sale order.
         """
         record = self.remote_record
         for line in record.get("line_items", []):

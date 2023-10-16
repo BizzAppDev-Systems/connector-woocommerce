@@ -11,7 +11,7 @@ class WooResCountryBatchImporter(Component):
     """Batch Importer for WooCommerce Country"""
 
     _name = "woo.res.country.batch.importer"
-    _inherit = "woo.batch.importer"
+    _inherit = "woo.delayed.batch.importer"
     _apply_on = "woo.res.country"
 
 
