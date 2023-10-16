@@ -442,18 +442,6 @@ class WooBackend(models.Model):
                 priority=5,
                 export=False,
             )
-        return True
-
-    @api.model
-    def cron_import_metadata(self, domain=None):
-        """Cron for sync_metadata"""
-        backend_ids = self.search(domain or [])
-        backend_ids.sync_metadata()
-        
-    def import_shipping_methods(self):
-        """Import Shipping Methods from backend"""
-        # TODO Call me from sync metadata
-        for backend in self:
             backend._sync_from_date(
                 model="woo.delivery.carrier",
                 priority=5,
@@ -462,7 +450,7 @@ class WooBackend(models.Model):
         return True
 
     @api.model
-    def cron_import_shipping_methods(self, domain=None):
-        """Cron of Import Shipping Methods"""
+    def cron_import_metadata(self, domain=None):
+        """Cron for sync_metadata"""
         backend_ids = self.search(domain or [])
-        backend_ids.import_shipping_methods()
+        backend_ids.sync_metadata()
