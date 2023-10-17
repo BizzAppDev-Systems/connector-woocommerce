@@ -60,7 +60,8 @@ class ResPartner(models.Model):
         if state and not state_record:
             raise MappingError(
                 _(
-                    f"State code '{state}' not found in Odoo records for country '{country}'."
+                    f"State code '{state}' not found in Odoo records for "
+                    "country '{country}'."
                 )
             )
         vals = {

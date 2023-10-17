@@ -4,8 +4,6 @@ from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -21,11 +19,6 @@ class WooSettings(models.Model):
     odoo_id = fields.Many2one(
         string="WooCommerce Settings", comodel_name="woo.settings"
     )
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo WooCommerce Settings"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooSettings, self).__init__(name, bases, attrs)
 
 
 class WooSettingsAdapter(Component):
