@@ -318,11 +318,7 @@
                                         string="Default Configuration"
                                     >
                                         <field name="default_limit" />
-                                    </group>
-                                    <group
-                                        name="Partner_configuration"
-                                        string="Customers Configuration"
-                                    >
+                                        <separator string="Customers Configuration" />
                                         <field name="without_email" />
                                     </group>
                                     <group
@@ -333,10 +329,12 @@
                                         <field name="default_product_type" />
                                         <field name="product_categ_id" />
                                     </group>
-                                    <group
-                                        name="sale_order_configuration"
-                                        string="Orders Configuration"
-                                    >
+                                </group>
+                                <group
+                                    name="sale_order_configuration"
+                                    string="Orders Configuration"
+                                >
+                                    <group>
                                         <field name="order_prefix" />
                                         <field name="company_id" />
                                         <field
@@ -348,6 +346,13 @@
                                             name="default_carrier_product_id"
                                             context="{'default_detailed_type': 'service'}"
                                         />
+                                        <field
+                                            name="woo_sale_status_ids"
+                                            widget="many2many_tags"
+                                        />
+                                    </group>
+
+                                    <group>
                                         <field name="default_shipping_method_id" />
                                         <field
                                             name="default_fee_product_id"
@@ -357,10 +362,6 @@
                                         <field
                                             name="tracking_info"
                                             attrs="{'invisible': [('mark_completed', '=', False)]}"
-                                        />
-                                        <field
-                                            name="woo_sale_status_ids"
-                                            widget="many2many_tags"
                                         />
                                         <field name="include_tax" />
                                     </group>
