@@ -7,31 +7,32 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes/2
+      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/tags/35
     response:
       body:
         {
           string:
-            '{
-              "id": 2,
-              "name": "colour",
-              "slug": "pa_colour",
-              "type": "select",
-              "order_by": "menu_order",
-              "has_archives": false,
-              "_links": {
-                  "self": [
-                      {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes/2"
-                      }
-                  ],
-                  "collection": [
-                      {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes"
-                      }
-                  ]
-              }
-            }',
+            '
+              {
+                "id": 35,
+                "name": "Latest",
+                "slug": "latest",
+                "description": "latest tag for product.",
+                "count": 1,
+                "_links": {
+                    "self": [
+                        {
+                            "href": "http://localhost:8080/wp-json/wc/v3/products/tags/35"
+                        }
+                    ],
+                    "collection": [
+                        {
+                            "href": "http://localhost:8080/wp-json/wc/v3/products/tags"
+                        }
+                    ]
+                }
+            }
+            ',
         }
       headers:
         Cache-Control: ["no-store, no-cache, must-revalidate"]
@@ -47,4 +48,3 @@ interactions:
         X-Frame-Options: [SAMEORIGIN]
         content-length: ["1378"]
       status: {code: 200, message: OK}
-

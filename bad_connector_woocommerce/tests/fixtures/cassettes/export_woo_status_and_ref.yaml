@@ -1,12 +1,30 @@
 interactions:
   - request:
-      body: null
+      body:
+        {
+          string:
+            '
+              {
+                "status": "completed",
+                "meta_data": [
+                  {
+                    "key": "_wc_shipment_tracking_items",
+                    "value": [
+                        {
+                            "tracking_number": tracking_number,
+                        }
+                    ],
+                  }
+                ]
+              }
+            ',
+        }
       headers:
         Accept: ["*/*"]
         Accept-Encoding: ["gzip, deflate, br"]
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
-      method: GET
+      method: PUT
       uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/orders/71
     response:
       body:
@@ -16,7 +34,7 @@ interactions:
               {
                 "id": 71,
                 "parent_id": 0,
-                "status": "processing",
+                "status": "completed",
                 "currency": "USD",
                 "version": "7.9.0",
                 "prices_include_tax": false,
@@ -66,7 +84,17 @@ interactions:
                 "date_paid": "2023-07-27T13:39:36",
                 "cart_hash": "",
                 "number": "71",
-                "meta_data": [],
+                "meta_data": [
+                    {
+                      "id": 2700,
+                      "key": "_wc_shipment_tracking_items",
+                      "value": [
+                          {
+                            "tracking_number": "TR12345"
+                          }
+                      ]
+                    }
+                ],
                 "line_items": [
                     {
                         "id": 10,
@@ -89,10 +117,6 @@ interactions:
                         "meta_data": [],
                         "sku": "cloth-sku",
                         "price": 999,
-                        "image": {
-                            "id": "51",
-                            "src": "http://localhost:8080/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
-                        },
                         "parent_name": null
                     }
                 ],
@@ -230,7 +254,7 @@ interactions:
         Cache-Control: ["no-store, no-cache, must-revalidate"]
         Connection: [keep-alive]
         Content-Type: [application/json; charset=utf-8]
-        Date: ["Mon, 17 jul 2023 05:38:29 GMT"]
+        Date: ["Thu, 08 Sep 2022 05:38:29 GMT"]
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
@@ -238,53 +262,5 @@ interactions:
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
-        content-length: ["1378"]
+        content-length: ["13780"]
       status: {code: 200, message: OK}
-  - request:
-      body: null
-      headers:
-        Accept: ["*/*"]
-        Accept-Encoding: ["gzip, deflate, br"]
-        Connection: [keep-alive]
-        User-Agent: [python-requests/2.19.1]
-      method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/shipping_methods/flat_rate
-    response:
-      body:
-        {
-          string:
-            '
-              {
-                "id": "flat_rate",
-                "title": "Flat rate",
-                "description": "Lets you charge a fixed rate for shipping.",
-                "_links": {
-                    "self": [
-                        {
-                            "href": "http://localhost:8080/wp-json/wc/v3/shipping_methods/flat_rate"
-                        }
-                    ],
-                    "collection": [
-                        {
-                            "href": "http://localhost:8080/wp-json/wc/v3/shipping_methods"
-                        }
-                    ]
-                }
-            }
-          ',
-        }
-      headers:
-        Cache-Control: ["no-store, no-cache, must-revalidate"]
-        Connection: [keep-alive]
-        Content-Type: [application/json; charset=utf-8]
-        Date: ["Mon, 17 jul 2023 05:38:29 GMT"]
-        Expires: ["Jan 23 23:59:59 2023 GMT"]
-        Server: [nginx/1.14.0 (Ubuntu)]
-        Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
-        Transfer-Encoding: [chunked]
-        Vary: [Accept-Encoding]
-        X-Frame-Options: [SAMEORIGIN]
-        content-length: ["1378"]
-      status: {code: 200, message: OK}
-

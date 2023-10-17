@@ -7,31 +7,33 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes/2
+      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/data/countries/bo
     response:
       body:
         {
           string:
             '{
-              "id": 2,
-              "name": "colour",
-              "slug": "pa_colour",
-              "type": "select",
-              "order_by": "menu_order",
-              "has_archives": false,
+              "code": "BO",
+              "name": "Bolivia",
+              "states": [
+                  {
+                    "code": "AL-01",
+                    "name": "Berat"
+                }
+              ],
               "_links": {
                   "self": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes/2"
+                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/data/countries/bo"
                       }
                   ],
                   "collection": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes"
+                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/data/countries"
                       }
                   ]
               }
-            }',
+          }',
         }
       headers:
         Cache-Control: ["no-store, no-cache, must-revalidate"]
@@ -47,4 +49,3 @@ interactions:
         X-Frame-Options: [SAMEORIGIN]
         content-length: ["1378"]
       status: {code: 200, message: OK}
-
