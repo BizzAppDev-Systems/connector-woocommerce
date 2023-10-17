@@ -17,6 +17,12 @@ class BaseWooTestCase(TransactionComponentCase):
                 "test_location": "https://woo-wildly-inner-cycle.wpcomstaging.com",
                 "test_client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
                 "test_client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
+                "default_carrier_product_id": self.env.ref(
+                    "product.expense_product"
+                ).id,
+                "include_tax": False,
+                "mark_completed": True,
+                "tracking_info": True,
             }
         )
         self.backend_data = {
@@ -29,6 +35,10 @@ class BaseWooTestCase(TransactionComponentCase):
             "location": "https://woo-wildly-inner-cycle.wpcomstaging.com",
             "client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
             "client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
+            "default_carrier_product_id": self.env.ref("product.expense_product").id,
+            "include_tax": False,
+            "mark_completed": True,
+            "tracking_info": True,
         }
 
     def test_backend_test_mode_true(self):
@@ -78,3 +88,15 @@ class BaseWooTestCase(TransactionComponentCase):
 
         # Check if the test_mode is now True again
         self.assertEqual(self.backend.test_mode, True)
+
+    def test_backend_cron(self):
+        """Test case for cron method"""
+        self.backend.cron_import_partners()
+        self.backend.cron_import_product_tags()
+        self.backend.cron_import_product_attributes()
+        self.backend.cron_import_product_categories()
+        self.backend.cron_import_products()
+        self.backend.cron_import_account_tax()
+        self.backend.cron_import_sale_orders()
+        self.backend.cron_import_metadata()
+        self.backend.cron_export_sale_order_status()

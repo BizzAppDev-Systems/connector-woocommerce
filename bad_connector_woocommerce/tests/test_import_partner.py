@@ -25,6 +25,11 @@ class TestImportPartner(BaseWooTestCase):
             self.env["woo.res.partner"].import_record(
                 external_id=external_id, backend=self.backend
             )
+        country_record = self.env["res.country"].search([("code", "=", "USA")], limit=1)
+        state = self.env["res.country.state"].search(
+            [("code", "=", "CA"), ("country_id", "=", country_record.id)],
+            limit=1,
+        )
         self.partner_model = self.env["woo.res.partner"]
         partner1 = self.partner_model.search([("external_id", "=", external_id)])
         self.assertEqual(len(partner1), 1)
@@ -51,4 +56,19 @@ class TestImportPartner(BaseWooTestCase):
             partner1.email,
             "john.doe@example.com",
             "Partner's Email is not matched with response!",
+        )
+        self.assertEqual(
+            partner1.city,
+            "california city",
+            "Partner's City is not matched with response!",
+        )
+        self.assertEqual(
+            partner1.country_id.id,
+            country_record.id,
+            "Partner's Country is not matched with response!",
+        )
+        self.assertEqual(
+            partner1.state_id.id,
+            state.id,
+            "Partner's State is not matched with response!",
         )

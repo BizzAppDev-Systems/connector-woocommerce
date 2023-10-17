@@ -7,3 +7,10 @@ from . import product_attribute
 from . import product_attribute_value
 from . import sale_order
 from . import woo_product_category
+from . import woo_sale_status
+from . import woo_product_image_url
+from . import product_tag
+from . import woo_tax
+from . import country
+from . import delivery_carrier
+from . import woo_settings

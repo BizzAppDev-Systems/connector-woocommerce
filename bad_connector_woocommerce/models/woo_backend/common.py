@@ -33,7 +33,14 @@ class WooBackend(models.Model):
         default=10,
         help="Set the default limit for data imports.",
     )
-    company_id = fields.Many2one(comodel_name="res.company", string="Company")
+    company_id = fields.Many2one(
+        comodel_name="res.company", required=True, string="Company"
+    )
+    sale_team_id = fields.Many2one(
+        comodel_name="crm.team",
+        string="Sales Team",
+        help="Select the Sales Team to associate it with Sale Order.",
+    )
     location = fields.Char(
         string="Location(Live)", help="Enter the Live Location for WooCommerce."
     )
@@ -92,6 +99,49 @@ class WooBackend(models.Model):
         help="""When the boolean is 'True,' partners can be imported without needing
         an email address.""",
     )
+    include_tax = fields.Boolean(string="Tax Include", readonly=True)
+    woo_sale_status_ids = fields.Many2many(
+        comodel_name="woo.sale.status",
+        string="Filter Sale Orders Based on their Status",
+        help="""Select the sale order statuses to filter during import.
+        Only orders with the selected statuses will be imported.
+        This allows you to narrow down which orders are imported based on their
+         status.""",
+    )
+    default_product_type = fields.Selection(
+        [
+            ("consu", "Consumable"),
+            ("service", "Service"),
+            ("product", "Storable Product"),
+        ],
+        string="Default Product Type",
+        default="consu",
+        required=True,
+    )
+
+    default_shipping_method_id = fields.Many2one(
+        comodel_name="delivery.carrier",
+        string="Default Shipping Method",
+        help="Select the default shipping method for imported orders.",
+    )
+    default_carrier_product_id = fields.Many2one(
+        comodel_name="product.product",
+        string="Default Carrier Product",
+        domain=[("type", "=", "service")],
+        help="""Select the default product delivery carrier for imported
+        shipping methods.""",
+    )
+    default_fee_product_id = fields.Many2one(
+        comodel_name="product.product",
+        string="Default Fee Product",
+        domain=[("type", "=", "service")],
+        help="Select the default fee product for imported orders.",
+    )
+
+    @api.onchange("company_id")
+    def _onchange_company(self):
+        """Set sale team id False everytime company_id is changed"""
+        self.sale_team_id = False
 
     def get_filters(self, model=None):
         """New Method: Returns the filter"""
@@ -162,7 +212,7 @@ class WooBackend(models.Model):
         else:
             force = self[force_update_field] if force_update_field else False
             self._import_from_date(
-                model=model,
+                model=binding_model,
                 from_date_field=from_date_field,
                 filters=filters,
                 job_options=job_options,
@@ -189,9 +239,7 @@ class WooBackend(models.Model):
         self, model, from_date_field, priority=None, filters=None, job_options=None
     ):
         """Method to add a filter based on the date."""
-        self.env[model].with_delay(**job_options or {}).import_batch(
-            backend=self, filters=filters
-        )
+        model.import_batch(backend=self, filters=filters)
 
     def toggle_test_mode(self):
         """Test Mode"""
@@ -237,6 +285,7 @@ class WooBackend(models.Model):
 
     @api.model
     def cron_import_partners(self, domain=None):
+        """Cron for import_partners"""
         backend_ids = self.search(domain or [])
         backend_ids.import_partners()
 
@@ -256,6 +305,22 @@ class WooBackend(models.Model):
         """Cron for import_products"""
         backend_ids = self.search(domain or [])
         backend_ids.import_products()
+
+    def import_product_tags(self):
+        """Import Product Tags from backend"""
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.product.tag",
+                priority=5,
+                export=False,
+            )
+        return True
+
+    @api.model
+    def cron_import_product_tags(self, domain=None):
+        """Cron for import_product_tags"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_product_tags()
 
     def import_product_attributes(self):
         """Import Product Attribute from backend"""
@@ -289,13 +354,36 @@ class WooBackend(models.Model):
         backend_ids = self.search(domain or [])
         backend_ids.import_product_categories()
 
+    def import_taxes(self):
+        """Import Taxes from backend"""
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.tax",
+                priority=5,
+                export=False,
+            )
+        return True
+
+    @api.model
+    def cron_import_account_tax(self, domain=None):
+        """Cron for import_taxes"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_taxes()
+
     def import_sale_orders(self):
         """Import Orders from backend"""
         for backend in self:
+            filters = {}
+            if backend.woo_sale_status_ids:
+                status = backend.mapped("woo_sale_status_ids").mapped("code")
+                filters = {
+                    "status": ",".join(status),
+                }
             backend._sync_from_date(
                 model="woo.sale.order",
                 from_date_field="import_orders_from_date",
                 priority=5,
+                filters=filters,
             )
         return True
 
@@ -326,3 +414,29 @@ class WooBackend(models.Model):
         domain.append(("mark_completed", "=", "True"))
         backend_ids = self.search(domain or [])
         backend_ids.export_sale_order_status()
+
+    def sync_metadata(self):
+        """Import the data regarding country, state and settings"""
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.res.country",
+                priority=5,
+                export=False,
+            )
+            backend._sync_from_date(
+                model="woo.settings",
+                priority=5,
+                export=False,
+            )
+            backend._sync_from_date(
+                model="woo.delivery.carrier",
+                priority=5,
+                export=False,
+            )
+        return True
+
+    @api.model
+    def cron_import_metadata(self, domain=None):
+        """Cron for sync_metadata"""
+        backend_ids = self.search(domain or [])
+        backend_ids.sync_metadata()

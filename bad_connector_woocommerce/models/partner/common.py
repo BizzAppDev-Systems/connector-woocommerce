@@ -6,8 +6,6 @@ from odoo import _, fields, models
 from odoo.addons.component.core import Component
 from odoo.addons.connector.exception import MappingError
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -25,6 +23,10 @@ class ResPartner(models.Model):
     hash_key = fields.Char(string="Hash Key")
 
     def write(self, vals):
+        """
+        Update specific fields in the partner record and set 'hash_key' to False if
+        certain fields are modified.
+        """
         if set(vals.keys()) & {
             "firstname",
             "lastname",
@@ -45,26 +47,40 @@ class ResPartner(models.Model):
     def _prepare_child_partner_vals(self, data, address_type=None):
         """Prepare values for child_ids"""
         country = data.get("country")
-        country = self.env["res.country"].search(
+        state = data.get("state")
+        country_record = self.env["res.country"].search(
             [("code", "=", country)],
             limit=1,
         )
+        if country and not country_record:
+            raise MappingError(_(f"Country '{country}' not found in Odoo records."))
+        state_record = self.env["res.country.state"].search(
+            [("code", "=", state), ("country_id", "=", country_record.id)], limit=1
+        )
+        if state and not state_record:
+            raise MappingError(
+                _(
+                    f"State code '{state}' not found in Odoo records for "
+                    "country '{country}'."
+                )
+            )
         vals = {
-            "name": data.get("username")
-            or data.get("first_name")
-            and data.get("last_name")
+            "name": data.get("username", "")
+            or data.get("first_name", "")
+            and data.get("last_name", "")
             and f"{data.get('first_name')} {data.get('last_name')}"
-            or data.get("first_name")
-            or data.get("email"),
-            "firstname": data.get("first_name"),
-            "lastname": data.get("last_name"),
-            "email": data.get("email"),
+            or data.get("first_name", "")
+            or data.get("email", ""),
+            "firstname": data.get("first_name", ""),
+            "lastname": data.get("last_name", ""),
+            "email": data.get("email", ""),
             "type": address_type or "",
             "street": data.get("address_1"),
             "street2": data.get("address_2"),
             "zip": data.get("postcode"),
             "phone": data.get("phone"),
-            "country_id": country.id if country else False,
+            "country_id": country_record.id if country_record else False,
+            "state_id": state_record.id if state_record else False,
             "city": data.get("city"),
         }
         return vals
@@ -83,6 +99,7 @@ class ResPartner(models.Model):
             data.get("address_2"),
             data.get("city"),
             data.get("country"),
+            data.get("state"),
             address_type,
             data.get("postcode"),
             data.get("phone"),
@@ -102,7 +119,7 @@ class ResPartner(models.Model):
         return address_data
 
     def create_get_children(self, record, partner_ext_id, backend_id):
-        """Mapping for Invoice and Shipping Addresses"""
+        """Return the Invoice and Shipping Addresses"""
         billing = record.get("billing")
         shipping = record.get("shipping")
         child_data = []
@@ -138,11 +155,6 @@ class WooResPartner(models.Model):
         required=True,
         ondelete="restrict",
     )
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Partner"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooResPartner, self).__init__(name, bases, attrs)
 
 
 class WooResPartnerAdapter(Component):

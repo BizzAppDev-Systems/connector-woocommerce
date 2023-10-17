@@ -15,6 +15,7 @@ class WooBinding(models.AbstractModel):
         ondelete="restrict",
     )
     external_id = fields.Char(string="ID on woo")
+    woo_data = fields.Text()
     _sql_constraints = [
         (
             "unique_backend_external_id",

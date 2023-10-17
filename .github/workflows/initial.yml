@@ -1,0 +1,22 @@
+name: Add In Progress Label to PR
+
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  add-label:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Add In Progress label
+      run: |
+        # Get the pull request number from the GitHub context
+        PR_NUMBER=$(echo "${{ github.event.number }}")
+
+        # Add the "In progress" label to the pull request
+        curl -X POST \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/labels" \
+          -d '{"labels":["In Progress"]}'

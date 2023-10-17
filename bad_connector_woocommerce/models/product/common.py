@@ -4,8 +4,6 @@ from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -32,7 +30,7 @@ class WooProductProduct(models.Model):
 
     odoo_id = fields.Many2one(
         comodel_name="product.product",
-        string="WooCommerce Product",
+        string="Odoo Product",
         required=True,
         ondelete="restrict",
     )
@@ -82,11 +80,11 @@ class WooProductProduct(models.Model):
     )
     price = fields.Char()
     regular_price = fields.Char()
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Product"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooProductProduct, self).__init__(name, bases, attrs)
+    woo_product_image_url_ids = fields.Many2many(
+        comodel_name="woo.product.image.url",
+        string="WooCommerce Product Image URL",
+        ondelete="restrict",
+    )
 
 
 class WooProductProductAdapter(Component):
@@ -105,5 +103,9 @@ class WooProductProductAdapter(Component):
         (
             "woo.product.attribute",
             "attributes",
+        ),
+        (
+            "woo.product.tag",
+            "tags",
         ),
     }

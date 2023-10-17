@@ -6,8 +6,6 @@ from odoo.tools import float_compare
 
 from odoo.addons.component.core import Component
 
-from ...components.binder import WooModelBinder
-
 _logger = logging.getLogger(__name__)
 
 
@@ -27,20 +25,19 @@ class SaleOrder(models.Model):
     woo_order_status = fields.Selection(
         selection=[
             ("completed", "Completed"),
-            ("any", "Any"),
-            ("pending", "Pending"),
+            ("pending", "Pending payment"),
             ("processing", "Processing"),
-            ("on-hold", "Hold"),
+            ("on-hold", "On hold"),
             ("cancelled", "Cancelled"),
             ("refunded", "Refunded"),
             ("failed", "Failed"),
             ("trash", "Trash"),
         ],
         string="WooCommerce Order Status",
-        default="any",
     )
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
     total_amount_different = fields.Boolean(compute="_compute_total_amount_diffrent")
+    woo_coupon = fields.Char()
 
     @api.depends(
         "woo_bind_ids",
@@ -120,7 +117,8 @@ class SaleOrder(models.Model):
             if not binding.backend_id.mark_completed:
                 raise ValidationError(
                     _(
-                        "Export Delivery Status is Not Allow from WooCommerce Backend '%s'.",
+                        "Export Delivery Status is Not Allow from WooCommerce"
+                        " Backend '%s'.",
                         binding.backend_id.name,
                     )
                 )
@@ -158,11 +156,6 @@ class WooSaleOrder(models.Model):
     total_tax = fields.Monetary()
     price_unit = fields.Monetary()
     woo_amount_total = fields.Monetary()
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Partner"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooSaleOrder, self).__init__(name, bases, attrs)
 
     def validate_delivery_orders_done(self):
         """
@@ -246,11 +239,6 @@ class WooSaleOrderLine(models.Model):
     price_subtotal_line = fields.Monetary(string="Total Line")
     subtotal_tax_line = fields.Monetary()
     subtotal_line = fields.Monetary()
-
-    def __init__(self, name, bases, attrs):
-        """Bind Odoo Sale Order Line"""
-        WooModelBinder._apply_on.append(self._name)
-        super(WooSaleOrderLine, self).__init__(name, bases, attrs)
 
     @api.model_create_multi
     def create(self, vals):

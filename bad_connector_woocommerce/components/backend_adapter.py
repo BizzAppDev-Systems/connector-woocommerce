@@ -4,11 +4,10 @@ import urllib
 from datetime import datetime
 
 import requests
+from woocommerce import API
 
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import NetworkRetryableError, RetryableJobError
-
-from woocommerce import API
 
 _logger = logging.getLogger(__name__)
 
@@ -99,7 +98,6 @@ class WooAPI(object):
                 json_response = result.json()
                 record_count = result.headers.get("X-WP-Total")
                 return {"record_count": record_count, "data": json_response}
-
             if (
                 status_code == 400
                 or status_code == 401
@@ -177,15 +175,7 @@ class WooCRUDAdapter(AbstractComponent):
 
     def _call(self, resource_path, arguments=None, http_method=None):
         """Method to initiate the connection"""
-        try:
-            woo_api = getattr(self.work, "woo_api")
-        except AttributeError:
-            raise AttributeError(
-                "You must provide a woo_api attribute with a "
-                "WooAPI instance to be able to use the "
-                "Backend Adapter."
-            ) from None
-        return woo_api.call(resource_path, arguments, http_method=http_method)
+        return self.work.woo_api.call(resource_path, arguments, http_method=http_method)
 
 
 class GenericAdapter(AbstractComponent):
@@ -194,7 +184,7 @@ class GenericAdapter(AbstractComponent):
     _name = "woo.adapter"
     _inherit = "woo.crud.adapter"
     _apply_on = "woo.backend"
-    _last_update_field = "date_modified_gmt"
+    _last_update_date = "date_modified"
     _woo_model = None
     _woo_ext_id_key = "id"
     _odoo_ext_id_key = "external_id"
