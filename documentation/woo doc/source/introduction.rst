@@ -4,7 +4,7 @@ Introduction
 Welcome to the official documentation for the Odoo Woocommerce Connector. This documentation provides an in-depth guide to using the connector, its features, and how it can help you integrate and manage your Odoo and WooCommerce systems seamlessly.
 
 About Odoo Woocommerce Connector
--------------------------------
+--------------------------------
 
 The Odoo Woocommerce Connector is a powerful integration solution that connects Odoo, a versatile open-source ERP system, with WooCommerce, a popular e-commerce platform. With this connector, you can synchronize data, automate processes, and streamline your business operations.
 
@@ -46,4 +46,3 @@ For the latest updates, release notes, and community discussions, visit our offi
 For support and inquiries, contact our dedicated support team.
 
 Thank you for choosing the Odoo Woocommerce Connector. We're here to help you succeed.
-

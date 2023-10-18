@@ -33,7 +33,9 @@ Here's how it works:
 
 .. image:: _static/odoo_product_category.png
    :align: center
+
 * We can find the imported Woocommerce Product Categories list from "Woocommerce Product Categories" menu.
+
 .. image:: _static/woo_category_menu.png
    :align: center
 

@@ -4,7 +4,7 @@ Installation
 In this section, we provide step-by-step instructions on how to install the Odoo Woocommerce Connector app in your Odoo instance.
 
 Prerequisites
-------------
+-------------
 
 Before you begin the installation process, make sure you have the following prerequisites in place:
 
@@ -44,4 +44,3 @@ Next Steps
 ----------
 
 After installing, you can proceed to the "Backend Overview" section of this documentation to get the basic idea about connector backend it's configuration.
-
