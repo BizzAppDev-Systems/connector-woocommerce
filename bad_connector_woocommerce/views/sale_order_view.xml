@@ -69,6 +69,7 @@
             >
                 <field
                     name="woo_order_status_id"
+                    readonly="1"
                     attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
                 />
                 <field
