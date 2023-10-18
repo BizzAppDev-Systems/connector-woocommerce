@@ -55,11 +55,12 @@
             <xpath expr="//form/header/button[@name='action_cancel']" position="after">
                 <field name="has_done_picking" invisible="1" />
                 <field name="woo_bind_ids" invisible="1" />
+                <field name="is_final_status" invisible="1" />
                 <button
                     name="export_delivery_status"
                     type="object"
                     class="oe_highlight"
-                    attrs="{'invisible': ['|','|',('woo_order_status','=','completed'),('has_done_picking', '=', False),('woo_bind_ids','=',False)]}"
+                    attrs="{'invisible':['|','|',('is_final_status','=',True),('has_done_picking', '=', False),('woo_bind_ids','=',False)]}"
                     string="Export Delivery Status"
                 />
             </xpath>
@@ -67,7 +68,6 @@
                 expr="//form/sheet/group/group/field[@name='sale_order_template_id']"
                 position="after"
             >
-                <field name="woo_order_status" invisible="1" />
                 <field
                     name="woo_order_status_id"
                     readonly="1"

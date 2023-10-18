@@ -73,7 +73,6 @@ class WooSaleOrderBatchExporter(Component):
     def _after_export(self, binding):
         """Import the transaction lines after checking WooCommerce order status."""
         woo_order_status = self.env["woo.sale.status"].search(
-            [("code", "=", "completed")], limit=1
+            [("code", "=", "completed"), ("is_final_status", "=", True)], limit=1
         )
         binding.write({"woo_order_status_id": woo_order_status.id})
-        binding.write({"woo_order_status": "completed"})
