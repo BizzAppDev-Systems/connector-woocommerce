@@ -12,10 +12,10 @@ This is the official documentation for the Odoo Woocommerce Connector.
    :maxdepth: 2
    :caption: Contents:
 
-   introduction
-   installation
-   backend
-   metadata
-   partner
-
-
+   introduction <introduction.rst>
+   installation <installation.rst>
+   backend <backend.rst>
+   metadata <metadata.rst>
+   partner <partner.rst>
+   product_attribute <product_attribute.rst>
+   product_category <product_category.rst>
