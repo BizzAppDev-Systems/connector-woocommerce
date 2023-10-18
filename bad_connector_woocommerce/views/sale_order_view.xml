@@ -59,7 +59,7 @@
                     name="export_delivery_status"
                     type="object"
                     class="oe_highlight"
-                    attrs="{'invisible': ['|','|',('woo_order_status','=','completed'),('has_done_picking', '=', False),('woo_bind_ids','=',False)]}"
+                    attrs="{'invisible': ['|','|',('woo_order_status_id','=','completed'),('has_done_picking', '=', False),('woo_bind_ids','=',False)]}"
                     string="Export Delivery Status"
                 />
             </xpath>
@@ -68,7 +68,7 @@
                 position="after"
             >
                 <field
-                    name="woo_order_status"
+                    name="woo_order_status_id"
                     readonly="1"
                     attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
                 />

@@ -212,10 +212,17 @@ class WooSaleOrderImportMapper(Component):
         return {"amount_tax": total_tax} if total_tax else {}
 
     @mapping
-    def woo_order_status(self, record):
+    def woo_order_status_id(self, record):
         """Mapping for Order Status"""
         status = record.get("status")
-        return {"woo_order_status": status} if status else {}
+        woo_status = self.env["woo.sale.status"].search(
+            [("code", "=", status)], limit=1
+        )
+        if not woo_status:
+            woo_status = self.env["woo.sale.status"].create(
+                {"name": status.capitalize(), "code": status}
+            )
+        return {"woo_order_status_id": woo_status.id}
 
     @mapping
     def update_woo_order_id(self, record):

@@ -157,8 +157,6 @@
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
 
-* Many2one at sale order for woo status
-
 **Known issues/Roadmap**
 ************************
 

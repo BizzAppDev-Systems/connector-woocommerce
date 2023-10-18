@@ -17,7 +17,7 @@ class WooSaleOrderExporterMapper(Component):
     @mapping
     def status(self, record):
         """Mapping for Status"""
-        if record.woo_order_status == "completed":
+        if record.woo_order_status_id.code == "completed":
             raise MappingError(
                 _("WooCommerce Sale Order is already in Completed Status.")
             )
@@ -72,4 +72,7 @@ class WooSaleOrderBatchExporter(Component):
 
     def _after_export(self, binding):
         """Import the transaction lines after checking WooCommerce order status."""
-        binding.write({"woo_order_status": "completed"})
+        woo_order_status = self.env["woo.sale.status"].search(
+            [("code", "=", "completed")], limit=1
+        )
+        binding.write({"woo_order_status_id": woo_order_status.id})
