@@ -219,7 +219,7 @@ class WooSaleOrderImportMapper(Component):
             [("code", "=", status)], limit=1
         )
         if not woo_status:
-            woo_status = self.env["woo.sale.status"].create(
+            woo_status = self.env["woo.sale.status"].sudo().create(
                 {"name": status.capitalize(), "code": status}
             )
         return {"woo_order_status_id": woo_status.id}
