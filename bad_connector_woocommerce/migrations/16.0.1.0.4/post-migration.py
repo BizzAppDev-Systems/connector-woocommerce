@@ -26,19 +26,20 @@ def migrate(cr, version):
     cr.execute(
         """
         UPDATE sale_order
-        SET woo_order_status_id =
-            CASE woo_order_status
-                WHEN 'pending' THEN 1
-                WHEN 'processing' THEN 2
-                WHEN 'on-hold' THEN 3
-                WHEN 'completed' THEN 4
-                WHEN 'cancelled' THEN 5
-                WHEN 'refunded' THEN 6
-                WHEN 'failed' THEN 7
-                WHEN 'trash' THEN 8
-                WHEN 'auto-draft' THEN 9
-                ELSE 0
-            END;
+            SET woo_order_status_id =
+                CASE
+                    WHEN woo_order_status = 'pending' THEN 1
+                    WHEN woo_order_status = 'processing' THEN 2
+                    WHEN woo_order_status = 'on-hold' THEN 3
+                    WHEN woo_order_status = 'completed' THEN 4
+                    WHEN woo_order_status = 'cancelled' THEN 5
+                    WHEN woo_order_status = 'refunded' THEN 6
+                    WHEN woo_order_status = 'failed' THEN 7
+                    WHEN woo_order_status = 'trash' THEN 8
+                    WHEN woo_order_status = 'auto-draft' THEN 9
+                    ELSE 0
+                END
+            WHERE woo_order_status IS NOT NULL;
         """
     )
     cr.execute(
