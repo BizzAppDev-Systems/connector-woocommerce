@@ -9,8 +9,7 @@ Welcome to Odoo Woocommerce Connector's documentation!
 This is the official documentation for the Odoo Woocommerce Connector.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
 
    introduction <introduction.rst>
    installation <installation.rst>
@@ -19,3 +18,5 @@ This is the official documentation for the Odoo Woocommerce Connector.
    partner <partner.rst>
    product_attribute <product_attribute.rst>
    product_category <product_category.rst>
+   product_tag <product_tag.rst>
+   product <product.rst>

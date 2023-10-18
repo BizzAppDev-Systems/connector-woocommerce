@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="generator"
+      content="Docutils 0.18.1: http://docutils.sourceforge.net/"
+    />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Partner Management &mdash; Odoo Woocommerce Connector 16.0.1.0.4 documentation
+    </title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <!--[if lt IE 9]>
+      <script src="_static/js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=d763a652"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Product Attributes" href="product_attribute.html" />
+    <link rel="prev" title="Sync MetaData" href="metadata.html" />
+  </head>
+
+  <body class="wy-body-for-nav">
+    <div class="wy-grid-for-nav">
+      <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+        <div class="wy-side-scroll">
+          <div class="wy-side-nav-search">
+            <a href="index.html" class="icon icon-home"> Odoo Woocommerce Connector </a>
+            <div role="search">
+              <form
+                id="rtd-search-form"
+                class="wy-form"
+                action="search.html"
+                method="get"
+              >
+                <input
+                  type="text"
+                  name="q"
+                  placeholder="Search docs"
+                  aria-label="Search docs"
+                />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+            </div>
+          </div>
+          <div
+            class="wy-menu wy-menu-vertical"
+            data-spy="affix"
+            role="navigation"
+            aria-label="Navigation menu"
+          >
+            <ul class="current">
+              <li class="toctree-l1">
+                <a class="reference internal" href="introduction.html">introduction</a>
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="installation.html">installation</a>
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="backend.html">backend</a>
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="metadata.html">metadata</a>
+              </li>
+              <li class="toctree-l1 current">
+                <a class="current reference internal" href="#">partner</a>
+                <ul>
+                  <li class="toctree-l2">
+                    <a class="reference internal" href="#customer-import"
+                      >Customer Import</a
+                    >
+                    <ul>
+                      <li class="toctree-l3">
+                        <a
+                          class="reference internal"
+                          href="#case-1-create-customer-with-main-customer-billing-and-shipping"
+                          >Case 1: Create Customer with Main Customer, Billing, and
+                          Shipping</a
+                        >
+                      </li>
+                      <li class="toctree-l3">
+                        <a
+                          class="reference internal"
+                          href="#case-2-create-customer-with-main-customer-and-billing-customer"
+                          >Case 2: Create Customer with Main Customer and Billing
+                          Customer</a
+                        >
+                      </li>
+                      <li class="toctree-l3">
+                        <a
+                          class="reference internal"
+                          href="#case-3-create-customer-with-main-customer-and-shipping-customer"
+                          >Case 3: Create Customer with Main Customer and Shipping
+                          Customer</a
+                        >
+                      </li>
+                      <li class="toctree-l3">
+                        <a
+                          class="reference internal"
+                          href="#case-4-create-customer-with-main-customer-and-only-set-email"
+                          >Case 4: Create Customer with Main Customer and Only Set
+                          Email</a
+                        >
+                      </li>
+                      <li class="toctree-l3">
+                        <a
+                          class="reference internal"
+                          href="#case-5-create-customer-with-main-customer-and-set-email-and-first-name"
+                          >Case 5: Create Customer with Main Customer and Set Email and
+                          First Name</a
+                        >
+                      </li>
+                      <li class="toctree-l3">
+                        <a
+                          class="reference internal"
+                          href="#case-6-create-customer-with-main-customer-and-set-email-and-last-name"
+                          >Case 6: Create Customer with Main Customer and Set Email and
+                          Last Name</a
+                        >
+                      </li>
+                      <li class="toctree-l3">
+                        <a
+                          class="reference internal"
+                          href="#case-7-create-customer-with-main-customer-and-set-email-first-name-and-last-name"
+                          >Case 7: Create Customer with Main Customer and Set Email,
+                          First Name, and Last Name</a
+                        >
+                      </li>
+                      <li class="toctree-l3">
+                        <a
+                          class="reference internal"
+                          href="#case-8-create-customer-with-main-customer-and-set-email-and-username"
+                          >Case 8: Create Customer with Main Customer and Set Email and
+                          Username</a
+                        >
+                      </li>
+                      <li class="toctree-l3">
+                        <a
+                          class="reference internal"
+                          href="#case-9-main-case-for-backend-boolean-field-allow-partner-without-email-at-advance-configuration-tab"
+                          >Case 9: Main Case for Backend Boolean Field ‘Allow Partner
+                          Without Email’ at Advance Configuration Tab</a
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="toctree-l2">
+                    <a class="reference internal" href="#next-steps">Next Steps</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="product_attribute.html"
+                  >product_attribute</a
+                >
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="product_category.html"
+                  >product_category</a
+                >
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="product_tag.html">product_tag</a>
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="product.html">product</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+        <nav class="wy-nav-top" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Odoo Woocommerce Connector</a>
+        </nav>
+
+        <div class="wy-nav-content">
+          <div class="rst-content">
+            <div role="navigation" aria-label="Page navigation">
+              <ul class="wy-breadcrumbs">
+                <li>
+                  <a href="index.html" class="icon icon-home" aria-label="Home"></a>
+                </li>
+                <li class="breadcrumb-item active">Partner Management</li>
+                <li class="wy-breadcrumbs-aside">
+                  <a href="_sources/partner.rst.txt" rel="nofollow">
+                    View page source</a
+                  >
+                </li>
+              </ul>
+              <hr />
+            </div>
+            <div
+              role="main"
+              class="document"
+              itemscope="itemscope"
+              itemtype="http://schema.org/Article"
+            >
+              <div itemprop="articleBody">
+                <section id="partner-management">
+                  <h1>
+                    Partner Management<a
+                      class="headerlink"
+                      href="#partner-management"
+                      title="Link to this heading"
+                      ></a
+                    >
+                  </h1>
+                  <p>
+                    In this section, we will explore the functionality of the “IMPORT
+                    PARTNERS” button and it’s different test cases when working with the
+                    Odoo Woocommerce Connector.
+                  </p>
+                  <img
+                    alt="_images/woo_import_partner_button.png"
+                    class="align-center"
+                    src="_images/woo_import_partner_button.png"
+                  />
+                  <section id="customer-import">
+                    <h2>
+                      Customer Import<a
+                        class="headerlink"
+                        href="#customer-import"
+                        title="Link to this heading"
+                        ></a
+                      >
+                    </h2>
+                    <ul class="simple">
+                      <li>
+                        <p>
+                          When you click the “IMPORT PARTNERS” button, the connector
+                          performs the action of importing customers from woocommerce to
+                          odoo instace.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          There are different cases which could be possible while
+                          performing this operation.
+                        </p>
+                      </li>
+                    </ul>
+                    <section
+                      id="case-1-create-customer-with-main-customer-billing-and-shipping"
+                    >
+                      <h3>
+                        Case 1: Create Customer with Main Customer, Billing, and
+                        Shipping<a
+                          class="headerlink"
+                          href="#case-1-create-customer-with-main-customer-billing-and-shipping"
+                          title="Link to this heading"
+                          ></a
+                        >
+                      </h3>
+                      <p>
+                        In this scenario, we will import a customer record that includes
+                        the main customer, billing customer, and shipping customer
+                        details. This comprehensive approach ensures that all relevant
+                        information is captured.
+                      </p>
+                      <img
+                        alt="_images/partner_main_billing_shipping.png"
+                        class="align-center"
+                        src="_images/partner_main_billing_shipping.png"
+                      />
+                    </section>
+                    <section
+                      id="case-2-create-customer-with-main-customer-and-billing-customer"
+                    >
+                      <h3>
+                        Case 2: Create Customer with Main Customer and Billing
+                        Customer<a
+                          class="headerlink"
+                          href="#case-2-create-customer-with-main-customer-and-billing-customer"
+                          title="Link to this heading"
+                          ></a
+                        >
+                      </h3>
+                      <p>
+                        This test case focuses on creating a customer record with the
+                        main customer and billing customer details.
+                      </p>
+                      <img
+                        alt="_images/partner_main_billing.png"
+                        class="align-center"
+                        src="_images/partner_main_billing.png"
+                      />
+                    </section>
+                    <section
+                      id="case-3-create-customer-with-main-customer-and-shipping-customer"
+                    >
+                      <h3>
+                        Case 3: Create Customer with Main Customer and Shipping
+                        Customer<a
+                          class="headerlink"
+                          href="#case-3-create-customer-with-main-customer-and-shipping-customer"
+                          title="Link to this heading"
+                          ></a
+                        >
+                      </h3>
+                      <p>
+                        In this scenario, we create a customer record that includes the
+                        main customer and shipping customer details.
+                      </p>
+                      <img
+                        alt="_images/partner_main_shipping.png"
+                        class="align-center"
+                        src="_images/partner_main_shipping.png"
+                      />
+                    </section>
+                    <section
+                      id="case-4-create-customer-with-main-customer-and-only-set-email"
+                    >
+                      <h3>
+                        Case 4: Create Customer with Main Customer and Only Set Email<a
+                          class="headerlink"
+                          href="#case-4-create-customer-with-main-customer-and-only-set-email"
+                          title="Link to this heading"
+                          ></a
+                        >
+                      </h3>
+                      <p>
+                        In this case, we create a customer record with the main customer
+                        and set only the email address.
+                      </p>
+                      <img
+                        alt="_images/partner_mail_billing_shipping.png"
+                        class="align-center"
+                        src="_images/partner_mail_billing_shipping.png"
+                      />
+                    </section>
+                    <section
+                      id="case-5-create-customer-with-main-customer-and-set-email-and-first-name"
+                    >
+                      <h3>
+                        Case 5: Create Customer with Main Customer and Set Email and
+                        First Name<a
+                          class="headerlink"
+                          href="#case-5-create-customer-with-main-customer-and-set-email-and-first-name"
+                          title="Link to this heading"
+                          ></a
+                        >
+                      </h3>
+                      <p>
+                        Here, we create a customer record with the main customer,
+                        providing both the email address and the customer’s first name.
+                      </p>
+                      <img
+                        alt="_images/partner_mail_first_billing_shipping.png"
+                        class="align-center"
+                        src="_images/partner_mail_first_billing_shipping.png"
+                      />
+                    </section>
+                    <section
+                      id="case-6-create-customer-with-main-customer-and-set-email-and-last-name"
+                    >
+                      <h3>
+                        Case 6: Create Customer with Main Customer and Set Email and
+                        Last Name<a
+                          class="headerlink"
+                          href="#case-6-create-customer-with-main-customer-and-set-email-and-last-name"
+                          title="Link to this heading"
+                          ></a
+                        >
+                      </h3>
+                      <p>
+                        Similar to the previous case, we create a customer record with
+                        the main customer, including the email address and the
+                        customer’s last name.
+                      </p>
+                      <img
+                        alt="_images/partner_mail_last_billing_shipping.png"
+                        class="align-center"
+                        src="_images/partner_mail_last_billing_shipping.png"
+                      />
+                    </section>
+                    <section
+                      id="case-7-create-customer-with-main-customer-and-set-email-first-name-and-last-name"
+                    >
+                      <h3>
+                        Case 7: Create Customer with Main Customer and Set Email, First
+                        Name, and Last Name<a
+                          class="headerlink"
+                          href="#case-7-create-customer-with-main-customer-and-set-email-first-name-and-last-name"
+                          title="Link to this heading"
+                          ></a
+                        >
+                      </h3>
+                      <p>
+                        This scenario involves creating a customer record with the main
+                        customer and including the email address, first name, and last
+                        name.
+                      </p>
+                      <img
+                        alt="_images/partner_mail_first_last_billing_shipping.png"
+                        class="align-center"
+                        src="_images/partner_mail_first_last_billing_shipping.png"
+                      />
+                    </section>
+                    <section
+                      id="case-8-create-customer-with-main-customer-and-set-email-and-username"
+                    >
+                      <h3>
+                        Case 8: Create Customer with Main Customer and Set Email and
+                        Username<a
+                          class="headerlink"
+                          href="#case-8-create-customer-with-main-customer-and-set-email-and-username"
+                          title="Link to this heading"
+                          ></a
+                        >
+                      </h3>
+                      <p>
+                        In this test case, we create a customer record with the main
+                        customer and set both the email address and a unique username
+                        for customer identification.
+                      </p>
+                      <img
+                        alt="_images/partner_mail_user_billing_shipping.png"
+                        class="align-center"
+                        src="_images/partner_mail_user_billing_shipping.png"
+                      />
+                    </section>
+                    <section
+                      id="case-9-main-case-for-backend-boolean-field-allow-partner-without-email-at-advance-configuration-tab"
+                    >
+                      <h3>
+                        Case 9: Main Case for Backend Boolean Field ‘Allow Partner
+                        Without Email’ at Advance Configuration Tab<a
+                          class="headerlink"
+                          href="#case-9-main-case-for-backend-boolean-field-allow-partner-without-email-at-advance-configuration-tab"
+                          title="Link to this heading"
+                          ></a
+                        >
+                      </h3>
+                      <p>
+                        This main test case explores the behavior of the backend Boolean
+                        field ‘Allow Partner Without Email’ located in the Advance
+                        Configuration tab. It’s essential for understanding how the
+                        connector handles cases where email information is not
+                        available.
+                      </p>
+                      <img
+                        alt="_images/backend_without_email.png"
+                        class="align-center"
+                        src="_images/backend_without_email.png"
+                      />
+                      <ul class="simple">
+                        <li>
+                          <p>
+                            <strong>If Allow Partner Without Email is False</strong> :
+                            It will raise mapping error and record of customer will be
+                            not imported successfully.
+                          </p>
+                        </li>
+                      </ul>
+                      <img
+                        alt="_images/queue_job_fail_partner.png"
+                        class="align-center"
+                        src="_images/queue_job_fail_partner.png"
+                      />
+                      <ul class="simple">
+                        <li>
+                          <p>
+                            <strong>If Allow Partner Without Email is True</strong> : It
+                            will import customer record successfully.
+                          </p>
+                        </li>
+                      </ul>
+                      <img
+                        alt="_images/partner_without_email.png"
+                        class="align-center"
+                        src="_images/partner_without_email.png"
+                      />
+                    </section>
+                  </section>
+                  <section id="next-steps">
+                    <h2>
+                      Next Steps<a
+                        class="headerlink"
+                        href="#next-steps"
+                        title="Link to this heading"
+                        ></a
+                      >
+                    </h2>
+                    <p>
+                      In the upcoming sections, we will provide detailed instructions on
+                      how to use the “IMPORT PRODUCT ATTRIBUTES” button and it’s advance
+                      configuration settings.
+                    </p>
+                  </section>
+                </section>
+              </div>
+            </div>
+            <footer>
+              <div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+                <a
+                  href="metadata.html"
+                  class="btn btn-neutral float-left"
+                  title="Sync MetaData"
+                  accesskey="p"
+                  rel="prev"
+                  ><span class="fa fa-arrow-circle-left" aria-hidden="true"></span>
+                  Previous</a
+                >
+                <a
+                  href="product_attribute.html"
+                  class="btn btn-neutral float-right"
+                  title="Product Attributes"
+                  accesskey="n"
+                  rel="next"
+                  >Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span
+                ></a>
+              </div>
+
+              <hr />
+
+              <div role="contentinfo">
+                <p>&#169; Copyright 2023, BizzAppDev Systems Pvt. Ltd..</p>
+              </div>
+
+              Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+              <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+              provided by <a href="https://readthedocs.org">Read the Docs</a>.
+            </footer>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script>
+      jQuery(function () {
+        SphinxRtdTheme.Navigation.enable(true);
+      });
+    </script>
+  </body>
+</html>

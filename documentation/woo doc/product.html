@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="generator"
+      content="Docutils 0.18.1: http://docutils.sourceforge.net/"
+    />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product &mdash; Odoo Woocommerce Connector 16.0.1.0.4 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <!--[if lt IE 9]>
+      <script src="_static/js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=d763a652"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Product Tags" href="product_tag.html" />
+  </head>
+
+  <body class="wy-body-for-nav">
+    <div class="wy-grid-for-nav">
+      <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+        <div class="wy-side-scroll">
+          <div class="wy-side-nav-search">
+            <a href="index.html" class="icon icon-home"> Odoo Woocommerce Connector </a>
+            <div role="search">
+              <form
+                id="rtd-search-form"
+                class="wy-form"
+                action="search.html"
+                method="get"
+              >
+                <input
+                  type="text"
+                  name="q"
+                  placeholder="Search docs"
+                  aria-label="Search docs"
+                />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+            </div>
+          </div>
+          <div
+            class="wy-menu wy-menu-vertical"
+            data-spy="affix"
+            role="navigation"
+            aria-label="Navigation menu"
+          >
+            <ul class="current">
+              <li class="toctree-l1">
+                <a class="reference internal" href="introduction.html">introduction</a>
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="installation.html">installation</a>
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="backend.html">backend</a>
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="metadata.html">metadata</a>
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="partner.html">partner</a>
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="product_attribute.html"
+                  >product_attribute</a
+                >
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="product_category.html"
+                  >product_category</a
+                >
+              </li>
+              <li class="toctree-l1">
+                <a class="reference internal" href="product_tag.html">product_tag</a>
+              </li>
+              <li class="toctree-l1 current">
+                <a class="current reference internal" href="#">product</a>
+                <ul>
+                  <li class="toctree-l2">
+                    <a
+                      class="reference internal"
+                      href="#advance-configurations-of-product"
+                      >Advance Configurations of Product</a
+                    >
+                  </li>
+                  <li class="toctree-l2">
+                    <a class="reference internal" href="#the-import-products-button"
+                      >The “IMPORT PRODUCTS” Button</a
+                    >
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+        <nav class="wy-nav-top" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Odoo Woocommerce Connector</a>
+        </nav>
+
+        <div class="wy-nav-content">
+          <div class="rst-content">
+            <div role="navigation" aria-label="Page navigation">
+              <ul class="wy-breadcrumbs">
+                <li>
+                  <a href="index.html" class="icon icon-home" aria-label="Home"></a>
+                </li>
+                <li class="breadcrumb-item active">Product</li>
+                <li class="wy-breadcrumbs-aside">
+                  <a href="_sources/product.rst.txt" rel="nofollow">
+                    View page source</a
+                  >
+                </li>
+              </ul>
+              <hr />
+            </div>
+            <div
+              role="main"
+              class="document"
+              itemscope="itemscope"
+              itemtype="http://schema.org/Article"
+            >
+              <div itemprop="articleBody">
+                <section id="product">
+                  <h1>
+                    Product<a
+                      class="headerlink"
+                      href="#product"
+                      title="Link to this heading"
+                      ></a
+                    >
+                  </h1>
+                  <p>
+                    In this section, we will explore the functionality of the “IMPORT
+                    PRODUCTS” button and its different test cases with advanced
+                    functionality when working with the Odoo Woocommerce Connector.
+                  </p>
+                  <img
+                    alt="_images/woo_import_product.png"
+                    class="align-center"
+                    src="_images/woo_import_product.png"
+                  />
+                  <section id="advance-configurations-of-product">
+                    <h2>
+                      Advance Configurations of Product<a
+                        class="headerlink"
+                        href="#advance-configurations-of-product"
+                        title="Link to this heading"
+                        ></a
+                      >
+                    </h2>
+                    <p>
+                      There are several advanced functionalities when we are using
+                      “IMPORT PRODUCTS” button:
+                    </p>
+                    <img
+                      alt="_images/advance_product_config.png"
+                      class="align-center"
+                      src="_images/advance_product_config.png"
+                    />
+                    <ol class="arabic simple">
+                      <li>
+                        <p>
+                          <strong>Importing Products Without SKUs</strong>: The
+                          connector can handle product imports even when WooCommerce
+                          products lack SKUs. It ensures that products without SKUs are
+                          integrated effectively.
+                        </p>
+                      </li>
+                    </ol>
+                    <ul class="simple">
+                      <li>
+                        <p>
+                          If “Importing Products Without SKUs” boolean is False it will
+                          not import Woocommerce products that doesn’t consist SKU.
+                        </p>
+                      </li>
+                    </ul>
+                    <img
+                      alt="_images/sku_queue_job_failed.png"
+                      class="align-center"
+                      src="_images/sku_queue_job_failed.png"
+                    />
+                    <ol class="arabic simple" start="2">
+                      <li>
+                        <p>
+                          <strong>Setting Default Product Type</strong>: You can define
+                          a default product type for imported products. This saves time
+                          by automatically categorizing new products into the specified
+                          product type.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          <strong>Setting Default Product Category</strong>: Similarly,
+                          you can set a default product category for imported products.
+                          This categorization simplifies product management.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          <strong>Import From Date Functionality</strong>: The connector
+                          allows you to specify an import-from date. This ensures that
+                          only products created or modified after the specified date are
+                          imported into Odoo.
+                        </p>
+                      </li>
+                    </ol>
+                    <img
+                      alt="_images/product_import_from.png"
+                      class="align-center"
+                      src="_images/product_import_from.png"
+                    />
+                  </section>
+                  <section id="the-import-products-button">
+                    <h2>
+                      The “IMPORT PRODUCTS” Button<a
+                        class="headerlink"
+                        href="#the-import-products-button"
+                        title="Link to this heading"
+                        ></a
+                      >
+                    </h2>
+                    <p>
+                      The “IMPORT PRODUCTS” button plays a pivotal role in the Odoo
+                      Woocommerce Connector. When you click this button, the connector
+                      performs the following actions:
+                    </p>
+                    <ol class="arabic simple">
+                      <li>
+                        <p>
+                          <strong>Importing Products</strong>: The primary function of
+                          the “IMPORT PRODUCTS” button is to import products from
+                          WooCommerce into your Odoo instance. This allows you to manage
+                          your entire product catalog seamlessly.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          <strong
+                            >Adding Tags, Attributes, and Their Values to
+                            Products</strong
+                          >: The connector not only imports products but also associates
+                          tags and attributes with them. This provides a rich, organized
+                          product catalog.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          <strong>Matching Woo Category with Product Category</strong>:
+                          If a product’s category in WooCommerce matches an existing
+                          product category in Odoo, the connector will link them
+                          together. This ensures that imported products are correctly
+                          categorized in Odoo.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          <strong>Auto Import Product Attributes and Values</strong>:
+                          Any product attributes and their values created specifically
+                          for a product in WooCommerce will be automatically imported
+                          into Odoo. This feature streamlines product attribute
+                          management.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          <strong>Setting Product Images</strong>: The connector allows
+                          you to set images for imported products, making your product
+                          catalog visually appealing.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          <strong>Storing Image URLs of Product Gallery</strong>: In
+                          addition to setting images, the connector stores the URLs of
+                          images associated with a product’s image gallery. This allows
+                          you to access and display product images from your WooCommerce
+                          store in your Odoo instance.
+                        </p>
+                      </li>
+                    </ol>
+                    <p>
+                      In the upcoming sections, we will delve into each of the advanced
+                      functionalities related to importing products, providing detailed
+                      instructions and insights for configuring your connector to meet
+                      your specific business needs.
+                    </p>
+                  </section>
+                </section>
+              </div>
+            </div>
+            <footer>
+              <div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+                <a
+                  href="product_tag.html"
+                  class="btn btn-neutral float-left"
+                  title="Product Tags"
+                  accesskey="p"
+                  rel="prev"
+                  ><span class="fa fa-arrow-circle-left" aria-hidden="true"></span>
+                  Previous</a
+                >
+              </div>
+
+              <hr />
+
+              <div role="contentinfo">
+                <p>&#169; Copyright 2023, BizzAppDev Systems Pvt. Ltd..</p>
+              </div>
+
+              Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+              <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+              provided by <a href="https://readthedocs.org">Read the Docs</a>.
+            </footer>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script>
+      jQuery(function () {
+        SphinxRtdTheme.Navigation.enable(true);
+      });
+    </script>
+  </body>
+</html>
