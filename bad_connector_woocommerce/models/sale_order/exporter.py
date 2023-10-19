@@ -1,6 +1,7 @@
 import logging
 
 from odoo import _
+from odoo.exceptions import ValidationError
 
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
@@ -17,7 +18,7 @@ class WooSaleOrderExporterMapper(Component):
     @mapping
     def status(self, record):
         """Mapping for Status"""
-        if record.woo_order_status_id.code == "completed":
+        if record.is_final_status:
             raise MappingError(
                 _("WooCommerce Sale Order is already in Completed Status.")
             )
@@ -75,4 +76,11 @@ class WooSaleOrderBatchExporter(Component):
         woo_order_status = self.env["woo.sale.status"].search(
             [("code", "=", "completed"), ("is_final_status", "=", True)], limit=1
         )
+        if not woo_order_status:
+            raise ValidationError(
+                _(
+                    "The WooCommerce order status with code 'completed' is not "
+                    "available."
+                )
+            )
         binding.write({"woo_order_status_id": woo_order_status.id})

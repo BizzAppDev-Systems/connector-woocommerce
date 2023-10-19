@@ -400,7 +400,7 @@ class WooBackend(models.Model):
                 [
                     ("woo_order_status_id.is_final_status", "=", False),
                     ("woo_bind_ids.backend_id", "=", backend.id),
-                    ("woo_order_status_id.code", "!=", "completed"),
+                    ("is_final_status", "!=", True),
                     ("picking_ids.state", "=", "done"),
                 ]
             )

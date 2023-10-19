@@ -161,7 +161,7 @@ class WooSaleOrder(models.Model):
         )
         if not picking_ids:
             raise ValidationError(_("No delivery orders in 'done' state."))
-        if self.woo_order_status_id.code == "completed":
+        if self.is_final_status:
             raise ValidationError(
                 _("WooCommerce Sale Order is already in Completed Status.")
             )
