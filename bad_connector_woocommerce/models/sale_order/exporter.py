@@ -79,8 +79,8 @@ class WooSaleOrderBatchExporter(Component):
         if not woo_order_status:
             raise ValidationError(
                 _(
-                    "The WooCommerce order status with code 'completed' is not "
-                    "available."
+                    "The WooCommerce order status with the code 'completed' is not "
+                    "available in Odoo or isn't marked as 'Final Status'."
                 )
             )
         binding.write({"woo_order_status_id": woo_order_status.id})

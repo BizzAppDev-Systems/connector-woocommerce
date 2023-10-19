@@ -7,4 +7,4 @@ class WooSaleStatus(models.Model):
 
     name = fields.Char(string="Sale Status", required=True)
     code = fields.Char(string="Status Code", required=True)
-    is_final_status = fields.Boolean(string="Final Status", readonly=True)
+    is_final_status = fields.Boolean(string="Final Status")
