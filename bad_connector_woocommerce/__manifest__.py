@@ -12,7 +12,7 @@
         "sale_management",
         "delivery",
     ],
-    "license": "LGPL-3",
+    "license": "AGPL-3",
     "data": [
         "data/queue_job_data.xml",
         "data/ir_cron_data.xml",
@@ -41,6 +41,4 @@
     "external_dependencies": {
         "python": ["woocommerce"],
     },
-    "price": 50,
-    "currency": "EUR",
 }
