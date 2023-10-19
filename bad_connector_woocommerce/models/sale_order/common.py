@@ -32,18 +32,6 @@ class SaleOrder(models.Model):
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
     total_amount_different = fields.Boolean(compute="_compute_total_amount_diffrent")
     woo_coupon = fields.Char()
-    woo_order_status = fields.Selection(
-        selection=[
-            ("completed", "Completed"),
-            ("pending", "Pending payment"),
-            ("processing", "Processing"),
-            ("on-hold", "On hold"),
-            ("cancelled", "Cancelled"),
-            ("refunded", "Refunded"),
-            ("failed", "Failed"),
-            ("trash", "Trash"),
-        ],
-    )
 
     @api.depends(
         "woo_bind_ids",
