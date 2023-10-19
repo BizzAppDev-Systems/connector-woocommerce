@@ -1,4 +1,8 @@
+import logging
+
 from odoo import SUPERUSER_ID, api
+
+_logger = logging.getLogger(__name__)
 
 
 def migrate(cr, version):
@@ -10,12 +14,13 @@ def migrate(cr, version):
         """
     )
     status = env["woo.sale.status"].search([("code", "=", "completed")], limit=1)
+    _logger.info("Status: %s", status)
     if status:
         cr.execute(
             """
             UPDATE sale_order
-            SET woo_order_status_id = %d
-            WHERE woo_order_status = 'completed'
+            SET woo_order_status_id = %s
+            WHERE woo_order_status = %s
             """,
-            (status.id,),
+            (status.id, "completed"),
         )
