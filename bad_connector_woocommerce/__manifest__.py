@@ -1,6 +1,6 @@
 {
     "name": "Odoo Woocommerce Connector",
-    "version": "16.0.1.0.5",
+    "version": "16.0.1.0.6",
     "category": "Connector",
     "author": "BizzAppDev Systems Pvt. Ltd.",
     "website": "http://www.bizzappdev.com",

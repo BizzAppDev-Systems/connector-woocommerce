@@ -13,14 +13,26 @@ def migrate(cr, version):
         ADD COLUMN IF NOT EXISTS woo_order_status_id INT;
         """
     )
-    status = env["woo.sale.status"].search([("code", "=", "completed")], limit=1)
-    _logger.info("Status: %s", status)
-    if status:
-        cr.execute(
-            """
-            UPDATE sale_order
-            SET woo_order_status_id = %s
-            WHERE woo_order_status = %s
-            """,
-            (status.id, "completed"),
-        )
+    status_list = [
+        "on-hold",
+        "completed",
+        "pending",
+        "processing",
+        "cancelled",
+        "refunded",
+        "failed",
+        "trash",
+        "auto-draft",
+    ]
+    for status in status_list:
+        status_rec = env["woo.sale.status"].search([("code", "=", status)], limit=1)
+        _logger.info("Status: %s", status)
+        if status_rec:
+            cr.execute(
+                """
+                UPDATE sale_order
+                SET woo_order_status_id = %s
+                WHERE woo_order_status = %s
+                """,
+                (status_rec.id, status),
+            )
