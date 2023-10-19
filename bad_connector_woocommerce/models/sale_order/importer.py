@@ -226,7 +226,6 @@ class WooSaleOrderImportMapper(Component):
                     {
                         "name": status.capitalize(),
                         "code": status,
-                        "is_final_status": False,
                     }
                 )
             )
