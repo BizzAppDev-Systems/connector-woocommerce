@@ -138,6 +138,10 @@ class WooBackend(models.Model):
         help="Select the default fee product for imported orders.",
     )
     update_stock_inventory = fields.Boolean()
+    scrap_location_id = fields.Many2one(
+        "stock.location",
+        required=True,
+    )
 
     @api.onchange("company_id")
     def _onchange_company(self):

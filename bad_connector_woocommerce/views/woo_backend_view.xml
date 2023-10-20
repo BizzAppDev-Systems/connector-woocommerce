@@ -350,6 +350,7 @@
                                             name="woo_sale_status_ids"
                                             widget="many2many_tags"
                                         />
+                                        <field name="scrap_location_id" />
                                     </group>
 
                                     <group>
