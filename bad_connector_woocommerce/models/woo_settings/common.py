@@ -30,17 +30,3 @@ class WooSettingsAdapter(Component):
     _woo_model = "settings/tax"
     _woo_product_stock = "settings/products/woocommerce_manage_stock"
     _woo_ext_id_key = "id"
-
-    def search(self, filters=None, **kwargs):
-        """
-        Override This Method to get the records from WooCommerce settings, including
-        stock management settings in Tax Setting Record.
-        """
-        result = self._call(
-            resource_path=self._woo_model, arguments=filters, http_method="get"
-        )
-        setting_stock_result = self._call(
-            resource_path=self._woo_product_stock, arguments=filters, http_method="get"
-        )
-        result["data"].append(setting_stock_result.get("data"))
-        return result
