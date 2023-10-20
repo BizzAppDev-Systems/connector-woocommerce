@@ -1,6 +1,6 @@
 {
     "name": "Odoo Woocommerce Connector",
-    "version": "16.0.2.0.0",
+    "version": "16.0.3.0.0",
     "category": "Connector",
     "author": "BizzAppDev Systems Pvt. Ltd.",
     "website": "http://www.bizzappdev.com",
@@ -12,7 +12,7 @@
         "sale_management",
         "delivery",
     ],
-    "license": "LGPL-3",
+    "license": "AGPL-3",
     "data": [
         "data/queue_job_data.xml",
         "data/ir_cron_data.xml",
@@ -41,6 +41,4 @@
     "external_dependencies": {
         "python": ["woocommerce"],
     },
-    "price": 50,
-    "currency": "EUR",
 }
