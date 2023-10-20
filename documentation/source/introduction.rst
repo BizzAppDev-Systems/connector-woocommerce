@@ -46,4 +46,3 @@ For the latest updates, release notes, and community discussions, visit our offi
 For support and inquiries, contact our dedicated support team.
 
 Thank you for choosing the Odoo Woocommerce Connector. We're here to help you succeed.
-

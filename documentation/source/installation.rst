@@ -43,4 +43,3 @@ Next Steps
 ----------
 
 After installing, you can proceed to the "Backend Overview" section of this documentation to get the basic idea about connector backend it's configuration.
-

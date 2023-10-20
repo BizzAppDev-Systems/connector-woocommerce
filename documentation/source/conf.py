@@ -7,7 +7,6 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Odoo Woocommerce Connector"
-copyright = "2023, BizzAppDev Systems Pvt. Ltd."
 author = "BizzAppDev Systems Pvt. Ltd."
 release = "16.0.1.0.4"
 
