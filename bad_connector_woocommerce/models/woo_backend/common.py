@@ -137,6 +137,7 @@ class WooBackend(models.Model):
         domain=[("type", "=", "service")],
         help="Select the default fee product for imported orders.",
     )
+    update_stock_inventory = fields.Boolean()
 
     @api.onchange("company_id")
     def _onchange_company(self):

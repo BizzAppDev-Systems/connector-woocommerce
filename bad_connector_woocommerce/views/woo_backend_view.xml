@@ -364,6 +364,7 @@
                                             attrs="{'invisible': [('mark_completed', '=', False)]}"
                                         />
                                         <field name="include_tax" />
+                                        <field name="update_stock_inventory" />
                                     </group>
                                 </group>
                             </page>
