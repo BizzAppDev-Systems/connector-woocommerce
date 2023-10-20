@@ -43,7 +43,7 @@ class TestImportSaleOrder(BaseWooTestCase):
             "Order's name is not matched with response!",
         )
         self.assertEqual(
-            sale_order1.woo_order_status,
+            sale_order1.woo_order_status_id.code,
             "processing",
             "Order's status is not matched with response!",
         )
@@ -116,7 +116,7 @@ class TestImportSaleOrder(BaseWooTestCase):
         with recorder.use_cassette("export_woo_status_and_ref"):
             sale_order_odoo.export_delivery_status()
         self.assertEqual(
-            sale_order_odoo.woo_order_status,
+            sale_order1.woo_order_status_id.code,
             "completed",
             "Sale Order is Not in 'Completed' state in WooCommerce.",
         )
