@@ -32,7 +32,7 @@ class SaleOrder(models.Model):
             ("failed", "Failed"),
             ("trash", "Trash"),
         ],
-        string="WooCommerce Order Status",
+        string="WooCommerce Status",
     )
     woo_order_status_id = fields.Many2one(
         comodel_name="woo.sale.status",
