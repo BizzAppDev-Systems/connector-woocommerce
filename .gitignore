@@ -57,6 +57,5 @@ docs/_build/
 
 .DS_Store
 
-#docs
-docs/build/
-docs/source/_templates/
+
+
