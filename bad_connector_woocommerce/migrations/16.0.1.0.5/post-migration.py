@@ -38,8 +38,8 @@ def migrate(cr, version):
             """
                 UPDATE sale_order
                 SET woo_order_status_id =
-                select id from woo_sale_status where code = status)
+                (select id from woo_sale_status where code = %s)
                 WHERE woo_order_status = %s
                 """,
-            (status),
+            (status, status),
         )
