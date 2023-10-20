@@ -37,7 +37,6 @@ class SaleOrder(models.Model):
     woo_order_status_id = fields.Many2one(
         comodel_name="woo.sale.status",
         string="WooCommerce Order Status",
-        default="any",
         ondelete="restrict",
     )
     is_final_status = fields.Boolean(
