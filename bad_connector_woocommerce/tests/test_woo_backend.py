@@ -6,6 +6,7 @@ class BaseWooTestCase(TransactionComponentCase):
         """Set up for backend"""
         super().setUp()
         self.backend_record = self.env["woo.backend"]
+        warehouse = self.env.ref("stock.warehouse0")
         self.backend = self.backend_record.create(
             {
                 "name": "Test Woo Backend",
@@ -23,6 +24,7 @@ class BaseWooTestCase(TransactionComponentCase):
                 "include_tax": False,
                 "mark_completed": True,
                 "tracking_info": True,
+                "warehouse_id": warehouse.id,
             }
         )
         self.backend_data = {
@@ -39,6 +41,7 @@ class BaseWooTestCase(TransactionComponentCase):
             "include_tax": False,
             "mark_completed": True,
             "tracking_info": True,
+            "warehouse_id": warehouse.id,
         }
 
     def test_backend_test_mode_true(self):
