@@ -19,6 +19,7 @@ class WooSettings(models.Model):
     odoo_id = fields.Many2one(
         string="WooCommerce Settings", comodel_name="woo.settings"
     )
+    stock_update = fields.Boolean()
 
 
 class WooSettingsAdapter(Component):

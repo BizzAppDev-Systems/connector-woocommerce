@@ -66,5 +66,6 @@ class WooSettingsImporter(Component):
 
         if binding.external_id == "woocommerce_manage_stock":
             stock_manage = True if binding.value == "yes" else False
+            binding.write({"stock_update": stock_manage})
             binding.backend_id.write({"update_stock_inventory": stock_manage})
         return result

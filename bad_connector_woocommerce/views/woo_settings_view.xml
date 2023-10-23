@@ -13,6 +13,7 @@
                             <field name="woo_type" />
                             <field name="default" />
                             <field name="value" />
+                            <field name="stock_update" />
                         </group>
                         <group>
                             <field name="backend_id" widget="selection" />

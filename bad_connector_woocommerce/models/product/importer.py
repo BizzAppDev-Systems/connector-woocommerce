@@ -323,6 +323,20 @@ class WooProductProductImportMapper(Component):
                 attribute_value_ids.append(attribute_value.id)
         return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
 
+    @mapping
+    def stock_management(self, record):
+        """Mapping for Stock Management"""
+        return {"stock_management": record.get("manage_stock")}
+
+    @mapping
+    def woo_product_qty(self, record):
+        """Mapping for WooCommerce Product qty"""
+        return (
+            {"woo_product_qty": record.get("stock_quantity")}
+            if record.get("stock_quantity")
+            else {}
+        )
+
 
 class WooProductProductImporter(Component):
     """Importer the WooCommerce Product"""
@@ -344,3 +358,17 @@ class WooProductProductImporter(Component):
         image_importer = self.component(usage="product.image.importer")
         image_importer.run(self.external_id, binding, image_record)
         return result
+
+
+class ProductInventoryExporter(Component):
+    _name = "woo.product.product.exporter"
+    _inherit = "woo.exporter"
+    _apply_on = ["woo.product.product"]
+    _usage = "product.inventory.exporter"
+
+    def run(self, binding, fields):
+        """Export the product inventory to WooCommerce"""
+        external_id = self.binder.to_external(binding)
+        data = {"stock_quantity": binding.woo_product_qty}
+        if binding.stock_management:
+            self.backend_adapter.write(external_id, data)
