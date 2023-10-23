@@ -83,7 +83,7 @@
 
 * Country and States Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
-    - Add Backend Credentials to Import Metadata which contains Country, States, Tax Settings and Shipping Methods.
+    - Add Backend Credentials to Import Metadata which contains Country, States, Tax Settings, Shipping Methods and Stock Manage Settings.
     - Click the 'Sync Metadata' button to import Country and there States, Tax Settings and Shipping Method from WooCommerce.
 
 * Taxes Import:
@@ -95,6 +95,11 @@
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Metadata which contains Country and there States.
     - Click the 'Sync Metadata' button to import Country and there States from WooCommerce.
+
+* Stock Manage Import:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Metadata which contains Settings of Stock Manage.
+    - Click the 'Sync Metadata' button to import Settings for Stock Manage from WooCommerce.
 
 * Stock Quantity Export:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
@@ -162,6 +167,10 @@
   - Added Mapping for State in Customers.
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
+
+* Import of Stock Manage Settings:
+  - Enable the import functionality in bad_connector_woocommerce to transfer Stock Manage Settings from WooCommerce to Odoo.
+  - Handle mapping of Stock Manage data during the import process.
 
 **Known issues/Roadmap**
 ************************
