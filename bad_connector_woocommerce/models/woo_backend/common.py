@@ -146,10 +146,6 @@ class WooBackend(models.Model):
         help="Select the default fee product for imported orders.",
     )
     update_stock_inventory = fields.Boolean()
-    scrap_location_id = fields.Many2one(
-        "stock.location",
-        required=True,
-    )
     warehouse_id = fields.Many2one(
         comodel_name="stock.warehouse",
         string="Warehouse",
