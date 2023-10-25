@@ -12,9 +12,9 @@
 * Submenu of Configurations > WooCommerce Sale Status which is use to store all the WooCommerce Sale Order Status.
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
-* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
-* Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes" at backend level.
-* Required field to Import the Products,Product Attributes,Taxes and Product Category are Location,Client Id,Client Secret,Product Category.
+* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" and "Product Quantity" data between connected Woocommerce and Odoo.
+* Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata", "Import Taxes" and "Update Stock Inventory" at backend level.
+* Required field to Import the Products,Product Attributes,Taxes,Product Tags and Product Category are Location,Client Id,Client Secret,Product Category.
 
 **Author**
 **********
@@ -83,7 +83,7 @@
 
 * Country and States Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
-    - Add Backend Credentials to Import Metadata which contains Country, States, Tax Settings and Shipping Methods.
+    - Add Backend Credentials to Import Metadata which contains Country, States, Tax Settings, Shipping Methods and Stock Manage Settings.
     - Click the 'Sync Metadata' button to import Country and there States, Tax Settings and Shipping Method from WooCommerce.
 
 * Taxes Import:
@@ -95,6 +95,16 @@
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Metadata which contains Country and there States.
     - Click the 'Sync Metadata' button to import Country and there States from WooCommerce.
+
+* Stock Manage Import:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Metadata which contains Settings of Stock Manage.
+    - Click the 'Sync Metadata' button to import Settings for Stock Manage from WooCommerce.
+
+* Stock Quantity Export:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Export Stock Inventory which contains Product Quantity.
+    - Click the 'Update Stock Inventory' button to Export Product Quantity to WooCommerce.
 
 **Usage**
 *********
@@ -113,6 +123,7 @@
   - Implements import of Attributes and Categories during the product import.
   - Added woo_product_categ_ids and woo_attribute_ids in product binding level.
   - Added mapping of woo_product_attribute_value_ids in product binding level.
+  - Enable the Export functionality in bad_connector_woocommerce to transfer Product Quantity from Odoo to WooCommerce.
 
 * Import of Product Attribute:
   - Enable the import functionality in bad_connector_woocommerce to transfer product Attributes from WooCommerce to Odoo.
@@ -157,6 +168,10 @@
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
 * Test case
+
+* Import of Stock Manage Settings:
+  - Enable the import functionality in bad_connector_woocommerce to transfer Stock Manage Settings from WooCommerce to Odoo.
+  - Handle mapping of Stock Manage data during the import process.
 
 **Known issues/Roadmap**
 ************************

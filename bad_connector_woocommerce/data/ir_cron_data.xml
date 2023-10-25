@@ -91,5 +91,15 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
         </record>
+        <!-- Export Stock Inventory  -->
+        <record id="ir_cron_woo_product_product_export" model="ir.cron">
+            <field name="name">Woocommerce: Export Stock Inventory</field>
+            <field name="model_id" ref="model_woo_backend" />
+            <field name="state">code</field>
+            <field name="code">model.cron_update_stock_qty()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
     </data>
 </odoo>

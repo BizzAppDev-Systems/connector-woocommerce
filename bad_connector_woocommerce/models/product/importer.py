@@ -194,7 +194,10 @@ class WooProductProductImportMapper(Component):
     @mapping
     def detailed_type(self, record):
         """Mapping for detailed_type"""
-        return {"detailed_type": self.backend_record.default_product_type}
+        detailed_type = self.backend_record.default_product_type
+        if record.get("manage_stock"):
+            detailed_type = "product"
+        return {"detailed_type": detailed_type}
 
     def _get_attribute_id_format(self, attribute, record, option=None):
         """Return the attribute and attribute value's unique id"""
@@ -323,6 +326,20 @@ class WooProductProductImportMapper(Component):
                 attribute_value_ids.append(attribute_value.id)
         return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
 
+    @mapping
+    def stock_management(self, record):
+        """Mapping for Stock Management"""
+        return {"stock_management": record.get("manage_stock")}
+
+    @mapping
+    def woo_product_qty(self, record):
+        """Mapping for WooCommerce Product qty"""
+        return (
+            {"woo_product_qty": record.get("stock_quantity")}
+            if record.get("stock_quantity")
+            else {}
+        )
+
 
 class WooProductProductImporter(Component):
     """Importer the WooCommerce Product"""
@@ -344,3 +361,17 @@ class WooProductProductImporter(Component):
         image_importer = self.component(usage="product.image.importer")
         image_importer.run(self.external_id, binding, image_record)
         return result
+
+
+class ProductInventoryExporter(Component):
+    _name = "woo.product.product.exporter"
+    _inherit = "woo.exporter"
+    _apply_on = ["woo.product.product"]
+    _usage = "product.inventory.exporter"
+
+    def run(self, binding, record=None, *args, **kwargs):
+        """Export the product inventory to WooCommerce"""
+        external_id = self.binder.to_external(binding)
+        data = {"stock_quantity": binding.woo_product_qty}
+        if binding.stock_management:
+            self.backend_adapter.write(external_id, data)
