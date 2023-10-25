@@ -10,7 +10,6 @@ _logger = logging.getLogger(__name__)
 
 
 IMPORT_DELTA_BUFFER = 30  # seconds
-RECOMPUTE_QTY_STEP = 1000  # products at a time
 
 
 class WooBackend(models.Model):
@@ -165,6 +164,7 @@ class WooBackend(models.Model):
     )
     woo_setting_id = fields.Many2one(comodel_name="woo.settings")
     stock_update = fields.Boolean(related="woo_setting_id.stock_update")
+    recompute_qty_step = fields.Integer(string="Recompute Quantity Step", default=1000)
 
     @api.onchange("update_stock_inventory", "stock_update")
     def _onchange_update_stock_inventory(self):

@@ -344,14 +344,15 @@
                                         string="Default Configuration"
                                     >
                                         <field name="default_limit" />
-                                        <separator string="Customers Configuration" />
-                                        <field name="without_email" />
                                         <field name="warehouse_id" />
                                         <field
                                             name="product_stock_field_id"
                                             widget="selection"
                                             domain="[('model', 'in', ['product.product', 'product.template']), ('ttype', '=', 'float')]"
                                         />
+                                        <field name="recompute_qty_step" />
+                                        <separator string="Customers Configuration" />
+                                        <field name="without_email" />
                                     </group>
                                     <group
                                         name="product_configuration"

@@ -7,7 +7,6 @@ from odoo.addons.component.core import Component
 from odoo.addons.component_event import skip_if
 
 from ...components import utils
-from ...models.woo_backend.common import RECOMPUTE_QTY_STEP
 
 _logger = logging.getLogger(__name__)
 
@@ -155,7 +154,7 @@ class WooProductProduct(models.Model):
             product_fields += read_fields
 
         self_with_location = self.with_context(location=location.id)
-        for chunk_ids in utils.chunks(products.ids, RECOMPUTE_QTY_STEP):
+        for chunk_ids in utils.chunks(products.ids, backend.recompute_qty_step):
             records = self_with_location.browse(chunk_ids)
             for product in records.read(fields=product_fields):
                 new_qty = self._woo_qty(product, backend, location, stock_field)
