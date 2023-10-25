@@ -86,6 +86,11 @@ class TestImportProduct(BaseWooTestCase):
         )
         self.assertEqual(
             product1.detailed_type,
+            "product",
+            "Product Type is not matched with response",
+        )
+        self.assertEqual(
+            product1.detailed_type,
             self.backend.default_product_type,
             "Product Type is not matched with response.",
         )
