@@ -153,20 +153,14 @@ class WooProductProduct(models.Model):
             stock_field = backend.product_stock_field_id.name
         else:
             stock_field = "virtual_available"
-
-        location = self.env["stock.location"]
-        if self.env.context.get("location"):
-            location = location.browse(self.env.context["location"])
-        else:
-            location = backend.warehouse_id.lot_stock_id
+        location = backend.warehouse_id.lot_stock_id
         product_fields = ["woo_product_qty", stock_field]
         if read_fields:
             product_fields += read_fields
-
-        self_with_location = self.with_context(location=location.id)
+        self_with_location = self.with_context(location=location.id).sudo()
         for chunk_ids in utils.chunks(products.ids, backend.recompute_qty_step):
             records = self_with_location.browse(chunk_ids)
-            for product in records.read(fields=product_fields):
+            for product in records:
                 new_qty = self._woo_qty(product, backend, location, stock_field)
                 if not new_qty != product["woo_product_qty"]:
                     continue
