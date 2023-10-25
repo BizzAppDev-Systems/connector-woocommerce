@@ -97,8 +97,8 @@ class TestImportProduct(BaseWooTestCase):
             }
         )
         self.assertEqual(
-            product1.qty_available,
-            initial_quantity + quantity_to_add,
+            product1.stock_quant_ids[0].quantity,
+            quantity_to_add,
             "On-hand quantity is not increased as expected!",
         )
-        print(product1.qty_available, "---------------------------")
+        print(product1.stock_quant_ids[0].quantity, "---------------------------")
