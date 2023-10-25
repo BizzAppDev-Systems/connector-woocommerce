@@ -6,12 +6,10 @@ from odoo import fields, models
 from odoo.addons.component.core import Component
 from odoo.addons.component_event import skip_if
 
+from ...components import utils
+from ...models.woo_backend.common import RECOMPUTE_QTY_STEP
+
 _logger = logging.getLogger(__name__)
-
-
-def chunks(items, length):
-    for index in range(0, len(items), length):
-        yield items[index : index + length]
 
 
 class ProductProduct(models.Model):
@@ -25,7 +23,10 @@ class ProductProduct(models.Model):
     )
 
     def update_stock_qty(self):
-        """Import Product Attribute Value"""
+        """
+        Update the stock quantity for each binding in
+        the WooCommerce integration.
+        """
         for binding in self.woo_bind_ids:
             binding.recompute_woo_qty()
 
@@ -39,8 +40,6 @@ class WooProductProduct(models.Model):
     _description = "WooCommerce Product"
 
     _rec_name = "name"
-
-    RECOMPUTE_QTY_STEP = 1000  # products at a time
 
     odoo_id = fields.Many2one(
         comodel_name="product.product",
@@ -125,11 +124,11 @@ class WooProductProduct(models.Model):
         informations for each product.
         """
         # group products by backend
-        backends = defaultdict(set)
-        for product in self:
-            backends[product.backend_id].add(product.id)
-        for backend, product_ids in backends.items():
-            self._recompute_woo_qty_backend(backend, self.browse(product_ids))
+        backends = defaultdict(lambda: self.env["woo.product.product"])
+        for woo_product in self:
+            backends[woo_product.backend_id] |= woo_product
+        for backend, woo_products in backends.items():
+            self._recompute_woo_qty_backend(backend, woo_products)
         return True
 
     def _recompute_woo_qty_backend(self, backend, products, read_fields=None):
@@ -156,12 +155,13 @@ class WooProductProduct(models.Model):
             product_fields += read_fields
 
         self_with_location = self.with_context(location=location.id)
-        for chunk_ids in chunks(products.ids, self.RECOMPUTE_QTY_STEP):
+        for chunk_ids in utils.chunks(products.ids, RECOMPUTE_QTY_STEP):
             records = self_with_location.browse(chunk_ids)
             for product in records.read(fields=product_fields):
                 new_qty = self._woo_qty(product, backend, location, stock_field)
-                if new_qty != product["woo_product_qty"]:
-                    self.browse(product["id"]).woo_product_qty = new_qty
+                if not new_qty != product["woo_product_qty"]:
+                    continue
+                self.browse(product["id"]).woo_product_qty = new_qty
 
     def _woo_qty(self, product, backend, location, stock_field):
         """

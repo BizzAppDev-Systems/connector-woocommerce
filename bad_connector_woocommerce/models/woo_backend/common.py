@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 
 
 IMPORT_DELTA_BUFFER = 30  # seconds
+RECOMPUTE_QTY_STEP = 1000  # products at a time
 
 
 class WooBackend(models.Model):
@@ -172,9 +173,9 @@ class WooBackend(models.Model):
             return {
                 "warning": {
                     "title": "Warning",
-                    "message": """You cannot set update_stock_inventory to True when
-                    stock_update is False in WooCommerce settings level for Mange
-                    Stock.""",
+                    "message": "You cannot set update_stock_inventory to True when"
+                    "stock_update is False in WooCommerce settings level for Mange"
+                    "Stock.",
                 }
             }
 
@@ -485,7 +486,7 @@ class WooBackend(models.Model):
         """Domain to search WooCommerce product"""
         return [
             ("backend_id", "in", self.ids),
-            ("type", "!=", "service"),
+            ("detailed_type", "=", "product"),
             ("stock_management", "=", True),
         ]
 

@@ -194,7 +194,10 @@ class WooProductProductImportMapper(Component):
     @mapping
     def detailed_type(self, record):
         """Mapping for detailed_type"""
-        return {"detailed_type": self.backend_record.default_product_type}
+        detailed_type = self.backend_record.default_product_type
+        if record.get("manage_stock"):
+            detailed_type = "product"
+        return {"detailed_type": detailed_type}
 
     def _get_attribute_id_format(self, attribute, record, option=None):
         """Return the attribute and attribute value's unique id"""
@@ -366,7 +369,7 @@ class ProductInventoryExporter(Component):
     _apply_on = ["woo.product.product"]
     _usage = "product.inventory.exporter"
 
-    def run(self, binding, fields):
+    def run(self, binding, record=None, *args, **kwargs):
         """Export the product inventory to WooCommerce"""
         external_id = self.binder.to_external(binding)
         data = {"stock_quantity": binding.woo_product_qty}
