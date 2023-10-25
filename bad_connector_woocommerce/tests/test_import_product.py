@@ -89,7 +89,10 @@ class TestImportProduct(BaseWooTestCase):
             "product",
             "Product Type is not matched with response",
         )
-        self.assertTrue(product1.stock_management)
+        self.assertTrue(
+            product1.stock_management,
+            "Stock Management is not matched with response",
+        )
         self.assertEqual(
             product1.woo_product_qty,
             2000,
