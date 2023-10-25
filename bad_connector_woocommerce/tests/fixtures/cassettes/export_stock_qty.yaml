@@ -5,7 +5,7 @@ interactions:
           string:
             '
               {
-                "stock_quantity": 14560,
+                "stock_quantity": 10,
               }
             ',
         }
@@ -47,7 +47,8 @@ interactions:
                 "button_text": "",
                 "tax_status": "taxable",
                 "tax_class": "",
-                "manage_stock": false,
+                "manage_stock": true,
+                "stock_quantity": 10,
                 "backorders": "no",
                 "backorders_allowed": false,
                 "backordered": false,

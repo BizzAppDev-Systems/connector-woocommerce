@@ -90,20 +90,39 @@ class TestImportProduct(BaseWooTestCase):
             "Product Type is not matched with response",
         )
         self.assertEqual(
+            product1.stock_management,
+            True,
+            "Stock Management is not matched with response",
+        )
+        self.assertEqual(
+            product1.woo_product_qty,
+            2000,
+            "Product Quantity is not matched with response",
+        )
+        self.assertEqual(
             product1.detailed_type,
             self.backend.default_product_type,
             "Product Type is not matched with response.",
         )
-        self.env["stock.quant"].create(
-            {
-                "product_id": product1.id,
-                "location_id": self.env.ref("stock.stock_location_stock").id,
-                "inventory_quantity": quantity_to_add,
-            }
+        product2 = self.env["product.product"].search(
+            [("woo_bind_ids.external_id", "=", external_id)], limit=1
         )
-        self.assertEqual(
-            product1.stock_quant_ids[0].quantity,
-            quantity_to_add,
-            "On-hand quantity is not increased as expected!",
+        stock_quant = (
+            self.env["stock.quant"]
+            .with_context(inventory_mode=True)
+            .create(
+                {
+                    "product_id": product2.id,
+                    "inventory_quantity": quantity_to_add,
+                    "location_id": self.backend.warehouse_id.lot_stock_id.id,
+                }
+            )
         )
-        print(product1.stock_quant_ids[0].quantity, "---------------------------")
+        stock_quant.action_apply_inventory()
+        with recorder.use_cassette("export_stock_qty"):
+            product2.update_stock_qty()
+            self.assertEqual(
+                product2.woo_bind_ids.woo_product_qty,
+                10,
+                "Product is Not Exported in WooCommerce.",
+            )
