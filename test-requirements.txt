@@ -1,2 +1,1 @@
 vcrpy
-sphinx_book_theme
