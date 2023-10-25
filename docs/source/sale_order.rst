@@ -102,7 +102,15 @@ In this scenario, we will import a Woocommerce order record that include shippin
 .. image:: _static/default_fee_queue.png
    :align: center
 
+**Note**: Warning banners are visible as Woocommerce also counts tax on shipping or fees.
+
+.. image:: _static/sale_order_shipping_fee.png
+   :align: center
+
+* Here, we can see applied coupons on order.
+* The shipping and fees applied on this order can also be visible.
+
 Next Steps
 ----------
 
-In the upcoming sections, we will explore different test cases related to importing product tags and provide detailed instructions for configuring your connector to meet your specific business needs.
+In the upcoming sections, we will explore the Export Sale Order Status and Tracking Reference functionality.
