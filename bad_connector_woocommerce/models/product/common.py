@@ -164,7 +164,7 @@ class WooProductProduct(models.Model):
                 new_qty = self._woo_qty(product, backend, location, stock_field)
                 if not new_qty != product["woo_product_qty"]:
                     continue
-                self.browse(product["id"]).woo_product_qty = new_qty
+                product.woo_product_qty = new_qty
 
     def _woo_qty(self, product, backend, location, stock_field):
         """
