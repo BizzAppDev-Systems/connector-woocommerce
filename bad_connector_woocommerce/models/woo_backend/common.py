@@ -440,7 +440,7 @@ class WooBackend(models.Model):
             sale_orders = self.env["sale.order"].search(
                 [
                     ("woo_bind_ids.backend_id", "=", backend.id),
-                    ("woo_order_status", "!=", "completed"),
+                    ("is_final_status", "!=", True),
                     ("picking_ids.state", "=", "done"),
                 ]
             )
