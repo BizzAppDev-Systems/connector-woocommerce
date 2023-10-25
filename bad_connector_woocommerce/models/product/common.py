@@ -1,7 +1,7 @@
 import logging
 from collections import defaultdict
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 from odoo.addons.component.core import Component
 from odoo.addons.component_event import skip_if
@@ -20,6 +20,7 @@ class ProductProduct(models.Model):
         string="WooCommerce Bindings",
         copy=False,
     )
+    stock_manage = fields.Boolean(compute="_compute_stock_manage", store=True)
 
     def update_stock_qty(self):
         """
@@ -28,6 +29,15 @@ class ProductProduct(models.Model):
         """
         for binding in self.woo_bind_ids:
             binding.recompute_woo_qty()
+
+    @api.depends(
+        "woo_bind_ids",
+        "woo_bind_ids.stock_management",
+    )
+    def _compute_stock_manage(self):
+        """Compute the stock management status for each WooCommerce Product."""
+        for product in self:
+            product.stock_manage = any(product.woo_bind_ids.mapped("stock_management"))
 
 
 class WooProductProduct(models.Model):
