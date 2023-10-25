@@ -21,6 +21,7 @@ class TestImportProduct(BaseWooTestCase):
     def test_import_product_product(self):
         """Test Assertions for Product"""
         external_id = "50"
+        quantity_to_add = 10
         with recorder.use_cassette("import_woo_product_product"):
             self.env["woo.product.product"].import_record(
                 external_id=external_id, backend=self.backend
@@ -88,3 +89,16 @@ class TestImportProduct(BaseWooTestCase):
             self.backend.default_product_type,
             "Product Type is not matched with response.",
         )
+        self.env["stock.quant"].create(
+            {
+                "product_id": product1.id,
+                "location_id": self.env.ref("stock.stock_location_stock").id,
+                "inventory_quantity": quantity_to_add,
+            }
+        )
+        self.assertEqual(
+            product1.qty_available,
+            initial_quantity + quantity_to_add,
+            "On-hand quantity is not increased as expected!",
+        )
+        print(product1.qty_available, "---------------------------")

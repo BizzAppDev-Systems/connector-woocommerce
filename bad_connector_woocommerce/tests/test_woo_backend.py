@@ -25,6 +25,7 @@ class BaseWooTestCase(TransactionComponentCase):
                 "mark_completed": True,
                 "tracking_info": True,
                 "warehouse_id": warehouse.id,
+                "update_stock_inventory": True,
             }
         )
         self.backend_data = {
@@ -42,6 +43,7 @@ class BaseWooTestCase(TransactionComponentCase):
             "mark_completed": True,
             "tracking_info": True,
             "warehouse_id": warehouse.id,
+            "update_stock_inventory": True,
         }
 
     def test_backend_test_mode_true(self):
