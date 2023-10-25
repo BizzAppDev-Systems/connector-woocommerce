@@ -157,7 +157,7 @@ class WooProductProduct(models.Model):
         product_fields = ["woo_product_qty", stock_field]
         if read_fields:
             product_fields += read_fields
-        self_with_location = self.with_context(location=location.id).sudo()
+        self_with_location = self.sudo().with_context(location=location.id)
         for chunk_ids in utils.chunks(products.ids, backend.recompute_qty_step):
             records = self_with_location.browse(chunk_ids)
             for product in records:
