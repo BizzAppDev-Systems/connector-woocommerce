@@ -42,12 +42,6 @@ class WooPaymentGatewqayImportMapper(Component):
         description = record.get("description")
         return {"slug": description} if description else {}
 
-    # @mapping
-    # def enable(self, record):
-    #     """Mapping for enable"""
-    #     if record.get("enabled") is True:
-    #         return {"enable": True}
-
     @mapping
     def enable(self, record):
         """Mapping for enable"""
