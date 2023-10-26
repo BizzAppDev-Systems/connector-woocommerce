@@ -157,6 +157,9 @@
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
 
+* Import Payment Gateways:
+  - Enable the import functionality in bad_connector_woocommerce to transfer payment gateways from WooCommerce to Odoo.
+
 **Known issues/Roadmap**
 ************************
 
