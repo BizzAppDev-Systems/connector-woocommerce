@@ -28,4 +28,7 @@ class WooSettingsAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.settings"
     _woo_model = "settings/tax"
+    _woo_default_currency = "settings/general/woocommerce_currency"
+    _woo_default_weight = "settings/products/woocommerce_weight_unit"
+    _woo_default_dimension = "settings/products/woocommerce_dimension_unit"
     _woo_ext_id_key = "id"

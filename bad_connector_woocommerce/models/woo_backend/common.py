@@ -138,6 +138,26 @@ class WooBackend(models.Model):
         help="Select the default fee product for imported orders.",
     )
 
+    currency_id = fields.Many2one(
+        comodel_name="res.currency",
+        string="Default Currency",
+        help="Select the default Currency for imported products and orders.",
+    )
+
+    weight_uom_id = fields.Many2one(
+        "uom.uom",
+        string="Weight UOM",
+        domain=[("category_id.name", "=", "Weight")],
+        help="Select a weight unit of measure.",
+    )
+
+    dimension_uom_id = fields.Many2one(
+        "uom.uom",
+        string="Dimension UOM",
+        domain=[("category_id.name", "=", "Length / Distance")],
+        help="Select a dimension unit of measure.",
+    )
+
     @api.onchange("company_id")
     def _onchange_company(self):
         """Set sale team id False everytime company_id is changed"""

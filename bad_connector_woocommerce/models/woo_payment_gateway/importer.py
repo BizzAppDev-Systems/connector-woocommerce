@@ -32,7 +32,10 @@ class WooPaymentGatewqayImportMapper(Component):
         title = record.get("title")
         if not title:
             raise MappingError(
-                _("Payment Gateway Title doesn't exist please check !!!")
+                _(
+                    "Payment Gateway for '%s' doesn't exist please check !!!"
+                    % record.get("id")
+                )
             )
         return {"name": title}
 
