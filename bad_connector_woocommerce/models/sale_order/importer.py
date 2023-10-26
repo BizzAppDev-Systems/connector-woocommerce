@@ -261,7 +261,9 @@ class WooSaleOrderImportMapper(Component):
             [("external_id", "=", record.get("payment_method"))], limit=1
         )
         return (
-            {"workflow_process_id": payment.workflow_process_id.id} if payment else {}
+            {"workflow_process_id": payment.workflow_process_id.id}
+            if payment.workflow_process_id
+            else {}
         )
 
 
