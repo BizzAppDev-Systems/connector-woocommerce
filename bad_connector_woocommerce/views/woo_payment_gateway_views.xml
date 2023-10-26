@@ -15,7 +15,6 @@
                     </div>
                     <group>
                         <group>
-
                             <field name="slug" />
                             <field name="enable" />
                         </group>
@@ -51,7 +50,6 @@
             </tree>
         </field>
     </record>
-
 
     <!-- Define the action for the menu item -->
     <record id="action_woo_payment_gateway" model="ir.actions.act_window">
