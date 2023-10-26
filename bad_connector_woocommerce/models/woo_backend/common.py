@@ -433,6 +433,11 @@ class WooBackend(models.Model):
                 priority=5,
                 export=False,
             )
+            backend._sync_from_date(
+                model="woo.payment.gateway",
+                priority=5,
+                export=False,
+            )
         return True
 
     @api.model
