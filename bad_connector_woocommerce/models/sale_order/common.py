@@ -54,6 +54,8 @@ class SaleOrder(models.Model):
                 sale.workflow_process_id = (
                     sale.woo_payment_mode_id.workflow_process_id.id
                 )
+            else:
+                sale.workflow_process_id = False
 
     @api.depends(
         "woo_bind_ids",
