@@ -38,6 +38,22 @@ class SaleOrder(models.Model):
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
     total_amount_different = fields.Boolean(compute="_compute_total_amount_diffrent")
     woo_coupon = fields.Char()
+    woo_payment_mode_id = fields.Many2one(
+        comodel_name="woo.payment.gateway",
+        string="WooCommerce Payment Mode",
+        readonly=True,
+    )
+    workflow_process_id = fields.Many2one(
+        compute="_compute_workflow_process_id", store=True, readonly=False
+    )
+
+    @api.depends("woo_payment_mode_id", "woo_payment_mode_id.workflow_process_id")
+    def _compute_workflow_process_id(self):
+        for sale in self:
+            if sale.woo_payment_mode_id.workflow_process_id:
+                sale.workflow_process_id = (
+                    sale.woo_payment_mode_id.workflow_process_id.id
+                )
 
     @api.depends(
         "woo_bind_ids",

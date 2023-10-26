@@ -246,6 +246,14 @@ class WooSaleOrderImportMapper(Component):
         coupon_codes = [coupon.get("code") for coupon in woo_coupons]
         return {"woo_coupon": ", ".join(coupon_codes)}
 
+    @mapping
+    def woo_payment_mode_id(self, record):
+        """Mapping for woo_payment_mode_id"""
+        payment = self.env["woo.payment.gateway"].search(
+            [("external_id", "=", record.get("payment_method"))], limit=1
+        )
+        return {"woo_payment_mode_id": payment.id} if payment else {}
+
 
 class WooSaleOrderImporter(Component):
     _name = "woo.sale.order.importer"

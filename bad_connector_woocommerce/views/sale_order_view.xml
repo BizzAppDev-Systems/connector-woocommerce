@@ -79,6 +79,7 @@
                 />
                 <field name="tax_different" invisible="1" />
                 <field name="total_amount_different" invisible="1" />
+                <field name="woo_payment_mode_id" />
             </xpath>
             <xpath expr="//field[@name='order_line']//tree" position="attributes">
                 <attribute name="editable" />
