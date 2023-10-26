@@ -43,19 +43,6 @@ class SaleOrder(models.Model):
         string="WooCommerce Payment Mode",
         readonly=True,
     )
-    workflow_process_id = fields.Many2one(
-        compute="_compute_workflow_process_id", store=True, readonly=False
-    )
-
-    @api.depends("woo_payment_mode_id", "woo_payment_mode_id.workflow_process_id")
-    def _compute_workflow_process_id(self):
-        for sale in self:
-            if sale.woo_payment_mode_id.workflow_process_id:
-                sale.workflow_process_id = (
-                    sale.woo_payment_mode_id.workflow_process_id.id
-                )
-            else:
-                sale.workflow_process_id = False
 
     @api.depends(
         "woo_bind_ids",

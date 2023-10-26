@@ -254,6 +254,16 @@ class WooSaleOrderImportMapper(Component):
         )
         return {"woo_payment_mode_id": payment.id} if payment else {}
 
+    @mapping
+    def workflow_process_id(self, record):
+        """Mapping for workflow_process_id"""
+        payment = self.env["woo.payment.gateway"].search(
+            [("external_id", "=", record.get("payment_method"))], limit=1
+        )
+        return (
+            {"workflow_process_id": payment.workflow_process_id.id} if payment else {}
+        )
+
 
 class WooSaleOrderImporter(Component):
     _name = "woo.sale.order.importer"
