@@ -173,9 +173,9 @@ class WooBackend(models.Model):
             return {
                 "warning": {
                     "title": "Warning",
-                    "message": "You cannot set update_stock_inventory to True when"
-                    "stock_update is False in WooCommerce settings level for Mange"
-                    "Stock.",
+                    "message": "You cannot set 'update_stock_inventory' to True "
+                    "when 'stock_update' is False in the WooCommerce settings "
+                    "level for Mange Stock.",
                 }
             }
 
