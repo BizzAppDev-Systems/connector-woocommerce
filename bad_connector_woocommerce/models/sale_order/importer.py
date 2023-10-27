@@ -78,6 +78,7 @@ class WooSaleOrderImportMapper(Component):
                 if not tax.get("total"):
                     continue
                 tax_record = self._get_tax_record(tax)
+                break
 
             shipping_values.update(
                 self._prepare_lines(
