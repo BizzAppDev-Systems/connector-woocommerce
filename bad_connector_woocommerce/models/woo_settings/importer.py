@@ -69,22 +69,42 @@ class WooSettingsImporter(Component):
             binding.backend_id.write({"include_tax": include_tax})
 
         if binding.external_id == "woocommerce_currency":
-            currency = self.env["res.currency"].search([("name", "=", binding.value)])
+            currency = self.env["res.currency"].search(
+                [("name", "=", binding.value)], limit=1
+            )
             if not currency:
                 raise MappingError(
                     _(
-                        "'%s' currency not found, Ansure that currency is active!!!"
+                        "'%s' currency not found, ensure that currency is active!!!"
                         % binding.value
                     )
                 )
             binding.backend_id.write({"currency_id": currency.id})
 
         if binding.external_id == "woocommerce_weight_unit":
-            weight_uom = self.env["uom.uom"].search([("name", "=", binding.value)])
+            weight_uom = self.env["uom.uom"].search(
+                [("name", "=", binding.value)], limit=1
+            )
+            if not weight_uom:
+                raise MappingError(
+                    _(
+                        "'%s' Weight unit not found, ensure that unit exist!!!"
+                        % binding.value
+                    )
+                )
             binding.backend_id.write({"weight_uom_id": weight_uom.id})
 
         if binding.external_id == "woocommerce_dimension_unit":
-            dimension_uom = self.env["uom.uom"].search([("name", "=", binding.value)])
+            dimension_uom = self.env["uom.uom"].search(
+                [("name", "=", binding.value)], limit=1
+            )
+            if not dimension_uom:
+                raise MappingError(
+                    _(
+                        "'%s' Dimension unit not found, ensure that unit exist!!!"
+                        % binding.value
+                    )
+                )
             binding.backend_id.write({"dimension_uom_id": dimension_uom.id})
 
         return result

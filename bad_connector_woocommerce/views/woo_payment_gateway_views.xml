@@ -17,6 +17,7 @@
                         <group>
                             <field name="slug" />
                             <field name="enable" />
+                            <field name="description" />
                             <field name="workflow_process_id" />
                         </group>
                         <group>
@@ -24,18 +25,6 @@
                             <field name="external_id" />
                         </group>
                     </group>
-                    <notebook>
-                        <page string="General Information" name="general_information">
-                            <group string="Internal Notes">
-                                <field
-                                    colspan="2"
-                                    name="description"
-                                    nolabel="1"
-                                    placeholder="This note is only for internal purposes."
-                                />
-                            </group>
-                        </page>
-                    </notebook>
                 </sheet>
             </form>
         </field>

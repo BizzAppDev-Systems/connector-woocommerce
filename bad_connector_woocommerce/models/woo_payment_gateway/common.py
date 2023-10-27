@@ -15,8 +15,7 @@ class WooPaymentGateway(models.Model):
     name = fields.Char(required=True)
     slug = fields.Char()
     enable = fields.Boolean()
-    description = fields.Html(string="Description", translate=True)
-    workflow_process_id = fields.Many2one(comodel_name="sale.workflow.process")
+    description = fields.Text()
 
 
 class WooPaymentGatewayAdapter(Component):
