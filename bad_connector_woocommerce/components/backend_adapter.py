@@ -186,6 +186,9 @@ class GenericAdapter(AbstractComponent):
     _apply_on = "woo.backend"
     _last_update_date = "date_modified"
     _woo_model = None
+    _woo_default_currency = None
+    _woo_default_weight = None
+    _woo_default_dimension = None
     _woo_ext_id_key = "id"
     _odoo_ext_id_key = "external_id"
 
@@ -194,6 +197,29 @@ class GenericAdapter(AbstractComponent):
         result = self._call(
             resource_path=self._woo_model, arguments=filters, http_method="get"
         )
+        if self._woo_default_currency:
+            default_currency_result = self._call(
+                resource_path=self._woo_default_currency,
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_currency_result.get("data"))
+
+        if self._woo_default_weight:
+            default_weight_result = self._call(
+                resource_path=self._woo_default_weight,
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_weight_result.get("data"))
+
+        if self._woo_default_dimension:
+            default_dimension_result = self._call(
+                resource_path=self._woo_default_dimension,
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_dimension_result.get("data"))
         return result
 
     def read(self, external_id=None, attributes=None):
