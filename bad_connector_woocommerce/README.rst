@@ -96,6 +96,16 @@
     - Add Backend Credentials to Import Metadata which contains Country and there States.
     - Click the 'Sync Metadata' button to import Country and there States from WooCommerce.
 
+* Import Payment Gateways:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Metadata which contains Payment Gateways.
+    - Click the 'Sync Metadata' button to import Payment Gateways from WooCommerce.
+
+* Import Currency and UOM:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Metadata which contains default currency, Default Weight and Dimension.
+    - Click the 'Sync Metadata' button to import default currency, Default Weight and Dimension mesurement.
+
 **Usage**
 *********
 
@@ -156,9 +166,6 @@
   - Added Mapping for State in Customers.
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
-
-* Import Payment Gateways:
-  - Enable the import functionality in bad_connector_woocommerce to transfer payment gateways from WooCommerce to Odoo.
 
 **Known issues/Roadmap**
 ************************
