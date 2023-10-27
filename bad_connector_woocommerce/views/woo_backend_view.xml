@@ -345,12 +345,6 @@
                                     >
                                         <field name="default_limit" />
                                         <field name="warehouse_id" />
-                                        <field
-                                            name="product_stock_field_id"
-                                            widget="selection"
-                                            domain="[('model', 'in', ['product.product', 'product.template']), ('ttype', '=', 'float')]"
-                                        />
-                                        <field name="recompute_qty_step" />
                                         <separator string="Customers Configuration" />
                                         <field name="without_email" />
                                     </group>
@@ -361,6 +355,12 @@
                                         <field name="without_sku" />
                                         <field name="default_product_type" />
                                         <field name="product_categ_id" />
+                                        <field
+                                            name="product_stock_field_id"
+                                            widget="selection"
+                                            domain="[('model', 'in', ['product.product', 'product.template']), ('ttype', '=', 'float')]"
+                                        />
+                                        <field name="recompute_qty_step" />
                                     </group>
                                 </group>
                                 <group

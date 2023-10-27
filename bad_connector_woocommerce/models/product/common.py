@@ -21,6 +21,9 @@ class ProductProduct(models.Model):
         copy=False,
     )
     stock_manage = fields.Boolean(compute="_compute_stock_manage", store=True)
+    backend_stock_manage = fields.Boolean(
+        compute="_compute_backend_stock_manage", store=True
+    )
 
     def update_stock_qty(self):
         """
@@ -38,6 +41,16 @@ class ProductProduct(models.Model):
         """Compute the stock management status for each WooCommerce Product."""
         for product in self:
             product.stock_manage = any(product.woo_bind_ids.mapped("stock_management"))
+
+    @api.depends(
+        "woo_bind_ids",
+        "woo_bind_ids.backend_id.update_stock_inventory",
+    )
+    def _compute_backend_stock_manage(self):
+        for product in self:
+            product.backend_stock_manage = (
+                self.woo_bind_ids.backend_id.update_stock_inventory
+            )
 
 
 class WooProductProduct(models.Model):

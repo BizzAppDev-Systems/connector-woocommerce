@@ -154,7 +154,7 @@ class WooBackend(models.Model):
     )
     product_stock_field_id = fields.Many2one(
         comodel_name="ir.model.fields",
-        string="Stock Field",
+        string="Product Stock Field",
         default=_get_stock_field_id,
         domain="[('model', 'in', ['product.product', 'product.template']),"
         " ('ttype', '=', 'float')]",
@@ -164,7 +164,7 @@ class WooBackend(models.Model):
     )
     woo_setting_id = fields.Many2one(comodel_name="woo.settings")
     stock_update = fields.Boolean(related="woo_setting_id.stock_update")
-    recompute_qty_step = fields.Integer(string="Recompute Quantity Step", default=1000)
+    recompute_qty_step = fields.Integer(string="Recompute Quantity Batch", default=1000)
 
     @api.onchange("update_stock_inventory", "stock_update")
     def _onchange_update_stock_inventory(self):

@@ -373,5 +373,5 @@ class ProductInventoryExporter(Component):
         """Export the product inventory to WooCommerce"""
         external_id = self.binder.to_external(binding)
         data = {"stock_quantity": binding.woo_product_qty}
-        if binding.stock_management:
+        if binding.backend_id.update_stock_inventory and binding.stock_management:
             self.backend_adapter.write(external_id, data)
