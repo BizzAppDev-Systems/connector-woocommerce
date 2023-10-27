@@ -88,12 +88,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/settings/products/woocommerce_weight_unit"
+                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/products/woocommerce_weight_unit"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/settings/products"
+                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/products"
                         }
                     ]
                 }
@@ -147,12 +147,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/settings/products/woocommerce_dimension_unit"
+                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/products/woocommerce_dimension_unit"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/settings/products"
+                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/products"
                         }
                     ]
                 }

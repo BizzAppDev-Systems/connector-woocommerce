@@ -42,11 +42,7 @@ class TestImportPaymentGateway(BaseWooTestCase):
             "Make your payment directly into our bank account.",
             "Payment slug is not matched with response!",
         )
-        self.assertEqual(
-            payment1.enable,
-            True,
-            "Payment enabled is not matched with response!",
-        )
+        self.assertTrue(payment1.enable, "Payment should be enabled")
         self.assertEqual(
             payment1.description,
             "<p>Take payments in person via BACS.</p>",

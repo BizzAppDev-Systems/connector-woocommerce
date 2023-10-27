@@ -7,7 +7,7 @@
 * Technical name: bad_connector_woocommerce.
 * Add new menu in Connectors > Woocommerce > WooCommerce Backends.
 * Add new menu in Connectors > Configrations > Settings.
-* Add object woo.backend, woo.product.category, woo.product.image.url, woo.tax  and woo.sale.status on submenu Connectors.
+* Add object woo.backend, woo.product.category, woo.product.image.url, woo.tax, woo.payment.gateway and woo.sale.status on submenu Connectors.
 * Add object woo.settings on submenu Settings.
 * Submenu of Configurations > WooCommerce Sale Status which is use to store all the WooCommerce Sale Order Status.
 * Required field are Location,Client Key,Client Secret.
@@ -15,6 +15,7 @@
 * Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
 * Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes" at backend level.
 * Required field to Import the Products,Product Attributes,Taxes and Product Category are Location,Client Id,Client Secret,Product Category.
+* Added Default Currency, Default Weight Unit and Default Dimension Unit at backend level.
 
 **Author**
 **********
@@ -166,6 +167,7 @@
   - Added Mapping for State in Customers.
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
+
 
 **Known issues/Roadmap**
 ************************
