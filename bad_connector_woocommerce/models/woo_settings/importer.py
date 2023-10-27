@@ -69,7 +69,9 @@ class WooSettingsImporter(Component):
             binding.backend_id.write({"include_tax": include_tax})
 
         if binding.external_id == "woocommerce_currency":
-            currency = self.env["res.currency"].search([("name", "=", binding.value)])
+            currency = self.env["res.currency"].search(
+                [("name", "=", binding.value)], limit=1
+            )
             if not currency:
                 raise MappingError(
                     _(
@@ -80,11 +82,15 @@ class WooSettingsImporter(Component):
             binding.backend_id.write({"currency_id": currency.id})
 
         if binding.external_id == "woocommerce_weight_unit":
-            weight_uom = self.env["uom.uom"].search([("name", "=", binding.value)])
+            weight_uom = self.env["uom.uom"].search(
+                [("name", "=", binding.value)], limit=1
+            )
             binding.backend_id.write({"weight_uom_id": weight_uom.id})
 
         if binding.external_id == "woocommerce_dimension_unit":
-            dimension_uom = self.env["uom.uom"].search([("name", "=", binding.value)])
+            dimension_uom = self.env["uom.uom"].search(
+                [("name", "=", binding.value)], limit=1
+            )
             binding.backend_id.write({"dimension_uom_id": dimension_uom.id})
 
         return result
