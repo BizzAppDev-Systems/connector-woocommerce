@@ -126,13 +126,6 @@ class WooProductProduct(models.Model):
         help="""Last computed quantity to send " "on WooCommerce.""",
     )
 
-    def export_inventory(self, fields=None):
-        """Export the Quantity of a Product."""
-        self.ensure_one()
-        with self.backend_id.work_on(self._name) as work:
-            exporter = work.component(usage="product.inventory.exporter")
-            return exporter.run(self, fields)
-
     def recompute_woo_qty(self):
         """
         Check if the quantity in the stock location configured

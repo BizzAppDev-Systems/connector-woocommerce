@@ -171,7 +171,6 @@
 * Import of Stock Manage Settings:
   - Enable the import functionality in bad_connector_woocommerce to transfer Stock Manage Settings from WooCommerce to Odoo.
   - Handle mapping of Stock Manage data during the import process.
-  -Test pipeline.
 
 **Known issues/Roadmap**
 ************************
