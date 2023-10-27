@@ -15,7 +15,7 @@ class WooPaymentGateway(models.Model):
     name = fields.Char(required=True)
     slug = fields.Char()
     enable = fields.Boolean()
-    description = fields.Html(string="Description", translate=True)
+    description = fields.Text()
 
 
 class WooPaymentGatewayAdapter(Component):

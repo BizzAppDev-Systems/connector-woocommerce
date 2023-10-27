@@ -47,7 +47,7 @@ interactions:
               },
               "needs_setup": false,
               "post_install_scripts": [],
-              "settings_url": "http://localhost:8080/wp-admin/admin.php?page=wc-settings&tab=checkout&section=bacs",
+              "settings_url": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-admin/admin.php?page=wc-settings&tab=checkout&section=bacs",
               "connection_url": null,
               "setup_help_text": null,
               "required_settings_keys": [],

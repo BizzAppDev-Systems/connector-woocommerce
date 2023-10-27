@@ -45,6 +45,6 @@ class TestImportPaymentGateway(BaseWooTestCase):
         self.assertTrue(payment1.enable, "Payment should be enabled")
         self.assertEqual(
             payment1.description,
-            "<p>Take payments in person via BACS.</p>",
+            "Take payments in person via BACS.",
             "Country description is not matched with response!",
         )

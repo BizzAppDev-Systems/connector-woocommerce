@@ -105,7 +105,7 @@
 * Import Currency and UOM:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Metadata which contains default currency, Default Weight and Dimension.
-    - Click the 'Sync Metadata' button to import default currency, Default Weight and Dimension mesurement.
+    - Click the 'Sync Metadata' button to import default currency, Default Weight and Dimension measurement.
 
 **Usage**
 *********
