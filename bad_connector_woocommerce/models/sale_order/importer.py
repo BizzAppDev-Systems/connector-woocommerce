@@ -50,6 +50,7 @@ class WooSaleOrderImportMapper(Component):
         return vals
 
     def _get_tax_record(self, tax):
+        """Get the Odoo Tax record"""
         binder = self.binder_for("woo.tax")
         tax_record = binder.to_internal(tax.get("id"), unwrap=True)
         return tax_record
@@ -59,6 +60,7 @@ class WooSaleOrderImportMapper(Component):
         shipping_lines = []
         record = map_record.source
         shipping_id = False
+        tax_record = False
         for shipping_line in record.get("shipping_lines", []):
             shipping_values = {"is_delivery": True}
             woo_shipping_id = shipping_line.get("method_id")
@@ -73,6 +75,8 @@ class WooSaleOrderImportMapper(Component):
                 shipping_id = binder.to_internal(woo_shipping_id, unwrap=True)
 
             for tax in shipping_line.get("taxes", []):
+                if not tax.get("total"):
+                    continue
                 tax_record = self._get_tax_record(tax)
 
             shipping_values.update(
@@ -101,6 +105,8 @@ class WooSaleOrderImportMapper(Component):
                 )
 
             for tax in fee_line.get("taxes", []):
+                if not tax.get("total"):
+                    continue
                 tax_record = self._get_tax_record(tax)
 
             fee_lines.append(
