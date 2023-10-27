@@ -120,3 +120,16 @@ class TestImportSaleOrder(BaseWooTestCase):
             "completed",
             "Sale Order is Not in 'Completed' state in WooCommerce.",
         )
+
+    def test_import_sale_order_ship_without_tax(self):
+        """Test Assertions for Sale order"""
+        external_id = "72"
+
+        with recorder.use_cassette("import_woo_product_product"):
+            self.env["woo.sale.order"].import_record(
+                external_id=external_id, backend=self.backend
+            )
+        sale_order2 = self.env["woo.sale.order"].search(
+            [("external_id", "=", external_id)]
+        )
+        self.assertEqual(len(sale_order2), 1)

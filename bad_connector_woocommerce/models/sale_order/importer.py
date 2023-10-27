@@ -98,6 +98,7 @@ class WooSaleOrderImportMapper(Component):
         """Get fee lines"""
         fee_lines = []
         record = map_record.source
+        tax_record = False
         for fee_line in record.get("fee_lines", []):
             fee_product = self.backend_record.default_fee_product_id
             if not fee_product:
@@ -109,6 +110,7 @@ class WooSaleOrderImportMapper(Component):
                 if not tax.get("total"):
                     continue
                 tax_record = self._get_tax_record(tax)
+                break
 
             fee_lines.append(
                 (
