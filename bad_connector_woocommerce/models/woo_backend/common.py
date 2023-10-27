@@ -144,17 +144,29 @@ class WooBackend(models.Model):
         help="Select the default Currency for imported products and orders.",
     )
 
+    def _get_weight_uom_domain(self):
+        """Return domain for 'weight_uom_id' based on category
+        'uom.product_uom_categ_kgm'."""
+        category_id = self.env.ref("uom.product_uom_categ_kgm")
+        return [("category_id", "=", category_id.id)]
+
     weight_uom_id = fields.Many2one(
         "uom.uom",
         string="Weight UOM",
-        domain=[("category_id.name", "=", "Weight")],
+        domain=_get_weight_uom_domain,
         help="Select a weight unit of measure.",
     )
+
+    def _get_length_uom_domain(self):
+        """Return domain for 'dimension_uom_id' based on category
+        'uom.uom_categ_length'."""
+        category_id = self.env.ref("uom.uom_categ_length")
+        return [("category_id", "=", category_id.id)]
 
     dimension_uom_id = fields.Many2one(
         "uom.uom",
         string="Dimension UOM",
-        domain=[("category_id.name", "=", "Length / Distance")],
+        domain=_get_length_uom_domain,
         help="Select a dimension unit of measure.",
     )
 
