@@ -222,11 +222,18 @@ class WooBindingProductListener(Component):
         "woo_product_qty",
     )
 
-    @skip_if(lambda self, record, **kwargs: self.no_connector_export(record))
+    @skip_if(lambda self, record, *args, **kwargs: self.no_connector_export(record))
     def on_record_write(self, record, fields=None):
         job_options = {}
         inventory_fields = list(set(fields).intersection(self.INVENTORY_FIELDS))
         if inventory_fields:
+            if "description" not in job_options:
+                description = record.export_record.__doc__
+                job_options[
+                    "description"
+                ] = record.backend_id.get_queue_job_description(
+                    description, record._description
+                )
             job_options["priority"] = 20
             record.with_delay(**job_options or {}).export_record(
                 backend=record.backend_id, record=record, fields=inventory_fields
