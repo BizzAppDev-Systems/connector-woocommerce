@@ -5,7 +5,6 @@
     "author": "BizzAppDev Systems Pvt. Ltd.",
     "website": "http://www.bizzappdev.com",
     "depends": [
-        "connector",
         "mail",
         "contacts",
         "product",

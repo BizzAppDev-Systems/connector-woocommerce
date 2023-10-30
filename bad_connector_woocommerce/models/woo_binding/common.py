@@ -1,6 +1,4 @@
-from odoo import models
-
-# from odoo import api, fields, models
+from odoo import fields, models
 
 
 class WooBinding(models.AbstractModel):
@@ -10,21 +8,21 @@ class WooBinding(models.AbstractModel):
     _inherit = "base.binding"
     _description = "WooCommerce Binding (abstract)"
 
-    # backend_id = fields.Many2one(
-    #     comodel_name="woo.backend",
-    #     string="Backend",
-    #     required=True,
-    #     ondelete="restrict",
-    # )
+    backend_id = fields.Many2one(
+        comodel_name="woo.backend",
+        string="Backend",
+        required=True,
+        ondelete="restrict",
+    )
     # external_id = fields.Char(string="ID on woo")
-    # woo_data = fields.Text()
-    # _sql_constraints = [
-    #     (
-    #         "unique_backend_external_id",
-    #         "unique(backend_id, external_id)",
-    #         "A binding with the same backend and external ID already exists!",
-    #     ),
-    # ]
+    woo_data = fields.Text()
+    _sql_constraints = [
+        (
+            "unique_backend_external_id",
+            "unique(backend_id, external_id)",
+            "A binding with the same backend and external ID already exists!",
+        ),
+    ]
 
     # @api.model
     # def import_batch(self, backend, filters=None, job_options=None, force=False):
@@ -51,7 +49,7 @@ class WooBinding(models.AbstractModel):
     #         exporter = work.component(usage="batch.exporter")
     #         return exporter.run(filters=filters)
 
-    # def export_record(self, backend, record, fields=None):
+    # def export_record(self, backend, record, fields=None, job_options=None):
     #     """Export Record To"""
     #     record.ensure_one()
     #     with backend.work_on(self._name) as work:

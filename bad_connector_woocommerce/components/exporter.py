@@ -13,7 +13,6 @@ In addition to its export job, an exporter has to:
 import logging
 
 from odoo.addons.component.core import AbstractComponent
-from odoo.addons.queue_job.job import identity_exact
 
 _logger = logging.getLogger(__name__)
 
@@ -22,9 +21,9 @@ class WooExporter(AbstractComponent):
     """A common flow for the exports to woocommerce"""
 
     _name = "woo.exporter"
-    _inherit = ["generic.base.exporter"]
+    _inherit = ["generic.base.exporter", "connector.woo.base"]
     _usage = "record.exporter"
-    _default_binding_field = "woo_bind_ids"
+    # _default_binding_field = "woo_bind_ids"
 
     # def __init__(self, work_context):
     #     super(WooExporter, self).__init__(work_context)
@@ -304,62 +303,62 @@ class WooBatchExporter(AbstractComponent):
     """
 
     _name = "woo.batch.exporter"
-    _inherit = ["generic.batch.exporter"]
+    _inherit = ["generic.batch.exporter", "connector.woo.base"]
     _usage = "batch.exporter"
 
-    def run(self, filters=None, fields=None, job_options=None, **kwargs):
-        """Run the synchronization"""
-        records = self.backend_adapter.search(filters)
-        for record in records:
-            self._export_record(record, fields, job_options, **kwargs)
+    # def run(self, filters=None, fields=None, job_options=None, **kwargs):
+    #     """Run the synchronization"""
+    #     records = self.backend_adapter.search(filters)
+    #     for record in records:
+    #         self._export_record(record, fields, job_options, **kwargs)
 
-    def _export_record(self, record, fields=None, job_options=None, **kwargs):
-        """
-        Export a record directly or delay the export of the record.
+    # def _export_record(self, record, fields=None, job_options=None, **kwargs):
+    #     """
+    #     Export a record directly or delay the export of the record.
 
-        Method to implement in sub-classes.
-        """
-        # self.model.export_record(self.backend_record, record)
-        raise NotImplementedError
+    #     Method to implement in sub-classes.
+    #     """
+    #     # self.model.export_record(self.backend_record, record)
+    #     raise NotImplementedError
 
 
 class WooDirectBatchExporter(AbstractComponent):
     """Export the records directly, without delaying the jobs."""
 
     _name = "woo.direct.batch.exporter"
-    _inherit = "woo.batch.exporter"
+    _inherit = "generic.direct.batch.exporter"
 
-    def _export_record(self, record, fields=None, job_options=None, **kwargs):
-        """Delay the export of the records"""
-        job_options = job_options or {}
-        if "identity_key" not in job_options:
-            job_options["identity_key"] = identity_exact
-        if "description" in job_options:
-            description = self.backend_record.get_queue_job_description(
-                prefix=self.model.export_record.__doc__ or "Record Export Of",
-                model=self.model._description,
-            )
-            job_options["description"] = description
-        delayable = self.model.with_delay(**job_options or {})
-        delayable.export_record(self.backend_record, record, fields, **kwargs)
+    # def _export_record(self, record, fields=None, job_options=None, **kwargs):
+    #     """Delay the export of the records"""
+    #     job_options = job_options or {}
+    #     if "identity_key" not in job_options:
+    #         job_options["identity_key"] = identity_exact
+    #     if "description" in job_options:
+    #         description = self.backend_record.get_queue_job_description(
+    #             prefix=self.model.export_record.__doc__ or "Record Export Of",
+    #             model=self.model._description,
+    #         )
+    #         job_options["description"] = description
+    #     delayable = self.model.with_delay(**job_options or {})
+    #     delayable.export_record(self.backend_record, record, fields, **kwargs)
 
 
 class WooDelayedBatchExporter(AbstractComponent):
     """Delay export of the records"""
 
     _name = "woo.delayed.batch.exporter"
-    _inherit = "woo.batch.exporter"
+    _inherit = "generic.delayed.batch.exporter"
 
-    def _export_record(self, record, fields, job_options=None, **kwargs):
-        """Delay the export of the records"""
-        job_options = job_options or {}
-        if "identity_key" not in job_options:
-            job_options["identity_key"] = identity_exact
-        if "description" in job_options:
-            description = self.backend_record.get_queue_job_description(
-                prefix=self.model.export_record.__doc__ or "Record Export Of",
-                model=self.model._description,
-            )
-            job_options["description"] = description
-        delayable = self.model.with_delay(**job_options or {})
-        delayable.export_record(self.backend_record, record, fields=fields, **kwargs)
+    # def _export_record(self, record, fields, job_options=None, **kwargs):
+    #     """Delay the export of the records"""
+    #     job_options = job_options or {}
+    #     if "identity_key" not in job_options:
+    #         job_options["identity_key"] = identity_exact
+    #     if "description" in job_options:
+    #         description = self.backend_record.get_queue_job_description(
+    #             prefix=self.model.export_record.__doc__ or "Record Export Of",
+    #             model=self.model._description,
+    #         )
+    #         job_options["description"] = description
+    #     delayable = self.model.with_delay(**job_options or {})
+    #     delayable.export_record(self.backend_record, record, fields=fields, **kwargs)

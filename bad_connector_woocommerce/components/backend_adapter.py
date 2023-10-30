@@ -183,11 +183,11 @@ class GenericAdapter(AbstractComponent):
 
     _name = "woo.adapter"
     _inherit = "generic.adapter"
-    _apply_on = "woo.backend"
-    _last_update_date = "date_modified"
-    _woo_model = None
-    _woo_ext_id_key = "id"
-    _odoo_ext_id_key = "external_id"
+    # _apply_on = "woo.backend"
+    # _last_update_date = "date_modified"
+    # _woo_model = None
+    # _woo_ext_id_key = "id"
+    # _odoo_ext_id_key = "external_id"
 
     # def search(self, filters=None, **kwargs):
     #     """Method to get the records from woo"""
