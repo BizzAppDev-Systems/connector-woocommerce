@@ -38,7 +38,7 @@ class WooSaleOrderImportMapper(Component):
         return tax_record
 
     def _prepare_lines(
-        self, product, price, qty, ext_id, description="", total_tax=0, taxes=None
+        self, product, price, qty, ext_id, description="", total_tax=0, taxes=False
     ):
         """Prepare lines of shipping"""
         tax_records = [self._get_tax_record(tax) for tax in taxes if tax.get("total")]
@@ -50,7 +50,9 @@ class WooSaleOrderImportMapper(Component):
             "backend_id": self.backend_record.id,
             "external_id": ext_id,
             "total_tax_line": total_tax,
-            "tax_id": [(6, 0, [tax_record.id for tax_record in tax_records])],
+            "tax_id": [
+                (6, 0, [tax_record.id for tax_record in tax_records if tax_record])
+            ],
         }
         if description:
             vals.update({"name": description})
