@@ -31,3 +31,11 @@ class WooSettingsAdapter(Component):
     _woo_model = "settings/tax"
     _woo_product_stock = "settings/products/woocommerce_manage_stock"
     _woo_ext_id_key = "id"
+
+    def search(self, filters=None, **kwargs):
+        """
+        Inherited search method to pass different API
+        to fetch additional data.
+        """
+        kwargs["_woo_product_stock"] = self._woo_product_stock
+        return super(WooSettingsAdapter, self).search(filters, **kwargs)
