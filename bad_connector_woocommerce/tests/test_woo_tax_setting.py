@@ -80,7 +80,7 @@ class TestImportCountry(BaseWooTestCase):
 
     def test_import_stock_manage(self):
         """Test Import Stock Manage"""
-        external_id = "import_woo_stock_manage"
+        external_id = "woocommerce_manage_stock"
         with recorder.use_cassette("import_woo_stock_manage"):
             self.env["woo.settings"].import_record(
                 external_id=external_id, backend=self.backend
