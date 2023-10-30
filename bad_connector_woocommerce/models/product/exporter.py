@@ -14,7 +14,7 @@ class WooProductProductExporterMapper(Component):
     @mapping
     def stock_quantity(self, record):
         """Mapping for stock_quantity"""
-        return {"stock_quantity": record.woo_bind_ids.mapped("woo_product_qty")}
+        return {"stock_quantity": record.woo_bind_ids[0].woo_product_qty}
 
 
 class ProductInventoryExporter(Component):
