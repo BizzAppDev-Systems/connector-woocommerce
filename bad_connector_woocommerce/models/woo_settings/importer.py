@@ -85,26 +85,12 @@ class WooSettingsImporter(Component):
             weight_uom = self.env["uom.uom"].search(
                 [("name", "=", binding.value)], limit=1
             )
-            if not weight_uom:
-                raise MappingError(
-                    _(
-                        "'%s' Weight unit not found, ensure that unit exist!!!"
-                        % binding.value
-                    )
-                )
             binding.backend_id.write({"weight_uom_id": weight_uom.id})
 
         if binding.external_id == "woocommerce_dimension_unit":
             dimension_uom = self.env["uom.uom"].search(
                 [("name", "=", binding.value)], limit=1
             )
-            if not dimension_uom:
-                raise MappingError(
-                    _(
-                        "'%s' Dimension unit not found, ensure that unit exist!!!"
-                        % binding.value
-                    )
-                )
             binding.backend_id.write({"dimension_uom_id": dimension_uom.id})
 
         return result
