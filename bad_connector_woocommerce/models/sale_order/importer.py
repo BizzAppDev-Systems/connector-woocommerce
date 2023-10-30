@@ -31,10 +31,17 @@ class WooSaleOrderImportMapper(Component):
         ("line_items", "woo_order_line_ids", "woo.sale.order.line"),
     ]
 
+    def _get_tax_record(self, tax):
+        """Get the Odoo Tax record"""
+        binder = self.binder_for("woo.tax")
+        tax_record = binder.to_internal(tax.get("id"), unwrap=True)
+        return tax_record
+
     def _prepare_lines(
-        self, product, price, qty, ext_id, description="", total_tax=0, tax_id=False
+        self, product, price, qty, ext_id, description="", total_tax=0, taxes=None
     ):
         """Prepare lines of shipping"""
+        tax_records = [self._get_tax_record(tax) for tax in taxes if tax.get("total")]
         vals = {
             "product_id": product.id,
             "price_unit": price,
@@ -43,24 +50,17 @@ class WooSaleOrderImportMapper(Component):
             "backend_id": self.backend_record.id,
             "external_id": ext_id,
             "total_tax_line": total_tax,
-            "tax_id": tax_id,
+            "tax_id": [(6, 0, [tax_record.id for tax_record in tax_records])],
         }
         if description:
             vals.update({"name": description})
         return vals
-
-    def _get_tax_record(self, tax):
-        """Get the Odoo Tax record"""
-        binder = self.binder_for("woo.tax")
-        tax_record = binder.to_internal(tax.get("id"), unwrap=True)
-        return tax_record
 
     def _get_shipping_lines(self, map_record, values):
         """Get the Shipping Lines"""
         shipping_lines = []
         record = map_record.source
         shipping_id = False
-        tax_record = False
         for shipping_line in record.get("shipping_lines", []):
             shipping_values = {"is_delivery": True}
             woo_shipping_id = shipping_line.get("method_id")
@@ -74,12 +74,6 @@ class WooSaleOrderImportMapper(Component):
                 binder = self.binder_for("woo.delivery.carrier")
                 shipping_id = binder.to_internal(woo_shipping_id, unwrap=True)
 
-            for tax in shipping_line.get("taxes", []):
-                if not tax.get("total"):
-                    continue
-                tax_record = self._get_tax_record(tax)
-                break
-
             shipping_values.update(
                 self._prepare_lines(
                     shipping_id.product_id,
@@ -88,7 +82,7 @@ class WooSaleOrderImportMapper(Component):
                     shipping_line.get("id"),
                     shipping_line.get("method_title"),
                     shipping_line.get("total_tax"),
-                    tax_id=tax_record,
+                    shipping_line.get("taxes", []),
                 )
             )
             shipping_lines.append((0, 0, shipping_values))
@@ -98,19 +92,12 @@ class WooSaleOrderImportMapper(Component):
         """Get fee lines"""
         fee_lines = []
         record = map_record.source
-        tax_record = False
         for fee_line in record.get("fee_lines", []):
             fee_product = self.backend_record.default_fee_product_id
             if not fee_product:
                 raise MappingError(
                     _("The default fee product must be set on the backend")
                 )
-
-            for tax in fee_line.get("taxes", []):
-                if not tax.get("total"):
-                    continue
-                tax_record = self._get_tax_record(tax)
-                break
 
             fee_lines.append(
                 (
@@ -123,7 +110,7 @@ class WooSaleOrderImportMapper(Component):
                         fee_line.get("id"),
                         fee_line.get("name"),
                         fee_line.get("total_tax"),
-                        tax_id=tax_record,
+                        fee_line.get("taxes", []),
                     ),
                 )
             )
