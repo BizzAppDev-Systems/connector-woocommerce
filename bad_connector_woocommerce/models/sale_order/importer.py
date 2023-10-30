@@ -31,17 +31,20 @@ class WooSaleOrderImportMapper(Component):
         ("line_items", "woo_order_line_ids", "woo.sale.order.line"),
     ]
 
-    def _get_tax_record(self, tax):
-        """Get the Odoo Tax record"""
-        binder = self.binder_for("woo.tax")
-        tax_record = binder.to_internal(tax.get("id"), unwrap=True)
-        return tax_record
-
     def _prepare_lines(
         self, product, price, qty, ext_id, description="", total_tax=0, taxes=False
     ):
         """Prepare lines of shipping"""
-        tax_records = [self._get_tax_record(tax) for tax in taxes if tax.get("total")]
+
+        tax_records = []
+        binder = self.binder_for("woo.tax")
+        for tax in taxes:
+            if not tax.get("total"):
+                continue
+            woo_tax = binder.to_internal(tax.get("id"))
+            if woo_tax and woo_tax.odoo_id:
+                tax_records.append(woo_tax.odoo_id.id)
+
         vals = {
             "product_id": product.id,
             "price_unit": price,
@@ -50,9 +53,7 @@ class WooSaleOrderImportMapper(Component):
             "backend_id": self.backend_record.id,
             "external_id": ext_id,
             "total_tax_line": total_tax,
-            "tax_id": [
-                (6, 0, [tax_record.id for tax_record in tax_records if tax_record])
-            ],
+            "tax_id": [(6, 0, [tax_record_id for tax_record_id in tax_records])],
         }
         if description:
             vals.update({"name": description})
