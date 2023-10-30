@@ -818,8 +818,8 @@ interactions:
                         "taxes": [
                             {
                                 "id": 1,
-                                "total": "569.43",
-                                "subtotal": "569.43"
+                                "total": "",
+                                "subtotal": ""
                             }
                         ],
                         "meta_data": [],

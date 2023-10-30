@@ -411,6 +411,8 @@ class WooSaleOrderLineImportMapper(Component):
         fetched_taxes = {}
         tax_binder = self.binder_for(model="woo.tax")
         for tax in taxes:
+            if not tax.get("total"):
+                continue
             woo_tax = tax_binder.to_internal(tax.get("id"))
             if woo_tax and woo_tax.odoo_id:
                 result.append(woo_tax.odoo_id.id)
