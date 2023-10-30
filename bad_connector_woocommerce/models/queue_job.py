@@ -7,9 +7,6 @@ class QueueJob(models.Model):
     def open_related_action(self):
         """Used to open related record of queue job"""
         self.ensure_one()
-        print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-        print(self.args, "[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]")
-        print(self.kwargs, "???????????????????????????????????????????")
         if not self.args and not self.kwargs:
             return None
         if self.args:
@@ -28,9 +25,9 @@ class QueueJob(models.Model):
                     record = record.odoo_id
         elif self.kwargs:
             external_id = self.kwargs.get("external_id")
-            print(external_id, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            kwargs_record = self.kwargs.get("record")
             if not external_id:
-                return None
+                external_id = kwargs_record.external_id
             if external_id:
                 record = (
                     self.env[self.model_name]
