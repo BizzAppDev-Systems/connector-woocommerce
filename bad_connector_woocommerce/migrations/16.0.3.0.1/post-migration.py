@@ -1,8 +1,11 @@
 def migrate(cr, version):
+    warehouse = "WH"
     cr.execute(
         """
-        UPDATE your_table_name
-        SET warehouse_id =  (select id from stock_warehouse where code = "WH")
+        UPDATE woo_backend
+        SET warehouse_id =
+        (SELECT id FROM stock_warehouse WHERE code = %s)
         WHERE warehouse_id IS NULL;
-        """
+        """,
+        (warehouse,),
     )
