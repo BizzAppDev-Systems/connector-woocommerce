@@ -194,7 +194,7 @@ class GenericAdapter(AbstractComponent):
         result = self._call(
             resource_path=self._woo_model, arguments=filters, http_method="get"
         )
-        if "_woo_product_stock" in kwargs:
+        if kwargs.get("_woo_product_stock", False):
             setting_stock_result = self._call(
                 resource_path=kwargs.get("_woo_product_stock"),
                 arguments=filters,
