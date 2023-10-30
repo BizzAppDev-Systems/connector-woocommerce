@@ -113,7 +113,7 @@ class WooExporter(AbstractComponent):
         self._after_export(self.binding)
         return result
 
-    def _after_export(self):
+    def _after_export(self, binding):
         pass
 
     def _export_dependency(

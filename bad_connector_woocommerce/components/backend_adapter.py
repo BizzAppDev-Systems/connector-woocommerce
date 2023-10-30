@@ -194,6 +194,13 @@ class GenericAdapter(AbstractComponent):
         result = self._call(
             resource_path=self._woo_model, arguments=filters, http_method="get"
         )
+        if "_woo_product_stock" in kwargs:
+            setting_stock_result = self._call(
+                resource_path=kwargs.get("_woo_product_stock"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(setting_stock_result.get("data"))
         return result
 
     def read(self, external_id=None, attributes=None):

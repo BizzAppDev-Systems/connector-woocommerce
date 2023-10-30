@@ -194,7 +194,10 @@ class WooProductProductImportMapper(Component):
     @mapping
     def detailed_type(self, record):
         """Mapping for detailed_type"""
-        return {"detailed_type": self.backend_record.default_product_type}
+        detailed_type = self.backend_record.default_product_type
+        if record.get("manage_stock"):
+            detailed_type = "product"
+        return {"detailed_type": detailed_type}
 
     def _get_attribute_id_format(self, attribute, record, option=None):
         """Return the attribute and attribute value's unique id"""
@@ -322,6 +325,20 @@ class WooProductProductImportMapper(Component):
                     )
                 attribute_value_ids.append(attribute_value.id)
         return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
+
+    @mapping
+    def stock_management(self, record):
+        """Mapping for Stock Management"""
+        return {"stock_management": record.get("manage_stock")}
+
+    @mapping
+    def woo_product_qty(self, record):
+        """Mapping for WooCommerce Product qty"""
+        return (
+            {"woo_product_qty": record.get("stock_quantity")}
+            if record.get("stock_quantity")
+            else {}
+        )
 
 
 class WooProductProductImporter(Component):
