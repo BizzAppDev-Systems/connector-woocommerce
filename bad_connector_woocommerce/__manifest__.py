@@ -9,6 +9,7 @@
         "mail",
         "contacts",
         "product",
+        "connector_base",
         "sale_management",
         "delivery",
     ],

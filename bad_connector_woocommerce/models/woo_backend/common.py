@@ -17,7 +17,7 @@ class WooBackend(models.Model):
 
     _name = "woo.backend"
     _description = "WooCommerce Backend"
-    _inherit = ["mail.thread", "connector.backend"]
+    _inherit = ["mail.thread", "generic.backend"]
 
     name = fields.Char(
         string="Name", required=True, help="Enter the name of the WooCommerce backend."
