@@ -340,7 +340,7 @@
                                         string="Default Configuration"
                                     >
                                         <field name="default_limit" />
-                                        <field name="warehouse_id" />
+                                        <field name="warehouse_id" required="1" />
                                         <separator string="Customers Configuration" />
                                         <field name="without_email" />
                                     </group>
