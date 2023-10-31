@@ -9,7 +9,7 @@ class WooImporter(AbstractComponent):
     """Base importer for woocommerce"""
 
     _name = "woo.importer"
-    _inherit = ["generic.importer", "connector.woo.base"]
+    _inherit = ["base.generic.importer", "connector.woo.base"]
     _usage = "record.importer"
 
     # def __init__(self, work_context):
@@ -276,7 +276,7 @@ class WooImporter(AbstractComponent):
 
 class WooMapChildImport(AbstractComponent):
     _name = "woo.map.child.import"
-    _inherit = ["connector.woo.base", "base.map.child.import"]
+    _inherit = ["connector.woo.base", "generic.map.child.import"]
     _usage = "import.map.child"
 
 
@@ -291,50 +291,53 @@ class WooBatchImporter(AbstractComponent):
     _inherit = ["generic.batch.importer", "connector.woo.base"]
     _usage = "batch.importer"
 
-    # def run(self, filters=None, force=False, job_options=None, data=None, **kwargs):
-    #     """Run the synchronization"""
-    #     filters = filters or {}
-    #     if "record_count" not in filters:
-    #         filters.update({"record_count": 0})
-    #     data = self.backend_adapter.search(filters)
-    #     records = data.get("data", [])
-    #     for record in records:
-    #         external_id = record.get(self.backend_adapter._woo_ext_id_key)
-    #         self._import_record(external_id, job_options, data=record)
-    #     filters["record_count"] += len(records)
-    #     record_count = data.get("record_count", 0)
-    #     filters_record_count = filters.get("record_count", 0)
-    #     if (
-    #         record_count is not None
-    #         and filters_record_count is not None
-    #         and int(record_count) > int(filters_record_count)
-    #     ):
-    #         filters.update({"page": filters.get("page", 1) + 1})
-    #         self.process_next_page(
-    #             filters=filters, force=force, job_options=job_options, **kwargs
-    #         )
+    def run(self, filters=None, force=False, job_options=None, data=None, **kwargs):
+        """Run the synchronization"""
+        filters = filters or {}
+        if "record_count" not in filters:
+            filters.update({"record_count": 0})
+        data = self.backend_adapter.search(filters)
+        print(data, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa print data")
+        records = data.get("data", [])
+        for record in records:
+            external_id = record.get(self.backend_adapter._remote_ext_id_key)
+            print(record, "apapapapapapapapaapapap")
+            self._import_record(external_id, data=record, job_options=job_options)
+        filters["record_count"] += len(records)
+        record_count = data.get("record_count", 0)
+        filters_record_count = filters.get("record_count", 0)
+        if (
+            record_count is not None
+            and filters_record_count is not None
+            and int(record_count) > int(filters_record_count)
+        ):
+            filters.update({"page": filters.get("page", 1) + 1})
+            self.process_next_page(
+                filters=filters, force=force, job_options=job_options, **kwargs
+            )
 
-    # def process_next_page(self, filters=None, job_options=None, force=False, **kwargs):
-    #     """Method to trigger batch import for Next page"""
-    #     if not filters:
-    #         filters = {}
-    #     job_options = job_options or {}
-    #     model = self.env[self.model._name]
-    #     if "description" not in kwargs:
-    #         description = self.backend_record.get_queue_job_description(
-    #             prefix=self.model.import_batch.__doc__ or "Preparing Batch Import Of",
-    #             model=self.model._description,
-    #         )
-    #         job_options["description"] = description
-    #     if not kwargs.get("no_delay"):
-    #         model = model.with_delay(**job_options or {})
-    #     model.import_batch(
-    #         self.backend_record,
-    #         filters=filters,
-    #         job_options=job_options,
-    #         force=force,
-    #         **kwargs
-    #     )
+    def process_next_page(self, filters=None, force=False, job_options=None, **kwargs):
+        """Method to trigger batch import for Next page"""
+        print("helooooo i m working[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]")
+        if not filters:
+            filters = {}
+        job_options = job_options or {}
+        model = self.env[self.model._name]
+        if "description" not in kwargs:
+            description = self.backend_record.get_queue_job_description(
+                prefix=self.model.import_batch.__doc__ or "Preparing Batch Import Of",
+                model=self.model._description,
+            )
+            job_options["description"] = description
+        if not kwargs.get("no_delay"):
+            model = model.with_delay(**job_options or {})
+        model.import_batch(
+            self.backend_record,
+            filters=filters,
+            job_options=job_options,
+            force=force,
+            **kwargs
+        )
 
     # def _import_record(self, external_id, job_options=None, data=None, **kwargs):
     #     """
@@ -348,7 +351,7 @@ class WooDirectBatchImporter(AbstractComponent):
     """Import the records directly, without delaying the jobs."""
 
     _name = "woo.direct.batch.importer"
-    _inherit = "generic.direct.batch.importer"
+    _inherit = ["generic.direct.batch.importer", "woo.batch.importer"]
 
     # def _import_record(self, external_id, data=None, force=None, **kwargs):
     #     """Import the record directly"""
@@ -365,7 +368,7 @@ class WooDelayedBatchImporter(AbstractComponent):
     """Delay import of the records"""
 
     _name = "woo.delayed.batch.importer"
-    _inherit = "generic.delayed.batch.importer"
+    _inherit = ["generic.delayed.batch.importer", "woo.batch.importer"]
 
     # def _import_record(self, external_id, job_options=None, data=None, **kwargs):
     #     """Delay the import of the records"""

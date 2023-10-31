@@ -17,7 +17,7 @@ class WooBackend(models.Model):
 
     _name = "woo.backend"
     _description = "WooCommerce Backend"
-    _inherit = ["mail.thread", "connector.backend"]
+    _inherit = ["mail.thread", "generic.backend"]
 
     name = fields.Char(
         string="Name", required=True, help="Enter the name of the WooCommerce backend."
@@ -217,6 +217,7 @@ class WooBackend(models.Model):
                 filters=filters,
                 job_options=job_options,
             )
+            print("hellooooooo")
             if force:
                 backend_vals[force_update_field] = False
         if from_date_field:
@@ -239,6 +240,7 @@ class WooBackend(models.Model):
         self, model, from_date_field, priority=None, filters=None, job_options=None
     ):
         """Method to add a filter based on the date."""
+        print(model, "===========")
         model.import_batch(backend=self, filters=filters)
 
     def toggle_test_mode(self):
@@ -267,9 +269,9 @@ class WooBackend(models.Model):
             test_mode=self.test_mode,
         )
 
-        with WooAPI(woo_location) as woo_api:
+        with WooAPI(woo_location) as remote_api:
             with super(WooBackend, self).work_on(
-                model_name, woo_api=woo_api, **kwargs
+                model_name, remote_api=remote_api, **kwargs
             ) as work:
                 yield work
 

@@ -21,9 +21,9 @@ class WooExporter(AbstractComponent):
     """A common flow for the exports to woocommerce"""
 
     _name = "woo.exporter"
-    _inherit = ["generic.base.exporter", "connector.woo.base"]
+    _inherit = ["base.generic.exporter", "connector.woo.base"]
     _usage = "record.exporter"
-    # _default_binding_field = "woo_bind_ids"
+    _default_binding_field = "woo_bind_ids"
 
     # def __init__(self, work_context):
     #     super(WooExporter, self).__init__(work_context)
@@ -326,7 +326,7 @@ class WooDirectBatchExporter(AbstractComponent):
     """Export the records directly, without delaying the jobs."""
 
     _name = "woo.direct.batch.exporter"
-    _inherit = "generic.direct.batch.exporter"
+    _inherit = ["generic.direct.batch.exporter", "connector.woo.base"]
 
     # def _export_record(self, record, fields=None, job_options=None, **kwargs):
     #     """Delay the export of the records"""
@@ -347,7 +347,7 @@ class WooDelayedBatchExporter(AbstractComponent):
     """Delay export of the records"""
 
     _name = "woo.delayed.batch.exporter"
-    _inherit = "generic.delayed.batch.exporter"
+    _inherit = ["generic.delayed.batch.exporter", "connector.woo.base"]
 
     # def _export_record(self, record, fields, job_options=None, **kwargs):
     #     """Delay the export of the records"""

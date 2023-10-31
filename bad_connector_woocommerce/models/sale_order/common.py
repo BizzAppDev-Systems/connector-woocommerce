@@ -202,7 +202,7 @@ class WooSaleOrderAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.sale.order"
 
-    _woo_model = "orders"
+    _remote_model = "orders"
     _woo_key = "id"
     _woo_ext_id_key = "id"
     _model_dependencies = [

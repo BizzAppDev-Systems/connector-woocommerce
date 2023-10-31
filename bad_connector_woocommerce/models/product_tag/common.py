@@ -47,5 +47,5 @@ class WooProductTagAdapter(Component):
     _name = "woo.product.tag.adapter"
     _inherit = "woo.adapter"
     _apply_on = "woo.product.tag"
-    _woo_model = "products/tags"
+    _remote_model = "products/tags"
     _woo_ext_id_key = "id"

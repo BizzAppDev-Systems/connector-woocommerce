@@ -1,5 +1,7 @@
 from odoo import fields, models
 
+# from odoo.addons.component.core import Component
+
 
 class WooBinding(models.AbstractModel):
     """Abstract Model for the Bindings."""
@@ -14,15 +16,24 @@ class WooBinding(models.AbstractModel):
         required=True,
         ondelete="restrict",
     )
-    # external_id = fields.Char(string="ID on woo")
+
+    def init(self):
+        """
+        Inherit Method: inherit method to add unique index for odoo connector
+        """
+        if self._table == "woo_binding":
+            return
+        return super().init()
+
+    # # external_id = fields.Char(string="ID on woo")
     woo_data = fields.Text()
-    _sql_constraints = [
-        (
-            "unique_backend_external_id",
-            "unique(backend_id, external_id)",
-            "A binding with the same backend and external ID already exists!",
-        ),
-    ]
+    # _sql_constraints = [
+    #     (
+    #         "unique_backend_external_id",
+    #         "unique(backend_id, external_id)",
+    #         "A binding with the same backend and external ID already exists!",
+    #     ),
+    # ]
 
     # @api.model
     # def import_batch(self, backend, filters=None, job_options=None, force=False):

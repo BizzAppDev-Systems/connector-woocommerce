@@ -71,5 +71,5 @@ class WooProductAttributeAdapter(Component):
     _name = "woo.product.attribute.adapter"
     _inherit = "woo.adapter"
     _apply_on = "woo.product.attribute"
-    _woo_model = "products/attributes"
+    _remote_model = "products/attributes"
     _woo_ext_id_key = "id"

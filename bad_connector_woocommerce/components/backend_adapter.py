@@ -6,13 +6,16 @@ from datetime import datetime
 import requests
 from woocommerce import API
 
-from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import NetworkRetryableError, RetryableJobError
+from odoo.addons.connector_base.components.backend_adapter import (
+    GenericAdapter,
+    GenericAPI,
+)
 
 _logger = logging.getLogger(__name__)
 
 
-class WooLocation(object):
+class WooLocation:
     """The Class is used to set Location"""
 
     def __init__(self, location, client_id, client_secret, version, test_mode):
@@ -28,7 +31,7 @@ class WooLocation(object):
         return self._location
 
 
-class WooAPI(object):
+class WooAPI(GenericAPI):
     def __init__(self, location):
         """
         :param location: Remote location
@@ -47,7 +50,9 @@ class WooAPI(object):
                 version=self._location.version,
                 wp_api=True,
             )
+            print(woocommerce_client, "[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]")
             self._api = woocommerce_client
+            print(self._api, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
         return self._api
 
     def api_call(self, resource_path, arguments, http_method=None):
@@ -55,6 +60,7 @@ class WooAPI(object):
         if not self.api:
             return self.api
         http_method = http_method.lower()
+        print(http_method, "pppekeienejudndurh")
         additional_data = {}
         if http_method == "get":
             additional_data.update(params=arguments)
@@ -70,7 +76,9 @@ class WooAPI(object):
         if self._api is not None and hasattr(self._api, "__exit__"):
             self._api.__exit__(exc_type, exc_value, traceback)
 
-    def call(self, resource_path, arguments, http_method=None):
+    def call(
+        self, resource_path, arguments, http_method=None, is_token=False, **kwargs
+    ):
         try:
             if isinstance(arguments, list):
                 while arguments and arguments[-1] is None:
@@ -134,14 +142,14 @@ class WooAPI(object):
                 raise
 
 
-# class WooCRUDAdapter(AbstractComponent):
+# class WooCRUDAdapter(BaseGenericCRUDAdapter):
 #     """External Records Adapter for Woocommerce"""
 
 #     # pylint: disable=method-required-super
 
 #     _name = "woo.crud.adapter"
-#     _inherit = ["generic.crud.adapter"]
-#     _usage = "backend.adapter"
+#     _inherit = ["base.generic.crud.adapter"]
+# _usage = "backend.adapter"
 
 #     def search(self, filters=None, **kwargs):
 #         """
@@ -173,16 +181,17 @@ class WooAPI(object):
 #         """Delete a record on the external system"""
 #         raise NotImplementedError
 
-#     def _call(self, resource_path, arguments=None, http_method=None):
-#         """Method to initiate the connection"""
-#         return self.work.woo_api.call(resource_path, arguments, http_method=http_method)
+# def _call(self, resource_path, arguments=None, http_method=None):
+#     """Method to initiate the connection"""
+#     return self.work.woo_api.call(resource_path, arguments, http_method=http_method)
 
 
-class GenericAdapter(AbstractComponent):
+class WooAdapter(GenericAdapter):
     # pylint: disable=method-required-super
 
     _name = "woo.adapter"
     _inherit = "generic.adapter"
+    _remote_model = None
     # _apply_on = "woo.backend"
     # _last_update_date = "date_modified"
     # _woo_model = None
@@ -192,13 +201,17 @@ class GenericAdapter(AbstractComponent):
     # def search(self, filters=None, **kwargs):
     #     """Method to get the records from woo"""
     #     result = self._call(
-    #         resource_path=self._woo_model, arguments=filters, http_method="get"
+    #         resource_path=self._remote_model, arguments=filters, http_method="get"
     #     )
     #     return result
 
     # def read(self, external_id=None, attributes=None, **kwargs):
     #     """Method to get a data for specified record"""
-    #     resource_path = "{}/{}".format(self._woo_model, external_id)
+    #     # resource_path = "{}/{}".format(self._woo_model, external_id)
+    #     resource_path = self.get_default_resource_path(
+    #         "read", attributes=attributes, **kwargs
+    #     )
+    #     print(resource_path,"pppppppppppppppppp")
     #     result = self._call(resource_path, http_method="get")
     #     result = result.get("data", [])
     #     return result

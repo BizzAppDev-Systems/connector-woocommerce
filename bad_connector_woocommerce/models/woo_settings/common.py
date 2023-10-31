@@ -27,5 +27,5 @@ class WooSettingsAdapter(Component):
     _name = "woo.setting.adapter"
     _inherit = "woo.adapter"
     _apply_on = "woo.settings"
-    _woo_model = "settings/tax"
+    _remote_model = "settings/tax"
     _woo_ext_id_key = "id"

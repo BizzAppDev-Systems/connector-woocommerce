@@ -12,7 +12,7 @@ class WooModelBinder(Component):
     """
 
     _name = "woo.binder"
-    _inherit = ["generic.binder", "connector.woo.base"]
+    _inherit = ["base.generic.binder", "connector.woo.base"]
     _apply_on = [
         "woo.res.partner",
         "woo.product.product",
