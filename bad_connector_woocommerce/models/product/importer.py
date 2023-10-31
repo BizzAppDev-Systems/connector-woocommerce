@@ -323,6 +323,16 @@ class WooProductProductImportMapper(Component):
                 attribute_value_ids.append(attribute_value.id)
         return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
 
+    def get_product_template(self, temp=None):
+        binder = self.binder_for(model="woo.product.template")
+        template_id = binder.to_internal(temp, unwrap=True)
+        return template_id
+
+    @mapping
+    def product_tmpl_id(self, record):
+        template_id = self.get_product_template(temp=record.get("parent_id"))
+        return {"product_tmpl_id": template_id.id} if template_id else {}
+
 
 class WooProductProductImporter(Component):
     """Importer the WooCommerce Product"""
@@ -344,3 +354,30 @@ class WooProductProductImporter(Component):
         image_importer = self.component(usage="product.image.importer")
         image_importer.run(self.external_id, binding, image_record)
         return result
+
+    # def _must_skip(self):
+    #     """Skipped Records which have type as variable."""
+    #     if self.remote_record.get("type") == "variable":
+    #         return _("Skipped: Product Type is Variable")
+    #     return super(WooProductProductImporter, self)._must_skip()
+
+    # def _import_dependencies(self):
+    #     """
+    #     Override method to import dependencies for WooCommerce product.
+    #     """
+    #     record = self.remote_record
+    #     print(record)
+    #     for line in record.get("variations", []):
+    #         lock_name = "import({}, {}, {}, {})".format(
+    #             self.backend_record._name,
+    #             self.backend_record.id,
+    #             "woo.product.product",
+    #             line,
+    #         )
+    #         self.advisory_lock_or_retry(lock_name)
+
+    #     for line in record.get("variations", []):
+    #         _logger.debug("line: %s", line)
+    #         self._import_dependency(line, "woo.product.product")
+
+    #     return super(WooProductProductImporter, self)._import_dependencies()
