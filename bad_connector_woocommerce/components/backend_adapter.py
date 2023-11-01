@@ -186,6 +186,7 @@ class GenericAdapter(AbstractComponent):
     _apply_on = "woo.backend"
     _last_update_date = "date_modified"
     _woo_model = None
+    _woo_product_variation = "products/{product_id}"
     _woo_ext_id_key = "id"
     _odoo_ext_id_key = "external_id"
 
@@ -194,6 +195,21 @@ class GenericAdapter(AbstractComponent):
         result = self._call(
             resource_path=self._woo_model, arguments=filters, http_method="get"
         )
+
+        if self._apply_on == "woo.product.product":
+            variable_ids = []
+            for record in result.get("data", []):
+                if record.get("type") == "variable":
+                    variable_ids.extend(record.get("variations", []))
+            for variable in variable_ids:
+                variation_products = self._call(
+                    resource_path=self._woo_product_variation.format(
+                        product_id=variable
+                    ),
+                    arguments=filters,
+                    http_method="get",
+                )
+                result["data"].append(variation_products.get("data", []))
         return result
 
     def read(self, external_id=None, attributes=None):

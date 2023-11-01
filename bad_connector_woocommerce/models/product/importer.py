@@ -323,16 +323,11 @@ class WooProductProductImportMapper(Component):
                 attribute_value_ids.append(attribute_value.id)
         return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
 
-    # def get_product_template(self, temp=None):
-    #     binder = self.binder_for(model="woo.product.template")
-    #     template_id = binder.to_internal(temp, unwrap=True)
-    #     print("\n\n template_id====", template_id)
-    #     return template_id
-
-    # @mapping
-    # def product_tmpl_id(self, record):
-    #     template_id = self.get_product_template(temp=record.get("parent_id"))
-    #     return {"product_tmpl_id": template_id.id} if template_id else {}
+    @mapping
+    def product_tmpl_id(self, record):
+        binder = self.binder_for("woo.product.template")
+        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
+        return {"product_tmpl_id": template_id.id} if template_id else {}
 
 
 class WooProductProductImporter(Component):
@@ -349,58 +344,40 @@ class WooProductProductImporter(Component):
         it returns the result of the super class's '_after_import' method.
         """
         result = super(WooProductProductImporter, self)._after_import(binding, **kwargs)
-        # print("\n\n after import record====", self.remote_record)
-        product = self.remote_record
-        # print("\n\n payload===", product)
-        if product.get("type") == "variable":
-            # print("\n\n inside variable product------")
-            template_record = binding.odoo_id.product_tmpl_id
-            woo_bind_ids = template_record.woo_bind_ids
-
-            existing_record = self.env["woo.product.template"].search(
-                [
-                    ("backend_id", "=", self.backend_record.id),
-                    ("external_id", "=", product.get("id")),
-                    ("odoo_id", "=", template_record.id),
-                ],
-                limit=1,
-            )
-            # print("\n\n existing==", existing_record)
-            if not existing_record:
-                new_binding_record = self.env["woo.product.template"].create(
-                    {
-                        "backend_id": self.backend_record.id,
-                        "external_id": product.get("id"),
-                        "odoo_id": template_record.id,
-                    }
-                )
-                woo_bind_ids = [(4, new_binding_record.id, False)]
-                template_record.write({"woo_bind_ids": woo_bind_ids})
 
         image_record = self.remote_record.get("images")
         if not image_record:
             return result
         image_importer = self.component(usage="product.image.importer")
         image_importer.run(self.external_id, binding, image_record)
-
         return result
+
+    def _must_skip(self):
+        """Skipped Records which have type as variable."""
+        if self.remote_record.get("type") == "variable":
+            return _("Skipped: Product Type is not Variable")
+        return super(WooProductProductImporter, self)._must_skip()
 
     def _import_dependencies(self):
         """
-        Override method to import dependencies for WooCommerce product.
+        Override method to import dependencies for WooCommerce sale order.
+        This method is overridden to handle the import of dependencies, particularly
+        for WooCommerce sale orders. It retrieves line items from the remote record and
+        imports the associated products as dependencies, ensuring that they are
+        available for the sale order.
         """
         record = self.remote_record
-        for line in record.get("variations", []):
+        if record.get("parent_id") != 0:
+            parent = record.get("parent_id")
             lock_name = "import({}, {}, {}, {})".format(
                 self.backend_record._name,
                 self.backend_record.id,
-                "woo.product.product",
-                line,
+                "woo.product.template",
+                parent,
             )
             self.advisory_lock_or_retry(lock_name)
 
-        for line in record.get("variations", []):
-            _logger.debug("line: %s", line)
-            self._import_dependency(line, "woo.product.product")
+            if parent:
+                self._import_dependency(parent, "woo.product.template")
 
         return super(WooProductProductImporter, self)._import_dependencies()
