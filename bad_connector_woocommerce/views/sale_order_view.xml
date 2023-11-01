@@ -79,6 +79,11 @@
                 />
                 <field name="tax_different" invisible="1" />
                 <field name="total_amount_different" invisible="1" />
+            </xpath>
+            <xpath
+                expr="//form/sheet/group/group/field[@name='payment_term_id']"
+                position="after"
+            >
                 <field name="woo_payment_mode_id" />
             </xpath>
             <xpath expr="//field[@name='order_line']//tree" position="attributes">
