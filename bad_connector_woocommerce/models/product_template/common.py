@@ -26,65 +26,12 @@ class WooProductTemplate(models.Model):
     _inherits = {"product.template": "odoo_id"}
     _description = "WooCommerce Product Template"
 
-    _rec_name = "name"
-
     odoo_id = fields.Many2one(
         comodel_name="product.template",
         string="Odoo Product Template",
         required=True,
         ondelete="restrict",
     )
-    # status = fields.Selection(
-    #     [
-    #         ("any", "Any"),
-    #         ("draft", "Draft"),
-    #         ("pending", "Pending"),
-    #         ("private", "Private"),
-    #         ("publish", "Publish"),
-    #     ],
-    #     string="Status",
-    #     default="any",
-    # )
-    # tax_status = fields.Selection(
-    #     [
-    #         ("taxable", "Taxable"),
-    #         ("shipping", "Shipping"),
-    #         ("none", "None"),
-    #     ],
-    #     string="Tax Status",
-    #     default="taxable",
-    # )
-    # stock_status = fields.Selection(
-    #     [
-    #         ("instock", "Instock"),
-    #         ("outofstock", "Out Of Stock"),
-    #         ("onbackorder", "On Backorder"),
-    #     ],
-    #     string="Stock Status",
-    #     default="instock",
-    # )
-    # woo_attribute_ids = fields.Many2many(
-    #     comodel_name="woo.product.attribute",
-    #     string="WooCommerce Product Attribute",
-    #     ondelete="restrict",
-    # )
-    # woo_product_categ_ids = fields.Many2many(
-    #     comodel_name="woo.product.category",
-    #     string="WooCommerce Product Category(Product)",
-    #     ondelete="restrict",
-    # )
-    # woo_product_attribute_value_ids = fields.Many2many(
-    #     comodel_name="woo.product.attribute.value",
-    #     string="WooCommerce Product Attribute Value",
-    #     ondelete="restrict",
-    # )
-    # price = fields.Char()
-    # regular_price = fields.Char()
-    # woo_product_image_url_ids = fields.Many2many(
-    #     comodel_name="woo.product.image.url",
-    #     string="WooCommerce Product Image URL",
-    #     ondelete="restrict",
-    # )
 
 
 class WooProductTemplateAdapter(Component):
@@ -95,17 +42,3 @@ class WooProductTemplateAdapter(Component):
     _apply_on = "woo.product.template"
     _woo_model = "products"
     _woo_ext_id_key = "id"
-    _model_dependencies = {
-        (
-            "woo.product.category",
-            "categories",
-        ),
-        (
-            "woo.product.attribute",
-            "attributes",
-        ),
-        (
-            "woo.product.tag",
-            "tags",
-        ),
-    }
