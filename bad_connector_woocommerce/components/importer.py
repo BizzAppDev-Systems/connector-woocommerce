@@ -334,8 +334,8 @@ class WooBatchImporter(AbstractComponent):
         model.import_batch(
             self.backend_record,
             filters=filters,
-            job_options=job_options,
             force=force,
+            job_options=job_options,
             **kwargs
         )
 
