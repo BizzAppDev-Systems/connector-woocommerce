@@ -240,7 +240,6 @@ class WooBackend(models.Model):
         self, model, from_date_field, priority=None, filters=None, job_options=None
     ):
         """Method to add a filter based on the date."""
-        print(model, "===========")
         model.import_batch(backend=self, filters=filters)
 
     def toggle_test_mode(self):

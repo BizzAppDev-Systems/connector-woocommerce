@@ -70,6 +70,6 @@ class WooSaleOrderBatchExporter(Component):
     _inherit = "woo.exporter"
     _apply_on = ["woo.sale.order"]
 
-    def _after_export(self, binding):
+    def _after_export(self, **kwargs):
         """Import the transaction lines after checking WooCommerce order status."""
-        binding.write({"woo_order_status": "completed"})
+        self.binding.write({"woo_order_status": "completed"})

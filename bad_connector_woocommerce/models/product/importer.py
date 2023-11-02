@@ -113,6 +113,8 @@ class WooProductProductImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for Name"""
+        if "data" in record:
+            record=record.get("data")
         name = record.get("name")
         product_id = record.get("id")
         if not name:
@@ -125,23 +127,31 @@ class WooProductProductImportMapper(Component):
     @mapping
     def list_price(self, record):
         """Mapping product Price"""
+        if "data" in record:
+            record=record.get("data")
         return {"list_price": record.get("price")}
 
     @mapping
     def price(self, record):
         """Mapping for Standard Price"""
+        if "data" in record:
+            record=record.get("data")
         price = record.get("price")
         return {"price": price} if price else {}
 
     @mapping
     def regular_price(self, record):
         """Mapping for Regular Price"""
+        if "data" in record:
+            record=record.get("data")
         regular_price = record.get("regular_price")
         return {"regular_price": regular_price} if regular_price else {}
 
     @mapping
     def default_code(self, record):
         """Mapped product default code."""
+        if "data" in record:
+            record=record.get("data")
         default_code = record.get("sku")
         if not default_code and not self.backend_record.without_sku:
             raise MappingError(
@@ -152,35 +162,47 @@ class WooProductProductImportMapper(Component):
     @mapping
     def description(self, record):
         """Mapping for description"""
+        if "data" in record:
+            record=record.get("data")
         description = record.get("description")
         return {"description": description} if description else {}
 
     @mapping
     def purchase_ok(self, record):
         """Mapping for purchase_ok"""
+        if "data" in record:
+            record=record.get("data")
         return {"purchase_ok": record.get("purchasable", False)}
 
     @mapping
     def status(self, record):
         """Mapping for status"""
+        if "data" in record:
+            record=record.get("data")
         status = record.get("status")
         return {"status": status} if status else {}
 
     @mapping
     def tax_status(self, record):
         """Mapping for tax_status"""
+        if "data" in record:
+            record=record.get("data")
         tax_status = record.get("tax_status")
         return {"tax_status": tax_status} if tax_status else {}
 
     @mapping
     def stock_status(self, record):
         """Mapping for stock_status"""
+        if "data" in record:
+            record=record.get("data")
         stock_status = record.get("stock_status")
         return {"stock_status": stock_status} if stock_status else {}
 
     @mapping
     def categ_id(self, record):
         """Mapping for Product category"""
+        if "data" in record:
+            record=record.get("data")
         category_id = self.backend_record.product_categ_id.id
         binder = self.binder_for("woo.product.category")
         for category in record.get("categories", []):
@@ -194,16 +216,22 @@ class WooProductProductImportMapper(Component):
     @mapping
     def detailed_type(self, record):
         """Mapping for detailed_type"""
+        if "data" in record:
+            record=record.get("data")
         return {"detailed_type": self.backend_record.default_product_type}
 
     def _get_attribute_id_format(self, attribute, record, option=None):
         """Return the attribute and attribute value's unique id"""
+        if "data" in record:
+            record=record.get("data")
         if not option:
             return "{}-{}".format(attribute.get("name"), record.get("id"))
         return "{}-{}-{}".format(option, attribute.get("id"), record.get("id"))
 
     def _get_product_attribute(self, attribute_id, record):
         """Get the product attribute that contains id as zero"""
+        if "data" in record:
+            record=record.get("data")
         binder = self.binder_for("woo.product.attribute")
         created_id = self._get_attribute_id_format(attribute_id, record)
         product_attribute = binder.to_internal(created_id)
@@ -220,6 +248,8 @@ class WooProductProductImportMapper(Component):
 
     def _create_attribute_values(self, options, product_attribute, attribute, record):
         """Create attribute value binding that doesn't contain ids"""
+        if "data" in record:
+            record=record.get("data")
         binder = self.binder_for("woo.product.attribute.value")
         for option in options:
             created_id = self._get_attribute_id_format(attribute, record, option)
@@ -250,6 +280,8 @@ class WooProductProductImportMapper(Component):
     @mapping
     def woo_attribute_ids(self, record):
         """Mapping of woo_attribute_ids"""
+        if "data" in record:
+            record=record.get("data")
         attribute_ids = []
         woo_product_attributes = record.get("attributes", [])
         if not woo_product_attributes:
@@ -272,6 +304,8 @@ class WooProductProductImportMapper(Component):
     @mapping
     def woo_product_categ_ids(self, record):
         """Mapping for woo_product_categ_ids"""
+        if "data" in record:
+            record=record.get("data")
         category_ids = []
         woo_product_categories = record.get("categories", [])
         binder = self.binder_for("woo.product.category")
@@ -285,6 +319,8 @@ class WooProductProductImportMapper(Component):
     @mapping
     def product_tag_ids(self, record):
         """Mapping for product_tag_ids"""
+        if "data" in record:
+            record=record.get("data")
         tag_ids = []
         tags = record.get("tags", [])
         binder = self.binder_for("woo.product.tag")
@@ -298,6 +334,8 @@ class WooProductProductImportMapper(Component):
     @mapping
     def woo_product_attribute_value_ids(self, record):
         """Mapping for woo_product_attribute_value_ids"""
+        if "data" in record:
+            record=record.get("data")
         attribute_value_ids = []
         woo_attributes = record.get("attributes", [])
         binder = self.binder_for("woo.product.attribute")

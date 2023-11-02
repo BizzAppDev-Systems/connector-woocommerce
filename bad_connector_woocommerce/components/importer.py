@@ -12,6 +12,12 @@ class WooImporter(AbstractComponent):
     _inherit = ["base.generic.importer", "connector.woo.base"]
     _usage = "record.importer"
 
+    def get_record_data(self, record):
+        """Get the record data if it contains a 'data' key"""
+        if "data" in record:
+            return record.get("data")
+        return record
+
     # def __init__(self, work_context):
     #     super(WooImporter, self).__init__(work_context)
     #     self.binding = None
@@ -331,8 +337,8 @@ class WooBatchImporter(AbstractComponent):
             job_options["description"] = description
         if not kwargs.get("no_delay"):
             model = model.with_delay(**job_options or {})
-        if 'identity_key' in job_options:
-            job_options.pop('identity_key')
+        if "identity_key" in job_options:
+            job_options.pop("identity_key")
         model.import_batch(
             self.backend_record,
             filters=filters,

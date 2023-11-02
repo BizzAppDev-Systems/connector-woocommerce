@@ -30,6 +30,8 @@ class WooProductCategoryImportMapper(Component):
     @mapping
     def odoo_id(self, record):
         """Creating odoo id"""
+        if "data" in record:
+            record=record.get("data")
         category_name = record.get("name")
         product_category = self.env["product.category"].search(
             [("name", "=", category_name)], limit=1
@@ -39,6 +41,8 @@ class WooProductCategoryImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for Name"""
+        if "data" in record:
+            record=record.get("data")
         name = record.get("name")
         if not name:
             raise MappingError(_("Category Name doesn't exist please check !!!"))
@@ -47,33 +51,45 @@ class WooProductCategoryImportMapper(Component):
     @mapping
     def slug(self, record):
         """Mapping product Slug"""
+        if "data" in record:
+            record=record.get("data")
         slug = record.get("slug")
         return {"slug": slug} if slug else {}
 
     @mapping
     def display(self, record):
         """Mapped for Display."""
+        if "data" in record:
+            record=record.get("data")
         display = record.get("display")
         return {"display": display} if display else {}
 
     @mapping
     def description(self, record):
         """Mapping for Description"""
+        if "data" in record:
+            record=record.get("data")
         return {"description": record.get("description")}
 
     @mapping
     def menu_order(self, record):
         """Mapping for Menu Order"""
+        if "data" in record:
+            record=record.get("data")
         return {"menu_order": record.get("menu_order")}
 
     @mapping
     def count(self, record):
         """Mapping for Count"""
+        if "data" in record:
+            record=record.get("data")
         return {"count": record.get("count")}
 
     @mapping
     def parent_id(self, record):
         """Mapping for Parent Product Category"""
+        if "data" in record:
+            record=record.get("data")
         binder = self.binder_for(model="woo.product.category")
         woo_parent = binder.to_internal(record.get("parent"), unwrap=True)
         return {"parent_id": woo_parent.id} if woo_parent else {}

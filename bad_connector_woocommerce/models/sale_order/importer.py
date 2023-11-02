@@ -295,7 +295,9 @@ class WooSaleOrderImporter(Component):
             _logger.debug("line: %s", line)
             if "product_id" in line:
                 self._import_dependency(line["product_id"], "woo.product.product")
+            print(record,"aaaaaaaaaaaqqqqqqqqqqqqqqqqqqqqqqqqqqq")
             for tax in line.get("taxes", []):
+                print(tax,"=-=-=-=-=-=-=-=-=-=-=====-=-==")
                 self._import_dependency(tax["id"], "woo.tax")
 
         for shipping_line in record.get("shipping_lines", []):
