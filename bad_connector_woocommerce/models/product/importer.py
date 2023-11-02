@@ -114,6 +114,10 @@ class WooProductProductImportMapper(Component):
     def name(self, record):
         """Mapping for Name"""
         name = record.get("name")
+        binder = self.binder_for("woo.product.template")
+        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
+        if template_id:
+            return {"name": template_id.name}
         product_id = record.get("id")
         if not name:
             error_message = (
@@ -345,6 +349,9 @@ class WooProductProductImporter(Component):
         """
         result = super(WooProductProductImporter, self)._after_import(binding, **kwargs)
 
+        if self.remote_record.get("type") == "grouped":
+            self.make_bom(binding)
+
         image_record = self.remote_record.get("images")
         if not image_record:
             return result
@@ -366,18 +373,47 @@ class WooProductProductImporter(Component):
         imports the associated products as dependencies, ensuring that they are
         available for the sale order.
         """
-        record = self.remote_record
-        if record.get("parent_id") != 0:
-            parent = record.get("parent_id")
+        record = self.remote_record.get("grouped_products", [])
+        for product in record:
             lock_name = "import({}, {}, {}, {})".format(
                 self.backend_record._name,
                 self.backend_record.id,
-                "woo.product.template",
-                parent,
+                "woo.product.product",
+                product,
             )
             self.advisory_lock_or_retry(lock_name)
-
-            if parent:
-                self._import_dependency(parent, "woo.product.template")
+        for product in record:
+            _logger.debug("line: %s", product)
+            if product:
+                self._import_dependency(product, "woo.product.product")
 
         return super(WooProductProductImporter, self)._import_dependencies()
+
+    def make_bom(self, binding):
+        bom = self.env["mrp.bom"]
+        product_template = binding.odoo_id.product_tmpl_id
+
+        existing_bom = bom.search([("product_tmpl_id", "=", product_template.id)])
+        binder = self.binder_for("woo.product.product")
+        product_records = []
+
+        for product in self.remote_record.get("grouped_products", []):
+            product = binder.to_internal(product, unwrap=True)
+            product_records.append(
+                (
+                    0,
+                    0,
+                    {
+                        "product_id": product.id,
+                    },
+                )
+            )
+
+        if not existing_bom:
+            bom.create(
+                {
+                    "product_tmpl_id": product_template.id,
+                    "type": "phantom",
+                    "bom_line_ids": product_records,
+                }
+            )

@@ -304,5 +304,30 @@
             <field name="method">import_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
+
+        <!-- Import Record product.template related action queue job -->
+        <record
+            id="job_function_woo_import_product_template_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_template"
+            />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!-- Import Batch product.template related action queue job -->
+        <record
+            id="job_function_woo_import_product_template_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_template"
+            />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
     </data>
 </odoo>

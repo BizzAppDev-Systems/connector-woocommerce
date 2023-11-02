@@ -103,6 +103,7 @@ class WooProductProductAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.product.product"
     _woo_model = "products"
+    _woo_product_variation = "products/{product_id}"
     _woo_ext_id_key = "id"
     _model_dependencies = {
         (
@@ -117,4 +118,14 @@ class WooProductProductAdapter(Component):
             "woo.product.tag",
             "tags",
         ),
+        (
+            "woo.product.template",
+            "parent_id",
+        ),
     }
+
+    def search(self, filters=None, **kwargs):
+        """Inherited search method to pass different API
+        to fetch additional data"""
+        kwargs["_woo_product_variation"] = self._woo_product_variation
+        return super(WooProductProductAdapter, self).search(filters, **kwargs)

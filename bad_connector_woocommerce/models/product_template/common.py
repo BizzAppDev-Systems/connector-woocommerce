@@ -25,6 +25,7 @@ class WooProductTemplate(models.Model):
     _inherit = "woo.binding"
     _inherits = {"product.template": "odoo_id"}
     _description = "WooCommerce Product Template"
+    _rec_name = "name"
 
     odoo_id = fields.Many2one(
         comodel_name="product.template",

@@ -1,7 +1,5 @@
 import logging
 
-from odoo import _
-
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
@@ -32,26 +30,10 @@ class WooProductTemplateImportMapper(Component):
         name = record.get("name")
         product_tmp_id = record.get("id")
         if not name:
-            error_message = f"""Product name doesn't exist for Product ID
+            error_message = f"""Product Template name doesn't exist for Product ID
             {product_tmp_id} Please check!"""
             raise MappingError(error_message)
         return {"name": name}
-
-    @mapping
-    def default_code(self, record):
-        """Mapped product default code."""
-        default_code = record.get("sku")
-        if not default_code and not self.backend_record.without_sku:
-            raise MappingError(
-                _("SKU is Missing for the product '%s' !", record.get("name"))
-            )
-        return {"default_code": default_code} if default_code else {}
-
-    @mapping
-    def description(self, record):
-        """Mapping for description"""
-        description = record.get("description")
-        return {"description": description} if description else {}
 
 
 class WooProductTemplateImporter(Component):
