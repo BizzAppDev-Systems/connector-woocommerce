@@ -53,7 +53,7 @@ class WooSaleOrderImportMapper(Component):
             "backend_id": self.backend_record.id,
             "external_id": ext_id,
             "total_tax_line": total_tax,
-            "tax_id": [(6, 0, [tax_record_id for tax_record_id in tax_records])],
+            "tax_id": [(6, 0, tax_records)],
         }
         if description:
             vals.update({"name": description})
