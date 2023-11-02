@@ -331,6 +331,8 @@ class WooBatchImporter(AbstractComponent):
             job_options["description"] = description
         if not kwargs.get("no_delay"):
             model = model.with_delay(**job_options or {})
+        if 'identity_key' in job_options:
+            job_options.pop('identity_key')
         model.import_batch(
             self.backend_record,
             filters=filters,

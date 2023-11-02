@@ -50,9 +50,7 @@ class WooAPI(GenericAPI):
                 version=self._location.version,
                 wp_api=True,
             )
-            print(woocommerce_client, "[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]")
             self._api = woocommerce_client
-            print(self._api, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
         return self._api
 
     def api_call(self, resource_path, arguments, http_method=None):
