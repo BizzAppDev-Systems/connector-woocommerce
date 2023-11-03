@@ -58,21 +58,12 @@ class WooAPI(GenericAPI):
         if not self.api:
             return self.api
         http_method = http_method.lower()
-        print(http_method, "pppekeienejudndurh")
         additional_data = {}
         if http_method == "get":
             additional_data.update(params=arguments)
         else:
             additional_data.update(data=arguments)
         return getattr(self.api, http_method)(resource_path, **additional_data)
-
-    def __enter__(self):
-        # we do nothing, api is lazy
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        if self._api is not None and hasattr(self._api, "__exit__"):
-            self._api.__exit__(exc_type, exc_value, traceback)
 
     def call(
         self, resource_path, arguments, http_method=None, is_token=False, **kwargs
@@ -140,87 +131,10 @@ class WooAPI(GenericAPI):
                 raise
 
 
-# class WooCRUDAdapter(BaseGenericCRUDAdapter):
-#     """External Records Adapter for Woocommerce"""
-
-#     # pylint: disable=method-required-super
-
-#     _name = "woo.crud.adapter"
-#     _inherit = ["base.generic.crud.adapter"]
-# _usage = "backend.adapter"
-
-#     def search(self, filters=None, **kwargs):
-#         """
-#         Search records according to some criterias
-#         and returns a list of ids
-#         """
-#         raise NotImplementedError
-
-#     def read(self, external_id, attributes=None):
-#         """Returns the information of a record"""
-#         raise NotImplementedError
-
-#     def search_read(self, filters=None, **kwargs):
-#         """
-#         Search records according to some criterias
-#         and returns their information
-#         """
-#         raise NotImplementedError
-
-#     def create(self, data, **kwargs):
-#         """Create a record on the external system"""
-#         raise NotImplementedError
-
-#     def write(self, external_id, data, **kwargs):
-#         """Update records on the external system"""
-#         raise NotImplementedError
-
-#     def delete(self, external_id, **kwargs):
-#         """Delete a record on the external system"""
-#         raise NotImplementedError
-
-# def _call(self, resource_path, arguments=None, http_method=None):
-#     """Method to initiate the connection"""
-#     return self.work.woo_api.call(resource_path, arguments, http_method=http_method)
-
-
 class WooAdapter(GenericAdapter):
     # pylint: disable=method-required-super
 
     _name = "woo.adapter"
     _inherit = "generic.adapter"
     _remote_model = None
-    # _apply_on = "woo.backend"
-    # _last_update_date = "date_modified"
-    # _woo_model = None
-    # _woo_ext_id_key = "id"
-    # _odoo_ext_id_key = "external_id"
-
-    # def search(self, filters=None, **kwargs):
-    #     """Method to get the records from woo"""
-    #     result = self._call(
-    #         resource_path=self._remote_model, arguments=filters, http_method="get"
-    #     )
-    #     return result
-
-    # def read(self, external_id=None, attributes=None, **kwargs):
-    #     """Method to get a data for specified record"""
-    #     # resource_path = "{}/{}".format(self._woo_model, external_id)
-    #     resource_path = self.get_default_resource_path(
-    #         "read", attributes=attributes, **kwargs
-    #     )
-    #     print(resource_path,"pppppppppppppppppp")
-    #     result = self._call(resource_path, http_method="get")
-    #     result = result.get("data", [])
-    #     return result
-
-    # def create(self, data, **kwargs):
-    #     """Creates the data in remote"""
-    #     result = self._call(self._woo_model, data, http_method="post")
-    #     return result
-
-    # def write(self, external_id, data, **kwargs):
-    #     """Update records on the external system"""
-    #     resource_path = "{}/{}".format(self._woo_model, external_id)
-    #     result = self._call(resource_path, data, http_method="put")
-    #     return result
+    _last_update_date = "date_modified"

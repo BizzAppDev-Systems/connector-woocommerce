@@ -36,8 +36,6 @@ class WooProductTagImportMapper(Component):
     @mapping
     def odoo_id(self, record):
         """Creating odoo id"""
-        if "data" in record:
-            record=record.get("data")
         tag = record.get("name")
         if not tag:
             raise MappingError(
@@ -51,8 +49,6 @@ class WooProductTagImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for Name"""
-        if "data" in record:
-            record=record.get("data")
         name = record.get("name")
         if not name:
             raise MappingError(
@@ -63,15 +59,11 @@ class WooProductTagImportMapper(Component):
     @mapping
     def slug(self, record):
         """Mapping for Slug"""
-        if "data" in record:
-            record=record.get("data")
         slug = record.get("slug")
         return {"slug": slug} if slug else {}
 
     @mapping
     def description(self, record):
         """Mapping for Description"""
-        if "data" in record:
-            record=record.get("data")
         description = record.get("description")
         return {"description": description} if description else {}

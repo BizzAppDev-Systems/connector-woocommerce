@@ -29,8 +29,6 @@ class WooProductAttributeImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for Name"""
-        if "data" in record:
-            record=record.get("data")
         name = record.get("name")
         if not name:
             raise MappingError(_("Attribute Name doesn't exist please check !!!"))
@@ -39,8 +37,6 @@ class WooProductAttributeImportMapper(Component):
     @mapping
     def has_archives(self, record):
         """Mapping product Has Archives"""
-        if "data" in record:
-            record=record.get("data")
         return {"has_archives": record.get("has_archives")}
 
 
@@ -54,6 +50,7 @@ class WooProductAttributeImporter(Component):
     def _after_import(self, binding, **kwargs):
         """Inherit Method: inherit method to import remote child"""
         # TODO: Pass context for delay
+        # import pdb; pdb.set_trace()
         binding.sync_attribute_values_from_woo()
         return super(WooProductAttributeImporter, self)._after_import(binding, **kwargs)
 

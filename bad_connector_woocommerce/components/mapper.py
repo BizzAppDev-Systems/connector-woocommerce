@@ -11,11 +11,6 @@ class WooImporttMapper(AbstractComponent):
     _inherit = ["generic.import.mapper", "connector.woo.base"]
     _usage = "import.mapper"
 
-    # @mapping
-    # def backend_id(self, record):
-    #     """Return backend."""
-    #     return {"backend_id": self.backend_record.id}
-
     @mapping
     def woo_data(self, record):
         """Return woo data."""

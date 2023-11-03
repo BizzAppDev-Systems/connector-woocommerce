@@ -60,8 +60,9 @@ class WooProductAttribute(models.Model):
         # it should be without delay
         self.backend_id._sync_from_date(
             model="woo.product.attribute.value",
-            priority=5,
             filters=filters,
+            priority=5,
+            export=False,
         )
 
 

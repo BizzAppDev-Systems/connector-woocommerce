@@ -44,8 +44,6 @@ class WooTaxImportMapper(Component):
     @mapping
     def odoo_id(self, record):
         """Mapping for odoo_id"""
-        if "data" in record:
-            record = record.get("data")
         tax = self.get_tax(record.get("rate"))
         if not tax:
             return {}
@@ -54,8 +52,6 @@ class WooTaxImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for name of tax"""
-        if "data" in record:
-            record = record.get("data")
         name = record.get("name")
         rate_to_float = float(record.get("rate"))
         rate = round(rate_to_float, 2)
@@ -66,78 +62,56 @@ class WooTaxImportMapper(Component):
     @mapping
     def woo_amount(self, record):
         """Mapping for woo_amount"""
-        if "data" in record:
-            record = record.get("data")
         return {"woo_amount": record.get("rate")} if record.get("rate") else {}
 
     @mapping
     def woo_rate(self, record):
         """Mapping for woo_rate"""
-        if "data" in record:
-            record = record.get("data")
         return {"woo_rate": record.get("rate")} if record.get("rate") else {}
 
     @mapping
     def woo_tax_name(self, record):
         """Mapping for woo_tax_name"""
-        if "data" in record:
-            record = record.get("data")
         return {"woo_tax_name": record.get("name")} if record.get("name") else {}
 
     @mapping
     def priority(self, record):
         """Mapping for priority"""
-        if "data" in record:
-            record = record.get("data")
         return {"priority": record.get("priority")} if record.get("priority") else {}
 
     @mapping
     def shipping(self, record):
         """Mapping for shipping"""
-        if "data" in record:
-            record = record.get("data")
         return {"shipping": record.get("shipping")} if record.get("shipping") else {}
 
     @mapping
     def woo_class(self, record):
         """Mapping for woo_class"""
-        if "data" in record:
-            record = record.get("data")
         return {"woo_class": record.get("class")} if record.get("class") else {}
 
     @mapping
     def compound(self, record):
         """Mapping for compound"""
-        if "data" in record:
-            record = record.get("data")
         return {"compound": record.get("compound")} if record.get("compound") else {}
 
     @mapping
     def country(self, record):
         """Mapping for country"""
-        if "data" in record:
-            record = record.get("data")
         return {"country": record.get("country")} if record.get("country") else {}
 
     @mapping
     def state(self, record):
         """Mapping for state"""
-        if "data" in record:
-            record = record.get("data")
         return {"state": record.get("state")} if record.get("state") else {}
 
     @mapping
     def city(self, record):
         """Mapping for city"""
-        if "data" in record:
-            record = record.get("data")
         return {"city": record.get("city")} if record.get("city") else {}
 
     @mapping
     def cities(self, record):
         """Mapping for Cities"""
-        if "data" in record:
-            record = record.get("data")
         cities_list = record.get("cities", [])
         cities = [city for city in cities_list]
         return {"cities": ", ".join(cities)} if cities else {}
@@ -145,8 +119,6 @@ class WooTaxImportMapper(Component):
     @mapping
     def postcodes(self, record):
         """Mapping for postcodes"""
-        if "data" in record:
-            record = record.get("data")
         postcode_list = record.get("postcodes", [])
         postcodes = [postcode for postcode in postcode_list]
         return {"postcodes": ", ".join(postcodes)} if postcodes else {}
@@ -154,8 +126,6 @@ class WooTaxImportMapper(Component):
     @mapping
     def postcode(self, record):
         """Mapping for postcode"""
-        if "data" in record:
-            record = record.get("data")
         return {"postcode": record.get("postcode")} if record.get("postcode") else {}
 
 

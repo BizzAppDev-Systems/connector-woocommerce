@@ -43,8 +43,6 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def firstname(self, record):
         """Mapping for firstname"""
-        if "data" in record:
-            record = record.get("data")
         return (
             {"firstname": record.get("first_name")} if record.get("first_name") else {}
         )
@@ -52,15 +50,11 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def lastname(self, record):
         """Mapping for lastname"""
-        if "data" in record:
-            record = record.get("data")
         return {"lastname": record.get("last_name")} if record.get("last_name") else {}
 
     @mapping
     def email(self, record):
         """Mapping for Email"""
-        if "data" in record:
-            record = record.get("data")
         email = record.get("email")
         if not email:
             raise MappingError(_("No Email found in Response"))
@@ -68,8 +62,6 @@ class WooResPartnerImportMapper(Component):
 
     def _get_field_value(self, record, field_name):
         """Get the value of a field from a record."""
-        if "data" in record:
-            record = record.get("data")
         billing = record.get("billing")
         shipping = record.get("shipping")
         if any(billing.values()):
@@ -81,8 +73,6 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def country_id(self, record):
         """Mapping for country_id"""
-        if "data" in record:
-            record = record.get("data")
         woo_country = self._get_field_value(record, "country")
         if woo_country:
             country = self.env["res.country"].search(
@@ -94,8 +84,6 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def state_id(self, record):
         """Mapping for state_id"""
-        if "data" in record:
-            record = record.get("data")
         woo_state = self._get_field_value(record, "state")
         woo_country = self._get_field_value(record, "country")
         if woo_state and woo_country:
@@ -112,40 +100,30 @@ class WooResPartnerImportMapper(Component):
     @mapping
     def street(self, record):
         """Mapping for street"""
-        if "data" in record:
-            record = record.get("data")
         woo_address = self._get_field_value(record, "address_1")
         return {"street": woo_address} if woo_address else {}
 
     @mapping
     def street2(self, record):
         """Mapping for street2"""
-        if "data" in record:
-            record = record.get("data")
         woo_address2 = self._get_field_value(record, "address_2")
         return {"street2": woo_address2} if woo_address2 else {}
 
     @mapping
     def zip(self, record):
         """Mapping for zip"""
-        if "data" in record:
-            record = record.get("data")
         woo_zip = self._get_field_value(record, "zip")
         return {"zip": woo_zip} if woo_zip else {}
 
     @mapping
     def city(self, record):
         """Mapping for city"""
-        if "data" in record:
-            record = record.get("data")
         woo_city = self._get_field_value(record, "city")
         return {"city": woo_city} if woo_city else {}
 
     @mapping
     def addresses(self, record):
         """Mapping for Invoice and Shipping Addresses"""
-        if "data" in record:
-            record = record.get("data")
         woo_res_partner = self.env["res.partner"]
         child_data = woo_res_partner.create_get_children(
             record, record.get("id"), self.backend_record

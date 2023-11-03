@@ -19,9 +19,6 @@ class WooBackend(models.Model):
     _description = "WooCommerce Backend"
     _inherit = ["mail.thread", "generic.backend"]
 
-    name = fields.Char(
-        string="Name", required=True, help="Enter the name of the WooCommerce backend."
-    )
     version = fields.Selection(
         selection=[("wc/v3", "V3")],
         default="wc/v3",
@@ -51,9 +48,6 @@ class WooBackend(models.Model):
     client_secret = fields.Char(
         string="Secret key(Live)",
         help="Enter the Secret Key for Live Mode (Password for Basic Authentication).",
-    )
-    test_mode = fields.Boolean(
-        string="Test Mode", default=True, help="Toggle between Test and Live modes."
     )
     test_location = fields.Char(
         string="Test Location", help="Enter the Test Location for WooCommerce."
@@ -217,7 +211,6 @@ class WooBackend(models.Model):
                 filters=filters,
                 job_options=job_options,
             )
-            print("hellooooooo")
             if force:
                 backend_vals[force_update_field] = False
         if from_date_field:
@@ -226,26 +219,17 @@ class WooBackend(models.Model):
             backend_vals.update({from_date_field: start_time})
             self.update_backend_vals(backend_vals, **kwargs)
 
-    def update_backend_vals(self, backend_vals, **kwargs):
-        """Method to write the backend values"""
-        self.write(backend_vals)
-
     def get_queue_job_description(self, prefix, model):
-        """New method that returns the queue job description"""
-        if not prefix or not model:
-            _logger.warning("Queue Job description may not be appropriate!")
-        return "{} {}".format(prefix or "", model)
+        """Method that returns the queue job description"""
+        if not model.startswith("WooCommerce"):
+            model = self.env[model]._description
+        return super(WooBackend, self).get_queue_job_description(prefix, model)
 
     def _import_from_date(
         self, model, from_date_field, priority=None, filters=None, job_options=None
     ):
         """Method to add a filter based on the date."""
         model.import_batch(backend=self, filters=filters)
-
-    def toggle_test_mode(self):
-        """Test Mode"""
-        for record in self:
-            record.test_mode = not record.test_mode
 
     @contextmanager
     def work_on(self, model_name, **kwargs):
