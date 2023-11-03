@@ -390,6 +390,18 @@ class WooProductProductImporter(Component):
         return super(WooProductProductImporter, self)._import_dependencies()
 
     def make_bom(self, binding):
+        """
+        Create a Bill of Materials (BOM) for a product that is categorized
+        as a 'Grouped' type in Woocommerce.
+
+        This function checks if a BOM already exists for the product template in Odoo.
+        If not, it creates a new BOM of 'phantom' type.
+
+        If an existing BOM is found, it updates the BOM by adding
+        new products in components that are not already included.
+
+        :param binding: The binding object of the product.
+        """
         bom = self.env["mrp.bom"]
         product_template = binding.odoo_id.product_tmpl_id
 
@@ -399,15 +411,7 @@ class WooProductProductImporter(Component):
 
         for product in self.remote_record.get("grouped_products", []):
             product = binder.to_internal(product, unwrap=True)
-            product_records.append(
-                (
-                    0,
-                    0,
-                    {
-                        "product_id": product.id,
-                    },
-                )
-            )
+            product_records.append((0, 0, {"product_id": product.id}))
 
         if not existing_bom:
             bom.create(
@@ -417,3 +421,12 @@ class WooProductProductImporter(Component):
                     "bom_line_ids": product_records,
                 }
             )
+        else:
+            existing_product_ids = existing_bom.bom_line_ids.mapped("product_id.id")
+            new_product_records = [
+                record
+                for record in product_records
+                if record[2]["product_id"] not in existing_product_ids
+            ]
+            if new_product_records:
+                existing_bom.write({"bom_line_ids": new_product_records})
