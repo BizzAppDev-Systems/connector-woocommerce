@@ -138,3 +138,4 @@ class WooAdapter(GenericAdapter):
     _inherit = "generic.adapter"
     _remote_model = None
     _last_update_date = "date_modified"
+    _remote_datetime_format = "%Y-%m-%dT%H:%M:%S"

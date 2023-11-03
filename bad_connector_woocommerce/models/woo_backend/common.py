@@ -206,7 +206,7 @@ class WooBackend(models.Model):
         else:
             force = self[force_update_field] if force_update_field else False
             self._import_from_date(
-                model=binding_model,
+                binding_model,
                 from_date_field=from_date_field,
                 filters=filters,
                 job_options=job_options,
@@ -224,12 +224,6 @@ class WooBackend(models.Model):
         if not model.startswith("WooCommerce"):
             model = self.env[model]._description
         return super(WooBackend, self).get_queue_job_description(prefix, model)
-
-    def _import_from_date(
-        self, model, from_date_field, priority=None, filters=None, job_options=None
-    ):
-        """Method to add a filter based on the date."""
-        model.import_batch(backend=self, filters=filters)
 
     @contextmanager
     def work_on(self, model_name, **kwargs):
