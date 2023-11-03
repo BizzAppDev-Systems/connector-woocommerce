@@ -13,9 +13,14 @@ class WooImporter(AbstractComponent):
     _usage = "record.importer"
 
     def _before_import(self, **kwargs):
+        """
+        Inherited Method: Adjusts the remote record by retrieving
+        the 'data' key to ensure data retrieval during the import
+        dependency.
+        """
         if "data" in self.remote_record:
             self.remote_record = self.remote_record.get("data")
-        return self.remote_record
+        return super(WooImporter, self)._before_import(**kwargs)
 
 
 class WooMapChildImport(AbstractComponent):
@@ -36,7 +41,10 @@ class WooBatchImporter(AbstractComponent):
     _usage = "batch.importer"
 
     def run(self, filters=None, force=False, job_options=None, data=None, **kwargs):
-        """Run the synchronization"""
+        """
+        Override Method: Retrieves records from the data and includes
+        logic for retrieving the next page.
+        """
         filters = filters or {}
         if "record_count" not in filters:
             filters.update({"record_count": 0})
@@ -59,7 +67,10 @@ class WooBatchImporter(AbstractComponent):
             )
 
     def process_next_page(self, filters=None, force=False, job_options=None, **kwargs):
-        """Method to trigger batch import for Next page"""
+        """
+        Override Method: Executes batch import for the next page based on the
+        pagination rules specific to WooCommerce.
+        """
         if not filters:
             filters = {}
         job_options = job_options or {}

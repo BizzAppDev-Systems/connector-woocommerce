@@ -42,4 +42,3 @@ class WooTaxAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.tax"
     _remote_model = "taxes"
-    _woo_ext_id_key = "id"

@@ -54,7 +54,6 @@ class WooProductAttributeValueAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.product.attribute.value"
     _remote_model = "products/attributes"
-    _woo_ext_id_key = "id"
 
     def search(self, filters=None, **kwargs):
         """

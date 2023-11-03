@@ -164,4 +164,3 @@ class WooResPartnerAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.res.partner"
     _remote_model = "customers"
-    _odoo_ext_id_key = "id"

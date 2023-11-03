@@ -1,7 +1,5 @@
 from odoo import fields, models
 
-# from odoo.addons.component.core import Component
-
 
 class WooBinding(models.AbstractModel):
     """Abstract Model for the Bindings."""

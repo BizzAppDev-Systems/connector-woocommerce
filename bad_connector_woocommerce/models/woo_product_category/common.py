@@ -49,4 +49,3 @@ class WooProductCategoryAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.product.category"
     _remote_model = "products/categories"
-    _woo_ext_id_key = "id"

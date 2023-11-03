@@ -203,8 +203,6 @@ class WooSaleOrderAdapter(Component):
     _apply_on = "woo.sale.order"
 
     _remote_model = "orders"
-    _woo_key = "id"
-    _woo_ext_id_key = "id"
     _model_dependencies = [
         (
             "woo.res.partner",

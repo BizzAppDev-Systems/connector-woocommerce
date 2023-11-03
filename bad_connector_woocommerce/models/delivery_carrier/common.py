@@ -43,5 +43,3 @@ class WooDeliveryCarrierAdapter(Component):
     _apply_on = "woo.delivery.carrier"
 
     _remote_model = "shipping_methods"
-    _woo_key = "id"
-    _woo_ext_id_key = "id"

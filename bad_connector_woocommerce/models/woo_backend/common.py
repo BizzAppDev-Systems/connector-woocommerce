@@ -225,10 +225,11 @@ class WooBackend(models.Model):
             model = self.env[model]._description
         return super(WooBackend, self).get_queue_job_description(prefix, model)
 
-    @contextmanager
-    def work_on(self, model_name, **kwargs):
-        """Add the work on for woo."""
-        self.ensure_one()
+    def _get_credentials_for_connection(self, model_name=None, **kwargs):
+        """
+        Override Method: to set credentials to establish connection
+        through classes.
+        """
         location = self.location
         client_id = self.client_id
         client_secret = self.client_secret
@@ -245,7 +246,13 @@ class WooBackend(models.Model):
             version=self.version,
             test_mode=self.test_mode,
         )
+        return {"location": woo_location}
 
+    @contextmanager
+    def work_on(self, model_name, **kwargs):
+        """Add the work on for woo."""
+        self.ensure_one()
+        woo_location = self._get_credentials_for_connection(model_name)
         with WooAPI(woo_location) as remote_api:
             with super(WooBackend, self).work_on(
                 model_name, remote_api=remote_api, **kwargs
