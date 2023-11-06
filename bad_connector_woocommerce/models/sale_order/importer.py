@@ -326,6 +326,8 @@ class WooSaleOrderLineImportMapper(Component):
             return False
         binder = self.binder_for("woo.product.product")
         product = binder.to_internal(product_rec, unwrap=True)
+        if not product:
+            product = binder.to_internal(record.get("variation_id"), unwrap=True)
         return product
 
     @mapping

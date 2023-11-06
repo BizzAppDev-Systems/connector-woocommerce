@@ -114,13 +114,17 @@ class WooProductProductImportMapper(Component):
     def name(self, record):
         """Mapping for Name"""
         name = record.get("name")
+        binder = self.binder_for("woo.product.template")
+        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
+        if template_id:
+            return {"woo_product_name": name}
         product_id = record.get("id")
         if not name:
             error_message = (
                 f"Product name doesn't exist for Product ID {product_id} Please check!"
             )
             raise MappingError(error_message)
-        return {"name": name}
+        return {"name": name, "woo_product_name": name}
 
     @mapping
     def list_price(self, record):
@@ -194,7 +198,14 @@ class WooProductProductImportMapper(Component):
     @mapping
     def detailed_type(self, record):
         """Mapping for detailed_type"""
-        return {"detailed_type": self.backend_record.default_product_type}
+        product_type = record.get("type")
+        return {
+            "detailed_type": "product"
+            if product_type == "variation"
+            else "consu"
+            if product_type == "grouped"
+            else self.backend_record.default_product_type
+        }
 
     def _get_attribute_id_format(self, attribute, record, option=None):
         """Return the attribute and attribute value's unique id"""
@@ -323,6 +334,13 @@ class WooProductProductImportMapper(Component):
                 attribute_value_ids.append(attribute_value.id)
         return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
 
+    @mapping
+    def product_tmpl_id(self, record):
+        """Mapping for product_tmpl_id"""
+        binder = self.binder_for("woo.product.template")
+        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
+        return {"product_tmpl_id": template_id.id} if template_id else {}
+
 
 class WooProductProductImporter(Component):
     """Importer the WooCommerce Product"""
@@ -338,9 +356,84 @@ class WooProductProductImporter(Component):
         it returns the result of the super class's '_after_import' method.
         """
         result = super(WooProductProductImporter, self)._after_import(binding, **kwargs)
+
+        if self.remote_record.get("type") == "grouped":
+            self.make_bom(binding)
+
         image_record = self.remote_record.get("images")
         if not image_record:
             return result
         image_importer = self.component(usage="product.image.importer")
         image_importer.run(self.external_id, binding, image_record)
         return result
+
+    def _must_skip(self):
+        """Skipped Records which have type as variable."""
+        if self.remote_record.get("type") == "variable":
+            return _(
+                "Skipped: Product Type is Variable for Product ID %s"
+            ) % self.remote_record.get("id")
+        return super(WooProductProductImporter, self)._must_skip()
+
+    def _import_dependencies(self):
+        """
+        Override method to import dependencies for WooCommerce products.
+        It retrieves grouped products from the remote record.
+        """
+        record = self.remote_record.get("grouped_products", [])
+        for product in record:
+            lock_name = "import({}, {}, {}, {})".format(
+                self.backend_record._name,
+                self.backend_record.id,
+                "woo.product.product",
+                product,
+            )
+            self.advisory_lock_or_retry(lock_name)
+        for product in record:
+            _logger.debug("product: %s", product)
+            if product:
+                self._import_dependency(product, "woo.product.product")
+
+        return super(WooProductProductImporter, self)._import_dependencies()
+
+    def make_bom(self, binding):
+        """
+        Create a Bill of Materials (BOM) for a product that is categorized
+        as a 'Grouped' type in Woocommerce.
+
+        This function checks if a BOM already exists for the product template in Odoo.
+        If not, it creates a new BOM of 'phantom' type.
+
+        If an existing BOM is found, it updates the BOM by adding
+        new products in components that are not already included.
+
+        :param binding: The binding object of the product.
+        """
+        bom = self.env["mrp.bom"]
+        product_template = binding.odoo_id.product_tmpl_id
+
+        existing_bom = bom.search([("product_tmpl_id", "=", product_template.id)])
+        binder = self.binder_for("woo.product.product")
+        product_records = []
+
+        for product in self.remote_record.get("grouped_products", []):
+            product = binder.to_internal(product, unwrap=True)
+            product_records.extend([(0, 0, {"product_id": product.id})])
+
+        if not existing_bom:
+            bom.create(
+                {
+                    "product_tmpl_id": product_template.id,
+                    "type": "phantom",
+                    "bom_line_ids": product_records,
+                }
+            )
+        else:
+            existing_product_ids = existing_bom.bom_line_ids.mapped("product_id.id")
+            new_product_records = [
+                record
+                for record in product_records
+                if record[2]["product_id"] not in existing_product_ids
+            ]
+            if new_product_records:
+                existing_bom.write({"bom_line_ids": new_product_records})

@@ -1,6 +1,6 @@
 import logging
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 from odoo.addons.component.core import Component
 
@@ -17,6 +17,15 @@ class ProductProduct(models.Model):
         copy=False,
     )
 
+    @api.depends("product_template_attribute_value_ids")
+    def _compute_combination_indices(self):
+        """
+        Override method since we are not using attributes and attribute
+        values for storing variant data we have to disable the combination check
+        """
+        for product in self:
+            product.combination_indices = str(product.id)
+
 
 class WooProductProduct(models.Model):
     """Woocommerce Product Product"""
@@ -28,6 +37,7 @@ class WooProductProduct(models.Model):
 
     _rec_name = "name"
 
+    woo_product_name = fields.Char(string="WooCommerce Product Name")
     odoo_id = fields.Many2one(
         comodel_name="product.product",
         string="Odoo Product",
@@ -94,6 +104,7 @@ class WooProductProductAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.product.product"
     _woo_model = "products"
+    _woo_product_variation = "products/{product_id}"
     _woo_ext_id_key = "id"
     _model_dependencies = {
         (
@@ -108,4 +119,14 @@ class WooProductProductAdapter(Component):
             "woo.product.tag",
             "tags",
         ),
+        (
+            "woo.product.template",
+            "parent_id",
+        ),
     }
+
+    def search(self, filters=None, **kwargs):
+        """Inherited search method to pass different API
+        to fetch additional data"""
+        kwargs["_woo_product_variation"] = self._woo_product_variation
+        return super(WooProductProductAdapter, self).search(filters, **kwargs)

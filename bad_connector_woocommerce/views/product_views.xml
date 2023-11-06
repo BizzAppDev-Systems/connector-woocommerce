@@ -37,6 +37,7 @@
                                     <field name="tax_status" />
                                 </group>
                                 <group>
+                                    <field name="woo_product_name" />
                                     <field name="stock_status" />
                                     <field name="price" />
                                     <field name="regular_price" />
