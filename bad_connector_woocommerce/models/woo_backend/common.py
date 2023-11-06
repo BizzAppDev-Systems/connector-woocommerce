@@ -246,7 +246,7 @@ class WooBackend(models.Model):
             version=self.version,
             test_mode=self.test_mode,
         )
-        return woo_location
+        return {"location": woo_location}
 
     @contextmanager
     def work_on(self, model_name, **kwargs):

@@ -37,7 +37,7 @@ class WooAPI(GenericAPI):
         :param location: Remote location
         :type location: :class:`GenericLocation`
         """
-        self._location = location
+        self._location = location.get("location")
         self._api = None
 
     @property
