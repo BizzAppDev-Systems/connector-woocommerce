@@ -2,8 +2,6 @@ from os.path import dirname, join
 
 from vcr import VCR
 
-from odoo.tests import Form
-
 from .test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
@@ -100,11 +98,8 @@ class TestImportSaleOrder(BaseWooTestCase):
             tracking_reference,
             "Tracking reference not updated for the delivery order",
         )
-        pick_dict = delivery_order.button_validate()
-        stock_immediate_transfer = Form(
-            self.env[pick_dict["res_model"]].with_context(pick_dict["context"])
-        ).save()
-        stock_immediate_transfer.process()
+        delivery_order.move_ids.quantity_done = 10
+        delivery_order.button_validate()
         self.assertEqual(
             sale_order1.picking_ids.state, "done", "Picking state should be done!"
         )
