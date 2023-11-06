@@ -139,38 +139,23 @@ class WooAdapter(GenericAdapter):
     _remote_model = None
     _last_update_date = "date_modified"
     _remote_datetime_format = "%Y-%m-%dT%H:%M:%S"
-    _woo_model = None
-    _woo_ext_id_key = "id"
-    _odoo_ext_id_key = "external_id"
+    _woo_product_stock = None
 
-    def search(self, filters=None, **kwargs):
+    def search(self, filters=None, http_method=None, **kwargs):
         """Method to get the records from woo"""
+        resource_path = self.get_default_resource_path(
+            "search", filters=filters, **kwargs
+        )
+        http_method = http_method or self._http_method
         result = self._call(
-            resource_path=self._woo_model, arguments=filters, http_method="get"
+            resource_path, arguments=filters, http_method="get", **kwargs
         )
         if kwargs.get("_woo_product_stock", False):
             setting_stock_result = self._call(
                 resource_path=kwargs.get("_woo_product_stock"),
                 arguments=filters,
                 http_method="get",
+                **kwargs,
             )
             result["data"].append(setting_stock_result.get("data"))
-        return result
-
-    def read(self, external_id=None, attributes=None):
-        """Method to get a data for specified record"""
-        resource_path = "{}/{}".format(self._woo_model, external_id)
-        result = self._call(resource_path, http_method="get")
-        result = result.get("data", [])
-        return result
-
-    def create(self, data):
-        """Creates the data in remote"""
-        result = self._call(self._woo_model, data, http_method="post")
-        return result
-
-    def write(self, external_id, data):
-        """Update records on the external system"""
-        resource_path = "{}/{}".format(self._woo_model, external_id)
-        result = self._call(resource_path, data, http_method="put")
         return result

@@ -29,11 +29,9 @@ class WooSettingsAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.settings"
     _remote_model = "settings/tax"
-    _woo_model = "settings/tax"
     _woo_product_stock = "settings/products/woocommerce_manage_stock"
-    _woo_ext_id_key = "id"
 
-    def search(self, filters=None, **kwargs):
+    def search(self, filters=None, http_method=None, **kwargs):
         """
         Inherited search method to pass different API
         to fetch additional data.

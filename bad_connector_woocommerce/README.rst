@@ -84,17 +84,12 @@
 * Country and States Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Metadata which contains Country, States, Tax Settings, Shipping Methods and Stock Manage Settings.
-    - Click the 'Sync Metadata' button to import Country and there States, Tax Settings and Shipping Method from WooCommerce.
+    - Click the 'Sync Metadata' button to import Country and there States, Tax & Stock Manage Settings and Shipping Method from WooCommerce.
 
 * Taxes Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Taxes.
     - Click 'Import Taxes' button to Import the Taxes from Woocommerce.
-    
-* Country and States Import:
-    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
-    - Add Backend Credentials to Import Metadata which contains Country and there States.
-    - Click the 'Sync Metadata' button to import Country and there States from WooCommerce.
 
 * Stock Manage Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
