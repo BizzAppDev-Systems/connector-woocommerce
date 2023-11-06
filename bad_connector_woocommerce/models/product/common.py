@@ -37,6 +37,7 @@ class WooProductProduct(models.Model):
 
     _rec_name = "name"
 
+    woo_product_name = fields.Char(string="WooCommerce Product Name")
     odoo_id = fields.Many2one(
         comodel_name="product.product",
         string="Odoo Product",

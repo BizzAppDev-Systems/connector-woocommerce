@@ -117,14 +117,15 @@ class WooProductProductImportMapper(Component):
         binder = self.binder_for("woo.product.template")
         template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
         if template_id:
-            return {"name": template_id.name}
+            return {"name": template_id.name, "woo_product_name": name}
+
         product_id = record.get("id")
         if not name:
             error_message = (
                 f"Product name doesn't exist for Product ID {product_id} Please check!"
             )
             raise MappingError(error_message)
-        return {"name": name}
+        return {"name": name, "woo_product_name": name}
 
     @mapping
     def list_price(self, record):
