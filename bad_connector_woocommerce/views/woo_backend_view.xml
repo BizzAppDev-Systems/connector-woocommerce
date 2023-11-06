@@ -341,6 +341,7 @@
                                     >
                                         <field name="default_limit" />
                                         <field name="warehouse_id" required="1" />
+                                        <field name="currency_id" />
                                         <separator string="Customers Configuration" />
                                         <field name="without_email" />
                                     </group>
@@ -358,6 +359,8 @@
                                         />
                                         <field name="recompute_qty_step" />
                                         <field name="update_stock_inventory" />
+                                        <field name="weight_uom_id" />
+                                        <field name="dimension_uom_id" />
                                     </group>
                                 </group>
                                 <group
