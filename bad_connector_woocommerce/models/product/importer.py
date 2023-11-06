@@ -199,11 +199,13 @@ class WooProductProductImportMapper(Component):
     def detailed_type(self, record):
         """Mapping for detailed_type"""
         product_type = record.get("type")
-        if product_type == "variation":
-            return {"detailed_type": "product"}
-        if product_type == "grouped":
-            return {"detailed_type": "consu"}
-        return {"detailed_type": self.backend_record.default_product_type}
+        return {
+            "detailed_type": "product"
+            if product_type == "variation"
+            else "consu"
+            if product_type == "grouped"
+            else self.backend_record.default_product_type
+        }
 
     def _get_attribute_id_format(self, attribute, record, option=None):
         """Return the attribute and attribute value's unique id"""
