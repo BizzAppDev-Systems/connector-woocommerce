@@ -56,6 +56,8 @@
     - Added 'Product Category' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Category for imported WooCommerce Product.
     - Added 'Default Product Type' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Type for imported WooCommerce Product.
     - Added 'WooCommerce Product Image URL' which is located at Product Binding level, designed to store Other Product Images which will store in woo.product.image.url object instead of initial Image.
+    - We can import woocommerce products which consist different variants and also creates the binding product.template for variable type of products.
+    - We can import woocommerce products which is "grouped" type and make the Kit type Bill of Materials of it.
 
 * Product Attributes Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
@@ -156,8 +158,6 @@
   - Added Mapping for State in Customers.
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
-
-* Import all kind of product.
 
 **Known issues/Roadmap**
 ************************
