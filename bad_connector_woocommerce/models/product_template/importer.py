@@ -1,5 +1,7 @@
 import logging
 
+from odoo import _
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
@@ -30,9 +32,10 @@ class WooProductTemplateImportMapper(Component):
         name = record.get("name")
         product_tmp_id = record.get("id")
         if not name:
-            error_message = f"""Product Template name doesn't exist for Product ID
-            {product_tmp_id} Please check!"""
-            raise MappingError(error_message)
+            raise MappingError(
+                _("Product Template name doesn't exist for Product ID %s Please check")
+                % product_tmp_id
+            )
         return {"name": name}
 
 

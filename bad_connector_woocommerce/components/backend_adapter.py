@@ -196,14 +196,14 @@ class GenericAdapter(AbstractComponent):
         )
 
         if kwargs.get("_woo_product_variation"):
-            variable_ids = []
+            variation_ids = []
             for record in result.get("data", []):
                 if record.get("type") == "variable":
-                    variable_ids.extend(record.get("variations", []))
-            for variable in variable_ids:
+                    variation_ids.extend(record.get("variations", []))
+            for variation_id in variation_ids:
                 variation_products = self._call(
                     resource_path=kwargs.get("_woo_product_variation").format(
-                        product_id=variable
+                        product_id=variation_id
                     ),
                     arguments=filters,
                     http_method="get",

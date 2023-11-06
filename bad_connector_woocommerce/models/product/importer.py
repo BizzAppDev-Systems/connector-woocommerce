@@ -117,8 +117,7 @@ class WooProductProductImportMapper(Component):
         binder = self.binder_for("woo.product.template")
         template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
         if template_id:
-            return {"name": template_id.name, "woo_product_name": name}
-
+            return {"woo_product_name": name}
         product_id = record.get("id")
         if not name:
             error_message = (
@@ -199,6 +198,11 @@ class WooProductProductImportMapper(Component):
     @mapping
     def detailed_type(self, record):
         """Mapping for detailed_type"""
+        product_type = record.get("type")
+        if product_type == "variation":
+            return {"detailed_type": "product"}
+        if product_type == "grouped":
+            return {"detailed_type": "consu"}
         return {"detailed_type": self.backend_record.default_product_type}
 
     def _get_attribute_id_format(self, attribute, record, option=None):
@@ -330,6 +334,7 @@ class WooProductProductImportMapper(Component):
 
     @mapping
     def product_tmpl_id(self, record):
+        """Mapping for product_tmpl_id"""
         binder = self.binder_for("woo.product.template")
         template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
         return {"product_tmpl_id": template_id.id} if template_id else {}
@@ -363,16 +368,15 @@ class WooProductProductImporter(Component):
     def _must_skip(self):
         """Skipped Records which have type as variable."""
         if self.remote_record.get("type") == "variable":
-            return _("Skipped: Product Type is not Variable")
+            return _(
+                "Skipped: Product Type is Variable for Product ID %s"
+            ) % self.remote_record.get("id")
         return super(WooProductProductImporter, self)._must_skip()
 
     def _import_dependencies(self):
         """
-        Override method to import dependencies for WooCommerce sale order.
-        This method is overridden to handle the import of dependencies, particularly
-        for WooCommerce sale orders. It retrieves line items from the remote record and
-        imports the associated products as dependencies, ensuring that they are
-        available for the sale order.
+        Override method to import dependencies for WooCommerce products.
+        It retrieves grouped products from the remote record.
         """
         record = self.remote_record.get("grouped_products", [])
         for product in record:
@@ -384,7 +388,7 @@ class WooProductProductImporter(Component):
             )
             self.advisory_lock_or_retry(lock_name)
         for product in record:
-            _logger.debug("line: %s", product)
+            _logger.debug("product: %s", product)
             if product:
                 self._import_dependency(product, "woo.product.product")
 
@@ -412,7 +416,7 @@ class WooProductProductImporter(Component):
 
         for product in self.remote_record.get("grouped_products", []):
             product = binder.to_internal(product, unwrap=True)
-            product_records.append((0, 0, {"product_id": product.id}))
+            product_records.extend([(0, 0, {"product_id": product.id})])
 
         if not existing_bom:
             bom.create(
