@@ -140,6 +140,9 @@ class WooAdapter(GenericAdapter):
     _last_update_date = "date_modified"
     _remote_datetime_format = "%Y-%m-%dT%H:%M:%S"
     _woo_product_stock = None
+    _woo_default_currency = None
+    _woo_default_weight = None
+    _woo_default_dimension = None
 
     def search(self, filters=None, http_method=None, **kwargs):
         """Method to get the records from woo"""
