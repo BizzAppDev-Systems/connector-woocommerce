@@ -88,7 +88,7 @@ class TestImportCountry(BaseWooTestCase):
         self.settings_model = self.env["woo.settings"]
         settings1 = self.settings_model.search([("external_id", "=", external_id)])
         self.assertEqual(len(settings1), 1)
-        
+
     def test_import_currency(self):
         """Test Currency"""
         external_id = "woocommerce_currency"
