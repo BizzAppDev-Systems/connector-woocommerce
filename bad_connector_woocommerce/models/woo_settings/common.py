@@ -19,6 +19,7 @@ class WooSettings(models.Model):
     odoo_id = fields.Many2one(
         string="WooCommerce Settings", comodel_name="woo.settings"
     )
+    stock_update = fields.Boolean()
 
 
 class WooSettingsAdapter(Component):
@@ -28,3 +29,14 @@ class WooSettingsAdapter(Component):
     _inherit = "woo.adapter"
     _apply_on = "woo.settings"
     _remote_model = "settings/tax"
+    _woo_model = "settings/tax"
+    _woo_product_stock = "settings/products/woocommerce_manage_stock"
+    _woo_ext_id_key = "id"
+
+    def search(self, filters=None, **kwargs):
+        """
+        Inherited search method to pass different API
+        to fetch additional data.
+        """
+        kwargs["_woo_product_stock"] = self._woo_product_stock
+        return super(WooSettingsAdapter, self).search(filters, **kwargs)
