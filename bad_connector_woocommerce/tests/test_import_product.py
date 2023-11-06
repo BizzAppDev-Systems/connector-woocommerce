@@ -88,3 +88,19 @@ class TestImportProduct(BaseWooTestCase):
             self.backend.default_product_type,
             "Product Type is not matched with response.",
         )
+
+    def test_import_product_product_grouped_type(self):
+        """Test Assertions for Grouped type Product"""
+        external_id = "168"
+        with recorder.use_cassette("import_woo_product_product"):
+            self.env["woo.product.product"].import_record(
+                external_id=external_id, backend=self.backend
+            )
+
+    def test_import_product_product_variant_type(self):
+        """Test Assertions for Varaint type Product"""
+        external_id = "130"
+        with recorder.use_cassette("import_woo_product_product"):
+            self.env["woo.product.product"].import_record(
+                external_id=external_id, backend=self.backend
+            )
