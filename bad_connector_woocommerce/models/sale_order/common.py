@@ -21,7 +21,6 @@ class SaleOrder(models.Model):
     has_done_picking = fields.Boolean(
         string="Has Done Picking", compute="_compute_has_done_picking", store=True
     )
-    # TODO: phase 2 convert me to m2o to new object with migration script.
     woo_order_status = fields.Selection(
         selection=[
             ("completed", "Completed"),
@@ -33,7 +32,15 @@ class SaleOrder(models.Model):
             ("failed", "Failed"),
             ("trash", "Trash"),
         ],
+        string="WooCommerce Status",
+    )
+    woo_order_status_id = fields.Many2one(
+        comodel_name="woo.sale.status",
         string="WooCommerce Order Status",
+        ondelete="restrict",
+    )
+    is_final_status = fields.Boolean(
+        related="woo_order_status_id.is_final_status", string="Final Status"
     )
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
     total_amount_different = fields.Boolean(compute="_compute_total_amount_diffrent")
@@ -167,7 +174,7 @@ class WooSaleOrder(models.Model):
         )
         if not picking_ids:
             raise ValidationError(_("No delivery orders in 'done' state."))
-        if "completed" in self.mapped("woo_order_status"):
+        if self.is_final_status:
             raise ValidationError(
                 _("WooCommerce Sale Order is already in Completed Status.")
             )
