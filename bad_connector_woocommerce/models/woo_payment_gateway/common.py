@@ -24,5 +24,4 @@ class WooPaymentGatewayAdapter(Component):
     _name = "woo.payment.gateway.adapter"
     _inherit = "woo.adapter"
     _apply_on = "woo.payment.gateway"
-    _woo_model = "payment_gateways"
-    _woo_ext_id_key = "id"
+    _remote_model = "payment_gateways"
