@@ -145,7 +145,9 @@ class WooAdapter(GenericAdapter):
     _woo_default_dimension = None
 
     def search(self, filters=None, http_method=None, **kwargs):
-        """Method to get the records from woo"""
+        """
+        Inherited Method to get the records of settings from WooCommerce
+        """
         resource_path = self.get_default_resource_path(
             "search", filters=filters, **kwargs
         )

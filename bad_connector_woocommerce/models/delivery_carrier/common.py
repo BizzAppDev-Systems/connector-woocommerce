@@ -41,5 +41,4 @@ class WooDeliveryCarrierAdapter(Component):
     _name = "woo.delivery.carrier.adapter"
     _inherit = "woo.adapter"
     _apply_on = "woo.delivery.carrier"
-
     _remote_model = "shipping_methods"

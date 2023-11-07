@@ -12,9 +12,9 @@
 * Submenu of Configurations > WooCommerce Sale Status which is use to store all the WooCommerce Sale Order Status.
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
-* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" and "Product Quantity" data between connected Woocommerce and Odoo.
+* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders","Settings" and export of "Orders" and "Product Quantity" data between connected Woocommerce and Odoo.
 * Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes" and "Update Stock Inventory" at backend level.
-* Required field to Import the Products,Product Attributes,Taxes,Product Tags and Product Category are Location,Client Id,Client Secret,Product Category.
+* Required field to Import the Products,Product Attributes,Taxes,Product Tags, Product Category,Orders are Name,Location,Client Id,Client Secret,Product Category and Warehouse.
 * Added Default Currency, Default Weight Unit and Default Dimension Unit at backend level.
 
 **Author**
@@ -177,6 +177,14 @@
 * Import of Stock Manage Settings:
   - Enable the import functionality in bad_connector_woocommerce to transfer Stock Manage Settings from WooCommerce to Odoo.
   - Handle mapping of Stock Manage data during the import process.
+
+* Import Payment Gateways:
+    - Enable the import functionality in bad_connector_woocommerce to transfer Payment Gateway from WooCommerce to Odoo.
+    - Handle mapping of Payment Gateway data during the import process.
+
+* Import Currency and UOM:
+    - Enable the import functionality in bad_connector_woocommerce to transfer Currency and UOM Settings from WooCommerce to Odoo.
+    - Handle mapping of Currency and UOM Settings data during the import process.
 
 
 **Known issues/Roadmap**
