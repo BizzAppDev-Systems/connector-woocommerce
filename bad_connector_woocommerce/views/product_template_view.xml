@@ -34,6 +34,34 @@
                                     <field name="backend_id" widget="selection" />
                                     <field name="external_id" />
                                 </group>
+                                <label
+                                    for="woo_product_categ_ids"
+                                    string="WooCommerce Product Categories"
+                                />
+                                <field name="woo_product_categ_ids" />
+                                <label
+                                    for="woo_attribute_ids"
+                                    string="WooCommerce Attributes"
+                                />
+                                <field name="woo_attribute_ids">
+                                    <tree>
+                                        <field name="name" />
+                                        <field
+                                            name="value_ids"
+                                            widget="many2many_tags"
+                                        />
+                                    </tree>
+                                </field>
+                                <label
+                                    for="woo_product_attribute_value_ids"
+                                    string="WooCommerce Product Attribute Values"
+                                />
+                                <field name="woo_product_attribute_value_ids">
+                                    <tree>
+                                        <field name="name" />
+                                        <field name="attribute_id" />
+                                    </tree>
+                                </field>
                                 <group>
                                     <field name="woo_data" />
                                 </group>

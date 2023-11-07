@@ -195,20 +195,20 @@ class GenericAdapter(AbstractComponent):
             resource_path=self._woo_model, arguments=filters, http_method="get"
         )
 
-        if kwargs.get("_woo_product_variation"):
-            variation_ids = []
-            for record in result.get("data", []):
-                if record.get("type") == "variable":
-                    variation_ids.extend(record.get("variations", []))
-            for variation_id in variation_ids:
-                variation_products = self._call(
-                    resource_path=kwargs.get("_woo_product_variation").format(
-                        product_id=variation_id
-                    ),
-                    arguments=filters,
-                    http_method="get",
-                )
-                result["data"].append(variation_products.get("data", []))
+        # if kwargs.get("_woo_product_variation"):
+        #     variation_ids = []
+        #     for record in result.get("data", []):
+        #         if record.get("type") == "variable":
+        #             variation_ids.extend(record.get("variations", []))
+        #     for variation_id in variation_ids:
+        #         variation_products = self._call(
+        #             resource_path=kwargs.get("_woo_product_variation").format(
+        #                 product_id=variation_id
+        #             ),
+        #             arguments=filters,
+        #             http_method="get",
+        #         )
+        #         result["data"].append(variation_products.get("data", []))
         return result
 
     def read(self, external_id=None, attributes=None):

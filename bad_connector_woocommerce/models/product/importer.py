@@ -110,6 +110,17 @@ class WooProductProductImportMapper(Component):
     _inherit = "woo.import.mapper"
     _apply_on = "woo.product.product"
 
+    @only_create
+    @mapping
+    def odoo_id(self, record):
+        """Mapping for detailed_type"""
+        binder = self.binder_for("woo.product.template")
+        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
+        product = template_id._woo_product_variation_ids
+        if not product:
+            return {}
+        return {"odoo_id": product.id}
+
     @mapping
     def name(self, record):
         """Mapping for Name"""
@@ -258,9 +269,16 @@ class WooProductProductImportMapper(Component):
                 )
         return True
 
+    def check_product_template(self, record):
+        binder = self.binder_for("woo.product.template")
+        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
+        return template_id
+
     @mapping
     def woo_attribute_ids(self, record):
         """Mapping of woo_attribute_ids"""
+        if self.check_product_template(record):
+            return {}
         attribute_ids = []
         woo_product_attributes = record.get("attributes", [])
         if not woo_product_attributes:
@@ -283,6 +301,8 @@ class WooProductProductImportMapper(Component):
     @mapping
     def woo_product_categ_ids(self, record):
         """Mapping for woo_product_categ_ids"""
+        if self.check_product_template(record):
+            return {}
         category_ids = []
         woo_product_categories = record.get("categories", [])
         binder = self.binder_for("woo.product.category")
@@ -309,6 +329,8 @@ class WooProductProductImportMapper(Component):
     @mapping
     def woo_product_attribute_value_ids(self, record):
         """Mapping for woo_product_attribute_value_ids"""
+        if self.check_product_template(record):
+            return {}
         attribute_value_ids = []
         woo_attributes = record.get("attributes", [])
         binder = self.binder_for("woo.product.attribute")
@@ -358,7 +380,7 @@ class WooProductProductImporter(Component):
         result = super(WooProductProductImporter, self)._after_import(binding, **kwargs)
 
         if self.remote_record.get("type") == "grouped":
-            self.make_bom(binding)
+            self.env["mrp.bom"].make_bom(binding, env=self)
 
         image_record = self.remote_record.get("images")
         if not image_record:
@@ -395,45 +417,3 @@ class WooProductProductImporter(Component):
                 self._import_dependency(product, "woo.product.product")
 
         return super(WooProductProductImporter, self)._import_dependencies()
-
-    def make_bom(self, binding):
-        """
-        Create a Bill of Materials (BOM) for a product that is categorized
-        as a 'Grouped' type in Woocommerce.
-
-        This function checks if a BOM already exists for the product template in Odoo.
-        If not, it creates a new BOM of 'phantom' type.
-
-        If an existing BOM is found, it updates the BOM by adding
-        new products in components that are not already included.
-
-        :param binding: The binding object of the product.
-        """
-        bom = self.env["mrp.bom"]
-        product_template = binding.odoo_id.product_tmpl_id
-
-        existing_bom = bom.search([("product_tmpl_id", "=", product_template.id)])
-        binder = self.binder_for("woo.product.product")
-        product_records = []
-
-        for product in self.remote_record.get("grouped_products", []):
-            product = binder.to_internal(product, unwrap=True)
-            product_records.extend([(0, 0, {"product_id": product.id})])
-
-        if not existing_bom:
-            bom.create(
-                {
-                    "product_tmpl_id": product_template.id,
-                    "type": "phantom",
-                    "bom_line_ids": product_records,
-                }
-            )
-        else:
-            existing_product_ids = existing_bom.bom_line_ids.mapped("product_id.id")
-            new_product_records = [
-                record
-                for record in product_records
-                if record[2]["product_id"] not in existing_product_ids
-            ]
-            if new_product_records:
-                existing_bom.write({"bom_line_ids": new_product_records})
