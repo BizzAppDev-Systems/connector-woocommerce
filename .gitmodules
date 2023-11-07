@@ -1,4 +1,0 @@
-[submodule "odoo-common-modules"]
-	path = odoo-common-modules
-	url = git@github.com:BizzAppDev-Systems/odoo-common-modules.git
-	branch = 16.0-T6575-connector_base_skeleton-RUS-BAD
