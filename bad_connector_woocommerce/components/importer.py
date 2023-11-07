@@ -306,7 +306,6 @@ class WooBatchImporter(AbstractComponent):
         if "record_count" not in filters:
             filters.update({"record_count": 0})
         data = self.backend_adapter.search(filters)
-        # print("\n\n data==", data, "\n\n")
         records = data.get("data", [])
         for record in records:
             external_id = record.get(self.backend_adapter._woo_ext_id_key)

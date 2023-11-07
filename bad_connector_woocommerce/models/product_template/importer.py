@@ -165,6 +165,20 @@ class WooProductTemplateImportMapper(Component):
                 attribute_value_ids.append(attribute_value.id)
         return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
 
+    @mapping
+    def variant_different(self, record):
+        attributes = record.get("attributes", [])
+        variation_count_from_payload = 1
+        for attribute in attributes:
+            if attribute.get("variation"):
+                options = attribute.get("options")
+                if options:
+                    variation_count_from_payload *= len(options)
+        if variation_count_from_payload == len(record.get("variations", [])):
+            return {"variant_different": False}
+        else:
+            return {"variant_different": True}
+
 
 class WooProductTemplateImporter(Component):
     """Importer the WooCommerce Product Template"""
@@ -234,24 +248,3 @@ class WooProductTemplateImporter(Component):
 
         binding.sync_product_variants_from_woo()
         return result
-
-    # def _import_dependencies(self):
-    #     """
-    #     Override method to import dependencies for WooCommerce products.
-    #     It retrieves grouped products from the remote record.
-    #     """
-    #     record = self.remote_record.get("variations", [])
-    #     for product in record:
-    #         lock_name = "import({}, {}, {}, {})".format(
-    #             self.backend_record._name,
-    #             self.backend_record.id,
-    #             "woo.product.product",
-    #             product,
-    #         )
-    #         self.advisory_lock_or_retry(lock_name)
-    #     for product in record:
-    #         _logger.debug("product: %s", product)
-    #         if product:
-    #             self._import_dependency(product, "woo.product.product")
-
-    #     return super(WooProductTemplateImporter, self)._import_dependencies()

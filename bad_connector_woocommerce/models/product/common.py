@@ -119,39 +119,10 @@ class WooProductProductAdapter(Component):
             "woo.product.tag",
             "tags",
         ),
-        # (
-        #     "woo.product.template",
-        #     "parent_id",
-        # ),
     }
 
-    # def search(self, filters=None, **kwargs):
-    #     """Inherited search method to pass different API
-    #     to fetch additional data"""
-    #     kwargs["_woo_product_variation"] = self._woo_product_variation
-    #     return super(WooProductProductAdapter, self).search(filters, **kwargs)
-
     def search(self, filters=None, **kwargs):
-        """
-        Overrides:This method overrides the default behavior by adding the 'attribute'
-        field to each record in the search results to indicate the attribute used for
-        the search.
-        """
-        # TODO: add generic logic in search common adapter based on argument.
-        result = super(WooProductProductAdapter, self).search(filters, **kwargs)
-
-        resource_path = self._woo_product_variation.format(
-            product_id=filters.get("product_template")
-        )
-        result_template = self._call(
-            resource_path=resource_path, arguments=filters, http_method="get"
-        )
-        for variation in result_template.get("variations", []):
-            result = self._call(
-                resource_path=self._woo_product_variation.format(product_id=variation),
-                arguments=filters,
-                http_method="get",
-            )
-
-            result["data"].append(result.get("data", []))
-        return result
+        """Inherited search method to pass different API
+        to fetch additional data"""
+        kwargs["_woo_product_variation"] = self._woo_product_variation
+        return super(WooProductProductAdapter, self).search(filters, **kwargs)

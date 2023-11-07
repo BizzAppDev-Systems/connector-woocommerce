@@ -6,6 +6,31 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view" />
         <field name="arch" type="xml">
+            <xpath expr="//header" position="after">
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                    attrs="{'invisible': [('variant_different', '=', False)]}"
+                >
+                    <div class="o_row">
+                        <div
+                            class="col-1 text-center"
+                            style="padding-left: unset;padding-right: unset;"
+                        >
+                            <span style="font-size:20px;">
+                                <i
+                                    title="Variant Different"
+                                    class="fa fa-exclamation-triangle"
+                                    style="font-size:20px;"
+                                />
+                                The Variants are not properly created for this product
+                                in Woocommerce.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <field name="variant_different" invisible="1" />
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page
                     string="WooCommerce Connector"

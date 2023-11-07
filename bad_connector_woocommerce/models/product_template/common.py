@@ -18,6 +18,8 @@ class ProductTemplate(models.Model):
         copy=False,
     )
 
+    variant_different = fields.Boolean()
+
 
 class WooProductTemplate(models.Model):
     """Woocommerce Product Template"""

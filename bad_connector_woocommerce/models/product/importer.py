@@ -114,12 +114,32 @@ class WooProductProductImportMapper(Component):
     @mapping
     def odoo_id(self, record):
         """Mapping for detailed_type"""
-        binder = self.binder_for("woo.product.template")
-        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
-        product = template_id._woo_product_variation_ids
-        if not product:
+        if record.get("type") != "variation":
             return {}
-        return {"odoo_id": product.id}
+        binder = self.binder_for("woo.product.template")
+
+        # Extract attributes from the WooCommerce product variant data
+        attributes = record.get("attributes", [])
+        attribute_dict = {attr["name"]: attr["option"] for attr in attributes}
+
+        # Find the Odoo product variant with matching attributes
+        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
+        odoo_variants = template_id.product_variant_ids
+        matching_variant = None
+
+        for variant in odoo_variants:
+            variant_attributes = {
+                attr.attribute_id.name: attr.name
+                for attr in variant.product_template_attribute_value_ids
+            }
+            if variant_attributes == attribute_dict:
+                matching_variant = variant
+                break
+
+        if not matching_variant:
+            return {}
+
+        return {"odoo_id": matching_variant.id}
 
     @mapping
     def name(self, record):
