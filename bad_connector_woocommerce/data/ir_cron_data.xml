@@ -81,7 +81,7 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
         </record>
-        <!--  Import Country and there States-->
+        <!--  Import Country and there States,Delivery Carrier & Payment Gateway , Stock Manage, weight, dimention and currency Settings -->
         <record id="ir_cron_woocommerce_import_country_state" model="ir.cron">
             <field name="name">Woocommerce: Import Metadata</field>
             <field name="model_id" ref="model_woo_backend" />
