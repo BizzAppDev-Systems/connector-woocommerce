@@ -15,16 +15,16 @@ class WooModelBinder(Component):
     _inherit = ["base.generic.binder", "connector.woo.base"]
     _apply_on = [
         "woo.res.partner",
-        "woo.product.product",
         "woo.product.attribute",
         "woo.product.attribute.value",
+        "woo.product.category",
         "woo.product.tag",
+        "woo.product.product",
         "woo.sale.order",
         "woo.sale.order.line",
-        "woo.product.category",
+        "woo.tax",
+        "woo.settings",
         "woo.delivery.carrier",
         "woo.res.country",
-        "woo.settings",
-        "woo.tax",
         "woo.payment.gateway",
     ]
