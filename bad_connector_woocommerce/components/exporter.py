@@ -28,8 +28,8 @@ class WooExporter(AbstractComponent):
 
     def _should_import(self, **kwargs):
         """
-        Inherited method that determines whether to import updated data at remote level.
-    ````This functionality is skipped during the time of sale order export.
+        Inherited method that determines whether to import updated data at remote
+        level.This functionality is skipped during the time of sale order export.
         """
         if self._skip_should_import:
             return
