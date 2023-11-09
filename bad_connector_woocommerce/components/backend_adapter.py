@@ -53,7 +53,7 @@ class WooAPI(GenericAPI):
             self._api = woocommerce_client
         return self._api
 
-    def api_call(self, resource_path, arguments, http_method=None):
+    def api_call(self, method, arguments, http_method=None):
         """Adjust available arguments per API"""
         if not self.api:
             return self.api
@@ -63,27 +63,23 @@ class WooAPI(GenericAPI):
             additional_data.update(params=arguments)
         else:
             additional_data.update(data=arguments)
-        return getattr(self.api, http_method)(resource_path, **additional_data)
+        return getattr(self.api, http_method)(method, **additional_data)
 
-    def call(
-        self, resource_path, arguments, http_method=None, is_token=False, **kwargs
-    ):
+    def call(self, method, arguments, http_method=None, is_token=False, **kwargs):
         try:
             if isinstance(arguments, list):
                 while arguments and arguments[-1] is None:
                     arguments.pop()
             start = datetime.now()
             try:
-                result = self.api_call(
-                    resource_path, arguments, http_method=http_method
-                )
+                result = self.api_call(method, arguments, http_method=http_method)
             except Exception:
-                _logger.error("api.call('%s', %s) failed", resource_path, arguments)
+                _logger.error("api.call('%s', %s) failed", method, arguments)
                 raise
             else:
                 _logger.debug(
                     "api.call('%s', %s) returned %s in %s seconds",
-                    resource_path,
+                    method,
                     arguments,
                     result,
                     (datetime.now() - start).seconds,
