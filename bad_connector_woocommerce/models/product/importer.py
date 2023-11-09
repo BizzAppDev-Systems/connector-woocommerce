@@ -247,8 +247,6 @@ class WooProductProductImportMapper(Component):
     @mapping
     def woo_attribute_ids(self, record):
         """Mapping of woo_attribute_ids"""
-        # if self.check_product_template(record):
-        #     return {}
         attribute_ids = []
         woo_product_attributes = record.get("attributes", [])
         if not woo_product_attributes:
@@ -264,10 +262,10 @@ class WooProductProductImportMapper(Component):
             product_attribute = product._get_product_attribute(
                 attribute, record, env=self
             )
-            if "options" in attribute:
-                product._create_attribute_values(
-                    attribute["options"], product_attribute, attribute, record, env=self
-                )
+            options = attribute.get("options") or [attribute.get("option")]
+            product._create_attribute_values(
+                options, product_attribute, attribute, record, env=self
+            )
             attribute_ids.append(product_attribute.id)
         return {"woo_attribute_ids": [(6, 0, attribute_ids)]}
 
@@ -300,8 +298,6 @@ class WooProductProductImportMapper(Component):
     @mapping
     def woo_product_attribute_value_ids(self, record):
         """Mapping for woo_product_attribute_value_ids"""
-        # if self.check_product_template(record):
-        #     return {}
         attribute_value_ids = []
         woo_attributes = record.get("attributes", [])
         binder = self.binder_for("woo.product.attribute")
@@ -310,7 +306,7 @@ class WooProductProductImportMapper(Component):
             if attribute_id == 0:
                 attribute_id = self._get_attribute_id_format(woo_attribute, record)
             attribute = binder.to_internal(attribute_id, unwrap=True)
-            options = woo_attribute.get("options", [])
+            options = woo_attribute.get("options") or [woo_attribute.get("option")]
             for option in options:
                 attribute_value = self.env["woo.product.attribute.value"].search(
                     [
@@ -388,59 +384,3 @@ class WooProductProductImporter(Component):
                 self._import_dependency(product, "woo.product.product")
 
         return super(WooProductProductImporter, self)._import_dependencies()
-
-
-# "attributes": [
-#    {
-#      "id": 1,
-#      "name": "Size",
-#      "option": "Medium"
-#    },
-#    {
-#      "id": 2,
-#      "name": "Color",
-#      "option": "Blue"
-#    },
-#    {
-#      "id": 0,
-#      "name": "Glass",
-#      "option": "NO"
-#    }
-#  ],
-
-
-#    "attributes": [
-#    {
-#      "id": 1,
-#      "name": "Size",
-#      "position": 0,
-#      "visible": true,
-#      "variation": true,
-#      "options": [
-#        "Extra Large",
-#        "Medium"
-#      ]
-#    },
-#    {
-#      "id": 2,
-#      "name": "Color",
-#      "position": 1,
-#      "visible": true,
-#      "variation": true,
-#      "options": [
-#        "Blue",
-#        "Green"
-#      ]
-#    },
-#    {
-#      "id": 0,
-#      "name": "Glass",
-#      "position": 2,
-#      "visible": true,
-#      "variation": true,
-#      "options": [
-#        "YES",
-#        "NO"
-#      ]
-#    }
-#  ],
