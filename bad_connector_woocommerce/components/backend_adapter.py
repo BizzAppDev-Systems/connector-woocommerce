@@ -142,7 +142,7 @@ class WooAdapter(GenericAdapter):
 
     def search(self, filters=None, http_method=None, **kwargs):
         """
-        Inherited Method to get the records of settings from WooCommerce
+        Override Method to get the records of settings from WooCommerce
         """
         resource_path = self.get_default_resource_path(
             "search", filters=filters, **kwargs
