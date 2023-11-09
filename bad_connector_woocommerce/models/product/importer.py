@@ -113,7 +113,7 @@ class WooProductProductImportMapper(Component):
     @only_create
     @mapping
     def odoo_id(self, record):
-        """Mapping for detailed_type"""
+        """Mapping for odoo id"""
         if record.get("type") != "variation":
             return {}
         binder = self.binder_for("woo.product.template")
@@ -244,61 +244,11 @@ class WooProductProductImportMapper(Component):
             return "{}-{}".format(attribute.get("name"), record.get("id"))
         return "{}-{}-{}".format(option, attribute.get("id"), record.get("id"))
 
-    def _get_product_attribute(self, attribute_id, record):
-        """Get the product attribute that contains id as zero"""
-        binder = self.binder_for("woo.product.attribute")
-        created_id = self._get_attribute_id_format(attribute_id, record)
-        product_attribute = binder.to_internal(created_id)
-        if not product_attribute and not attribute_id.get("id"):
-            product_attribute = self.env["woo.product.attribute"].create(
-                {
-                    "name": attribute_id.get("name"),
-                    "backend_id": self.backend_record.id,
-                    "external_id": created_id,
-                    "not_real": True,
-                }
-            )
-        return product_attribute
-
-    def _create_attribute_values(self, options, product_attribute, attribute, record):
-        """Create attribute value binding that doesn't contain ids"""
-        binder = self.binder_for("woo.product.attribute.value")
-        for option in options:
-            created_id = self._get_attribute_id_format(attribute, record, option)
-            product_attribute_value = binder.to_internal(created_id)
-            if not product_attribute_value:
-                attribute_id = self._get_attribute_id_format(attribute, record)
-                binder = self.binder_for("woo.product.attribute")
-                product_attr = binder.to_internal(attribute_id, unwrap=True)
-                attribute_value = self.env["product.attribute.value"].search(
-                    [
-                        ("name", "=", option),
-                        ("attribute_id", "=", product_attr.id),
-                    ],
-                    limit=1,
-                )
-                self.env["woo.product.attribute.value"].create(
-                    {
-                        "name": option,
-                        "attribute_id": product_attribute.odoo_id.id,
-                        "woo_attribute_id": product_attribute.id,
-                        "backend_id": self.backend_record.id,
-                        "external_id": created_id,
-                        "odoo_id": attribute_value.id if attribute_value else None,
-                    }
-                )
-        return True
-
-    def check_product_template(self, record):
-        binder = self.binder_for("woo.product.template")
-        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
-        return template_id
-
     @mapping
     def woo_attribute_ids(self, record):
         """Mapping of woo_attribute_ids"""
-        if self.check_product_template(record):
-            return {}
+        # if self.check_product_template(record):
+        #     return {}
         attribute_ids = []
         woo_product_attributes = record.get("attributes", [])
         if not woo_product_attributes:
@@ -310,10 +260,13 @@ class WooProductProductImportMapper(Component):
             if woo_binding:
                 attribute_ids.append(woo_binding.id)
                 continue
-            product_attribute = self._get_product_attribute(attribute, record)
+            product = self.env["product.product"]
+            product_attribute = product._get_product_attribute(
+                attribute, record, env=self
+            )
             if "options" in attribute:
-                self._create_attribute_values(
-                    attribute["options"], product_attribute, attribute, record
+                product._create_attribute_values(
+                    attribute["options"], product_attribute, attribute, record, env=self
                 )
             attribute_ids.append(product_attribute.id)
         return {"woo_attribute_ids": [(6, 0, attribute_ids)]}
@@ -321,8 +274,6 @@ class WooProductProductImportMapper(Component):
     @mapping
     def woo_product_categ_ids(self, record):
         """Mapping for woo_product_categ_ids"""
-        if self.check_product_template(record):
-            return {}
         category_ids = []
         woo_product_categories = record.get("categories", [])
         binder = self.binder_for("woo.product.category")
@@ -349,8 +300,8 @@ class WooProductProductImportMapper(Component):
     @mapping
     def woo_product_attribute_value_ids(self, record):
         """Mapping for woo_product_attribute_value_ids"""
-        if self.check_product_template(record):
-            return {}
+        # if self.check_product_template(record):
+        #     return {}
         attribute_value_ids = []
         woo_attributes = record.get("attributes", [])
         binder = self.binder_for("woo.product.attribute")
@@ -437,3 +388,59 @@ class WooProductProductImporter(Component):
                 self._import_dependency(product, "woo.product.product")
 
         return super(WooProductProductImporter, self)._import_dependencies()
+
+
+# "attributes": [
+#    {
+#      "id": 1,
+#      "name": "Size",
+#      "option": "Medium"
+#    },
+#    {
+#      "id": 2,
+#      "name": "Color",
+#      "option": "Blue"
+#    },
+#    {
+#      "id": 0,
+#      "name": "Glass",
+#      "option": "NO"
+#    }
+#  ],
+
+
+#    "attributes": [
+#    {
+#      "id": 1,
+#      "name": "Size",
+#      "position": 0,
+#      "visible": true,
+#      "variation": true,
+#      "options": [
+#        "Extra Large",
+#        "Medium"
+#      ]
+#    },
+#    {
+#      "id": 2,
+#      "name": "Color",
+#      "position": 1,
+#      "visible": true,
+#      "variation": true,
+#      "options": [
+#        "Blue",
+#        "Green"
+#      ]
+#    },
+#    {
+#      "id": 0,
+#      "name": "Glass",
+#      "position": 2,
+#      "visible": true,
+#      "variation": true,
+#      "options": [
+#        "YES",
+#        "NO"
+#      ]
+#    }
+#  ],

@@ -1,7 +1,6 @@
 import logging
 
-from odoo import _, fields, models
-from odoo.exceptions import ValidationError
+from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
@@ -58,27 +57,6 @@ class WooProductTemplate(models.Model):
         ondelete="restrict",
     )
 
-    def sync_product_variants_from_woo(self):
-        """sync Attribute values from woocommerce"""
-        self.ensure_one()
-        filters = {}
-        if not self.backend_id:
-            raise ValidationError(_("No Backend found on Product Template."))
-        if not self.external_id:
-            raise ValidationError(_("No External Id found in backend"))
-        filters.update(
-            {
-                "product_template": self.external_id,
-            }
-        )
-        # TODO: with_delay only if context has delay key passed from after import. Else
-        # it should be without delay
-        self.backend_id._sync_from_date(
-            model="woo.product.product",
-            priority=5,
-            filters=filters,
-        )
-
 
 class WooProductTemplateAdapter(Component):
     """Adapter for WooCommerce Product Template"""
@@ -88,3 +66,17 @@ class WooProductTemplateAdapter(Component):
     _apply_on = "woo.product.template"
     _woo_model = "products"
     _woo_ext_id_key = "id"
+    _model_dependencies = {
+        (
+            "woo.product.category",
+            "categories",
+        ),
+        (
+            "woo.product.attribute",
+            "attributes",
+        ),
+        (
+            "woo.product.tag",
+            "tags",
+        ),
+    }

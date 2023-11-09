@@ -293,25 +293,17 @@ class WooBackend(models.Model):
         """Import Products from backend"""
         for backend in self:
             # backend._sync_from_date(
-            #     model="woo.product.product",
-            #     # from_date_field="import_products_from_date",
+            #     model="woo.product.template",
+            #     from_date_field="import_products_from_date",
             #     priority=5,
             #     export=False,
-            #     filters={"type": "simple"},
-            # )
-            # backend._sync_from_date(
-            #     model="woo.product.product",
-            #     # from_date_field="import_products_from_date",
-            #     priority=5,
-            #     export=False,
-            #     filters={"type": "grouped"},
+            #     filters={"type": "variable"},
             # )
             backend._sync_from_date(
-                model="woo.product.template",
+                model="woo.product.product",
                 from_date_field="import_products_from_date",
                 priority=5,
                 export=False,
-                filters={"type": "variable"},
             )
         return True
 

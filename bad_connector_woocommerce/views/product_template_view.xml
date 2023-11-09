@@ -60,11 +60,6 @@
                                     <field name="external_id" />
                                 </group>
                                 <label
-                                    for="woo_product_categ_ids"
-                                    string="WooCommerce Product Categories"
-                                />
-                                <field name="woo_product_categ_ids" />
-                                <label
                                     for="woo_attribute_ids"
                                     string="WooCommerce Attributes"
                                 />
