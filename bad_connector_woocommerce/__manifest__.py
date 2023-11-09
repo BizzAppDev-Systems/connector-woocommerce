@@ -5,9 +5,7 @@
     "author": "BizzAppDev Systems Pvt. Ltd.",
     "website": "http://www.bizzappdev.com",
     "depends": [
-        "mail",
         "contacts",
-        "product",
         "connector_base",
         "sale_management",
         "delivery",
