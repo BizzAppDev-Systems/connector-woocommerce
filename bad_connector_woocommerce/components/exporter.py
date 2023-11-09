@@ -24,6 +24,16 @@ class WooExporter(AbstractComponent):
     _inherit = ["base.generic.exporter", "connector.woo.base"]
     _usage = "record.exporter"
     _default_binding_field = "woo_bind_ids"
+    _skip_should_import = False
+
+    def _should_import(self, **kwargs):
+        """
+        Inherited method that determines whether to import updated data at remote level.
+    ````This functionality is skipped during the time of sale order export.
+        """
+        if self._skip_should_import:
+            return
+        return super(WooExporter, self)._should_import(**kwargs)
 
 
 class WooBatchExporter(AbstractComponent):

@@ -110,16 +110,15 @@ class TestImportSaleOrder(BaseWooTestCase):
         )
         with recorder.use_cassette("export_woo_status_and_ref"):
             sale_order_odoo.export_delivery_status()
-        self.assertEqual(
-            sale_order1.woo_order_status_id.code,
-            "completed",
-            "Sale Order is Not in 'Completed' state in WooCommerce.",
-        )
+            self.assertEqual(
+                sale_order1.woo_order_status_id.code,
+                "completed",
+                "Sale Order is Not in 'Completed' state in WooCommerce.",
+            )
 
     def test_import_sale_order_ship_without_tax(self):
         """Test Assertions for Sale order"""
         external_id = "72"
-
         with recorder.use_cassette("import_woo_product_product"):
             self.env["woo.sale.order"].import_record(
                 external_id=external_id, backend=self.backend

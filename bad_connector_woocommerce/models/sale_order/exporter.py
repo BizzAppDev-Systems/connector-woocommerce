@@ -70,6 +70,7 @@ class WooSaleOrderBatchExporter(Component):
     _name = "woo.sale.order.batch.exporter"
     _inherit = "woo.exporter"
     _apply_on = ["woo.sale.order"]
+    _skip_should_import = True
 
     def _after_export(self, **kwargs):
         """Import the transaction lines after checking WooCommerce order status."""
