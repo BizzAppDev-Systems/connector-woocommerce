@@ -73,7 +73,10 @@ class WooSaleOrderBatchExporter(Component):
     _skip_should_import = True
 
     def _after_export(self, **kwargs):
-        """Import the transaction lines after checking WooCommerce order status."""
+        """
+        Override Method to Import the transaction lines after checking WooCommerce
+        order status.
+        """
         woo_order_status = self.env["woo.sale.status"].search(
             [("code", "=", "completed"), ("is_final_status", "=", True)], limit=1
         )

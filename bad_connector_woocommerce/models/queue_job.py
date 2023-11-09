@@ -27,6 +27,8 @@ class QueueJob(models.Model):
             external_id = self.kwargs.get("external_id")
             kwargs_record = self.kwargs.get("record")
             if not external_id:
+                if not kwargs_record:
+                    return
                 external_id = kwargs_record.external_id
             if external_id:
                 record = (

@@ -47,6 +47,7 @@ class ProductProduct(models.Model):
         "woo_bind_ids.backend_id.update_stock_inventory",
     )
     def _compute_backend_stock_manage(self):
+        """Compute the value of backend_stock_manage for each product."""
         for product in self:
             product.backend_stock_manage = (
                 self.woo_bind_ids.backend_id.update_stock_inventory

@@ -21,6 +21,10 @@ class WooBackend(models.Model):
 
     @api.model
     def _get_stock_field_id(self):
+        """
+        Get the ID of the 'virtual_available' field in the 'product.product'
+        model.
+        """
         field = self.env["ir.model.fields"].search(
             [("model", "=", "product.product"), ("name", "=", "virtual_available")],
             limit=1,
@@ -164,6 +168,12 @@ class WooBackend(models.Model):
 
     @api.onchange("update_stock_inventory", "stock_update")
     def _onchange_update_stock_inventory(self):
+        """
+        Handle the update of stock inventory based on WooCommerce settings.
+        If 'update_stock_inventory' is attempted to be set to True when 'stock_update'
+        is False, it automatically sets 'update_stock_inventory' to False and displays
+        a warning message.
+        """
         if not self.stock_update and self.update_stock_inventory:
             self.update_stock_inventory = False
             return {
