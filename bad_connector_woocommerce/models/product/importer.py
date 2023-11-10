@@ -143,15 +143,15 @@ class WooProductProductImportMapper(Component):
     def name(self, record):
         """Mapping for Name"""
         name = record.get("name")
-        binder = self.binder_for("woo.product.template")
-        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
-        if template_id:
-            return {"woo_product_name": name}
         if not name:
             raise MappingError(
                 _("Product Template name doesn't exist for Product ID %s Please check")
                 % record.get("id")
             )
+        binder = self.binder_for("woo.product.template")
+        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
+        if template_id:
+            return {"woo_product_name": name}
         return {"name": name, "woo_product_name": name}
 
     @mapping
@@ -350,7 +350,7 @@ class WooProductProductImporter(Component):
         return result
 
     def _must_skip(self):
-        """This method is Inherited to Skip Records which have type as variable."""
+        """Inherited Method :: to Skip Product Records which have type as variable."""
         if self.remote_record.get("type") == "variable":
             return _(
                 "Skipped: Product Type is Variable for Product ID %s"
