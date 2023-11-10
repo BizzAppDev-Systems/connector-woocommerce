@@ -41,19 +41,9 @@ class WooProductTemplate(models.Model):
         string="WooCommerce Product Attribute",
         ondelete="restrict",
     )
-    woo_product_categ_ids = fields.Many2many(
-        comodel_name="woo.product.category",
-        string="WooCommerce Product Category(Product)",
-        ondelete="restrict",
-    )
     woo_product_attribute_value_ids = fields.Many2many(
         comodel_name="woo.product.attribute.value",
         string="WooCommerce Product Attribute Value",
-        ondelete="restrict",
-    )
-    woo_product_image_url_ids = fields.Many2many(
-        comodel_name="woo.product.image.url",
-        string="WooCommerce Product Image URL",
         ondelete="restrict",
     )
 
