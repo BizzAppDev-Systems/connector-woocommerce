@@ -145,7 +145,7 @@ class WooProductProductImportMapper(Component):
         name = record.get("name")
         if not name:
             raise MappingError(
-                _("Product Template name doesn't exist for Product ID %s Please check")
+                _("Product name doesn't exist for Product ID %s Please check")
                 % record.get("id")
             )
         binder = self.binder_for("woo.product.template")
