@@ -30,19 +30,12 @@ class WooProductTemplateImportMapper(Component):
     def name(self, record):
         """Mapping for Name"""
         name = record.get("name")
-        product_tmp_id = record.get("id")
         if not name:
             raise MappingError(
                 _("Product Template name doesn't exist for Product ID %s Please check")
-                % product_tmp_id
+                % record.get("id")
             )
         return {"name": name}
-
-    def _get_attribute_id_format(self, attribute, record, option=None):
-        """Return the attribute and attribute value's unique id"""
-        if not option:
-            return "{}-{}".format(attribute.get("name"), record.get("id"))
-        return "{}-{}-{}".format(option, attribute.get("id"), record.get("id"))
 
     @mapping
     def woo_attribute_ids(self, record):
@@ -78,7 +71,9 @@ class WooProductTemplateImportMapper(Component):
         for woo_attribute in woo_attributes:
             attribute_id = woo_attribute.get("id")
             if attribute_id == 0:
-                attribute_id = self._get_attribute_id_format(woo_attribute, record)
+                attribute_id = self.env["product.product"]._get_attribute_id_format(
+                    woo_attribute, record
+                )
             attribute = binder.to_internal(attribute_id, unwrap=True)
             options = woo_attribute.get("options", [])
             for option in options:
@@ -130,7 +125,9 @@ class WooProductTemplateImportMapper(Component):
         for woo_attribute in record.get("attributes", []):
             woo_attribute_id = woo_attribute.get("id", 0)
             woo_attribute_id = (
-                self._get_attribute_id_format(woo_attribute, record)
+                self.env["product.product"]._get_attribute_id_format(
+                    woo_attribute, record
+                )
                 if woo_attribute_id == 0
                 else woo_attribute_id
             )

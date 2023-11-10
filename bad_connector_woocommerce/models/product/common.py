@@ -1,6 +1,6 @@
 import logging
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
@@ -17,14 +17,14 @@ class ProductProduct(models.Model):
         copy=False,
     )
 
-    @api.depends("product_template_attribute_value_ids")
-    def _compute_combination_indices(self):
-        """
-        Override method since we are not using attributes and attribute
-        values for storing variant data we have to disable the combination check
-        """
-        for product in self:
-            product.combination_indices = str(product.id)
+    # @api.depends("product_template_attribute_value_ids")
+    # def _compute_combination_indices(self):
+    #     """
+    #     Override method since we are not using attributes and attribute
+    #     values for storing variant data we have to disable the combination check
+    #     """
+    #     for product in self:
+    #         product.combination_indices = str(product.id)
 
     def _get_attribute_id_format(self, attribute, record, option=None):
         """Return the attribute and attribute value's unique id"""

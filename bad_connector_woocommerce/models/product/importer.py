@@ -129,17 +129,15 @@ class WooProductProductImportMapper(Component):
 
         for variant in odoo_variants:
             variant_attributes = {
-                attr.attribute_id.name: attr.name
-                for attr in variant.product_template_attribute_value_ids
+                attr_vals.attribute_id.name: attr_vals.name
+                for attr_vals in variant.product_template_attribute_value_ids
             }
-            if variant_attributes == attribute_dict:
-                matching_variant = variant
-                break
+            if variant_attributes != attribute_dict:
+                continue
+            matching_variant = variant
+            break
 
-        if not matching_variant:
-            return {}
-
-        return {"odoo_id": matching_variant.id}
+        return {"odoo_id": matching_variant.id} if matching_variant else {}
 
     @mapping
     def name(self, record):
@@ -149,12 +147,11 @@ class WooProductProductImportMapper(Component):
         template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
         if template_id:
             return {"woo_product_name": name}
-        product_id = record.get("id")
         if not name:
-            error_message = (
-                f"Product name doesn't exist for Product ID {product_id} Please check!"
+            raise MappingError(
+                _("Product Template name doesn't exist for Product ID %s Please check")
+                % record.get("id")
             )
-            raise MappingError(error_message)
         return {"name": name, "woo_product_name": name}
 
     @mapping
@@ -238,12 +235,6 @@ class WooProductProductImportMapper(Component):
             else self.backend_record.default_product_type
         }
 
-    def _get_attribute_id_format(self, attribute, record, option=None):
-        """Return the attribute and attribute value's unique id"""
-        if not option:
-            return "{}-{}".format(attribute.get("name"), record.get("id"))
-        return "{}-{}-{}".format(option, attribute.get("id"), record.get("id"))
-
     @mapping
     def woo_attribute_ids(self, record):
         """Mapping of woo_attribute_ids"""
@@ -304,7 +295,9 @@ class WooProductProductImportMapper(Component):
         for woo_attribute in woo_attributes:
             attribute_id = woo_attribute.get("id")
             if attribute_id == 0:
-                attribute_id = self._get_attribute_id_format(woo_attribute, record)
+                attribute_id = self.env["product.product"]._get_attribute_id_format(
+                    woo_attribute, record
+                )
             attribute = binder.to_internal(attribute_id, unwrap=True)
             options = woo_attribute.get("options") or [woo_attribute.get("option")]
             for option in options:
@@ -357,7 +350,7 @@ class WooProductProductImporter(Component):
         return result
 
     def _must_skip(self):
-        """Skipped Records which have type as variable."""
+        """This method is Inherited to Skip Records which have type as variable."""
         if self.remote_record.get("type") == "variable":
             return _(
                 "Skipped: Product Type is Variable for Product ID %s"
