@@ -122,29 +122,49 @@ class WooProductTemplateImportMapper(Component):
     def _get_attribute_lines(self, map_record):
         """Get all attribute lines for the product."""
         attribute_lines = []
-        binder = self.binder_for("woo.product.attribute")
+        attribute_binder = self.binder_for("woo.product.attribute")
+        template_binder = self.binder_for("woo.product.template")
+
         record = map_record.source
 
         for woo_attribute in record.get("attributes", []):
-            woo_attribute_id = woo_attribute.get("id")
-            if woo_attribute_id == 0:
-                woo_attribute_id = self._get_attribute_id_format(woo_attribute, record)
+            woo_attribute_id = woo_attribute.get("id", 0)
+            woo_attribute_id = (
+                self._get_attribute_id_format(woo_attribute, record)
+                if woo_attribute_id == 0
+                else woo_attribute_id
+            )
 
-            attribute = binder.to_internal(woo_attribute_id, unwrap=True)
-            value_ids = []
-            if "options" in woo_attribute:
-                for option in woo_attribute["options"]:
-                    value = attribute.value_ids.filtered(lambda v: v.name == option)
-                    if value:
-                        value_ids.append(value.id)
-            attribute_line = self._prepare_attribute_line(attribute, value_ids)
-            attribute_lines.append((0, 0, attribute_line))
+            attribute = attribute_binder.to_internal(woo_attribute_id, unwrap=True)
+            product_template = template_binder.to_internal(
+                record.get("id"), unwrap=True
+            )
+
+            # Check if the attribute line already exists for the product_template.
+            existing_attribute_line = product_template.attribute_line_ids.filtered(
+                lambda line: line.attribute_id.id == attribute.id
+            )
+
+            value_ids = [
+                value.id
+                for option in woo_attribute.get("options", [])
+                for value in attribute.value_ids.filtered(lambda v: v.name == option)
+            ]
+
+            # If the attribute line already exists, update it.
+            if existing_attribute_line:
+                existing_attribute_line.write({"value_ids": [(6, 0, value_ids)]})
+            # Otherwise, create a new attribute line.
+            else:
+                attribute_line = self._prepare_attribute_line(attribute, value_ids)
+                attribute_lines.append((0, 0, attribute_line))
+
         return attribute_lines
 
     def finalize(self, map_record, values):
         """Override the finalize method to add attribute lines to the product."""
         attribute_lines = self._get_attribute_lines(map_record)
-        values["attribute_line_ids"] = attribute_lines
+        values.update({"attribute_line_ids": attribute_lines})
         return super(WooProductTemplateImportMapper, self).finalize(map_record, values)
 
 

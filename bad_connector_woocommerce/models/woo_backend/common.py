@@ -80,7 +80,18 @@ class WooBackend(models.Model):
     )
     import_orders_from_date = fields.Datetime(string="Import Orders from date")
     order_prefix = fields.Char(string="Sale Order Prefix", default="WOO_")
-    import_products_from_date = fields.Datetime(string="Import products from date")
+    import_products_from_date = fields.Datetime(
+        string="Import products from date",
+        help="""Specify the date and time to initiate the process of import for
+        Basic, Grouped, and Variant type products.Only products modified or added
+        after this date will be considered in the import.""",
+    )
+    import_products_tmpl_from_date = fields.Datetime(
+        string="Import product Templates from date",
+        help="""Specify the date and time to initiate the process of import for
+        Product Templates.This includes Variable type products.Only templates
+        modified or added after this date will be considered in the import.""",
+    )
     without_sku = fields.Boolean(
         string="Allow Product without SKU",
         help="""If this Boolean is set to True, the system will import products
@@ -292,13 +303,13 @@ class WooBackend(models.Model):
     def import_products(self):
         """Import Products from backend"""
         for backend in self:
-            # backend._sync_from_date(
-            #     model="woo.product.template",
-            #     from_date_field="import_products_from_date",
-            #     priority=5,
-            #     export=False,
-            #     filters={"type": "variable"},
-            # )
+            backend._sync_from_date(
+                model="woo.product.template",
+                from_date_field="import_products_tmpl_from_date",
+                priority=5,
+                export=False,
+                filters={"type": "variable"},
+            )
             backend._sync_from_date(
                 model="woo.product.product",
                 from_date_field="import_products_from_date",

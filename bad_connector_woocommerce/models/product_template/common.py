@@ -58,15 +58,7 @@ class WooProductTemplateAdapter(Component):
     _woo_ext_id_key = "id"
     _model_dependencies = {
         (
-            "woo.product.category",
-            "categories",
-        ),
-        (
             "woo.product.attribute",
             "attributes",
-        ),
-        (
-            "woo.product.tag",
-            "tags",
         ),
     }
