@@ -56,7 +56,7 @@
     - Added 'Product Category' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Category for imported WooCommerce Product.
     - Added 'Default Product Type' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Type for imported WooCommerce Product.
     - Added 'WooCommerce Product Image URL' which is located at Product Binding level, designed to store Other Product Images which will store in woo.product.image.url object instead of initial Image.
-    - We can import different types of products such as Simple type, Variable type, Grouped type from woocommerce in odoo.
+    - By Clicking the "Import Products" button different product type such as Simple, Variable, Grouped and Templates will get imported from woocommerce in odoo.
 
 * Product Attributes Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
@@ -110,7 +110,7 @@
 * Import of Product Data:
   - Enable the import functionality in bad_connector_woocommerce to transfer products from WooCommerce to Odoo.
   - Handle mapping of product data during the import process.
-  - Introduces "import_products_from_date" field at the backend level, allowing import from a specified date for getting updated products.
+  - Introduces "import_products_from_date" and "import_products_tmpl_from_date" fields at the backend level, allowing import from a specified date for getting updated products and product templates.
   - Implements import of Attributes and Categories during the product import.
   - Added woo_product_categ_ids and woo_attribute_ids in product binding level.
   - Added mapping of woo_product_attribute_value_ids in product binding level.
