@@ -25,8 +25,9 @@ class QueueJob(models.Model):
                     record = record.odoo_id
         elif self.kwargs:
             external_id = self.kwargs.get("external_id")
+            kwargs_record = self.kwargs.get("record")
             if not external_id:
-                return None
+                external_id = kwargs_record.external_id
             if external_id:
                 record = (
                     self.env[self.model_name]

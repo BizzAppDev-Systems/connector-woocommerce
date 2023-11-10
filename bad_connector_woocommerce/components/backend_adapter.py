@@ -209,6 +209,13 @@ class GenericAdapter(AbstractComponent):
                     http_method="get",
                 )
                 result["data"].append(variation_products.get("data", []))
+        if kwargs.get("_woo_product_stock", False):
+            setting_stock_result = self._call(
+                resource_path=kwargs.get("_woo_product_stock"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(setting_stock_result.get("data"))
         return result
 
     def read(self, external_id=None, attributes=None):

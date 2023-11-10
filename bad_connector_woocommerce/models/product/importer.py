@@ -226,14 +226,18 @@ class WooProductProductImportMapper(Component):
     @mapping
     def detailed_type(self, record):
         """Mapping for detailed_type"""
-        product_type = record.get("type")
-        return {
-            "detailed_type": "product"
-            if product_type == "variation"
-            else "consu"
-            if product_type == "grouped"
-            else self.backend_record.default_product_type
-        }
+        # product_type = record.get("type")
+        # return {
+        #     "detailed_type": "product"
+        #     if product_type == "variation"
+        #     else "consu"
+        #     if product_type == "grouped"
+        #     else self.backend_record.default_product_type
+        # }
+        detailed_type = self.backend_record.default_product_type
+        if record.get("manage_stock"):
+            detailed_type = "product"
+        return {"detailed_type": detailed_type}
 
     @mapping
     def woo_attribute_ids(self, record):
@@ -322,6 +326,19 @@ class WooProductProductImportMapper(Component):
         binder = self.binder_for("woo.product.template")
         template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
         return {"product_tmpl_id": template_id.id} if template_id else {}
+
+    def stock_management(self, record):
+        """Mapping for Stock Management"""
+        return {"stock_management": record.get("manage_stock")}
+
+    @mapping
+    def woo_product_qty(self, record):
+        """Mapping for WooCommerce Product qty"""
+        return (
+            {"woo_product_qty": record.get("stock_quantity")}
+            if record.get("stock_quantity")
+            else {}
+        )
 
 
 class WooProductProductImporter(Component):

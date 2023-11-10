@@ -19,6 +19,14 @@ class WooBackend(models.Model):
     _description = "WooCommerce Backend"
     _inherit = ["mail.thread", "connector.backend"]
 
+    @api.model
+    def _get_stock_field_id(self):
+        field = self.env["ir.model.fields"].search(
+            [("model", "=", "product.product"), ("name", "=", "virtual_available")],
+            limit=1,
+        )
+        return field
+
     name = fields.Char(
         string="Name", required=True, help="Enter the name of the WooCommerce backend."
     )
@@ -148,6 +156,38 @@ class WooBackend(models.Model):
         domain=[("type", "=", "service")],
         help="Select the default fee product for imported orders.",
     )
+    update_stock_inventory = fields.Boolean()
+    warehouse_id = fields.Many2one(
+        comodel_name="stock.warehouse",
+        string="Warehouse",
+        help="Warehouse used to compute the " "stock quantities.",
+    )
+    product_stock_field_id = fields.Many2one(
+        comodel_name="ir.model.fields",
+        string="Product Stock Field",
+        default=_get_stock_field_id,
+        domain="[('model', 'in', ['product.product', 'product.template']),"
+        " ('ttype', '=', 'float')]",
+        help="Choose the field of the product which will be used for "
+        "stock inventory updates.\nIf empty, Quantity Available "
+        "is used.",
+    )
+    woo_setting_id = fields.Many2one(comodel_name="woo.settings")
+    stock_update = fields.Boolean(related="woo_setting_id.stock_update")
+    recompute_qty_step = fields.Integer(string="Recompute Quantity Batch", default=1000)
+
+    @api.onchange("update_stock_inventory", "stock_update")
+    def _onchange_update_stock_inventory(self):
+        if not self.stock_update and self.update_stock_inventory:
+            self.update_stock_inventory = False
+            return {
+                "warning": {
+                    "title": "Warning",
+                    "message": "You cannot set 'update_stock_inventory' to True "
+                    "when 'stock_update' is False in the WooCommerce settings "
+                    "level for Mange Stock.",
+                }
+            }
 
     @api.onchange("company_id")
     def _onchange_company(self):
@@ -458,3 +498,26 @@ class WooBackend(models.Model):
         """Cron for sync_metadata"""
         backend_ids = self.search(domain or [])
         backend_ids.sync_metadata()
+
+    def _domain_for_update_product_stock_qty(self):
+        """Domain to search WooCommerce product"""
+        return [
+            ("backend_id", "in", self.ids),
+            ("detailed_type", "=", "product"),
+            ("stock_management", "=", True),
+            ("backend_stock_manage", "=", True),
+        ]
+
+    def update_product_stock_qty(self):
+        """Export the Stock Inventory"""
+        woo_product_obj = self.env["woo.product.product"]
+        domain = self._domain_for_update_product_stock_qty()
+        woo_products = woo_product_obj.search(domain)
+        woo_products.recompute_woo_qty()
+        return True
+
+    @api.model
+    def cron_update_stock_qty(self, domain=None):
+        """Cron for Update Stock qty"""
+        backend_ids = self.search(domain or [])
+        backend_ids.update_product_stock_qty()
