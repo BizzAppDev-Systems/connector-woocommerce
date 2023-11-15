@@ -194,7 +194,6 @@ class GenericAdapter(AbstractComponent):
         result = self._call(
             resource_path=self._woo_model, arguments=filters, http_method="get"
         )
-
         if kwargs.get("_woo_product_variation"):
             variation_ids = []
             for record in result.get("data", []):
@@ -233,5 +232,9 @@ class GenericAdapter(AbstractComponent):
     def write(self, external_id, data):
         """Update records on the external system"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
+        if data.get("binding_template", False):
+            resource_path = "{}/{}/{}/{}".format(
+                self._woo_model, data.get("binding_template"), "variations", external_id
+            )
         result = self._call(resource_path, data, http_method="put")
         return result

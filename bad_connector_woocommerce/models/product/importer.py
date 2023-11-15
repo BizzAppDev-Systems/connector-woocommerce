@@ -327,6 +327,7 @@ class WooProductProductImportMapper(Component):
         template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
         return {"product_tmpl_id": template_id.id} if template_id else {}
 
+    @mapping
     def stock_management(self, record):
         """Mapping for Stock Management"""
         return {"stock_management": record.get("manage_stock")}

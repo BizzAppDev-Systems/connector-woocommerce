@@ -105,6 +105,15 @@ class ProductProduct(models.Model):
                 )
         return True
 
+    # @api.depends("product_template_attribute_value_ids")
+    # def _compute_combination_indices(self):
+    #     """
+    #     Override method since we are not using attributes and attribute
+    #     values for storing variant data we have to disable the combination check
+    #     """
+    #     for product in self:
+    #         product.combination_indices = str(product.id)
+
 
 class WooProductProduct(models.Model):
     """Woocommerce Product Product"""
