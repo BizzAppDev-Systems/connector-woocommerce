@@ -44,7 +44,16 @@ class WooSaleOrderImportMapper(Component):
             woo_tax = binder.to_internal(tax.get("id"))
             if woo_tax and woo_tax.odoo_id:
                 tax_records.append(woo_tax.odoo_id.id)
-
+            if woo_tax and not woo_tax.odoo_id:
+                search_conditions = [
+                    ("amount", "=", woo_tax.woo_rate),
+                    ("type_tax_use", "in", ["sale", "none"]),
+                    ("company_id", "=", self.backend_record.company_id.id),
+                ]
+                tax = self.env["account.tax"].search(search_conditions, limit=1)
+                if not tax:
+                    continue
+                tax_records.append(tax.id)
         vals = {
             "product_id": product.id,
             "price_unit": price,
