@@ -226,14 +226,6 @@ class WooProductProductImportMapper(Component):
     @mapping
     def detailed_type(self, record):
         """Mapping for detailed_type"""
-        # product_type = record.get("type")
-        # return {
-        #     "detailed_type": "product"
-        #     if product_type == "variation"
-        #     else "consu"
-        #     if product_type == "grouped"
-        #     else self.backend_record.default_product_type
-        # }
         detailed_type = self.backend_record.default_product_type
         if record.get("manage_stock"):
             detailed_type = "product"
@@ -330,7 +322,8 @@ class WooProductProductImportMapper(Component):
     @mapping
     def stock_management(self, record):
         """Mapping for Stock Management"""
-        return {"stock_management": record.get("manage_stock")}
+        manage_stock = record.get("manage_stock")
+        return {"stock_management": True} if manage_stock is True else {}
 
     @mapping
     def woo_product_qty(self, record):

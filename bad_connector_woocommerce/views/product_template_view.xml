@@ -6,6 +6,21 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view" />
         <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <header>
+                    <field name="woo_bind_ids" invisible="1" />
+                    <field name="stock_manage_template" invisible="1" />
+                    <field name="backend_stock_manage" invisible="1" />
+                    <button
+                        name="update_stock_qty"
+                        title="Update stock inventory To Woocommerce."
+                        type="object"
+                        class="oe_highlight"
+                        string="Update Stock Inventory"
+                        attrs="{'invisible': ['|','|',('woo_bind_ids', '=', []),('stock_manage_template','=',False),('backend_stock_manage','=',False)]}"
+                    />
+                </header>
+            </xpath>
             <xpath expr="//header" position="after">
                 <div
                     class="alert alert-danger"
@@ -58,6 +73,10 @@
                                 <group>
                                     <field name="backend_id" widget="selection" />
                                     <field name="external_id" />
+                                </group>
+                                <group>
+                                    <field name="woo_product_qty" />
+                                    <field name="stock_management" />
                                 </group>
                                 <label
                                     for="woo_attribute_ids"

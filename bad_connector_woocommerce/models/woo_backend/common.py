@@ -514,6 +514,11 @@ class WooBackend(models.Model):
         domain = self._domain_for_update_product_stock_qty()
         woo_products = woo_product_obj.search(domain)
         woo_products.recompute_woo_qty()
+
+        woo_product_tmpl_obj = self.env["woo.product.template"]
+        domain = self._domain_for_update_product_stock_qty()
+        woo_products = woo_product_tmpl_obj.search(domain)
+        woo_products.update_woo_product_qty()
         return True
 
     @api.model

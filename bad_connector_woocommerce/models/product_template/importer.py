@@ -158,6 +158,21 @@ class WooProductTemplateImportMapper(Component):
 
         return attribute_lines
 
+    @mapping
+    def stock_management(self, record):
+        """Mapping for Stock Management"""
+        manage_stock = record.get("manage_stock")
+        return {"stock_management": True} if manage_stock is True else {}
+
+    @mapping
+    def woo_product_qty(self, record):
+        """Mapping for WooCommerce Product qty"""
+        return (
+            {"woo_product_qty": record.get("stock_quantity")}
+            if record.get("stock_quantity")
+            else {}
+        )
+
     def finalize(self, map_record, values):
         """Override the finalize method to add attribute lines to the product."""
         attribute_lines = self._get_attribute_lines(map_record)

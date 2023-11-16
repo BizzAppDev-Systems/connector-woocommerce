@@ -1,8 +1,9 @@
 import logging
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 from odoo.addons.component.core import Component
+from odoo.addons.component_event import skip_if
 
 _logger = logging.getLogger(__name__)
 
@@ -18,6 +19,41 @@ class ProductTemplate(models.Model):
     )
 
     variant_different = fields.Boolean()
+    stock_manage_template = fields.Boolean(
+        compute="_compute_stock_manage_template", store=True
+    )
+    backend_stock_manage = fields.Boolean(
+        compute="_compute_backend_stock_manage", store=True
+    )
+
+    @api.depends(
+        "woo_bind_ids",
+        "woo_bind_ids.stock_management",
+    )
+    def _compute_stock_manage_template(self):
+        """Compute the stock management status for each WooCommerce Product."""
+        for template in self:
+            template.stock_manage_template = any(
+                template.woo_bind_ids.mapped("stock_management")
+            )
+
+    @api.depends(
+        "woo_bind_ids",
+        "woo_bind_ids.backend_id.update_stock_inventory",
+    )
+    def _compute_backend_stock_manage(self):
+        for template in self:
+            template.backend_stock_manage = (
+                self.woo_bind_ids.backend_id.update_stock_inventory
+            )
+
+    def update_stock_qty(self):
+        """
+        Update the stock quantity for template in
+        the WooCommerce integration.
+        """
+        for binding in self.woo_bind_ids:
+            binding.update_woo_product_qty()
 
 
 class WooProductTemplate(models.Model):
@@ -35,7 +71,6 @@ class WooProductTemplate(models.Model):
         required=True,
         ondelete="restrict",
     )
-
     woo_attribute_ids = fields.Many2many(
         comodel_name="woo.product.attribute",
         string="WooCommerce Product Attribute",
@@ -46,6 +81,22 @@ class WooProductTemplate(models.Model):
         string="WooCommerce Product Attribute Value",
         ondelete="restrict",
     )
+    stock_management = fields.Boolean(readonly=True)
+    woo_product_qty = fields.Float(
+        string="Computed Quantity",
+        help="""Last computed quantity to send " "on WooCommerce.""",
+    )
+
+    def update_woo_product_qty(self):
+        """
+        Update woo_product_qty with the total on-hand variant quantities
+        for products with stock_management set to true.
+        """
+        variants_with_stock_management = self.product_variant_ids.filtered(
+            lambda variant: variant.woo_bind_ids.filtered("stock_management")
+        )
+        total_qty = sum(variants_with_stock_management.mapped("qty_available"))
+        self.write({"woo_product_qty": total_qty})
 
 
 class WooProductTemplateAdapter(Component):
@@ -62,3 +113,33 @@ class WooProductTemplateAdapter(Component):
             "attributes",
         ),
     }
+
+
+class WooBindingProductTemplateListener(Component):
+    _name = "woo.binding.product.template.listener"
+    _inherit = "base.connector.listener"
+    _apply_on = ["woo.product.template"]
+
+    # fields which should not trigger an export of the products
+    # but an export of their inventory
+    INVENTORY_FIELDS = (
+        "stock_management",
+        "woo_product_qty",
+    )
+
+    @skip_if(lambda self, record, *args, **kwargs: self.no_connector_export(record))
+    def on_record_write(self, record, fields=None):
+        job_options = {}
+        inventory_fields = list(set(fields).intersection(self.INVENTORY_FIELDS))
+        if inventory_fields:
+            if "description" not in job_options:
+                description = record.export_record.__doc__
+                job_options[
+                    "description"
+                ] = record.backend_id.get_queue_job_description(
+                    description, record._description
+                )
+            job_options["priority"] = 20
+            record.with_delay(**job_options or {}).export_record(
+                backend=record.backend_id, record=record, fields=inventory_fields
+            )
