@@ -18,7 +18,7 @@ class WooProductProductExporterMapper(Component):
 
     @mapping
     def binding_template(self, record):
-        """Mapping for stock_quantity"""
+        """Mapping for binding_template"""
         tmpl_external = record.product_tmpl_id.woo_bind_ids
         return (
             {"binding_template": tmpl_external[0].external_id} if tmpl_external else {}

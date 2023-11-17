@@ -94,6 +94,7 @@ class WooProductTemplateImportMapper(Component):
 
     @mapping
     def variant_different(self, record):
+        """Mapping for variant_different"""
         attributes = record.get("attributes", [])
         variation_count_from_payload = 1
         for attribute in attributes:

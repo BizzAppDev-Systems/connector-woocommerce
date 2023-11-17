@@ -3,7 +3,6 @@ import logging
 from odoo import api, fields, models
 
 from odoo.addons.component.core import Component
-from odoo.addons.component_event import skip_if
 
 _logger = logging.getLogger(__name__)
 
@@ -113,33 +112,3 @@ class WooProductTemplateAdapter(Component):
             "attributes",
         ),
     }
-
-
-class WooBindingProductTemplateListener(Component):
-    _name = "woo.binding.product.template.listener"
-    _inherit = "base.connector.listener"
-    _apply_on = ["woo.product.template"]
-
-    # fields which should not trigger an export of the products
-    # but an export of their inventory
-    INVENTORY_FIELDS = (
-        "stock_management",
-        "woo_product_qty",
-    )
-
-    @skip_if(lambda self, record, *args, **kwargs: self.no_connector_export(record))
-    def on_record_write(self, record, fields=None):
-        job_options = {}
-        inventory_fields = list(set(fields).intersection(self.INVENTORY_FIELDS))
-        if inventory_fields:
-            if "description" not in job_options:
-                description = record.export_record.__doc__
-                job_options[
-                    "description"
-                ] = record.backend_id.get_queue_job_description(
-                    description, record._description
-                )
-            job_options["priority"] = 20
-            record.with_delay(**job_options or {}).export_record(
-                backend=record.backend_id, record=record, fields=inventory_fields
-            )

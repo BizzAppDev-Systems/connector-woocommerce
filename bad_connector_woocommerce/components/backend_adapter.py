@@ -214,7 +214,7 @@ class GenericAdapter(AbstractComponent):
                 arguments=filters,
                 http_method="get",
             )
-            result["data"].append(setting_stock_result.get("data"))
+            result["data"].append(setting_stock_result.get("data", []))
         return result
 
     def read(self, external_id=None, attributes=None):

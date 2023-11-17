@@ -21,11 +21,11 @@ class MrpBom(models.Model):
 
         existing_bom = self.search([("product_tmpl_id", "=", product_template.id)])
         binder = env.binder_for("woo.product.product")
-        product_records = []
 
-        for product in env.remote_record.get("grouped_products", []):
-            product = binder.to_internal(product, unwrap=True)
-            product_records.extend([(0, 0, {"product_id": product.id})])
+        product_records = [
+            (0, 0, {"product_id": binder.to_internal(product, unwrap=True).id})
+            for product in env.remote_record.get("grouped_products", [])
+        ]
 
         if not existing_bom:
             self.create(

@@ -278,7 +278,7 @@ class WooProductProductAdapter(Component):
 class WooBindingProductListener(Component):
     _name = "woo.binding.product.product.listener"
     _inherit = "base.connector.listener"
-    _apply_on = ["woo.product.product"]
+    _apply_on = ["woo.product.product", "woo.product.template"]
 
     # fields which should not trigger an export of the products
     # but an export of their inventory
@@ -289,6 +289,12 @@ class WooBindingProductListener(Component):
 
     @skip_if(lambda self, record, *args, **kwargs: self.no_connector_export(record))
     def on_record_write(self, record, fields=None):
+        """
+        This method is triggered when a record of the 'woo.product.product' or
+        'woo.product.template' models is written.
+        It handles the export of product information or inventory updates based
+        on the changed fields.
+        """
         job_options = {}
         inventory_fields = list(set(fields).intersection(self.INVENTORY_FIELDS))
         if inventory_fields:

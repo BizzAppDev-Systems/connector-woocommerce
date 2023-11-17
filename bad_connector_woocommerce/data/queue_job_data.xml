@@ -354,5 +354,30 @@
             <field name="method">export_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
+
+        <!--Stock Update Export Batch Template related action queue job -->
+        <record
+            id="job_function_woo_stock_inventory_template_export_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_template"
+            />
+            <field name="method">export_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!--Stock Inventory Export Record Template related action queue job -->
+        <record
+            id="job_function_woo_product_template_stock_export_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_template"
+            />
+            <field name="method">export_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
     </data>
 </odoo>

@@ -14,7 +14,7 @@
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
 * Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" and "Product Quantity" data between connected Woocommerce and Odoo.
 * Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata", "Import Taxes" and "Update Stock Inventory" at backend level.
-* Required field to Import the Products,Product Attributes,Taxes,Product Tags and Product Category are Location,Client Id,Client Secret,Product Category.
+* Required field to Import the Partners,Products,Product Attributes,Taxes,Product Tags,Product Category and Sale Orders are Location,Client Id,Client Secret,Product Category.
 
 **Author**
 **********
@@ -56,7 +56,7 @@
     - Added 'Product Category' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Category for imported WooCommerce Product.
     - Added 'Default Product Type' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Type for imported WooCommerce Product.
     - Added 'WooCommerce Product Image URL' which is located at Product Binding level, designed to store Other Product Images which will store in woo.product.image.url object instead of initial Image.
-    - By Clicking the "Import Products" button different product type such as Simple, Variable, Grouped and Templates will get imported from woocommerce in odoo.
+    - By Clicking the "Import Products" button different product type such as Simple, Variable, and Grouped will get imported from woocommerce in odoo.
 
 * Product Attributes Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
