@@ -1,1 +1,1 @@
-vcrpy>=1.0
+vcrpy
