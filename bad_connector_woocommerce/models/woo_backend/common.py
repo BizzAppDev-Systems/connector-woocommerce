@@ -344,13 +344,6 @@ class WooBackend(models.Model):
         """Import Products from backend"""
         for backend in self:
             backend._sync_from_date(
-                model="woo.product.template",
-                from_date_field="import_products_tmpl_from_date",
-                priority=5,
-                export=False,
-                filters={"type": "variable"},
-            )
-            backend._sync_from_date(
                 model="woo.product.product",
                 from_date_field="import_products_from_date",
                 priority=5,
@@ -528,3 +521,21 @@ class WooBackend(models.Model):
         """Cron for Update Stock qty"""
         backend_ids = self.search(domain or [])
         backend_ids.update_product_stock_qty()
+
+    def import_product_templates(self):
+        """Import Product templates from backend"""
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.product.template",
+                from_date_field="import_products_tmpl_from_date",
+                priority=5,
+                export=False,
+                filters={"type": "variable"},
+            )
+        return True
+
+    @api.model
+    def cron_import_product_templates(self, domain=None):
+        """Cron for import_product_templates"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_product_templates()

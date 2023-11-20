@@ -234,9 +234,41 @@
                                 <group>
                                     <group>
                                         <label
+                                            for="import_product_templates"
+                                            string="Import Product Templates"
+                                            style="font-weight:bold; white-space: nowrap;"
+                                            class="oe_inline"
+                                        />
+                                        <field
+                                            name="import_products_tmpl_from_date"
+                                            nolabel="1"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="import_product_templates"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Import Product Templates"
+                                            />
+                                        </div>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <label
                                             for="import_products"
                                             string="Import Products"
                                             style="font-weight:bold; white-space: nowrap;"
+                                            class="oe_inline"
+                                        />
+                                        <field
+                                            name="import_products_from_date"
+                                            nolabel="1"
                                             class="oe_inline"
                                         />
                                     </group>
@@ -251,14 +283,6 @@
                                                 string="Import Products"
                                             />
                                         </div>
-                                    </group>
-
-                                    <group
-                                        class="o_column"
-                                        style="white-space: nowrap;"
-                                    >
-                                        <field name="import_products_from_date" />
-                                        <field name="import_products_tmpl_from_date" />
                                     </group>
                                 </group>
                                 <group>
