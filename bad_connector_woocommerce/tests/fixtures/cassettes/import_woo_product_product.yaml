@@ -928,7 +928,18 @@ interactions:
                       "alt": ""
                   }
               ],
-              "attributes": [],
+              "attributes": [
+                  {
+                    "id": 0,
+                    "name": "Design",
+                    "position": 1,
+                    "visible": true,
+                    "variation": false,
+                    "options": [
+                        "Simple",
+                        "Hard"
+                    ]
+                }],
               "default_attributes": [],
               "variations": [
                   162
