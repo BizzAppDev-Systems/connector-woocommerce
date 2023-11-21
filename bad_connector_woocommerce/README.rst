@@ -168,6 +168,7 @@
   - Added Mapping for State in Customers.
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
+* Test case
 
 * Import of Stock Manage Settings:
   - Enable the import functionality in bad_connector_woocommerce to transfer Stock Manage Settings from WooCommerce to Odoo.

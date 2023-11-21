@@ -21,6 +21,7 @@ class TestImportProduct(BaseWooTestCase):
     def test_import_product_product(self):
         """Test Assertions for Product"""
         external_id = "50"
+        quantity_to_add = 10
         with recorder.use_cassette("import_woo_product_product"):
             self.env["woo.product.product"].import_record(
                 external_id=external_id, backend=self.backend
@@ -85,9 +86,45 @@ class TestImportProduct(BaseWooTestCase):
         )
         self.assertEqual(
             product1.detailed_type,
+            "product",
+            "Product Type is not matched with response",
+        )
+        self.assertTrue(
+            product1.stock_management,
+            "Stock Management is not matched with response",
+        )
+        self.assertEqual(
+            product1.woo_product_qty,
+            2000,
+            "Product Quantity is not matched with response",
+        )
+        self.assertEqual(
+            product1.detailed_type,
             self.backend.default_product_type,
             "Product Type is not matched with response.",
         )
+        product2 = self.env["product.product"].search(
+            [("woo_bind_ids.external_id", "=", external_id)], limit=1
+        )
+        stock_quant = (
+            self.env["stock.quant"]
+            .with_context(inventory_mode=True)
+            .create(
+                {
+                    "product_id": product2.id,
+                    "inventory_quantity": quantity_to_add,
+                    "location_id": self.backend.warehouse_id.lot_stock_id.id,
+                }
+            )
+        )
+        stock_quant.action_apply_inventory()
+        with recorder.use_cassette("export_stock_qty"):
+            product2.update_stock_qty()
+            self.assertEqual(
+                product2.woo_bind_ids.woo_product_qty,
+                10,
+                "Product is Not Exported in WooCommerce.",
+            )
 
     def test_import_product_product_grouped_type(self):
         """Test Assertions for Grouped type Product"""
