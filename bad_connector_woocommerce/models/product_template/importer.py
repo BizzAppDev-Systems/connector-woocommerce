@@ -97,15 +97,20 @@ class WooProductTemplateImportMapper(Component):
         """Mapping for variant_different"""
         attributes = record.get("attributes", [])
         variation_count_from_payload = 1
+
         for attribute in attributes:
-            if attribute.get("variation"):
-                options = attribute.get("options")
-                if options:
-                    variation_count_from_payload *= len(options)
-        if variation_count_from_payload == len(record.get("variations", [])):
-            return {"variant_different": False}
-        else:
-            return {"variant_different": True}
+            if not attribute.get("variation"):
+                continue
+            options = attribute.get("options")
+            if not options:
+                continue
+            variation_count_from_payload *= len(options)
+
+        return (
+            {"variant_different": True}
+            if variation_count_from_payload != len(record.get("variations", []))
+            else {"variant_different": False}
+        )
 
     def _prepare_attribute_line(self, attribute, value_ids):
         """Prepare an attribute line."""

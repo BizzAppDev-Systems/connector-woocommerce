@@ -30,7 +30,7 @@ class ProductTemplate(models.Model):
         "woo_bind_ids.stock_management",
     )
     def _compute_stock_manage_template(self):
-        """Compute the stock management status for each WooCommerce Product."""
+        """Compute the stock management status for each WooCommerce Product Template."""
         for template in self:
             template.stock_manage_template = any(
                 template.woo_bind_ids.mapped("stock_management")
@@ -41,6 +41,7 @@ class ProductTemplate(models.Model):
         "woo_bind_ids.backend_id.update_stock_inventory",
     )
     def _compute_backend_stock_manage(self):
+        """Compute the value of backend_stock_manage for each product template."""
         for template in self:
             template.backend_stock_manage = (
                 self.woo_bind_ids.backend_id.update_stock_inventory
@@ -91,10 +92,11 @@ class WooProductTemplate(models.Model):
         Update woo_product_qty with the total on-hand variant quantities
         for products with stock_management set to true.
         """
-        variants_with_stock_management = self.product_variant_ids.filtered(
-            lambda variant: variant.woo_bind_ids.filtered("stock_management")
+        total_qty = sum(
+            self.product_variant_ids.filtered(
+                lambda variant: variant.woo_bind_ids.stock_management
+            ).mapped("qty_available")
         )
-        total_qty = sum(variants_with_stock_management.mapped("qty_available"))
         self.write({"woo_product_qty": total_qty})
 
 

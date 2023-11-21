@@ -226,10 +226,11 @@ class WooProductProductImportMapper(Component):
     @mapping
     def detailed_type(self, record):
         """Mapping for detailed_type"""
-        detailed_type = self.backend_record.default_product_type
-        if record.get("manage_stock"):
-            detailed_type = "product"
-        return {"detailed_type": detailed_type}
+        return {
+            "detailed_type": "product"
+            if record.get("manage_stock")
+            else self.backend_record.default_product_type
+        }
 
     @mapping
     def woo_attribute_ids(self, record):
@@ -370,7 +371,7 @@ class WooProductProductImporter(Component):
 
     def _import_dependencies(self):
         """
-        Override method to import dependencies for WooCommerce products.
+        Inherited method :: to import dependencies for WooCommerce products.
         It retrieves grouped products from the remote record.
         """
         record = self.remote_record.get("grouped_products", [])

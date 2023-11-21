@@ -233,8 +233,8 @@ class GenericAdapter(AbstractComponent):
         """Update records on the external system"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
         if data.get("binding_template", False):
-            resource_path = "{}/{}/{}/{}".format(
-                self._woo_model, data.get("binding_template"), "variations", external_id
+            resource_path = "{}/{}/variations/{}".format(
+                self._woo_model, data.get("binding_template"), external_id
             )
         result = self._call(resource_path, data, http_method="put")
         return result
