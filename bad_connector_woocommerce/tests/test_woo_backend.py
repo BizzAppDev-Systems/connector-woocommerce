@@ -107,3 +107,5 @@ class BaseWooTestCase(TransactionComponentCase):
         self.backend.cron_import_sale_orders()
         self.backend.cron_import_metadata()
         self.backend.cron_export_sale_order_status()
+        self.backend.cron_update_stock_qty()
+        self.backend.cron_import_product_templates()
