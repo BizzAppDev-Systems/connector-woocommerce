@@ -934,7 +934,7 @@ interactions:
                     "name": "Design",
                     "position": 1,
                     "visible": true,
-                    "variation": false,
+                    "variation": true,
                     "options": [
                         "Simple",
                         "Hard"
