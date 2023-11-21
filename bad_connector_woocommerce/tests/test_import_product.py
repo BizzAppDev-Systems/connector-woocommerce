@@ -165,14 +165,22 @@ class TestImportProduct(BaseWooTestCase):
         product1 = self.env["woo.product.template"].search(
             [("external_id", "=", external_id)], limit=1
         )
-        product1.write({"type": "product"})
-        self.assertEqual(len(product1), 1)
+
+        variant_data = {
+            "name": "Variant 1",
+            "external_id": 15,
+            "backend_id": product1.backend_id.id,
+            "stock_management": True,
+            "detailed_type": product1.detailed_type,
+            "product_tmpl_id": product1.odoo_id.id,
+        }
+        variant = self.env["woo.product.product"].create(variant_data)
         stock_quant = (
             self.env["stock.quant"]
             .with_context(inventory_mode=True)
             .create(
                 {
-                    "product_id": product1.product_variant_id.id,
+                    "product_id": variant.odoo_id.id,
                     "inventory_quantity": quantity_to_add,
                     "location_id": self.backend.warehouse_id.lot_stock_id.id,
                 }
@@ -183,6 +191,6 @@ class TestImportProduct(BaseWooTestCase):
             product1.odoo_id.update_stock_qty()
             self.assertEqual(
                 product1.woo_product_qty,
-                0.0,
+                10,
                 "Product is Not Exported in WooCommerce.",
             )
