@@ -3,7 +3,7 @@ import logging
 from odoo import _
 
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.components.mapper import mapping, only_create
 from odoo.addons.connector.exception import MappingError
 
 # pylint: disable=W7950
@@ -177,6 +177,16 @@ class WooProductTemplateImportMapper(Component):
             if record.get("stock_quantity")
             else {}
         )
+
+    @only_create
+    @mapping
+    def detailed_type(self, record):
+        """Mapping for detailed_type"""
+        return {
+            "detailed_type": "product"
+            if record.get("manage_stock")
+            else self.backend_record.default_product_type
+        }
 
     def finalize(self, map_record, values):
         """Override the finalize method to add attribute lines to the product."""
