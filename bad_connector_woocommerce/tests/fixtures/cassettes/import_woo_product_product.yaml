@@ -751,7 +751,7 @@ interactions:
               "button_text": "",
               "tax_status": "taxable",
               "tax_class": "",
-              "manage_stock": false,
+              "manage_stock": true,
               "stock_quantity": null,
               "backorders": "no",
               "backorders_allowed": false,
