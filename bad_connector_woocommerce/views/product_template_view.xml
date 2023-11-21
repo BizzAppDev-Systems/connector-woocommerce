@@ -6,6 +6,46 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view" />
         <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <header>
+                    <field name="woo_bind_ids" invisible="1" />
+                    <field name="stock_manage_template" invisible="1" />
+                    <field name="backend_stock_manage" invisible="1" />
+                    <button
+                        name="update_stock_qty"
+                        title="Update stock inventory To Woocommerce."
+                        type="object"
+                        class="oe_highlight"
+                        string="Update Stock Inventory"
+                        attrs="{'invisible': ['|','|',('woo_bind_ids', '=', []),('stock_manage_template','=',False),('backend_stock_manage','=',False)]}"
+                    />
+                </header>
+            </xpath>
+            <xpath expr="//header" position="after">
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                    attrs="{'invisible': [('variant_different', '=', False)]}"
+                >
+                    <div class="o_row">
+                        <div
+                            class="col-1 text-center"
+                            style="padding-left: unset;padding-right: unset;"
+                        >
+                            <span style="font-size:20px;">
+                                <i
+                                    title="Variant Different"
+                                    class="fa fa-exclamation-triangle"
+                                    style="font-size:20px;"
+                                />
+                                The Variants are not properly created for this product
+                                in Woocommerce.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <field name="variant_different" invisible="1" />
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page
                     string="WooCommerce Connector"
@@ -34,6 +74,33 @@
                                     <field name="backend_id" widget="selection" />
                                     <field name="external_id" />
                                 </group>
+                                <group>
+                                    <field name="woo_product_qty" />
+                                    <field name="stock_management" />
+                                </group>
+                                <label
+                                    for="woo_attribute_ids"
+                                    string="WooCommerce Attributes"
+                                />
+                                <field name="woo_attribute_ids">
+                                    <tree>
+                                        <field name="name" />
+                                        <field
+                                            name="value_ids"
+                                            widget="many2many_tags"
+                                        />
+                                    </tree>
+                                </field>
+                                <label
+                                    for="woo_product_attribute_value_ids"
+                                    string="WooCommerce Product Attribute Values"
+                                />
+                                <field name="woo_product_attribute_value_ids">
+                                    <tree>
+                                        <field name="name" />
+                                        <field name="attribute_id" />
+                                    </tree>
+                                </field>
                                 <group>
                                     <field name="woo_data" />
                                 </group>

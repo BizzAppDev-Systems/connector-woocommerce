@@ -73,14 +73,6 @@ interactions:
               "images": [],
               "attributes": [
                   {
-                    "id": 1,
-                    "name": "colour",
-                    "position": 0,
-                    "visible": true,
-                    "variation": false,
-                    "options": []
-                },
-                  {
                     "id": 0,
                     "name": "Design",
                     "position": 1,

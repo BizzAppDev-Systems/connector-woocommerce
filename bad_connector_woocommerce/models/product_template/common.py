@@ -1,6 +1,6 @@
 import logging
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 from odoo.addons.component.core import Component
 
@@ -16,6 +16,44 @@ class ProductTemplate(models.Model):
         string="WooCommerce Bindings",
         copy=False,
     )
+
+    variant_different = fields.Boolean()
+    stock_manage_template = fields.Boolean(
+        compute="_compute_stock_manage_template", store=True
+    )
+    backend_stock_manage = fields.Boolean(
+        compute="_compute_backend_stock_manage", store=True
+    )
+
+    @api.depends(
+        "woo_bind_ids",
+        "woo_bind_ids.stock_management",
+    )
+    def _compute_stock_manage_template(self):
+        """Compute the stock management status for each WooCommerce Product Template."""
+        for template in self:
+            template.stock_manage_template = any(
+                template.woo_bind_ids.mapped("stock_management")
+            )
+
+    @api.depends(
+        "woo_bind_ids",
+        "woo_bind_ids.backend_id.update_stock_inventory",
+    )
+    def _compute_backend_stock_manage(self):
+        """Compute the value of backend_stock_manage for each product template."""
+        for template in self:
+            template.backend_stock_manage = (
+                self.woo_bind_ids.backend_id.update_stock_inventory
+            )
+
+    def update_stock_qty(self):
+        """
+        Update the stock quantity for template in
+        the WooCommerce integration.
+        """
+        for binding in self.woo_bind_ids:
+            binding.update_woo_product_qty()
 
 
 class WooProductTemplate(models.Model):
@@ -33,6 +71,33 @@ class WooProductTemplate(models.Model):
         required=True,
         ondelete="restrict",
     )
+    woo_attribute_ids = fields.Many2many(
+        comodel_name="woo.product.attribute",
+        string="WooCommerce Product Attribute",
+        ondelete="restrict",
+    )
+    woo_product_attribute_value_ids = fields.Many2many(
+        comodel_name="woo.product.attribute.value",
+        string="WooCommerce Product Attribute Value",
+        ondelete="restrict",
+    )
+    stock_management = fields.Boolean(readonly=True)
+    woo_product_qty = fields.Float(
+        string="Computed Quantity",
+        help="""Last computed quantity to send " "on WooCommerce.""",
+    )
+
+    def update_woo_product_qty(self):
+        """
+        Update woo_product_qty with the total on-hand variant quantities
+        for products with stock_management set to true.
+        """
+        total_qty = sum(
+            self.product_variant_ids.filtered(
+                lambda variant: variant.woo_bind_ids.stock_management
+            ).mapped("qty_available")
+        )
+        self.write({"woo_product_qty": total_qty})
 
 
 class WooProductTemplateAdapter(Component):
@@ -43,3 +108,9 @@ class WooProductTemplateAdapter(Component):
     _apply_on = "woo.product.template"
     _woo_model = "products"
     _woo_ext_id_key = "id"
+    _model_dependencies = {
+        (
+            "woo.product.attribute",
+            "attributes",
+        ),
+    }

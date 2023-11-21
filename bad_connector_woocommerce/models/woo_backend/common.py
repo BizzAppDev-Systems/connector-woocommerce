@@ -19,6 +19,18 @@ class WooBackend(models.Model):
     _description = "WooCommerce Backend"
     _inherit = ["mail.thread", "connector.backend"]
 
+    @api.model
+    def _get_stock_field_id(self):
+        """
+        Get the ID of the 'virtual_available' field in the 'product.product'
+        model.
+        """
+        field = self.env["ir.model.fields"].search(
+            [("model", "=", "product.product"), ("name", "=", "virtual_available")],
+            limit=1,
+        )
+        return field
+
     name = fields.Char(
         string="Name", required=True, help="Enter the name of the WooCommerce backend."
     )
@@ -80,7 +92,18 @@ class WooBackend(models.Model):
     )
     import_orders_from_date = fields.Datetime(string="Import Orders from date")
     order_prefix = fields.Char(string="Sale Order Prefix", default="WOO_")
-    import_products_from_date = fields.Datetime(string="Import products from date")
+    import_products_from_date = fields.Datetime(
+        string="Import products from date",
+        help="""Specify the date and time to initiate the process of import for
+        Basic, Grouped, and Variant type products.Only products modified or added
+        after this date will be considered in the import.""",
+    )
+    import_products_tmpl_from_date = fields.Datetime(
+        string="Import product Templates from date",
+        help="""Specify the date and time to initiate the process of import for
+        Product Templates.This includes Variable type products.Only templates
+        modified or added after this date will be considered in the import.""",
+    )
     without_sku = fields.Boolean(
         string="Allow Product without SKU",
         help="""If this Boolean is set to True, the system will import products
@@ -137,6 +160,44 @@ class WooBackend(models.Model):
         domain=[("type", "=", "service")],
         help="Select the default fee product for imported orders.",
     )
+    update_stock_inventory = fields.Boolean()
+    warehouse_id = fields.Many2one(
+        comodel_name="stock.warehouse",
+        string="Warehouse",
+        help="Warehouse used to compute the " "stock quantities.",
+    )
+    product_stock_field_id = fields.Many2one(
+        comodel_name="ir.model.fields",
+        string="Product Stock Field",
+        default=_get_stock_field_id,
+        domain="[('model', 'in', ['product.product', 'product.template']),"
+        " ('ttype', '=', 'float')]",
+        help="Choose the field of the product which will be used for "
+        "stock inventory updates.\nIf empty, Quantity Available "
+        "is used.",
+    )
+    woo_setting_id = fields.Many2one(comodel_name="woo.settings")
+    stock_update = fields.Boolean(related="woo_setting_id.stock_update")
+    recompute_qty_step = fields.Integer(string="Recompute Quantity Batch", default=1000)
+
+    @api.onchange("update_stock_inventory", "stock_update")
+    def _onchange_update_stock_inventory(self):
+        """
+        Handle the update of stock inventory based on WooCommerce settings.
+        If 'update_stock_inventory' is attempted to be set to True when 'stock_update'
+        is False, it automatically sets 'update_stock_inventory' to False and displays
+        a warning message.
+        """
+        if not self.stock_update and self.update_stock_inventory:
+            self.update_stock_inventory = False
+            return {
+                "warning": {
+                    "title": "Warning",
+                    "message": "You cannot set 'update_stock_inventory' to True "
+                    "when 'stock_update' is False in the WooCommerce settings "
+                    "level for Mange Stock.",
+                }
+            }
 
     @api.onchange("company_id")
     def _onchange_company(self):
@@ -440,3 +501,51 @@ class WooBackend(models.Model):
         """Cron for sync_metadata"""
         backend_ids = self.search(domain or [])
         backend_ids.sync_metadata()
+
+    def _domain_for_update_product_stock_qty(self):
+        """Domain to search WooCommerce product"""
+        return [
+            ("backend_id", "in", self.ids),
+            ("detailed_type", "=", "product"),
+            ("stock_management", "=", True),
+            ("backend_stock_manage", "=", True),
+        ]
+
+    def update_product_stock_qty(self):
+        """
+        Export the Stock Inventory for WooCommerce products in Odoo.
+        Update stock quantities for both individual products and product templates.
+        """
+        domain = self._domain_for_update_product_stock_qty()
+
+        woo_products = self.env["woo.product.product"].search(domain)
+        woo_products.recompute_woo_qty()
+
+        woo_products = self.env["woo.product.template"].search(domain)
+        woo_products.update_woo_product_qty()
+
+        return True
+
+    @api.model
+    def cron_update_stock_qty(self, domain=None):
+        """Cron for Update Stock qty"""
+        backend_ids = self.search(domain or [])
+        backend_ids.update_product_stock_qty()
+
+    def import_product_templates(self):
+        """Import Product templates from backend"""
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.product.template",
+                from_date_field="import_products_tmpl_from_date",
+                priority=5,
+                export=False,
+                filters={"type": "variable"},
+            )
+        return True
+
+    @api.model
+    def cron_import_product_templates(self, domain=None):
+        """Cron for import_product_templates"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_product_templates()
