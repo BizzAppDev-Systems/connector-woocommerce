@@ -106,11 +106,10 @@ class WooProductTemplateImportMapper(Component):
                 continue
             variation_count_from_payload *= len(options)
 
-        return (
-            {"variant_different": True}
-            if variation_count_from_payload != len(record.get("variations", []))
-            else {"variant_different": False}
-        )
+        return {
+            "variant_different": variation_count_from_payload
+            != len(record.get("variations", []))
+        }
 
     def _prepare_attribute_line(self, attribute, value_ids):
         """Prepare an attribute line."""
