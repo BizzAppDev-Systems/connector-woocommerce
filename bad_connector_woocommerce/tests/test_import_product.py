@@ -136,8 +136,45 @@ class TestImportProduct(BaseWooTestCase):
 
     def test_import_product_product_variant_type(self):
         """Test Assertions for Varaint type Product"""
-        external_id = "130"
+        external_id = "168"
         with recorder.use_cassette("import_woo_product_product"):
             self.env["woo.product.product"].import_record(
                 external_id=external_id, backend=self.backend
+            )
+        product1 = self.env["woo.product.product"].search(
+            [("external_id", "=", external_id)]
+        )
+        self.assertEqual(len(product1), 1)
+
+    def test_import_product_template(self):
+        """Test Assertions for Product Template"""
+        external_id = "130"
+        quantity_to_add = 10
+        with recorder.use_cassette("import_woo_product_product"):
+            self.env["woo.product.template"].import_record(
+                external_id=external_id, backend=self.backend
+            )
+        product1 = self.env["woo.product.template"].search(
+            [("external_id", "=", external_id)]
+        )
+        product1.write({"type": "product"})
+        self.assertEqual(len(product1), 1)
+        stock_quant = (
+            self.env["stock.quant"]
+            .with_context(inventory_mode=True)
+            .create(
+                {
+                    "product_id": product1.product_variant_id.id,
+                    "inventory_quantity": quantity_to_add,
+                    "location_id": self.backend.warehouse_id.lot_stock_id.id,
+                }
+            )
+        )
+        stock_quant.action_apply_inventory()
+        with recorder.use_cassette("export_stock_qty"):
+            product1.odoo_id.update_stock_qty()
+            self.assertEqual(
+                product1.woo_product_qty,
+                0.0,
+                "Product is Not Exported in WooCommerce.",
             )
