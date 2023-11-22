@@ -136,6 +136,7 @@ class TestImportProduct(BaseWooTestCase):
             [("external_id", "=", external_id)], limit=1
         )
         self.assertTrue(product1, "Woo Product is not imported!")
+        self.assertTrue(product1.bom_ids, "No BOM is created for the imported product!")
 
     def test_import_product_product_variant_type(self):
         """Test Assertions for Varaint type Product"""
@@ -189,8 +190,8 @@ class TestImportProduct(BaseWooTestCase):
         stock_quant.action_apply_inventory()
         with recorder.use_cassette("export_stock_qty"):
             product1.odoo_id.update_stock_qty()
-            self.assertEqual(
-                product1.woo_product_qty,
-                10,
-                "Product is Not Exported in WooCommerce.",
-            )
+        self.assertEqual(
+            product1.woo_product_qty,
+            10,
+            "Product is Not Exported in WooCommerce.",
+        )
