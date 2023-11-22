@@ -1,3 +1,2 @@
 # generated from manifests external_dependencies
 woocommerce
-sphinx_rtd_theme
