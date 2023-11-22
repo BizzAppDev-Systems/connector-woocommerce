@@ -202,7 +202,7 @@ class GenericAdapter(AbstractComponent):
             )
             result["data"].append(setting_stock_result.get("data"))
 
-        if "_woo_default_currency" in kwargs:
+        if kwargs.get("_woo_default_currency", False):
             default_currency_result = self._call(
                 resource_path=kwargs.get("_woo_default_currency"),
                 arguments=filters,
@@ -210,7 +210,7 @@ class GenericAdapter(AbstractComponent):
             )
             result["data"].append(default_currency_result.get("data"))
 
-        if "_woo_default_weight" in kwargs:
+        if kwargs.get("_woo_default_weight", False):
             default_weight_result = self._call(
                 resource_path=kwargs.get("_woo_default_weight"),
                 arguments=filters,
@@ -218,7 +218,7 @@ class GenericAdapter(AbstractComponent):
             )
             result["data"].append(default_weight_result.get("data"))
 
-        if "_woo_default_dimension" in kwargs:
+        if kwargs.get("_woo_default_dimension", False):
             default_dimension_result = self._call(
                 resource_path=kwargs.get("_woo_default_dimension"),
                 arguments=filters,
