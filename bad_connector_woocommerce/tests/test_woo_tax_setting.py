@@ -110,3 +110,14 @@ class TestImportCountry(BaseWooTestCase):
         self.settings_model = self.env["woo.settings"]
         settings1 = self.settings_model.search([("external_id", "=", external_id)])
         self.assertEqual(len(settings1), 1)
+
+    def test_import_stock_manage(self):
+        """Test Import Stock Manage"""
+        external_id = "woocommerce_manage_stock"
+        with recorder.use_cassette("import_woo_stock_manage"):
+            self.env["woo.settings"].import_record(
+                external_id=external_id, backend=self.backend
+            )
+        self.settings_model = self.env["woo.settings"]
+        settings1 = self.settings_model.search([("external_id", "=", external_id)])
+        self.assertEqual(len(settings1), 1)

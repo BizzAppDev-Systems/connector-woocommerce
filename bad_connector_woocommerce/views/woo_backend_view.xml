@@ -340,7 +340,8 @@
                                         string="Default Configuration"
                                     >
                                         <field name="default_limit" />
-                                        <field name="warehouse_id" />
+                                        <field name="warehouse_id" required="1" />
+
                                         <field name="currency_id" />
                                         <separator string="Customers Configuration" />
                                         <field name="without_email" />
@@ -352,8 +353,6 @@
                                         <field name="without_sku" />
                                         <field name="default_product_type" />
                                         <field name="product_categ_id" />
-                                        <field name="weight_uom_id" />
-                                        <field name="dimension_uom_id" />
                                         <field
                                             name="product_stock_field_id"
                                             widget="selection"
@@ -361,6 +360,8 @@
                                         />
                                         <field name="recompute_qty_step" />
                                         <field name="update_stock_inventory" />
+                                        <field name="weight_uom_id" />
+                                        <field name="dimension_uom_id" />
                                     </group>
                                 </group>
                                 <group
