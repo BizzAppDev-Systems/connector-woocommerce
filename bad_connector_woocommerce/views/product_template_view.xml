@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <!-- Inherit product view to add connector page and  Binding -->
-    <record id="product_product_form_view" model="ir.ui.view">
-        <field name="name">product.product.form</field>
-        <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_normal_form_view" />
+    <!-- Inherit product template view to add connector page and  Binding -->
+    <record id="product_template_form_view_woo_inherit" model="ir.ui.view">
+        <field name="name">product.template.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view" />
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <header>
                     <field name="woo_bind_ids" invisible="1" />
-                    <field name="stock_manage" invisible="1" />
+                    <field name="stock_manage_template" invisible="1" />
                     <field name="backend_stock_manage" invisible="1" />
                     <button
                         name="update_stock_qty"
@@ -17,9 +17,34 @@
                         type="object"
                         class="oe_highlight"
                         string="Update Stock Inventory"
-                        attrs="{'invisible': ['|','|',('woo_bind_ids', '=', []),('stock_manage','=',False),('backend_stock_manage','=',False)]}"
+                        attrs="{'invisible': ['|','|',('woo_bind_ids', '=', []),('stock_manage_template','=',False),('backend_stock_manage','=',False)]}"
                     />
                 </header>
+            </xpath>
+            <xpath expr="//header" position="after">
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                    attrs="{'invisible': [('variant_different', '=', False)]}"
+                >
+                    <div class="o_row">
+                        <div
+                            class="col-1 text-center"
+                            style="padding-left: unset;padding-right: unset;"
+                        >
+                            <span style="font-size:20px;">
+                                <i
+                                    title="Variant Different"
+                                    class="fa fa-exclamation-triangle"
+                                    style="font-size:20px;"
+                                />
+                                The Variants are not properly created for this product
+                                in Woocommerce.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <field name="variant_different" invisible="1" />
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page
@@ -30,7 +55,7 @@
                 >
                     <field name="woo_bind_ids" nolabel="1" readonly="1">
                         <tree
-                            string="WooCommerce Product"
+                            string="WooCommerce Product Template"
                             delete="false"
                             edit="false"
                             create="false"
@@ -39,7 +64,7 @@
                             <field name="external_id" />
                         </tree>
                         <form
-                            string="WooCommerce Product"
+                            string="WooCommerce Product Template"
                             delete="false"
                             edit="false"
                             create="false"
@@ -48,22 +73,11 @@
                                 <group>
                                     <field name="backend_id" widget="selection" />
                                     <field name="external_id" />
-                                    <field name="status" />
-                                    <field name="tax_status" />
-                                    <field name="woo_product_qty" />
                                 </group>
                                 <group>
-                                    <field name="woo_product_name" />
-                                    <field name="stock_status" />
-                                    <field name="price" />
-                                    <field name="regular_price" />
+                                    <field name="woo_product_qty" />
                                     <field name="stock_management" />
                                 </group>
-                                <label
-                                    for="woo_product_categ_ids"
-                                    string="WooCommerce Product Categories"
-                                />
-                                <field name="woo_product_categ_ids" />
                                 <label
                                     for="woo_attribute_ids"
                                     string="WooCommerce Attributes"
@@ -87,11 +101,6 @@
                                         <field name="attribute_id" />
                                     </tree>
                                 </field>
-                                <label
-                                    for="woo_product_image_url_ids"
-                                    string="WooCommerce Product Image URL"
-                                />
-                                <field name="woo_product_image_url_ids" />
                                 <group>
                                     <field name="woo_data" />
                                 </group>

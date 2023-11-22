@@ -6,6 +6,7 @@ class BaseWooTestCase(TransactionComponentCase):
         """Set up for backend"""
         super().setUp()
         self.backend_record = self.env["woo.backend"]
+        warehouse = self.env.ref("stock.warehouse0")
         self.backend = self.backend_record.create(
             {
                 "name": "Test Woo Backend",
@@ -20,9 +21,12 @@ class BaseWooTestCase(TransactionComponentCase):
                 "default_carrier_product_id": self.env.ref(
                     "product.expense_product"
                 ).id,
+                "default_product_type": "product",
                 "include_tax": False,
                 "mark_completed": True,
                 "tracking_info": True,
+                "warehouse_id": warehouse.id,
+                "update_stock_inventory": True,
             }
         )
         self.backend_data = {
@@ -36,9 +40,12 @@ class BaseWooTestCase(TransactionComponentCase):
             "client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
             "client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
             "default_carrier_product_id": self.env.ref("product.expense_product").id,
+            "default_product_type": "product",
             "include_tax": False,
             "mark_completed": True,
             "tracking_info": True,
+            "warehouse_id": warehouse.id,
+            "update_stock_inventory": True,
         }
 
     def test_backend_test_mode_true(self):
@@ -100,3 +107,5 @@ class BaseWooTestCase(TransactionComponentCase):
         self.backend.cron_import_sale_orders()
         self.backend.cron_import_metadata()
         self.backend.cron_export_sale_order_status()
+        self.backend.cron_update_stock_qty()
+        self.backend.cron_import_product_templates()

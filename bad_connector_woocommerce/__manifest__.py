@@ -11,6 +11,7 @@
         "product",
         "sale_management",
         "delivery",
+        "mrp",
     ],
     "license": "AGPL-3",
     "data": [
@@ -35,6 +36,7 @@
         "views/delivery_carrier_view.xml",
         "views/woo_settings_view.xml",
         "views/queue_job_view.xml",
+        "views/product_template_view.xml",
         "views/connector_woo_base_menu.xml",
     ],
     "images": ["static/description/banner.gif"],

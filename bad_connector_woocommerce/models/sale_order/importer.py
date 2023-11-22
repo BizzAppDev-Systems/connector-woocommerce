@@ -218,6 +218,26 @@ class WooSaleOrderImportMapper(Component):
         return {"woo_order_status": status} if status else {}
 
     @mapping
+    def woo_order_status_id(self, record):
+        """Mapping for woo_order_status_id"""
+        status = record.get("status")
+        woo_status = self.env["woo.sale.status"].search(
+            [("code", "=", status)], limit=1
+        )
+        if not woo_status:
+            woo_status = (
+                self.env["woo.sale.status"]
+                .sudo()
+                .create(
+                    {
+                        "name": status.capitalize(),
+                        "code": status,
+                    }
+                )
+            )
+        return {"woo_order_status_id": woo_status.id}
+
+    @mapping
     def update_woo_order_id(self, record):
         """Update the woo_order_id"""
         woo_order_id = record.get("id")
@@ -326,6 +346,8 @@ class WooSaleOrderLineImportMapper(Component):
             return False
         binder = self.binder_for("woo.product.product")
         product = binder.to_internal(product_rec, unwrap=True)
+        if not product:
+            product = binder.to_internal(record.get("variation_id"), unwrap=True)
         return product
 
     @mapping

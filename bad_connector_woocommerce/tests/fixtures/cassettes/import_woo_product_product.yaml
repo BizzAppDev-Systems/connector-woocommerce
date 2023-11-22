@@ -38,7 +38,8 @@ interactions:
               "button_text": "",
               "tax_status": "taxable",
               "tax_class": "",
-              "manage_stock": false,
+              "manage_stock": true,
+              "stock_quantity": 2000,
               "backorders": "no",
               "backorders_allowed": false,
               "backordered": false,
@@ -72,14 +73,6 @@ interactions:
               ],
               "images": [],
               "attributes": [
-                  {
-                    "id": 1,
-                    "name": "colour",
-                    "position": 0,
-                    "visible": true,
-                    "variation": false,
-                    "options": []
-                },
                   {
                     "id": 0,
                     "name": "Design",
@@ -351,32 +344,32 @@ interactions:
                 "number": "71",
                 "meta_data": [],
                 "line_items": [
-                    {
-                        "id": 10,
-                        "name": "Shirt",
-                        "product_id": 50,
-                        "variation_id": 0,
-                        "quantity": 3,
-                        "tax_class": "",
-                        "subtotal": "2997.00",
-                        "subtotal_tax": "569.43",
-                        "total": "2997.00",
-                        "total_tax": "569.43",
-                        "taxes": [
-                            {
-                                "id": 1,
-                                "total": "569.43",
-                                "subtotal": "569.43"
-                            }
-                        ],
-                        "meta_data": [],
-                        "sku": "cloth-sku",
-                        "price": 999,
-                        "image": {
-                            "id": "51",
-                            "src": "http://localhost:8080/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
-                        },
-                        "parent_name": null
+                  {
+                      "id": 10,
+                      "name": "Shirt",
+                      "product_id": 50,
+                      "variation_id": 0,
+                      "quantity": 3,
+                      "tax_class": "",
+                      "subtotal": "2997.00",
+                      "subtotal_tax": "569.43",
+                      "total": "2997.00",
+                      "total_tax": "569.43",
+                      "taxes": [
+                          {
+                              "id": 1,
+                              "total": "569.43",
+                              "subtotal": "569.43"
+                          }
+                      ],
+                      "meta_data": [],
+                      "sku": "cloth-sku",
+                      "price": 999,
+                      "image": {
+                          "id": "51",
+                          "src": "http://localhost:8080/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
+                      },
+                      "parent_name": null
                     }
                 ],
                 "tax_lines": [],
@@ -710,4 +703,422 @@ interactions:
         X-Frame-Options: [SAMEORIGIN]
         content-length: ["1378"]
       status: {code: 200, message: OK}
-
+  - request:
+      body: null
+      headers:
+        Accept: ["*/*"]
+        Accept-Encoding: ["gzip, deflate, br"]
+        Connection: [keep-alive]
+        User-Agent: [python-requests/2.19.1]
+      method: GET
+      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/168
+    response:
+      body:
+        {
+          string:
+            '{
+              "id": 168,
+              "name": "Clothing set",
+              "slug": "clothing-set",
+              "permalink": "https://woo-wildly-inner-cycle.wpcomstaging.com/product/clothing-set/",
+              "date_created": "2023-11-02T11:52:51",
+              "date_created_gmt": "2023-11-02T11:52:51",
+              "date_modified": "2023-11-06T07:20:25",
+              "date_modified_gmt": "2023-11-06T07:20:25",
+              "type": "grouped",
+              "status": "publish",
+              "featured": false,
+              "catalog_visibility": "visible",
+              "description": "",
+              "short_description": "",
+              "sku": "woo-clothing",
+              "price": "450",
+              "regular_price": "",
+              "sale_price": "",
+              "date_on_sale_from": null,
+              "date_on_sale_from_gmt": null,
+              "date_on_sale_to": null,
+              "date_on_sale_to_gmt": null,
+              "on_sale": true,
+              "purchasable": false,
+              "total_sales": 0,
+              "virtual": false,
+              "downloadable": false,
+              "downloads": [],
+              "download_limit": -1,
+              "download_expiry": -1,
+              "external_url": "",
+              "button_text": "",
+              "tax_status": "taxable",
+              "tax_class": "",
+              "manage_stock": true,
+              "stock_quantity": null,
+              "backorders": "no",
+              "backorders_allowed": false,
+              "backordered": false,
+              "low_stock_amount": null,
+              "sold_individually": false,
+              "weight": "",
+              "dimensions": {
+                  "length": "",
+                  "width": "",
+                  "height": ""
+              },
+              "shipping_required": true,
+              "shipping_taxable": true,
+              "shipping_class": "",
+              "shipping_class_id": 0,
+              "reviews_allowed": true,
+              "average_rating": "0.00",
+              "rating_count": 0,
+              "upsell_ids": [],
+              "cross_sell_ids": [],
+              "parent_id": 0,
+              "purchase_note": "",
+              "categories": [],
+              "tags": [],
+              "images": [],
+              "attributes": [],
+              "default_attributes": [],
+              "variations": [],
+              "grouped_products": [
+                  50
+              ],
+              "menu_order": 0,
+              "price_html": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#8377;</span>450.00</bdi></span> &ndash; <span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#8377;</span>999.00</bdi></span>",
+              "related_ids": [
+                  170,
+                  115
+              ],
+              "meta_data": [],
+              "stock_status": "instock",
+              "has_options": false,
+              "post_password": "",
+              "_links": {
+                  "self": [
+                      {
+                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/168"
+                      }
+                  ],
+                  "collection": [
+                      {
+                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products"
+                      }
+                  ]
+              }
+          }',
+        }
+      headers:
+        Cache-Control: ["no-store, no-cache, must-revalidate"]
+        Connection: [keep-alive]
+        Content-Type: [application/json; charset=utf-8]
+        Date: ["Mon, 17 jul 2023 05:38:29 GMT"]
+        Expires: ["Jan 23 23:59:59 2023 GMT"]
+        Server: [nginx/1.14.0 (Ubuntu)]
+        Set-Cookie:
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+        Transfer-Encoding: [chunked]
+        Vary: [Accept-Encoding]
+        X-Frame-Options: [SAMEORIGIN]
+        content-length: ["1378"]
+      status: {code: 200, message: OK}
+  - request:
+      body: null
+      headers:
+        Accept: ["*/*"]
+        Accept-Encoding: ["gzip, deflate, br"]
+        Connection: [keep-alive]
+        User-Agent: [python-requests/2.19.1]
+      method: GET
+      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/130
+    response:
+      body:
+        {
+          string:
+            '{
+              "id": 130,
+              "name": "V-Neck T-Shirt",
+              "slug": "v-neck-t-shirt",
+              "permalink": "https://woo-wildly-inner-cycle.wpcomstaging.com/product/v-neck-t-shirt/",
+              "date_created": "2023-10-30T13:17:14",
+              "date_created_gmt": "2023-10-30T13:17:14",
+              "date_modified": "2023-11-02T08:48:01",
+              "date_modified_gmt": "2023-11-02T08:48:01",
+              "type": "variable",
+              "status": "publish",
+              "featured": true,
+              "catalog_visibility": "visible",
+              "description": "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+              "short_description": "<p>This is a variable product.</p>\n",
+              "sku": "woo-base-t-shirt",
+              "price": "15",
+              "regular_price": "",
+              "sale_price": "",
+              "date_on_sale_from": null,
+              "date_on_sale_from_gmt": null,
+              "date_on_sale_to": null,
+              "date_on_sale_to_gmt": null,
+              "on_sale": false,
+              "purchasable": true,
+              "total_sales": 0,
+              "virtual": false,
+              "downloadable": false,
+              "downloads": [],
+              "download_limit": 0,
+              "download_expiry": 0,
+              "external_url": "",
+              "button_text": "",
+              "tax_status": "taxable",
+              "tax_class": "",
+              "manage_stock": true,
+              "stock_quantity": null,
+              "backorders": "no",
+              "backorders_allowed": false,
+              "backordered": false,
+              "low_stock_amount": null,
+              "sold_individually": false,
+              "weight": "",
+              "dimensions": {
+                  "length": "",
+                  "width": "",
+                  "height": ""
+              },
+              "shipping_required": true,
+              "shipping_taxable": true,
+              "shipping_class": "",
+              "shipping_class_id": 0,
+              "reviews_allowed": true,
+              "average_rating": "0.00",
+              "rating_count": 0,
+              "upsell_ids": [],
+              "cross_sell_ids": [],
+              "parent_id": 0,
+              "purchase_note": "",
+              "categories": [],
+              "tags": [],
+              "images": [
+                  {
+                      "id": 49,
+                      "date_created": "2023-09-25T12:57:09",
+                      "date_created_gmt": "2023-09-25T12:57:09",
+                      "date_modified": "2023-09-25T12:57:09",
+                      "date_modified_gmt": "2023-09-25T12:57:09",
+                      "src": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-content/uploads/2023/09/vneck-tee-2.jpg",
+                      "name": "vneck-tee-2.jpg",
+                      "alt": ""
+                  },
+                  {
+                      "id": 50,
+                      "date_created": "2023-09-25T12:57:33",
+                      "date_created_gmt": "2023-09-25T12:57:33",
+                      "date_modified": "2023-09-25T12:57:33",
+                      "date_modified_gmt": "2023-09-25T12:57:33",
+                      "src": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-content/uploads/2023/09/vnech-tee-green-1.jpg",
+                      "name": "vnech-tee-green-1.jpg",
+                      "alt": ""
+                  },
+                  {
+                      "id": 51,
+                      "date_created": "2023-09-25T12:57:35",
+                      "date_created_gmt": "2023-09-25T12:57:35",
+                      "date_modified": "2023-10-10T13:28:26",
+                      "date_modified_gmt": "2023-10-10T13:28:26",
+                      "src": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg",
+                      "name": "cloth.jpg",
+                      "alt": ""
+                  }
+              ],
+              "attributes": [
+                  {
+                    "id": 0,
+                    "name": "Design",
+                    "position": 1,
+                    "visible": true,
+                    "variation": true,
+                    "options": [
+                        "Simple",
+                        "Hard"
+                    ]
+                }],
+              "default_attributes": [],
+              "variations": [
+                  162
+              ],
+              "grouped_products": [],
+              "menu_order": 0,
+              "price_html": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#8377;</span>15.00</bdi></span> &ndash; <span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#8377;</span>20.00</bdi></span>",
+              "related_ids": [],
+              "meta_data": [
+                  {
+                      "id": 2703,
+                      "key": "_wpcom_is_markdown",
+                      "value": "1"
+                  }
+              ],
+              "stock_status": "instock",
+              "has_options": true,
+              "post_password": "",
+              "_links": {
+                  "self": [
+                      {
+                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/130"
+                      }
+                  ],
+                  "collection": [
+                      {
+                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products"
+                      }
+                  ]
+              }
+          }',
+        }
+      headers:
+        Cache-Control: ["no-store, no-cache, must-revalidate"]
+        Connection: [keep-alive]
+        Content-Type: [application/json; charset=utf-8]
+        Date: ["Mon, 17 jul 2023 05:38:29 GMT"]
+        Expires: ["Jan 23 23:59:59 2023 GMT"]
+        Server: [nginx/1.14.0 (Ubuntu)]
+        Set-Cookie:
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+        Transfer-Encoding: [chunked]
+        Vary: [Accept-Encoding]
+        X-Frame-Options: [SAMEORIGIN]
+        content-length: ["1378"]
+      status: {code: 200, message: OK}
+  - request:
+      body: null
+      headers:
+        Accept: ["*/*"]
+        Accept-Encoding: ["gzip, deflate, br"]
+        Connection: [keep-alive]
+        User-Agent: [python-requests/2.19.1]
+      method: GET
+      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/162
+    response:
+      body:
+        {
+          string:
+            '{
+                "id": 162,
+                "name": "V-Neck T-Shirt - Gray",
+                "slug": "v-neck-t-shirt-gray",
+                "permalink": "http://localhost:8080/product/v-neck-t-shirt/?attribute_pa_color=gray",
+                "date_created": "2023-11-01T06:11:54",
+                "date_created_gmt": "2023-11-01T06:11:54",
+                "date_modified": "2023-11-02T08:47:59",
+                "date_modified_gmt": "2023-11-02T08:47:59",
+                "type": "variation",
+                "status": "publish",
+                "featured": false,
+                "catalog_visibility": "visible",
+                "description": "",
+                "short_description": "",
+                "sku": "woo-vneck-tee-gray",
+                "price": "20",
+                "regular_price": "20",
+                "sale_price": "",
+                "date_on_sale_from": null,
+                "date_on_sale_from_gmt": null,
+                "date_on_sale_to": null,
+                "date_on_sale_to_gmt": null,
+                "on_sale": false,
+                "purchasable": true,
+                "total_sales": "0",
+                "virtual": false,
+                "downloadable": false,
+                "downloads": [],
+                "download_limit": -1,
+                "download_expiry": -1,
+                "external_url": "",
+                "button_text": "",
+                "tax_status": "taxable",
+                "tax_class": "zero-rate",
+                "manage_stock": true,
+                "stock_quantity": null,
+                "backorders": "no",
+                "backorders_allowed": false,
+                "backordered": false,
+                "low_stock_amount": null,
+                "sold_individually": false,
+                "weight": "",
+                "dimensions": {
+                    "length": "",
+                    "width": "",
+                    "height": ""
+                },
+                "shipping_required": true,
+                "shipping_taxable": true,
+                "shipping_class": "",
+                "shipping_class_id": 0,
+                "reviews_allowed": false,
+                "average_rating": "0.00",
+                "rating_count": 0,
+                "upsell_ids": [],
+                "cross_sell_ids": [],
+                "parent_id": 130,
+                "purchase_note": "",
+                "categories": [],
+                "tags": [],
+                "images": [
+                    {
+                        "id": 49,
+                        "date_created": "2023-09-25T12:57:09",
+                        "date_created_gmt": "2023-09-25T12:57:09",
+                        "date_modified": "2023-09-25T12:57:09",
+                        "date_modified_gmt": "2023-09-25T12:57:09",
+                        "src": "http://localhost:8080/wp-content/uploads/2023/09/vneck-tee-2.jpg",
+                        "name": "vneck-tee-2.jpg",
+                        "alt": ""
+                    }
+                ],
+                "attributes": [
+                    {
+                        "id": 2,
+                        "name": "Color",
+                        "option": "Gray"
+                    }
+                ],
+                "default_attributes": [],
+                "variations": [],
+                "grouped_products": [],
+                "menu_order": 1,
+                "price_html": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#8377;</span>20.00</bdi></span>",
+                "related_ids": [],
+                "meta_data": [],
+                "stock_status": "instock",
+                "has_options": false,
+                "post_password": "",
+                "_links": {
+                    "self": [
+                        {
+                            "href": "http://localhost:8080/wp-json/wc/v3/products/162"
+                        }
+                    ],
+                    "collection": [
+                        {
+                            "href": "http://localhost:8080/wp-json/wc/v3/products"
+                        }
+                    ],
+                    "up": [
+                        {
+                            "href": "http://localhost:8080/wp-json/wc/v3/products/130"
+                        }
+                    ]
+                }
+            }',
+        }
+      headers:
+        Cache-Control: ["no-store, no-cache, must-revalidate"]
+        Connection: [keep-alive]
+        Content-Type: [application/json; charset=utf-8]
+        Date: ["Mon, 17 jul 2023 05:38:29 GMT"]
+        Expires: ["Jan 23 23:59:59 2023 GMT"]
+        Server: [nginx/1.14.0 (Ubuntu)]
+        Set-Cookie:
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+        Transfer-Encoding: [chunked]
+        Vary: [Accept-Encoding]
+        X-Frame-Options: [SAMEORIGIN]
+        content-length: ["1378"]
+      status: {code: 200, message: OK}

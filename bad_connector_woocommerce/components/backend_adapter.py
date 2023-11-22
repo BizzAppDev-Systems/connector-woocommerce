@@ -194,6 +194,27 @@ class GenericAdapter(AbstractComponent):
         result = self._call(
             resource_path=self._woo_model, arguments=filters, http_method="get"
         )
+        if kwargs.get("_woo_product_variation"):
+            variation_ids = []
+            for record in result.get("data", []):
+                if record.get("type") == "variable":
+                    variation_ids.extend(record.get("variations", []))
+            for variation_id in variation_ids:
+                variation_products = self._call(
+                    resource_path=kwargs.get("_woo_product_variation").format(
+                        product_id=variation_id
+                    ),
+                    arguments=filters,
+                    http_method="get",
+                )
+                result["data"].append(variation_products.get("data", []))
+        if kwargs.get("_woo_product_stock", False):
+            setting_stock_result = self._call(
+                resource_path=kwargs.get("_woo_product_stock"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(setting_stock_result.get("data", []))
         return result
 
     def read(self, external_id=None, attributes=None):
@@ -211,5 +232,9 @@ class GenericAdapter(AbstractComponent):
     def write(self, external_id, data):
         """Update records on the external system"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
+        if data.get("template_external_id", False):
+            resource_path = "{}/{}/variations/{}".format(
+                self._woo_model, data.get("template_external_id"), external_id
+            )
         result = self._call(resource_path, data, http_method="put")
         return result
