@@ -23,4 +23,3 @@ This is the official documentation for the Odoo Woocommerce Connector.
    tax <tax.rst>
    sale_order <sale_order.rst>
    export_sale_status <export_sale_status.rst>
-
