@@ -214,7 +214,32 @@ class GenericAdapter(AbstractComponent):
                 arguments=filters,
                 http_method="get",
             )
-            result["data"].append(setting_stock_result.get("data", []))
+            result["data"].append(setting_stock_result.get("data"))
+
+        if kwargs.get("_woo_default_currency", False):
+            default_currency_result = self._call(
+                resource_path=kwargs.get("_woo_default_currency"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_currency_result.get("data"))
+
+        if kwargs.get("_woo_default_weight", False):
+            default_weight_result = self._call(
+                resource_path=kwargs.get("_woo_default_weight"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_weight_result.get("data"))
+
+        if kwargs.get("_woo_default_dimension", False):
+            default_dimension_result = self._call(
+                resource_path=kwargs.get("_woo_default_dimension"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_dimension_result.get("data"))
+
         return result
 
     def read(self, external_id=None, attributes=None):

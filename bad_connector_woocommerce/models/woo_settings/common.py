@@ -30,6 +30,10 @@ class WooSettingsAdapter(Component):
     _apply_on = "woo.settings"
     _woo_model = "settings/tax"
     _woo_product_stock = "settings/products/woocommerce_manage_stock"
+    _woo_default_currency = "settings/general/woocommerce_currency"
+    _woo_default_weight = "settings/products/woocommerce_weight_unit"
+    _woo_default_dimension = "settings/products/woocommerce_dimension_unit"
+    _woo_ext_id_key = "id"
     _woo_ext_id_key = "id"
 
     def search(self, filters=None, **kwargs):
@@ -38,4 +42,7 @@ class WooSettingsAdapter(Component):
         to fetch additional data.
         """
         kwargs["_woo_product_stock"] = self._woo_product_stock
+        kwargs["_woo_default_currency"] = self._woo_default_currency
+        kwargs["_woo_default_weight"] = self._woo_default_weight
+        kwargs["_woo_default_dimension"] = self._woo_default_dimension
         return super(WooSettingsAdapter, self).search(filters, **kwargs)

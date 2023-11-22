@@ -27,4 +27,4 @@ The "IMPORT PRODUCT TAGS" button serves a crucial role in the Odoo Woocommerce C
 Next Steps
 ----------
 
-In the upcoming sections, we will explore different test cases related to importing product tags and provide detailed instructions for configuring your connector to meet your specific business needs.
+In the upcoming sections, we will explore different test cases related to importing product and provide detailed instructions for configuring your connector to meet your specific business needs.

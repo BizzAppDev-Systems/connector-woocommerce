@@ -40,4 +40,4 @@ By clicking on "IMPORT PRODUCT ATTRIBUTES" button, We can import all the Attribu
 Next Steps
 ----------
 
-In the upcoming sections, we will delve into each of the test cases related to importing product tags, providing detailed instructions and insights.
+In the upcoming sections, we will provide detailed instructions on how to use the "IMPORT PRODUCT CATAGORIES" button.

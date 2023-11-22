@@ -72,4 +72,4 @@ By switching from test mode to production mode we can mange our staging level Wo
 Next Steps
 ----------
 
-In the following sections, we will delve go through into each component of the backend architecture, including detailed instructions on setting up and configuring the connector for your specific business needs.
+In upcoming section, you will understand regarding "Sync Metadata" functionality of odoo woocommerce connector.
