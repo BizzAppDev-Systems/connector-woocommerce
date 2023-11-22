@@ -33,16 +33,9 @@ Key Features
 Getting Started
 ---------------
 
-To get started with the Odoo Woocommerce Connector, refer to the "Getting Started" section of this documentation. It will guide you through the installation, configuration, and initial setup process.
+To get started with the Odoo Woocommerce Connector, refer to the upcoming sections of this documentation. It will guide you through the installation, configuration, and initial setup process.
 
-**Note**: This documentation covers various aspects of the connector, from installation to advanced configuration and troubleshooting. Use the table of contents to navigate through different sections and topics.
-
-We hope this documentation helps you make the most of the Odoo Woocommerce Connector and streamline your business operations effectively. If you have any questions or need assistance, please refer to the provided contact information.
-
+We hope this documentation helps you make the most of the Odoo Woocommerce Connector and streamline your business operations effectively.
 By the end of this documentation, you'll have a comprehensive understanding of how the Odoo Woocommerce Connector works and how to make the most of its features.
 
-For the latest updates, release notes, and community discussions, visit our official website and forums.
-
-For support and inquiries, contact our dedicated support team.
-
-Thank you for choosing the Odoo Woocommerce Connector. We're here to help you succeed.
+**Note**: This documentation covers various aspects of the connector, from installation to advanced configuration and troubleshooting. Use the table of contents to navigate through different sections and topics.

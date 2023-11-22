@@ -14,6 +14,17 @@ Before you begin the installation process, make sure you have the following prer
 
 3. **Internet Connection**: Ensure that your Odoo instance has an active internet connection for app installation.
 
+Required Modules
+----------------
+
+1. **Connector** : We need the connector module in order to run Odoo Woocommerce Connector.
+
+* https://github.com/OCA/connector
+
+2. **Queue** : We need the queue module in order to run Odoo Woocommerce Connector.
+
+* https://github.com/OCA/queue
+
 Installation Steps
 ------------------
 
@@ -43,3 +54,4 @@ Next Steps
 ----------
 
 After installing, you can proceed to the "Backend Overview" section of this documentation to get the basic idea about connector backend it's configuration.
+
