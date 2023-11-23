@@ -61,9 +61,7 @@ class WooProductTemplateImportMapper(Component):
         for woo_attribute in record.get("attributes", []):
             woo_attribute_id = woo_attribute.get("id", 0)
             woo_attribute_id = (
-                self.env["product.product"]._get_attribute_id_format(
-                    woo_attribute, record
-                )
+                self._get_attribute_id_format(woo_attribute, record)
                 if woo_attribute_id == 0
                 else woo_attribute_id
             )
