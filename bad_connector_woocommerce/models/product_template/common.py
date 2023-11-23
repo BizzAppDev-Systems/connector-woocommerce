@@ -71,6 +71,11 @@ class WooProductTemplate(models.Model):
         required=True,
         ondelete="restrict",
     )
+    woo_product_categ_ids = fields.Many2many(
+        comodel_name="woo.product.category",
+        string="WooCommerce Product Category(Product)",
+        ondelete="restrict",
+    )
     woo_attribute_ids = fields.Many2many(
         comodel_name="woo.product.attribute",
         string="WooCommerce Product Attribute",
@@ -86,6 +91,38 @@ class WooProductTemplate(models.Model):
         string="Computed Quantity",
         help="""Last computed quantity to send " "on WooCommerce.""",
     )
+
+    status = fields.Selection(
+        [
+            ("any", "Any"),
+            ("draft", "Draft"),
+            ("pending", "Pending"),
+            ("private", "Private"),
+            ("publish", "Publish"),
+        ],
+        string="Status",
+        default="any",
+    )
+    tax_status = fields.Selection(
+        [
+            ("taxable", "Taxable"),
+            ("shipping", "Shipping"),
+            ("none", "None"),
+        ],
+        string="Tax Status",
+        default="taxable",
+    )
+    stock_status = fields.Selection(
+        [
+            ("instock", "Instock"),
+            ("outofstock", "Out Of Stock"),
+            ("onbackorder", "On Backorder"),
+        ],
+        string="Stock Status",
+        default="instock",
+    )
+    price = fields.Char()
+    regular_price = fields.Char()
 
     def update_woo_product_qty(self):
         """
@@ -110,7 +147,15 @@ class WooProductTemplateAdapter(Component):
     _woo_ext_id_key = "id"
     _model_dependencies = {
         (
+            "woo.product.category",
+            "categories",
+        ),
+        (
             "woo.product.attribute",
             "attributes",
+        ),
+        (
+            "woo.product.tag",
+            "tags",
         ),
     }
