@@ -107,7 +107,7 @@ class WooProductProductImportMapper(Component):
     """Impoter Mapper for the WooCommerce Product"""
 
     _name = "woo.product.product.import.mapper"
-    _inherit = "woo.import.mapper"
+    _inherit = "woo.product.common.mapper"
     _apply_on = "woo.product.product"
 
     @only_create
@@ -117,7 +117,6 @@ class WooProductProductImportMapper(Component):
         if record.get("type") != "variation":
             return {}
         binder = self.binder_for("woo.product.template")
-
         # Extract attributes from the WooCommerce product variant data
         attributes = record.get("attributes", [])
         attribute_dict = {attr["name"]: attr["option"] for attr in attributes}
@@ -140,36 +139,15 @@ class WooProductProductImportMapper(Component):
         return {"odoo_id": matching_variant.id} if matching_variant else {}
 
     @mapping
-    def name(self, record):
-        """Mapping for Name"""
+    def woo_product_name(self, record):
+        """Mapping for woo_product_name"""
         name = record.get("name")
         if not name:
             raise MappingError(
                 _("Product name doesn't exist for Product ID %s Please check")
                 % record.get("id")
             )
-        binder = self.binder_for("woo.product.template")
-        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
-        if template_id:
-            return {"woo_product_name": name}
-        return {"name": name, "woo_product_name": name}
-
-    @mapping
-    def list_price(self, record):
-        """Mapping product Price"""
-        return {"list_price": record.get("price")}
-
-    @mapping
-    def price(self, record):
-        """Mapping for Standard Price"""
-        price = record.get("price")
-        return {"price": price} if price else {}
-
-    @mapping
-    def regular_price(self, record):
-        """Mapping for Regular Price"""
-        regular_price = record.get("regular_price")
-        return {"regular_price": regular_price} if regular_price else {}
+        return {"woo_product_name": name}
 
     @mapping
     def default_code(self, record):
@@ -182,158 +160,11 @@ class WooProductProductImportMapper(Component):
         return {"default_code": default_code} if default_code else {}
 
     @mapping
-    def description(self, record):
-        """Mapping for description"""
-        description = record.get("description")
-        return {"description": description} if description else {}
-
-    @mapping
-    def purchase_ok(self, record):
-        """Mapping for purchase_ok"""
-        return {"purchase_ok": record.get("purchasable", False)}
-
-    @mapping
-    def status(self, record):
-        """Mapping for status"""
-        status = record.get("status")
-        return {"status": status} if status else {}
-
-    @mapping
-    def tax_status(self, record):
-        """Mapping for tax_status"""
-        tax_status = record.get("tax_status")
-        return {"tax_status": tax_status} if tax_status else {}
-
-    @mapping
-    def stock_status(self, record):
-        """Mapping for stock_status"""
-        stock_status = record.get("stock_status")
-        return {"stock_status": stock_status} if stock_status else {}
-
-    @mapping
-    def categ_id(self, record):
-        """Mapping for Product category"""
-        category_id = self.backend_record.product_categ_id.id
-        binder = self.binder_for("woo.product.category")
-        for category in record.get("categories", []):
-            woo_binding = binder.to_internal(category.get("id"))
-            if woo_binding and woo_binding.odoo_id:
-                category_id = woo_binding.odoo_id.id
-                break
-        return {"categ_id": category_id}
-
-    @only_create
-    @mapping
-    def detailed_type(self, record):
-        """Mapping for detailed_type"""
-        return {
-            "detailed_type": "product"
-            if record.get("manage_stock")
-            else self.backend_record.default_product_type
-        }
-
-    @mapping
-    def woo_attribute_ids(self, record):
-        """Mapping of woo_attribute_ids"""
-        attribute_ids = []
-        woo_product_attributes = record.get("attributes", [])
-        if not woo_product_attributes:
-            return {}
-        binder = self.binder_for("woo.product.attribute")
-        for attribute in woo_product_attributes:
-            attribute_id = attribute.get("id")
-            woo_binding = binder.to_internal(attribute_id)
-            if woo_binding:
-                attribute_ids.append(woo_binding.id)
-                continue
-            product = self.env["product.product"]
-            product_attribute = product._get_product_attribute(
-                attribute, record, env=self
-            )
-            options = attribute.get("options") or [attribute.get("option")]
-            product._create_attribute_values(
-                options, product_attribute, attribute, record, env=self
-            )
-            attribute_ids.append(product_attribute.id)
-        return {"woo_attribute_ids": [(6, 0, attribute_ids)]}
-
-    @mapping
-    def woo_product_categ_ids(self, record):
-        """Mapping for woo_product_categ_ids"""
-        category_ids = []
-        woo_product_categories = record.get("categories", [])
-        binder = self.binder_for("woo.product.category")
-        for category in woo_product_categories:
-            woo_binding = binder.to_internal(category.get("id"))
-            if not woo_binding:
-                continue
-            category_ids.append(woo_binding.id)
-        return {"woo_product_categ_ids": [(6, 0, category_ids)]} if category_ids else {}
-
-    @mapping
-    def product_tag_ids(self, record):
-        """Mapping for product_tag_ids"""
-        tag_ids = []
-        tags = record.get("tags", [])
-        binder = self.binder_for("woo.product.tag")
-        for tag in tags:
-            product_tag = binder.to_internal(tag.get("id"), unwrap=True)
-            if not product_tag:
-                continue
-            tag_ids.append(product_tag.id)
-        return {"product_tag_ids": [(6, 0, tag_ids)]} if tag_ids else {}
-
-    @mapping
-    def woo_product_attribute_value_ids(self, record):
-        """Mapping for woo_product_attribute_value_ids"""
-        attribute_value_ids = []
-        woo_attributes = record.get("attributes", [])
-        binder = self.binder_for("woo.product.attribute")
-        for woo_attribute in woo_attributes:
-            attribute_id = woo_attribute.get("id")
-            if attribute_id == 0:
-                attribute_id = self.env["product.product"]._get_attribute_id_format(
-                    woo_attribute, record
-                )
-            attribute = binder.to_internal(attribute_id, unwrap=True)
-            options = woo_attribute.get("options") or [woo_attribute.get("option")]
-            for option in options:
-                attribute_value = self.env["woo.product.attribute.value"].search(
-                    [
-                        ("name", "=", option),
-                        ("attribute_id", "=", attribute.id),
-                    ],
-                    limit=1,
-                )
-                if not attribute_value:
-                    raise MappingError(
-                        _("'%s' attribute value not found!Import Attribute first.")
-                        % option
-                    )
-                attribute_value_ids.append(attribute_value.id)
-        return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
-
-    @mapping
     def product_tmpl_id(self, record):
         """Mapping for product_tmpl_id"""
         binder = self.binder_for("woo.product.template")
         template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
         return {"product_tmpl_id": template_id.id} if template_id else {}
-
-    @mapping
-    def stock_management(self, record):
-        """Mapping for Stock Management"""
-        manage_stock = record.get("manage_stock")
-        return {"stock_management": True} if manage_stock is True else {}
-
-    @mapping
-    def woo_product_qty(self, record):
-        """Mapping for WooCommerce Product qty"""
-        return (
-            {"woo_product_qty": record.get("stock_quantity")}
-            if record.get("stock_quantity")
-            else {}
-        )
 
     @mapping
     def active(self, record):
