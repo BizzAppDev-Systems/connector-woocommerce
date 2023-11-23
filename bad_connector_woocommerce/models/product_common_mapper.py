@@ -10,7 +10,9 @@ class ProductCommonImportMapper(Component):
     _inherit = "woo.import.mapper"
 
     def product_type(self, record):
-        return True if record.get("type") == "variation" else False
+        """Check if the product type is 'variation' and return True,
+        otherwise return False."""
+        return record.get("type") == "variation"
 
     @mapping
     def name(self, record):
