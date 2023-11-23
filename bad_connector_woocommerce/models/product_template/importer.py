@@ -201,3 +201,30 @@ class WooProductTemplateImporter(Component):
     _name = "woo.product.template.importer"
     _inherit = "woo.importer"
     _apply_on = "woo.product.template"
+
+    def _after_import(self, binding, **kwargs):
+        """Inherit Method: inherit method to import remote child products"""
+        result = super(WooProductTemplateImporter, self)._after_import(
+            binding, **kwargs
+        )
+
+        for variant in binding.odoo_id.product_variant_ids:
+            if variant.woo_bind_ids:
+                continue
+            variant.write({"active": False})
+
+        variant_ids = self.remote_record.get("variations")
+        product_model = self.env["woo.product.product"]
+        for variant_id in variant_ids:
+            job_options = {}
+            description = self.backend_record.get_queue_job_description(
+                prefix=product_model.import_record.__doc__ or "Record Import Of",
+                model=product_model._description,
+            )
+            job_options["description"] = description
+            delayable = product_model.with_delay(**job_options or {})
+            delayable.import_record(
+                backend=self.backend_record,
+                external_id=variant_id,
+            )
+        return result

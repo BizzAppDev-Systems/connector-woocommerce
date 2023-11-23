@@ -335,6 +335,11 @@ class WooProductProductImportMapper(Component):
             else {}
         )
 
+    @mapping
+    def active(self, record):
+        """Mapping for active"""
+        return {"active": True}
+
 
 class WooProductProductImporter(Component):
     """Importer the WooCommerce Product"""
