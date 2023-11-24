@@ -7,7 +7,7 @@ class WooBackend(models.Model):
     _inherit = "woo.backend"
 
     def import_products(self):
-        """Import Products from backend"""
+        """Override the method to also import grouped type products"""
         for backend in self:
             backend._sync_from_date(
                 model="woo.product.product",
