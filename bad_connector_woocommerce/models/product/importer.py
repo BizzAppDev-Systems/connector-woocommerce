@@ -186,42 +186,9 @@ class WooProductProductImporter(Component):
         it returns the result of the super class's '_after_import' method.
         """
         result = super(WooProductProductImporter, self)._after_import(binding, **kwargs)
-
-        if self.remote_record.get("type") == "grouped":
-            self.env["mrp.bom"].make_bom(binding, env=self)
-
         image_record = self.remote_record.get("images")
         if not image_record:
             return result
         image_importer = self.component(usage="product.image.importer")
         image_importer.run(self.external_id, binding, image_record)
         return result
-
-    def _must_skip(self):
-        """Inherited Method :: to Skip Product Records which have type as variable."""
-        if self.remote_record.get("type") == "variable":
-            return _(
-                "Skipped: Product Type is Variable for Product ID %s"
-            ) % self.remote_record.get("id")
-        return super(WooProductProductImporter, self)._must_skip()
-
-    def _import_dependencies(self):
-        """
-        Inherited method :: to import dependencies for WooCommerce products.
-        It retrieves grouped products from the remote record.
-        """
-        record = self.remote_record.get("grouped_products", [])
-        for product in record:
-            lock_name = "import({}, {}, {}, {})".format(
-                self.backend_record._name,
-                self.backend_record.id,
-                "woo.product.product",
-                product,
-            )
-            self.advisory_lock_or_retry(lock_name)
-        for product in record:
-            _logger.debug("product: %s", product)
-            if product:
-                self._import_dependency(product, "woo.product.product")
-
-        return super(WooProductProductImporter, self)._import_dependencies()

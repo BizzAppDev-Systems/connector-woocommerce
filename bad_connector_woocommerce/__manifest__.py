@@ -11,7 +11,6 @@
         "product",
         "sale_management",
         "delivery",
-        "mrp",
     ],
     "license": "AGPL-3",
     "data": [
