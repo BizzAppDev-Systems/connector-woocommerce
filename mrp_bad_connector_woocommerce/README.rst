@@ -1,10 +1,10 @@
-**Odoo Woocommerce Connector MRP Extension**
-============================================
+**MRP Odoo Woocommerce Connector**
+==================================
 
 **Description**
 ***************
 
-* Technical name: bad_connector_woocommerce_mrp_extension.
+* Technical name: mrp_bad_connector_woocommerce.
 
 **Author**
 **********

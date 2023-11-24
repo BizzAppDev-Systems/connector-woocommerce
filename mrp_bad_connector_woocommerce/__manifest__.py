@@ -1,5 +1,5 @@
 {
-    "name": "Odoo Woocommerce Connector MRP Extension",
+    "name": "MRP Odoo Woocommerce Connector",
     "version": "16.0.3.0.0",
     "category": "Connector",
     "author": "BizzAppDev Systems Pvt. Ltd.",
