@@ -21,6 +21,7 @@ class BaseWooTestCase(TransactionComponentCase):
                 "default_carrier_product_id": self.env.ref(
                     "product.expense_product"
                 ).id,
+                "default_fee_product_id": self.env.ref("product.product_product_1").id,
                 "default_product_type": "product",
                 "include_tax": False,
                 "mark_completed": True,
@@ -40,6 +41,7 @@ class BaseWooTestCase(TransactionComponentCase):
             "client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
             "client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
             "default_carrier_product_id": self.env.ref("product.expense_product").id,
+            "default_fee_product_id": self.env.ref("product.product_product_1").id,
             "default_product_type": "product",
             "include_tax": False,
             "mark_completed": True,
