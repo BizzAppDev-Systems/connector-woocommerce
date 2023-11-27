@@ -6,7 +6,7 @@
 
 * Technical name: mrp_bad_connector_woocommerce.
 * This module consist all the functionality of bad_connector_woocommerce.
-* This module works as glued module to make the link between the bad_connector_woocommerce and mrp application.
+* This module works as glue module to make the link between the bad_connector_woocommerce and mrp application.
 
 **Author**
 **********
