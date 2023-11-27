@@ -247,5 +247,6 @@ class GenericAdapter(AbstractComponent):
             resource_path = "{}/{}/variations/{}".format(
                 self._woo_model, data.get("template_external_id"), external_id
             )
+            data.pop("template_external_id")
         result = self._call(resource_path, data, http_method="put")
         return result
