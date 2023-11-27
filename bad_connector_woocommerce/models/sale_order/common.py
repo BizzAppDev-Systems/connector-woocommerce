@@ -45,6 +45,11 @@ class SaleOrder(models.Model):
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
     total_amount_different = fields.Boolean(compute="_compute_total_amount_diffrent")
     woo_coupon = fields.Char()
+    woo_payment_mode_id = fields.Many2one(
+        comodel_name="woo.payment.gateway",
+        string="WooCommerce Payment Mode",
+        readonly=True,
+    )
 
     @api.depends(
         "woo_bind_ids",
