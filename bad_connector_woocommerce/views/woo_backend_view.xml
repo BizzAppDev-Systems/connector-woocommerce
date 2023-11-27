@@ -385,6 +385,8 @@
                                         />
                                         <field name="recompute_qty_step" />
                                         <field name="update_stock_inventory" />
+                                        <field name="weight_uom_id" />
+                                        <field name="dimension_uom_id" />
                                     </group>
                                 </group>
                                 <group

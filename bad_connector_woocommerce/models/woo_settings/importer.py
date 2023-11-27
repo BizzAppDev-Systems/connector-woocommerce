@@ -68,4 +68,29 @@ class WooSettingsImporter(Component):
             stock_manage = True if binding.value == "yes" else False
             binding.write({"stock_update": stock_manage})
             binding.backend_id.write({"update_stock_inventory": stock_manage})
+
+        if binding.external_id == "woocommerce_currency":
+            currency = self.env["res.currency"].search(
+                [("name", "=", binding.value)], limit=1
+            )
+            if not currency:
+                raise MappingError(
+                    _(
+                        "'%s' currency not found, ensure that currency is active!!!"
+                        % binding.value
+                    )
+                )
+            binding.backend_id.write({"currency_id": currency.id})
+
+        if binding.external_id == "woocommerce_weight_unit":
+            weight_uom = self.env["uom.uom"].search(
+                [("name", "=", binding.value)], limit=1
+            )
+            binding.backend_id.write({"weight_uom_id": weight_uom.id})
+
+        if binding.external_id == "woocommerce_dimension_unit":
+            dimension_uom = self.env["uom.uom"].search(
+                [("name", "=", binding.value)], limit=1
+            )
+            binding.backend_id.write({"dimension_uom_id": dimension_uom.id})
         return result
