@@ -372,7 +372,16 @@ interactions:
                       "parent_name": null
                     }
                 ],
-                "tax_lines": [],
+                "tax_lines": [{
+                    "id": 318,
+                    "rate_code": "US-CA-STATE TAX",
+                    "rate_id": 1,
+                    "label": "State Tax",
+                    "compound": false,
+                    "tax_total": "1.35",
+                    "shipping_tax_total": "0.00",
+                    "meta_data": []
+                  }],
                 "shipping_lines": [
                             {
                                 "id": 43,
