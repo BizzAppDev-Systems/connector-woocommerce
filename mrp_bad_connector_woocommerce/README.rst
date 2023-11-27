@@ -5,6 +5,8 @@
 ***************
 
 * Technical name: mrp_bad_connector_woocommerce.
+* This module consist all the functionality of bad_connector_woocommerce.
+* This module works as glued module to make the link between the bad_connector_woocommerce and mrp application.
 
 **Author**
 **********
@@ -21,7 +23,7 @@
 **Installation**
 ****************
 
-* Under applications, the application bad_connector_woocommerce_mrp_extension can be installed/uninstalled.
+* Under applications, the application mrp_bad_connector_woocommerce can be installed/uninstalled.
 
 
 **Configuration**
