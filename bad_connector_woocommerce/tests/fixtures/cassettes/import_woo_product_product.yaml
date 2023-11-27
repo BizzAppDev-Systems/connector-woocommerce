@@ -380,6 +380,20 @@ interactions:
                         "parent_name": null
                     }
                 ],
+                "tax_lines":
+                [
+                    {
+                      "id": 171,
+                      "rate_code": "Tax",
+                      "rate_id": 2,
+                      "label": "US",
+                      "compound": true,
+                      "tax_total": "7.03",
+                      "shipping_tax_total": "0.00",
+                      "rate_percent": 15,
+                      "meta_data": []
+                    }
+                ],
                 "shipping_lines": [
                             {
                                 "id": 43,
@@ -833,7 +847,20 @@ interactions:
                         "parent_name": null
                     }
                 ],
-                "tax_lines": [],
+                "tax_lines":
+                [
+                      {
+                        "id": 171,
+                        "rate_code": "Tax",
+                        "rate_id": 1,
+                        "label": "US",
+                        "compound": true,
+                        "tax_total": "7.03",
+                        "shipping_tax_total": "0.00",
+                        "rate_percent": 15,
+                        "meta_data": []
+                      }
+                ],
                 "shipping_lines": [
                             {
                                 "id": 43,
@@ -1024,7 +1051,7 @@ interactions:
                   "rate": "15.0000",
                   "name": "Tax",
                   "priority": 1,
-                  "compound": false,
+                  "compound": true,
                   "shipping": true,
                   "order": 0,
                   "class": "standard",

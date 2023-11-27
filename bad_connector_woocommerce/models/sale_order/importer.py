@@ -334,7 +334,12 @@ class WooSaleOrderImporter(Component):
         available for the sale order.
         """
         record = self.remote_record
+        product_ids = []
+        tax_ids = []
         for line in record.get("line_items", []):
+            if line["product_id"] in product_ids:
+                continue
+            product_ids.append(line["product_id"])
             lock_name = "import({}, {}, {}, {})".format(
                 self.backend_record._name,
                 self.backend_record.id,
@@ -342,14 +347,18 @@ class WooSaleOrderImporter(Component):
                 line["product_id"],
             )
             self.advisory_lock_or_retry(lock_name)
-            for tax in line.get("taxes", []):
+            for tax_line in line.get("tax_lines", []):
+                if tax_line["rate_id"] in tax_ids:
+                    continue
+                tax_ids.append(tax_line["rate_id"])
                 lock_name = "import({}, {}, {}, {})".format(
                     self.backend_record._name,
                     self.backend_record.id,
                     "woo.tax",
-                    tax["id"],
+                    tax_line["rate_id"],
                 )
                 self.advisory_lock_or_retry(lock_name)
+
         for shipping_line in record.get("shipping_lines", []):
             lock_name = "import({}, {}, {}, {})".format(
                 self.backend_record._name,
@@ -358,12 +367,14 @@ class WooSaleOrderImporter(Component):
                 shipping_line["method_id"],
             )
             self.advisory_lock_or_retry(lock_name)
+        for tax_line in record.get("tax_lines", []):
+            _logger.debug("line: %s", line)
+            if "rate_id" in tax_line:
+                self._import_dependency(tax_line["rate_id"], "woo.tax")
         for line in record.get("line_items", []):
             _logger.debug("line: %s", line)
             if "product_id" in line:
                 self._import_dependency(line["product_id"], "woo.product.product")
-            for tax in line.get("taxes", []):
-                self._import_dependency(tax["id"], "woo.tax")
 
         for shipping_line in record.get("shipping_lines", []):
             _logger.debug("shipping_line: %s", shipping_line)
