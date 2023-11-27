@@ -347,17 +347,17 @@ class WooSaleOrderImporter(Component):
                 line["product_id"],
             )
             self.advisory_lock_or_retry(lock_name)
-            for tax_line in line.get("tax_lines", []):
-                if tax_line["rate_id"] in tax_ids:
-                    continue
-                tax_ids.append(tax_line["rate_id"])
-                lock_name = "import({}, {}, {}, {})".format(
-                    self.backend_record._name,
-                    self.backend_record.id,
-                    "woo.tax",
-                    tax_line["rate_id"],
-                )
-                self.advisory_lock_or_retry(lock_name)
+        for tax_line in record.get("tax_lines", []):
+            if tax_line["rate_id"] in tax_ids:
+                continue
+            tax_ids.append(tax_line["rate_id"])
+            lock_name = "import({}, {}, {}, {})".format(
+                self.backend_record._name,
+                self.backend_record.id,
+                "woo.tax",
+                tax_line["rate_id"],
+            )
+            self.advisory_lock_or_retry(lock_name)
 
         for shipping_line in record.get("shipping_lines", []):
             lock_name = "import({}, {}, {}, {})".format(
