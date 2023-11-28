@@ -8,7 +8,6 @@
         "connector",
         "mail",
         "contacts",
-        "product",
         "sale_management",
         "delivery",
         "sale_automatic_workflow",

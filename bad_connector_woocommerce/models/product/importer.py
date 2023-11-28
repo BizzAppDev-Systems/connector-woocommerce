@@ -150,16 +150,6 @@ class WooProductProductImportMapper(Component):
         return {"woo_product_name": name}
 
     @mapping
-    def default_code(self, record):
-        """Mapped product default code."""
-        default_code = record.get("sku")
-        if not default_code and not self.backend_record.without_sku:
-            raise MappingError(
-                _("SKU is Missing for the product '%s' !", record.get("name"))
-            )
-        return {"default_code": default_code} if default_code else {}
-
-    @mapping
     def product_tmpl_id(self, record):
         """Mapping for product_tmpl_id"""
         binder = self.binder_for("woo.product.template")
