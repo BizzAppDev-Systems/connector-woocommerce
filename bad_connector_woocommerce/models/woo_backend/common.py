@@ -21,6 +21,10 @@ class WooBackend(models.Model):
 
     @api.model
     def _get_stock_field_id(self):
+        """
+        Get the ID of the 'virtual_available' field in the 'product.product'
+        model.
+        """
         field = self.env["ir.model.fields"].search(
             [("model", "=", "product.product"), ("name", "=", "virtual_available")],
             limit=1,
@@ -88,7 +92,18 @@ class WooBackend(models.Model):
     )
     import_orders_from_date = fields.Datetime(string="Import Orders from date")
     order_prefix = fields.Char(string="Sale Order Prefix", default="WOO_")
-    import_products_from_date = fields.Datetime(string="Import products from date")
+    import_products_from_date = fields.Datetime(
+        string="Import products from date",
+        help="""Specify the date and time to initiate the process of import for
+        Basic, Grouped, and Variant type products.Only products modified or added
+        after this date will be considered in the import.""",
+    )
+    import_products_tmpl_from_date = fields.Datetime(
+        string="Import product Templates from date",
+        help="""Specify the date and time to initiate the process of import for
+        Product Templates.This includes Variable type products.Only templates
+        modified or added after this date will be considered in the import.""",
+    )
     without_sku = fields.Boolean(
         string="Allow Product without SKU",
         help="""If this Boolean is set to True, the system will import products
@@ -167,6 +182,12 @@ class WooBackend(models.Model):
 
     @api.onchange("update_stock_inventory", "stock_update")
     def _onchange_update_stock_inventory(self):
+        """
+        Handle the update of stock inventory based on WooCommerce settings.
+        If 'update_stock_inventory' is attempted to be set to True when 'stock_update'
+        is False, it automatically sets 'update_stock_inventory' to False and displays
+        a warning message.
+        """
         if not self.stock_update and self.update_stock_inventory:
             self.update_stock_inventory = False
             return {
@@ -369,6 +390,7 @@ class WooBackend(models.Model):
                 from_date_field="import_products_from_date",
                 priority=5,
                 export=False,
+                filters={"type": "simple"},
             )
         return True
 
@@ -471,7 +493,7 @@ class WooBackend(models.Model):
             sale_orders = self.env["sale.order"].search(
                 [
                     ("woo_bind_ids.backend_id", "=", backend.id),
-                    ("woo_order_status", "!=", "completed"),
+                    ("is_final_status", "!=", True),
                     ("picking_ids.state", "=", "done"),
                 ]
             )
@@ -528,11 +550,18 @@ class WooBackend(models.Model):
         ]
 
     def update_product_stock_qty(self):
-        """Export the Stock Inventory"""
-        woo_product_obj = self.env["woo.product.product"]
+        """
+        Export the Stock Inventory for WooCommerce products in Odoo.
+        Update stock quantities for both individual products and product templates.
+        """
         domain = self._domain_for_update_product_stock_qty()
-        woo_products = woo_product_obj.search(domain)
+
+        woo_products = self.env["woo.product.product"].search(domain)
         woo_products.recompute_woo_qty()
+
+        woo_products = self.env["woo.product.template"].search(domain)
+        woo_products.update_woo_product_qty()
+
         return True
 
     @api.model
@@ -540,3 +569,21 @@ class WooBackend(models.Model):
         """Cron for Update Stock qty"""
         backend_ids = self.search(domain or [])
         backend_ids.update_product_stock_qty()
+
+    def import_product_templates(self):
+        """Import Product templates from backend"""
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.product.template",
+                from_date_field="import_products_tmpl_from_date",
+                priority=5,
+                export=False,
+                filters={"type": "variable"},
+            )
+        return True
+
+    @api.model
+    def cron_import_product_templates(self, domain=None):
+        """Cron for import_product_templates"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_product_templates()

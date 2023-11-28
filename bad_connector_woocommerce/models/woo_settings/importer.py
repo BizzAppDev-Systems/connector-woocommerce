@@ -68,6 +68,7 @@ class WooSettingsImporter(Component):
             stock_manage = True if binding.value == "yes" else False
             binding.write({"stock_update": stock_manage})
             binding.backend_id.write({"update_stock_inventory": stock_manage})
+
         if binding.external_id == "woocommerce_currency":
             currency = self.env["res.currency"].search(
                 [("name", "=", binding.value)], limit=1
@@ -92,5 +93,4 @@ class WooSettingsImporter(Component):
                 [("name", "=", binding.value)], limit=1
             )
             binding.backend_id.write({"dimension_uom_id": dimension_uom.id})
-
         return result

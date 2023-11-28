@@ -200,7 +200,7 @@ class GenericAdapter(AbstractComponent):
                 arguments=filters,
                 http_method="get",
             )
-            result["data"].append(setting_stock_result.get("data"))
+            result["data"].append(setting_stock_result.get("data", []))
 
         if kwargs.get("_woo_default_currency", False):
             default_currency_result = self._call(
@@ -243,5 +243,10 @@ class GenericAdapter(AbstractComponent):
     def write(self, external_id, data):
         """Update records on the external system"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
+        if data.get("template_external_id", False):
+            resource_path = "{}/{}/variations/{}".format(
+                self._woo_model, data.get("template_external_id"), external_id
+            )
+            data.pop("template_external_id")
         result = self._call(resource_path, data, http_method="put")
         return result

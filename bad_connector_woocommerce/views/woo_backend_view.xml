@@ -234,6 +234,33 @@
                                 <group>
                                     <group>
                                         <label
+                                            for="import_product_templates"
+                                            string="Import Product Templates"
+                                            style="font-weight:bold; white-space: nowrap;"
+                                            class="oe_inline"
+                                        />
+                                        <field
+                                            name="import_products_tmpl_from_date"
+                                            nolabel="1"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="import_product_templates"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Import Product Templates"
+                                            />
+                                        </div>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <label
                                             for="import_products"
                                             string="Import Products"
                                             style="font-weight:bold; white-space: nowrap;"
@@ -341,7 +368,6 @@
                                     >
                                         <field name="default_limit" />
                                         <field name="warehouse_id" required="1" />
-
                                         <field name="currency_id" />
                                         <separator string="Customers Configuration" />
                                         <field name="without_email" />

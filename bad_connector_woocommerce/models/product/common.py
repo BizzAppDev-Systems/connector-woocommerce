@@ -47,6 +47,7 @@ class ProductProduct(models.Model):
         "woo_bind_ids.backend_id.update_stock_inventory",
     )
     def _compute_backend_stock_manage(self):
+        """Compute the value of backend_stock_manage for each product."""
         for product in self:
             product.backend_stock_manage = (
                 self.woo_bind_ids.backend_id.update_stock_inventory
@@ -63,6 +64,7 @@ class WooProductProduct(models.Model):
 
     _rec_name = "name"
 
+    woo_product_name = fields.Char(string="WooCommerce Product Name")
     odoo_id = fields.Many2one(
         comodel_name="product.product",
         string="Odoo Product",
@@ -207,13 +209,17 @@ class WooProductProductAdapter(Component):
             "woo.product.tag",
             "tags",
         ),
+        (
+            "woo.product.template",
+            "parent_id",
+        ),
     }
 
 
 class WooBindingProductListener(Component):
     _name = "woo.binding.product.product.listener"
     _inherit = "base.connector.listener"
-    _apply_on = ["woo.product.product"]
+    _apply_on = ["woo.product.product", "woo.product.template"]
 
     # fields which should not trigger an export of the products
     # but an export of their inventory
@@ -224,6 +230,12 @@ class WooBindingProductListener(Component):
 
     @skip_if(lambda self, record, *args, **kwargs: self.no_connector_export(record))
     def on_record_write(self, record, fields=None):
+        """
+        This method is triggered when a record of the 'woo.product.product' or
+        'woo.product.template' models is written.
+        It handles the export of product information or inventory updates based
+        on the changed fields.
+        """
         job_options = {}
         inventory_fields = list(set(fields).intersection(self.INVENTORY_FIELDS))
         if inventory_fields:

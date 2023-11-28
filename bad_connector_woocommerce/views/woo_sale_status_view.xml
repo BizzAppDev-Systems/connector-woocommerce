@@ -10,6 +10,7 @@
                     <group>
                         <field name="name" placeholder="e.g. Completed" />
                         <field name="code" placeholder="e.g. completed" />
+                        <field name="is_final_status" />
                     </group>
                 </sheet>
             </form>
