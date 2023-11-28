@@ -2,7 +2,7 @@ from os.path import dirname, join
 
 from vcr import VCR
 
-from .test_woo_backend import BaseWooTestCase
+from ...bad_connector_woocommerce.tests.test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
     cassette_library_dir=join(dirname(__file__), "fixtures/cassettes"),
