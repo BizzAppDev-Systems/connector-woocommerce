@@ -3,7 +3,7 @@ Product Attributes
 
 In this section, we will explore the functionality of the "IMPORT PRODUCT ATTRIBUTES" button and its different test cases when working with the Odoo Woocommerce Connector.
 
-.. image:: _static/woo_import_attribute_button.png
+.. image:: _static/woo_product_attribute_button.png
    :align: center
 
 The "IMPORT PRODUCT ATTRIBUTES" Button

@@ -3,7 +3,7 @@ TAX
 
 In this section, we will explore the functionality of the "IMPORT TAXES" button and its different test cases when working with the Odoo Woocommerce Connector.
 
-.. image:: _static/woo_import_tax.png
+.. image:: _static/woo_tax_button.png
    :align: center
 
 The "IMPORT TAXES" Button

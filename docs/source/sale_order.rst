@@ -3,12 +3,12 @@ Sale Order
 
 In this section, we will explore the functionality of the "IMPORT SALE ORDERS" button and its advance configurations with different test cases when working with the Odoo Woocommerce Connector.
 
-.. image:: _static/ import_sale_order_button.png
+.. image:: _static/woo_sale_order_button.png
    :align: center
 
 **Import From Date Functionality**: The connector allows you to specify an import-from date. This ensures that only products created or modified after the specified date are imported into Odoo.
 
-.. image:: _static/ sale_import_from_date.png
+.. image:: _static/woo_sale_order_from_date.png
    :align: center
 
 The "IMPORT SALE ORDERS" Button

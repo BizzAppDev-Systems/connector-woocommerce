@@ -3,7 +3,7 @@ Partner Management
 
 In this section, we will explore the functionality of the "IMPORT PARTNERS" button and it's different test cases when working with the Odoo Woocommerce Connector.
 
-.. image:: _static/woo_import_partner_button.png
+.. image:: _static/woo_partner_import_button.png
    :align: center
 
 Customer Import

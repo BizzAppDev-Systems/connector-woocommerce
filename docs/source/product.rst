@@ -3,7 +3,7 @@ Product
 
 In this section, we will explore the functionality of the "IMPORT PRODUCTS" button and its different test cases with advanced functionality when working with the Odoo Woocommerce Connector.
 
-.. image:: _static/woo_import_product.png
+.. image:: _static/woo_product_button.png
    :align: center
 
 Advance Configurations of Product
@@ -27,7 +27,7 @@ There are several advanced functionalities when we are using "IMPORT PRODUCTS" b
 
 4. **Import From Date Functionality**: The connector allows you to specify an import-from date. This ensures that only products created or modified after the specified date are imported into Odoo.
 
-.. image:: _static/product_import_from.png
+.. image:: _static/product_import_from_date.png
    :align: center
 
 The "IMPORT PRODUCTS" Button

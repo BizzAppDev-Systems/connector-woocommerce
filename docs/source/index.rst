@@ -19,6 +19,7 @@ This is the official documentation for the Odoo Woocommerce Connector.
    product_attribute <product_attribute.rst>
    product_category <product_category.rst>
    product_tag <product_tag.rst>
+   product_template <product_template.rst>
    product <product.rst>
    tax <tax.rst>
    sale_order <sale_order.rst>

@@ -3,7 +3,7 @@ Product Categories
 
 In this section, we will explore the functionality of the "IMPORT PRODUCT CATEGORIES" button and its different test cases when working with the Odoo Woocommerce Connector.
 
-.. image:: _static/woo_category_button.png
+.. image:: _static/woo_product_category_button.png
    :align: center
 
 The "IMPORT PRODUCT CATEGORIES" Button

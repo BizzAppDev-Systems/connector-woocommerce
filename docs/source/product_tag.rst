@@ -3,7 +3,7 @@ Product Tags
 
 In this section, we will explore the functionality of the "IMPORT PRODUCT TAGS" button and its different test cases when working with the Odoo Woocommerce Connector.
 
-.. image:: _static/woo_import_tag_button.png
+.. image:: _static/woo_product_tag_button.png
    :align: center
 
 The "IMPORT PRODUCT TAGS" Button
@@ -27,4 +27,4 @@ The "IMPORT PRODUCT TAGS" button serves a crucial role in the Odoo Woocommerce C
 Next Steps
 ----------
 
-In the upcoming sections, we will explore different test cases related to importing product and provide detailed instructions for configuring your connector to meet your specific business needs.
+In the upcoming sections, we will explore different test cases related to importing product templates and provide detailed instructions for configuring your connector to meet your specific business needs.
