@@ -7,14 +7,14 @@
 * Technical name: bad_connector_woocommerce.
 * Add new menu in Connectors > Woocommerce > WooCommerce Backends.
 * Add new menu in Connectors > Configrations > Settings.
-* Add object woo.backend, woo.product.category, woo.product.image.url, woo.tax  and woo.sale.status on submenu Connectors.
-* Add object woo.settings on submenu Settings.
+* Add object woo.backend, woo.product.category, woo.product.image.url, woo.tax, woo.payment.gateway and woo.sale.status on submenu Connectors.
+* Add object woo.settings, res.config.setting and woo.sale.status in Configuration submenu of woocommerce backend.
 * Submenu of Configurations > WooCommerce Sale Status which is use to store all the WooCommerce Sale Order Status.
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
 * Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
-* Add "Import Partners","Import Products","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes" at backend level.
-* Required field to Import the Products,Product Attributes,Taxes and Product Category are Location,Client Id,Client Secret,Product Category.
+* Add "Import Partners","Import Products","Import Product Templates","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes" and "Update Stock Inventory" at backend level.
+* Required field to Import the Partners,Product Templates,Products,Product Attributes,Taxes,Product Tags,Product Category,Update Stock Inventory and Sale Orders are Location,Client Id,Client Secret,Product Category,Company and Warehouse.
 
 **Author**
 **********
@@ -56,6 +56,14 @@
     - Added 'Product Category' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Category for imported WooCommerce Product.
     - Added 'Default Product Type' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Type for imported WooCommerce Product.
     - Added 'WooCommerce Product Image URL' which is located at Product Binding level, designed to store Other Product Images which will store in woo.product.image.url object instead of initial Image.
+    - By Clicking the "Import Products" button different product type such as Simple and Variable will get imported from woocommerce in odoo.
+
+* Product Templates Import:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Product Templates.
+    - Click the 'Import Product Templates' button to import Product templates and it's variations from WooCommerce.
+    - By Clicking the "Import Product Templates" button product type Variable will get imported from woocommerce in odoo.
+    - "Import Product Templates" follows same configurations as the "Import Products" functionality.
 
 * Product Attributes Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
@@ -81,20 +89,17 @@
     - Add Backend Credentials to Import Orders.
     - Click 'Import Orders' button to Import the Orders from Woocommerce.
 
-* Country and States Import:
+* Sync Metadata:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
-    - Add Backend Credentials to Import Metadata which contains Country, States, Tax Settings and Shipping Methods.
-    - Click the 'Sync Metadata' button to import Country and there States, Tax Settings and Shipping Method from WooCommerce.
+    - Add Backend Credentials to Import Metadata which contains Country, States, Tax Settings, Shipping Methods and Stock Manage Settings.
+    - Add Backend Credentials to Import Metadata which contains Payment Gateways.
+    - Add Backend Credentials to Import Metadata which contains default currency, Default Weight and Dimension.
+    - Click the 'Sync Metadata' button to import Country and there States, Tax Settings, Shipping Method, Currency and Unit settings, Payment Gateways and Stock manage settings from WooCommerce.
 
 * Taxes Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Taxes.
     - Click 'Import Taxes' button to Import the Taxes from Woocommerce.
-    
-* Country and States Import:
-    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
-    - Add Backend Credentials to Import Metadata which contains Country and there States.
-    - Click the 'Sync Metadata' button to import Country and there States from WooCommerce.
 
 **Usage**
 *********
@@ -109,10 +114,20 @@
 * Import of Product Data:
   - Enable the import functionality in bad_connector_woocommerce to transfer products from WooCommerce to Odoo.
   - Handle mapping of product data during the import process.
-  - Introduces "import_products_from_date" field at the backend level, allowing import from a specified date for getting updated products.
+  - Introduces "import_products_from_date" fields at the backend level, allowing import from a specified date for getting updated products.
   - Implements import of Attributes and Categories during the product import.
   - Added woo_product_categ_ids and woo_attribute_ids in product binding level.
   - Added mapping of woo_product_attribute_value_ids in product binding level.
+  - Enable the Export functionality in bad_connector_woocommerce to transfer Product Quantity from Odoo to WooCommerce.
+
+* Import of Product Template Data:
+  - Enable the import functionality in bad_connector_woocommerce to transfer product templates and variations from WooCommerce to Odoo.
+  - Handle mapping of product template data during the import process.
+  - Introduces "import_products_tmpl_from_date" fields at the backend level, allowing import from a specified date for getting updated product templates.
+  - Implements import of Attributes and Categories during the product template import.
+  - Added woo_product_categ_ids and woo_attribute_ids in product template binding level.
+  - Added mapping of woo_product_attribute_value_ids in product template binding level.
+  - Enable the Export functionality in bad_connector_woocommerce to transfer Product template Quantity from Odoo to WooCommerce.
 
 * Import of Product Attribute:
   - Enable the import functionality in bad_connector_woocommerce to transfer product Attributes from WooCommerce to Odoo.
@@ -150,12 +165,13 @@
   - Enable the import functionality in bad_connector_woocommerce to transfer Taxes from WooCommerce to Odoo.
   - Handle mapping of taxes data during the import process.
 
-* Import of Country and States:
+* Import of Metadata:
   - Enable the import functionality in bad_connector_woocommerce to transfer Country and there States and also Tax Settings from WooCommerce to Odoo.
   - Handle Mapping of Country, State and Tax Settings data during the import process.
   - Added Mapping for State in Customers.
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
+  - Transfer Stock Manage Settings from WooCommerce to Odoo and handle the mapping during import process.
 
 **Known issues/Roadmap**
 ************************

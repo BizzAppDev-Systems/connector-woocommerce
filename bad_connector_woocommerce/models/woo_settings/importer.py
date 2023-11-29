@@ -60,11 +60,37 @@ class WooSettingsImporter(Component):
     def _after_import(self, binding, **kwargs):
         """Inherit Method: inherit method to import remote child"""
         result = super(WooSettingsImporter, self)._after_import(binding, **kwargs)
-        include_tax = False
         if binding.external_id == "woocommerce_prices_include_tax":
-            if binding.value == "yes":
-                include_tax = True
-            else:
-                include_tax = False
+            include_tax = True if binding.value == "yes" else False
             binding.backend_id.write({"include_tax": include_tax})
+
+        if binding.external_id == "woocommerce_manage_stock":
+            stock_manage = True if binding.value == "yes" else False
+            binding.write({"stock_update": stock_manage})
+            binding.backend_id.write({"update_stock_inventory": stock_manage})
+
+        if binding.external_id == "woocommerce_currency":
+            currency = self.env["res.currency"].search(
+                [("name", "=", binding.value)], limit=1
+            )
+            if not currency:
+                raise MappingError(
+                    _(
+                        "'%s' currency not found, ensure that currency is active!!!"
+                        % binding.value
+                    )
+                )
+            binding.backend_id.write({"currency_id": currency.id})
+
+        if binding.external_id == "woocommerce_weight_unit":
+            weight_uom = self.env["uom.uom"].search(
+                [("name", "=", binding.value)], limit=1
+            )
+            binding.backend_id.write({"weight_uom_id": weight_uom.id})
+
+        if binding.external_id == "woocommerce_dimension_unit":
+            dimension_uom = self.env["uom.uom"].search(
+                [("name", "=", binding.value)], limit=1
+            )
+            binding.backend_id.write({"dimension_uom_id": dimension_uom.id})
         return result

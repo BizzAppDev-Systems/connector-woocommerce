@@ -17,6 +17,7 @@
         <record id="woo_sale_status_completed_data" model="woo.sale.status">
             <field name="name">Completed</field>
             <field name="code">completed</field>
+            <field name="is_final_status">True</field>
         </record>
         <record id="woo_sale_status_cancelled_data" model="woo.sale.status">
             <field name="name">Cancelled</field>

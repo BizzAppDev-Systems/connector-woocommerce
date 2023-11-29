@@ -234,6 +234,33 @@
                                 <group>
                                     <group>
                                         <label
+                                            for="import_product_templates"
+                                            string="Import Product Templates"
+                                            style="font-weight:bold; white-space: nowrap;"
+                                            class="oe_inline"
+                                        />
+                                        <field
+                                            name="import_products_tmpl_from_date"
+                                            nolabel="1"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="import_product_templates"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Import Product Templates"
+                                            />
+                                        </div>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <label
                                             for="import_products"
                                             string="Import Products"
                                             style="font-weight:bold; white-space: nowrap;"
@@ -254,6 +281,28 @@
                                                 type="object"
                                                 class="oe_highlight"
                                                 string="Import Products"
+                                            />
+                                        </div>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <label
+                                            for="update_product_stock_qty"
+                                            string="Update Stock Inventory"
+                                            style="font-weight:bold; white-space: nowrap;"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="update_product_stock_qty"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Update Stock Inventory"
                                             />
                                         </div>
                                     </group>
@@ -318,6 +367,8 @@
                                         string="Default Configuration"
                                     >
                                         <field name="default_limit" />
+                                        <field name="warehouse_id" required="1" />
+                                        <field name="currency_id" />
                                         <separator string="Customers Configuration" />
                                         <field name="without_email" />
                                     </group>
@@ -328,6 +379,15 @@
                                         <field name="without_sku" />
                                         <field name="default_product_type" />
                                         <field name="product_categ_id" />
+                                        <field
+                                            name="product_stock_field_id"
+                                            widget="selection"
+                                            domain="[('model', 'in', ['product.product', 'product.template']), ('ttype', '=', 'float')]"
+                                        />
+                                        <field name="recompute_qty_step" />
+                                        <field name="update_stock_inventory" />
+                                        <field name="weight_uom_id" />
+                                        <field name="dimension_uom_id" />
                                     </group>
                                 </group>
                                 <group

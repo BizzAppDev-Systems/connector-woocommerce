@@ -17,3 +17,9 @@ def fetch_image_data(image_url):
     except Exception as e:
         logger.error(f"Error downloading image: {e}")
         return None
+
+
+def chunks(items, length):
+    """Splits a list into chunks of a specified length."""
+    for index in range(0, len(items), length):
+        yield items[index : index + length]

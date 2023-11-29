@@ -2,6 +2,7 @@ from . import woo_backend
 from . import woo_binding
 from . import queue_job
 from . import partner
+from . import product_common_mapper
 from . import product
 from . import product_attribute
 from . import product_attribute_value
@@ -14,3 +15,5 @@ from . import woo_tax
 from . import country
 from . import delivery_carrier
 from . import woo_settings
+from . import product_template
+from . import woo_payment_gateway
