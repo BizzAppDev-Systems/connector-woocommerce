@@ -8,10 +8,9 @@
         "connector",
         "mail",
         "contacts",
-        "product",
         "sale_management",
         "delivery",
-        "mrp",
+        "sale_automatic_workflow",
     ],
     "license": "AGPL-3",
     "data": [

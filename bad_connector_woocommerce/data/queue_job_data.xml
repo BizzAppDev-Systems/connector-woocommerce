@@ -379,6 +379,7 @@
             <field name="method">export_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
+
         <!-- Import Payment Gateways related action queue job -->
         <record
             id="job_function_woo_import_payment_gateway_batch"

@@ -43,8 +43,13 @@ class SaleOrder(models.Model):
         related="woo_order_status_id.is_final_status", string="Final Status"
     )
     tax_different = fields.Boolean(compute="_compute_tax_diffrent")
-    total_amount_different = fields.Boolean(compute="_compute_total_amount_diffrent")
+    total_amount_different = fields.Boolean(compute="_compute_total_amount_different")
     woo_coupon = fields.Char()
+    woo_payment_mode_id = fields.Many2one(
+        comodel_name="woo.payment.gateway",
+        string="WooCommerce Payment Mode",
+        readonly=True,
+    )
 
     @api.depends(
         "woo_bind_ids",
@@ -80,7 +85,7 @@ class SaleOrder(models.Model):
             order.tax_different = tax_different
 
     @api.depends("amount_total", "woo_bind_ids.woo_amount_total")
-    def _compute_total_amount_diffrent(self):
+    def _compute_total_amount_different(self):
         """
         Compute the 'total_amount_different' field for each record in the current
         recordset.

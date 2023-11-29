@@ -1,10 +1,7 @@
 import logging
 
-from odoo import _
-
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping, only_create
-from odoo.addons.connector.exception import MappingError
+from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
 
@@ -23,74 +20,8 @@ class WooProductTemplateImportMapper(Component):
     """Impoter Mapper for the WooCommerce Product Template"""
 
     _name = "woo.product.template.import.mapper"
-    _inherit = "woo.import.mapper"
+    _inherit = "woo.product.common.mapper"
     _apply_on = "woo.product.template"
-
-    @mapping
-    def name(self, record):
-        """Mapping for Name"""
-        name = record.get("name")
-        if not name:
-            raise MappingError(
-                _("Product Template name doesn't exist for Product ID %s Please check")
-                % record.get("id")
-            )
-        return {"name": name}
-
-    @mapping
-    def woo_attribute_ids(self, record):
-        """Mapping of woo_attribute_ids"""
-        attribute_ids = []
-        woo_product_attributes = record.get("attributes", [])
-        if not woo_product_attributes:
-            return {}
-        binder = self.binder_for("woo.product.attribute")
-        for attribute in woo_product_attributes:
-            attribute_id = attribute.get("id")
-            woo_binding = binder.to_internal(attribute_id)
-            if woo_binding:
-                attribute_ids.append(woo_binding.id)
-                continue
-            product = self.env["product.product"]
-            product_attribute = product._get_product_attribute(
-                attribute, record, env=self
-            )
-            if "options" in attribute:
-                product._create_attribute_values(
-                    attribute["options"], product_attribute, attribute, record, env=self
-                )
-            attribute_ids.append(product_attribute.id)
-        return {"woo_attribute_ids": [(6, 0, attribute_ids)]}
-
-    @mapping
-    def woo_product_attribute_value_ids(self, record):
-        """Mapping for woo_product_attribute_value_ids"""
-        attribute_value_ids = []
-        woo_attributes = record.get("attributes", [])
-        binder = self.binder_for("woo.product.attribute")
-        for woo_attribute in woo_attributes:
-            attribute_id = woo_attribute.get("id")
-            if attribute_id == 0:
-                attribute_id = self.env["product.product"]._get_attribute_id_format(
-                    woo_attribute, record
-                )
-            attribute = binder.to_internal(attribute_id, unwrap=True)
-            options = woo_attribute.get("options", [])
-            for option in options:
-                attribute_value = self.env["woo.product.attribute.value"].search(
-                    [
-                        ("name", "=", option),
-                        ("attribute_id", "=", attribute.id),
-                    ],
-                    limit=1,
-                )
-                if not attribute_value:
-                    raise MappingError(
-                        _("'%s' attribute value not found!Import Attribute first.")
-                        % option
-                    )
-                attribute_value_ids.append(attribute_value.id)
-        return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
 
     @mapping
     def variant_different(self, record):
@@ -130,9 +61,7 @@ class WooProductTemplateImportMapper(Component):
         for woo_attribute in record.get("attributes", []):
             woo_attribute_id = woo_attribute.get("id", 0)
             woo_attribute_id = (
-                self.env["product.product"]._get_attribute_id_format(
-                    woo_attribute, record
-                )
+                self._get_attribute_id_format(woo_attribute, record)
                 if woo_attribute_id == 0
                 else woo_attribute_id
             )
@@ -163,31 +92,6 @@ class WooProductTemplateImportMapper(Component):
 
         return attribute_lines
 
-    @mapping
-    def stock_management(self, record):
-        """Mapping for Stock Management"""
-        manage_stock = record.get("manage_stock")
-        return {"stock_management": True} if manage_stock is True else {}
-
-    @mapping
-    def woo_product_qty(self, record):
-        """Mapping for WooCommerce Product qty"""
-        return (
-            {"woo_product_qty": record.get("stock_quantity")}
-            if record.get("stock_quantity")
-            else {}
-        )
-
-    @only_create
-    @mapping
-    def detailed_type(self, record):
-        """Mapping for detailed_type"""
-        return {
-            "detailed_type": "product"
-            if record.get("manage_stock")
-            else self.backend_record.default_product_type
-        }
-
     def finalize(self, map_record, values):
         """Override the finalize method to add attribute lines to the product."""
         attribute_lines = self._get_attribute_lines(map_record)
@@ -201,3 +105,30 @@ class WooProductTemplateImporter(Component):
     _name = "woo.product.template.importer"
     _inherit = "woo.importer"
     _apply_on = "woo.product.template"
+
+    def _after_import(self, binding, **kwargs):
+        """Inherit Method: inherit method to import remote child products"""
+        result = super(WooProductTemplateImporter, self)._after_import(
+            binding, **kwargs
+        )
+
+        for variant in binding.odoo_id.product_variant_ids:
+            if variant.woo_bind_ids:
+                continue
+            variant.write({"active": False})
+
+        variant_ids = self.remote_record.get("variations")
+        product_model = self.env["woo.product.product"]
+        for variant_id in variant_ids:
+            job_options = {}
+            description = self.backend_record.get_queue_job_description(
+                prefix=product_model.import_record.__doc__ or "Record Import Of",
+                model=product_model._description,
+            )
+            job_options["description"] = description
+            delayable = product_model.with_delay(**job_options or {})
+            delayable.import_record(
+                backend=self.backend_record,
+                external_id=variant_id,
+            )
+        return result

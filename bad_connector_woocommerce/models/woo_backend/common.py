@@ -390,6 +390,7 @@ class WooBackend(models.Model):
                 from_date_field="import_products_from_date",
                 priority=5,
                 export=False,
+                filters={"type": "simple"},
             )
         return True
 
