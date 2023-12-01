@@ -21,9 +21,7 @@ class ProductProduct(models.Model):
         copy=False,
     )
     stock_manage = fields.Boolean(compute="_compute_stock_manage")
-    backend_stock_manage = fields.Boolean(
-        compute="_compute_backend_stock_manage", store=True
-    )
+    backend_stock_manage = fields.Boolean(compute="_compute_backend_stock_manage")
 
     def update_stock_qty(self):
         """

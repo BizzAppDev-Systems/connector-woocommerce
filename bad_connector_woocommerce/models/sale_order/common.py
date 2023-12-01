@@ -42,7 +42,7 @@ class SaleOrder(models.Model):
     is_final_status = fields.Boolean(
         related="woo_order_status_id.is_final_status", string="Final Status"
     )
-    tax_different = fields.Boolean(compute="_compute_tax_diffrent")
+    tax_different = fields.Boolean(compute="_compute_tax_different")
     total_amount_different = fields.Boolean(compute="_compute_total_amount_different")
     woo_coupon = fields.Char()
     woo_payment_mode_id = fields.Many2one(
@@ -56,7 +56,7 @@ class SaleOrder(models.Model):
         "order_line.woo_bind_ids.total_tax_line",
         "order_line.price_tax",
     )
-    def _compute_tax_diffrent(self):
+    def _compute_tax_different(self):
         """
         Compute the 'tax_different' field for the sale order.
 
