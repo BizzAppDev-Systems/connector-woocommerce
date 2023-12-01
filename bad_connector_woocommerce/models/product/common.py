@@ -20,7 +20,7 @@ class ProductProduct(models.Model):
         string="WooCommerce Bindings",
         copy=False,
     )
-    stock_manage = fields.Boolean(compute="_compute_stock_manage", store=True)
+    stock_manage = fields.Boolean(compute="_compute_stock_manage")
     backend_stock_manage = fields.Boolean(
         compute="_compute_backend_stock_manage", store=True
     )
@@ -44,6 +44,7 @@ class ProductProduct(models.Model):
 
     @api.depends(
         "woo_bind_ids",
+        "woo_bind_ids.backend_id",
         "woo_bind_ids.backend_id.update_stock_inventory",
     )
     def _compute_backend_stock_manage(self):
@@ -219,7 +220,7 @@ class WooProductProductAdapter(Component):
 class WooBindingProductListener(Component):
     _name = "woo.binding.product.product.listener"
     _inherit = "base.connector.listener"
-    _apply_on = ["woo.product.product", "woo.product.template"]
+    _apply_on = ["woo.product.product"]
 
     # fields which should not trigger an export of the products
     # but an export of their inventory

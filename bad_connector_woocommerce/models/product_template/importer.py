@@ -112,11 +112,6 @@ class WooProductTemplateImporter(Component):
             binding, **kwargs
         )
 
-        for variant in binding.odoo_id.product_variant_ids:
-            if variant.woo_bind_ids:
-                continue
-            variant.write({"active": False})
-
         variant_ids = self.remote_record.get("variations")
         product_model = self.env["woo.product.product"]
         for variant_id in variant_ids:

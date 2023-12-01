@@ -116,26 +116,24 @@ class WooProductProductImportMapper(Component):
         """Mapping for odoo id"""
         if record.get("type") != "variation":
             return {}
+
+        # Find the co-responding template for variation
         binder = self.binder_for("woo.product.template")
+        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
+
         # Extract attributes from the WooCommerce product variant data
         attributes = record.get("attributes", [])
-        attribute_dict = {attr["name"]: attr["option"] for attr in attributes}
 
-        # Find the Odoo product variant with matching attributes
-        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
-        odoo_variants = template_id.product_variant_ids
-        matching_variant = None
+        # Search for product.template.attribute.value records
+        search_domain = [
+            ("product_tmpl_id", "=", template_id.id),
+            ("attribute_id.name", "in", [attr["name"] for attr in attributes]),
+            ("name", "in", [attr["option"] for attr in attributes]),
+        ]
+        combination = self.env["product.template.attribute.value"].search(search_domain)
 
-        for variant in odoo_variants:
-            variant_attributes = {
-                attr_vals.attribute_id.name: attr_vals.name
-                for attr_vals in variant.product_template_attribute_value_ids
-            }
-            if variant_attributes != attribute_dict:
-                continue
-            matching_variant = variant
-            break
-
+        # Get the variation record
+        matching_variant = template_id._get_variant_for_combination(combination)
         return {"odoo_id": matching_variant.id} if matching_variant else {}
 
     @mapping
@@ -157,9 +155,59 @@ class WooProductProductImportMapper(Component):
         return {"product_tmpl_id": template_id.id} if template_id else {}
 
     @mapping
-    def active(self, record):
-        """Mapping for active"""
-        return {"active": True}
+    def stock_management(self, record):
+        """Mapping for Stock Management"""
+        manage_stock = record.get("manage_stock")
+        return {"stock_management": True} if manage_stock is True else {}
+
+    @mapping
+    def woo_product_qty(self, record):
+        """Mapping for WooCommerce Product qty"""
+        return (
+            {"woo_product_qty": record.get("stock_quantity")}
+            if record.get("stock_quantity")
+            else {}
+        )
+
+    @mapping
+    def price(self, record):
+        """Mapping for Standard Price"""
+        price = record.get("price")
+        return {"price": price} if price else {}
+
+    @mapping
+    def regular_price(self, record):
+        """Mapping for Regular Price"""
+        regular_price = record.get("regular_price")
+        return {"regular_price": regular_price} if regular_price else {}
+
+    @mapping
+    def status(self, record):
+        """Mapping for status"""
+        status = record.get("status")
+        return {"status": status} if status else {}
+
+    @mapping
+    def tax_status(self, record):
+        """Mapping for tax_status"""
+        tax_status = record.get("tax_status")
+        return {"tax_status": tax_status} if tax_status else {}
+
+    @mapping
+    def stock_status(self, record):
+        """Mapping for stock_status"""
+        stock_status = record.get("stock_status")
+        return {"stock_status": stock_status} if stock_status else {}
+
+    @mapping
+    def default_code(self, record):
+        """Mapped product default code."""
+        default_code = record.get("sku")
+        if not default_code and not self.backend_record.without_sku:
+            raise MappingError(
+                _("SKU is Missing for the product '%s' !", record.get("name"))
+            )
+        return {"default_code": default_code} if default_code else {}
 
 
 class WooProductProductImporter(Component):

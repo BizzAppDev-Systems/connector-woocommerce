@@ -9,7 +9,7 @@ class ProductCommonImportMapper(Component):
     _name = "woo.product.common.mapper"
     _inherit = "woo.import.mapper"
 
-    def product_type(self, record):
+    def is_product_type_variation(self, record):
         """Check if the product type is 'variation' and return True,
         otherwise return False."""
         return record.get("type") == "variation"
@@ -17,7 +17,7 @@ class ProductCommonImportMapper(Component):
     @mapping
     def name(self, record):
         """Mapping for Name"""
-        if self.product_type(record):
+        if self.is_product_type_variation(record):
             return {}
         name = record.get("name")
         if not name:
@@ -30,7 +30,7 @@ class ProductCommonImportMapper(Component):
     @mapping
     def description(self, record):
         """Mapping for description"""
-        if self.product_type(record):
+        if self.is_product_type_variation(record):
             return {}
         description = record.get("description")
         return {"description": description} if description else {}
@@ -38,14 +38,14 @@ class ProductCommonImportMapper(Component):
     @mapping
     def purchase_ok(self, record):
         """Mapping for purchase_ok"""
-        if self.product_type(record):
+        if self.is_product_type_variation(record):
             return {}
         return {"purchase_ok": record.get("purchasable", False)}
 
     @mapping
     def categ_id(self, record):
         """Mapping for Product category"""
-        if self.product_type(record):
+        if self.is_product_type_variation(record):
             return {}
         category_id = self.backend_record.product_categ_id.id
         binder = self.binder_for("woo.product.category")
@@ -59,6 +59,8 @@ class ProductCommonImportMapper(Component):
     @mapping
     def woo_product_categ_ids(self, record):
         """Mapping for woo_product_categ_ids"""
+        if self.is_product_type_variation(record):
+            return {}
         category_ids = []
         woo_product_categories = record.get("categories", [])
         binder = self.binder_for("woo.product.category")
@@ -73,6 +75,8 @@ class ProductCommonImportMapper(Component):
     @mapping
     def detailed_type(self, record):
         """Mapping for detailed_type"""
+        if self.is_product_type_variation(record):
+            return {}
         return {
             "detailed_type": "product"
             if record.get("manage_stock")
@@ -82,7 +86,7 @@ class ProductCommonImportMapper(Component):
     @mapping
     def product_tag_ids(self, record):
         """Mapping for product_tag_ids"""
-        if self.product_type(record):
+        if self.is_product_type_variation(record):
             return {}
         tag_ids = []
         tags = record.get("tags", [])
@@ -148,6 +152,8 @@ class ProductCommonImportMapper(Component):
     @mapping
     def woo_attribute_ids(self, record):
         """Mapping of woo_attribute_ids"""
+        if self.is_product_type_variation(record):
+            return {}
         attribute_ids = []
         woo_product_attributes = record.get("attributes", [])
         if not woo_product_attributes:
@@ -168,6 +174,8 @@ class ProductCommonImportMapper(Component):
     @mapping
     def woo_product_attribute_value_ids(self, record):
         """Mapping for woo_product_attribute_value_ids"""
+        if self.is_product_type_variation(record):
+            return {}
         attribute_value_ids = []
         woo_attributes = record.get("attributes", [])
         binder = self.binder_for("woo.product.attribute")
@@ -194,63 +202,8 @@ class ProductCommonImportMapper(Component):
         return {"woo_product_attribute_value_ids": [(6, 0, attribute_value_ids)]}
 
     @mapping
-    def stock_management(self, record):
-        """Mapping for Stock Management"""
-        manage_stock = record.get("manage_stock")
-        return {"stock_management": True} if manage_stock is True else {}
-
-    @mapping
-    def woo_product_qty(self, record):
-        """Mapping for WooCommerce Product qty"""
-        return (
-            {"woo_product_qty": record.get("stock_quantity")}
-            if record.get("stock_quantity")
-            else {}
-        )
-
-    @mapping
-    def price(self, record):
-        """Mapping for Standard Price"""
-        price = record.get("price")
-        return {"price": price} if price else {}
-
-    @mapping
-    def regular_price(self, record):
-        """Mapping for Regular Price"""
-        regular_price = record.get("regular_price")
-        return {"regular_price": regular_price} if regular_price else {}
-
-    @mapping
-    def status(self, record):
-        """Mapping for status"""
-        status = record.get("status")
-        return {"status": status} if status else {}
-
-    @mapping
-    def tax_status(self, record):
-        """Mapping for tax_status"""
-        tax_status = record.get("tax_status")
-        return {"tax_status": tax_status} if tax_status else {}
-
-    @mapping
-    def stock_status(self, record):
-        """Mapping for stock_status"""
-        stock_status = record.get("stock_status")
-        return {"stock_status": stock_status} if stock_status else {}
-
-    @mapping
     def list_price(self, record):
         """Mapping product Price"""
-        if self.product_type(record):
+        if self.is_product_type_variation(record):
             return {}
         return {"list_price": record.get("price")}
-
-    @mapping
-    def default_code(self, record):
-        """Mapped product default code."""
-        default_code = record.get("sku")
-        if not default_code and not self.backend_record.without_sku:
-            raise MappingError(
-                _("SKU is Missing for the product '%s' !", record.get("name"))
-            )
-        return {"default_code": default_code} if default_code else {}

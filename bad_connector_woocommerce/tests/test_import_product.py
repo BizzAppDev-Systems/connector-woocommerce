@@ -127,7 +127,7 @@ class TestImportProduct(BaseWooTestCase):
 
     def test_import_product_product_variant_type(self):
         """Test Assertions for Varaint type Product"""
-        external_id = "168"
+        external_id = "162"
         with recorder.use_cassette("import_woo_product_product"):
             self.env["woo.product.product"].import_record(
                 external_id=external_id, backend=self.backend
@@ -145,7 +145,6 @@ class TestImportProduct(BaseWooTestCase):
     def test_import_product_template(self):
         """Test Assertions for Product Template"""
         external_id = "130"
-        quantity_to_add = 10
         with recorder.use_cassette("import_woo_product_product"):
             self.env["woo.product.template"].import_record(
                 external_id=external_id, backend=self.backend
@@ -153,32 +152,4 @@ class TestImportProduct(BaseWooTestCase):
         product1 = self.env["woo.product.template"].search(
             [("external_id", "=", external_id)], limit=1
         )
-
-        variant_data = {
-            "name": "Variant 1",
-            "external_id": 15,
-            "backend_id": product1.backend_id.id,
-            "stock_management": True,
-            "detailed_type": product1.detailed_type,
-            "product_tmpl_id": product1.odoo_id.id,
-        }
-        variant = self.env["woo.product.product"].create(variant_data)
-        stock_quant = (
-            self.env["stock.quant"]
-            .with_context(inventory_mode=True)
-            .create(
-                {
-                    "product_id": variant.odoo_id.id,
-                    "inventory_quantity": quantity_to_add,
-                    "location_id": self.backend.warehouse_id.lot_stock_id.id,
-                }
-            )
-        )
-        stock_quant.action_apply_inventory()
-        with recorder.use_cassette("export_stock_qty"):
-            product1.odoo_id.update_stock_qty()
-        self.assertEqual(
-            product1.woo_product_qty,
-            10,
-            "Product is Not Exported in WooCommerce.",
-        )
+        self.assertTrue(product1, "Woo Product is not imported!")

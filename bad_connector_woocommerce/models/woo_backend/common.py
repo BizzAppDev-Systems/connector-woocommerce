@@ -550,18 +550,10 @@ class WooBackend(models.Model):
         ]
 
     def update_product_stock_qty(self):
-        """
-        Export the Stock Inventory for WooCommerce products in Odoo.
-        Update stock quantities for both individual products and product templates.
-        """
+        """Export the Stock Inventory"""
         domain = self._domain_for_update_product_stock_qty()
-
         woo_products = self.env["woo.product.product"].search(domain)
         woo_products.recompute_woo_qty()
-
-        woo_products = self.env["woo.product.template"].search(domain)
-        woo_products.update_woo_product_qty()
-
         return True
 
     @api.model

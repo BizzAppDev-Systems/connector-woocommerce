@@ -940,13 +940,12 @@ interactions:
               "attributes": [
                   {
                     "id": 0,
-                    "name": "Design",
+                    "name": "Color",
                     "position": 1,
                     "visible": true,
                     "variation": true,
                     "options": [
-                        "Simple",
-                        "Hard"
+                        "Gray"
                     ]
                 }],
               "default_attributes": [],
@@ -1069,21 +1068,10 @@ interactions:
                 "purchase_note": "",
                 "categories": [],
                 "tags": [],
-                "images": [
-                    {
-                        "id": 49,
-                        "date_created": "2023-09-25T12:57:09",
-                        "date_created_gmt": "2023-09-25T12:57:09",
-                        "date_modified": "2023-09-25T12:57:09",
-                        "date_modified_gmt": "2023-09-25T12:57:09",
-                        "src": "http://localhost:8080/wp-content/uploads/2023/09/vneck-tee-2.jpg",
-                        "name": "vneck-tee-2.jpg",
-                        "alt": ""
-                    }
-                ],
+                "images": [],
                 "attributes": [
                     {
-                        "id": 2,
+                        "id": 0,
                         "name": "Color",
                         "option": "Gray"
                     }
