@@ -207,3 +207,13 @@ class ProductCommonImportMapper(Component):
         if self.is_product_type_variation(record):
             return {}
         return {"list_price": record.get("price")}
+
+    @mapping
+    def default_code(self, record):
+        """Mapped product default code."""
+        default_code = record.get("sku")
+        if not default_code and not self.backend_record.without_sku:
+            raise MappingError(
+                _("SKU is Missing for the product '%s' !", record.get("name"))
+            )
+        return {"default_code": default_code} if default_code else {}

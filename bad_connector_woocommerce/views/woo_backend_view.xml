@@ -235,7 +235,7 @@
                                     <group>
                                         <label
                                             for="import_product_templates"
-                                            string="Import Product Templates"
+                                            string="Import Variable Products"
                                             style="font-weight:bold; white-space: nowrap;"
                                             class="oe_inline"
                                         />
@@ -253,7 +253,7 @@
                                                 name="import_product_templates"
                                                 type="object"
                                                 class="oe_highlight"
-                                                string="Import Product Templates"
+                                                string="Import Variable Products"
                                             />
                                         </div>
                                     </group>
