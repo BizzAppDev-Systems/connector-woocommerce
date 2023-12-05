@@ -8,6 +8,15 @@ class MrpBom(models.Model):
         """
         Create a Bill of Materials (BOM) for a product that is categorized
         as a 'Grouped' type in Woocommerce.
+
+        This function checks if a BOM already exists for the product template in Odoo.
+        If not, it creates a new BOM of 'phantom' type.
+
+        If an existing BOM is found, It will check the components and if there is any
+        changes found then it will archive existing BoM and create the new BoM with
+        Updated components.
+
+        :param binding: The binding object of the product.
         """
         product_template = binding.odoo_id.product_tmpl_id
         existing_bom = self.search(
