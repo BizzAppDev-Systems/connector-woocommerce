@@ -43,11 +43,11 @@ class MrpBom(models.Model):
                 }
             )
         else:
-            existing_product_ids = {
+            existing_product_id = {
                 line.product_id.id for line in existing_bom.bom_line_ids
             }
-            products_to_add = product_records - existing_product_ids
-            products_to_remove = existing_product_ids - product_records
+            products_to_add = product_records - existing_product_id
+            products_to_remove = existing_product_id - product_records
             if products_to_add or products_to_remove:
                 existing_bom.write({"active": False})
                 self.create(
