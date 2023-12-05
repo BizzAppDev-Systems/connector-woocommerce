@@ -21,7 +21,8 @@ class MrpBom(models.Model):
         product_template = binding.odoo_id.product_tmpl_id
 
         existing_bom = self.search(
-            [("product_tmpl_id", "=", product_template.id), ("active", "=", True)]
+            [("product_tmpl_id", "=", product_template.id), ("active", "=", True)],
+            limit=1,
         )
         binder = env.binder_for("woo.product.product")
 
