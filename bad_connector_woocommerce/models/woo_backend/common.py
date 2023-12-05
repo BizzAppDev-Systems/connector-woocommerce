@@ -546,7 +546,7 @@ class WooBackend(models.Model):
             ("backend_id", "in", self.ids),
             ("detailed_type", "=", "product"),
             ("stock_management", "=", True),
-            ("backend_id.stock_update", "=", True),
+            ("backend_id.update_stock_inventory", "=", True),
         ]
 
     def update_product_stock_qty(self):
