@@ -5,35 +5,32 @@ class QueueJob(models.Model):
     _inherit = "queue.job"
 
     def open_related_action(self):
-        """Used to open related record of queue job"""
+        """Inherited Method:Used to open related record of queue job."""
         self.ensure_one()
         if not self.args and not self.kwargs:
             return None
+        record = False
         if self.args:
             if not len(self.args) > 1:
-                return None
-            if isinstance(self.args[1], str) or isinstance(self.args[1], int):
-                external_id = self.args[1]
-                record = self.env[self.model_name].search(
-                    [("external_id", "=", external_id)]
-                )
-                if hasattr(self.env[self.model_name], "odoo_id"):
-                    record = record.odoo_id
-            else:
-                record = self.args[1]
-                if hasattr(record, "odoo_id"):
-                    record = record.odoo_id
+                return super().open_related_action()
+            backend = self.args[0]
+            external_id = self.args[1]
         elif self.kwargs:
             external_id = self.kwargs.get("external_id")
-            kwargs_record = self.kwargs.get("record")
+            backend = self.kwargs.get("backend")
             if not external_id:
-                external_id = kwargs_record.external_id
-            if external_id:
-                record = (
-                    self.env[self.model_name]
-                    .search([("external_id", "=", external_id)])
-                    .odoo_id
-                )
+                external_id = self.kwargs.get("record")
+        if isinstance(external_id, str) or isinstance(external_id, int):
+            record = self.env[self.model_name].search(
+                [("external_id", "=", external_id), ("backend_id", "=", backend.id)],
+                limit=1,
+            )
+        else:
+            record = external_id
+        if hasattr(record, "odoo_id"):
+            record = record.odoo_id
+        if not record:
+            return super().open_related_action()
         action = {
             "name": _("Related Record"),
             "type": "ir.actions.act_window",
