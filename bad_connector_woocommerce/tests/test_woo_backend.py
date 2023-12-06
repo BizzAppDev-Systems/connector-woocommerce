@@ -15,7 +15,7 @@ class BaseWooTestCase(TransactionComponentCase):
                 "version": "wc/v3",
                 "test_mode": True,
                 "product_categ_id": self.env.ref("product.product_category_all").id,
-                "test_location": "https://woo-wildly-inner-cycle.wpcomstaging.com",
+                "test_location": "https://localhost",
                 "test_client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
                 "test_client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
                 "default_carrier_product_id": self.env.ref(
@@ -37,7 +37,7 @@ class BaseWooTestCase(TransactionComponentCase):
             "version": "wc/v3",
             "test_mode": False,
             "product_categ_id": self.env.ref("product.product_category_all").id,
-            "location": "https://woo-wildly-inner-cycle.wpcomstaging.com",
+            "location": "https://localhost",
             "client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
             "client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
             "default_carrier_product_id": self.env.ref("product.expense_product").id,
@@ -56,7 +56,7 @@ class BaseWooTestCase(TransactionComponentCase):
         self.assertEqual(self.backend.version, "wc/v3")
         self.assertEqual(
             self.backend.test_location,
-            "https://woo-wildly-inner-cycle.wpcomstaging.com",
+            "https://localhost",
         )
         self.assertEqual(
             self.backend.test_client_id, "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf"
@@ -71,9 +71,7 @@ class BaseWooTestCase(TransactionComponentCase):
         self.backend = self.env["woo.backend"].create(self.backend_data)
         self.assertEqual(self.backend.test_mode, False)
         self.assertEqual(self.backend.version, "wc/v3")
-        self.assertEqual(
-            self.backend.location, "https://woo-wildly-inner-cycle.wpcomstaging.com"
-        )
+        self.assertEqual(self.backend.location, "https://localhost")
         self.assertEqual(
             self.backend.client_id, "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf"
         )

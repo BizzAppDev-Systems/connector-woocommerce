@@ -7,7 +7,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/payment_gateways/bacs
+      uri: https://localhost/wp-json/wc/v3/payment_gateways/bacs
     response:
       body:
         {
@@ -47,19 +47,19 @@ interactions:
               },
               "needs_setup": false,
               "post_install_scripts": [],
-              "settings_url": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-admin/admin.php?page=wc-settings&tab=checkout&section=bacs",
+              "settings_url": "https://localhost/wp-admin/admin.php?page=wc-settings&tab=checkout&section=bacs",
               "connection_url": null,
               "setup_help_text": null,
               "required_settings_keys": [],
               "_links": {
                   "self": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/payment_gateways/bacs"
+                          "href": "https://localhost/wp-json/wc/v3/payment_gateways/bacs"
                       }
                   ],
                   "collection": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/payment_gateways"
+                          "href": "https://localhost/wp-json/wc/v3/payment_gateways"
                       }
                   ]
               }
@@ -73,7 +73,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
