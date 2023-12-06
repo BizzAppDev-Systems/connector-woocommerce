@@ -71,9 +71,7 @@ class BaseWooTestCase(TransactionComponentCase):
         self.backend = self.env["woo.backend"].create(self.backend_data)
         self.assertEqual(self.backend.test_mode, False)
         self.assertEqual(self.backend.version, "wc/v3")
-        self.assertEqual(
-            self.backend.location, "https://localhost"
-        )
+        self.assertEqual(self.backend.location, "https://localhost")
         self.assertEqual(
             self.backend.client_id, "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf"
         )
