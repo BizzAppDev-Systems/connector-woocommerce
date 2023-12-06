@@ -7,7 +7,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/tax/woocommerce_currency
+      uri: https://localhost/wp-json/wc/v3/settings/tax/woocommerce_currency
     response:
       body:
         {
@@ -30,12 +30,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/general/woocommerce_currency"
+                            "href": "https://localhost/wp-json/wc/v3/settings/general/woocommerce_currency"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/general"
+                            "href": "https://localhost/wp-json/wc/v3/settings/general"
                         }
                     ]
                 }
@@ -50,7 +50,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -64,7 +64,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/tax/woocommerce_weight_unit
+      uri: https://localhost/wp-json/wc/v3/settings/tax/woocommerce_weight_unit
     response:
       body:
         {
@@ -88,12 +88,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/products/woocommerce_weight_unit"
+                            "href": "https://localhost/wp-json/wc/v3/settings/products/woocommerce_weight_unit"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/products"
+                            "href": "https://localhost/wp-json/wc/v3/settings/products"
                         }
                     ]
                 }
@@ -108,7 +108,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -122,7 +122,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/tax/woocommerce_dimension_unit
+      uri: https://localhost/wp-json/wc/v3/settings/tax/woocommerce_dimension_unit
     response:
       body:
         {
@@ -147,12 +147,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/products/woocommerce_dimension_unit"
+                            "href": "https://localhost/wp-json/wc/v3/settings/products/woocommerce_dimension_unit"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/products"
+                            "href": "https://localhost/wp-json/wc/v3/settings/products"
                         }
                     ]
                 }
@@ -167,7 +167,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]

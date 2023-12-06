@@ -7,7 +7,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/50
+      uri: https://localhost/wp-json/wc/v3/products/50
     response:
       body:
         {
@@ -101,12 +101,12 @@ interactions:
               "_links": {
                   "self": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/50"
+                          "href": "https://localhost/wp-json/wc/v3/products/50"
                       }
                   ],
                   "collection": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products"
+                          "href": "https://localhost/wp-json/wc/v3/products"
                       }
                   ]
               }
@@ -120,7 +120,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -134,7 +134,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/tags/35
+      uri: https://localhost/wp-json/wc/v3/products/tags/35
     response:
       body:
         {
@@ -169,7 +169,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -183,7 +183,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes/1
+      uri: https://localhost/wp-json/wc/v3/products/attributes/1
     response:
       body:
         {
@@ -198,12 +198,12 @@ interactions:
               "_links": {
                   "self": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes/1"
+                          "href": "https://localhost/wp-json/wc/v3/products/attributes/1"
                       }
                   ],
                   "collection": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/attributes"
+                          "href": "https://localhost/wp-json/wc/v3/products/attributes"
                       }
                   ]
               }
@@ -217,7 +217,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -231,7 +231,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/categories/1374
+      uri: https://localhost/wp-json/wc/v3/products/categories/1374
     response:
       body:
         {
@@ -249,12 +249,12 @@ interactions:
               "_links": {
                   "self": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/categories/1374"
+                          "href": "https://localhost/wp-json/wc/v3/products/categories/1374"
                       }
                   ],
                   "collection": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/categories"
+                          "href": "https://localhost/wp-json/wc/v3/products/categories"
                       }
                   ]
               }
@@ -268,7 +268,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -282,7 +282,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/orders/71
+      uri: https://localhost/wp-json/wc/v3/orders/71
     response:
       body:
         {
@@ -481,7 +481,7 @@ interactions:
                     }
                 ],
                 "refunds": [],
-                "payment_url": "https://woo-wildly-inner-cycle.wpcomstaging.com/checkout/order-pay/71/?pay_for_order=true&key=wc_order_qzJgPfO1CWI8B",
+                "payment_url": "https://localhost/checkout/order-pay/71/?pay_for_order=true&key=wc_order_qzJgPfO1CWI8B",
                 "is_editable": false,
                 "needs_payment": false,
                 "needs_processing": true,
@@ -494,17 +494,17 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/orders/71"
+                            "href": "https://localhost/wp-json/wc/v3/orders/71"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/orders"
+                            "href": "https://localhost/wp-json/wc/v3/orders"
                         }
                     ],
                     "customer": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/customers/237660088"
+                            "href": "https://localhost/wp-json/wc/v3/customers/237660088"
                         }
                     ]
               }
@@ -519,7 +519,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -533,7 +533,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/taxes/1
+      uri: https://localhost/wp-json/wc/v3/taxes/1
     response:
       body:
         {
@@ -577,7 +577,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -591,7 +591,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/customers/237660088
+      uri: https://localhost/wp-json/wc/v3/customers/237660088
     response:
       body:
         {
@@ -639,12 +639,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/customers/237660088"
+                            "href": "https://localhost/wp-json/wc/v3/customers/237660088"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/customers"
+                            "href": "https://localhost/wp-json/wc/v3/customers"
                         }
                     ]
                 }
@@ -659,7 +659,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -673,7 +673,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/shipping_methods/flat_rate
+      uri: https://localhost/wp-json/wc/v3/shipping_methods/flat_rate
     response:
       body:
         {
@@ -706,7 +706,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -720,7 +720,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/168
+      uri: https://localhost/wp-json/wc/v3/products/168
     response:
       body:
         {
@@ -729,7 +729,7 @@ interactions:
               "id": 168,
               "name": "Clothing set",
               "slug": "clothing-set",
-              "permalink": "https://woo-wildly-inner-cycle.wpcomstaging.com/product/clothing-set/",
+              "permalink": "https://localhost/product/clothing-set/",
               "date_created": "2023-11-02T11:52:51",
               "date_created_gmt": "2023-11-02T11:52:51",
               "date_modified": "2023-11-06T07:20:25",
@@ -806,12 +806,12 @@ interactions:
               "_links": {
                   "self": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/168"
+                          "href": "https://localhost/wp-json/wc/v3/products/168"
                       }
                   ],
                   "collection": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products"
+                          "href": "https://localhost/wp-json/wc/v3/products"
                       }
                   ]
               }
@@ -825,7 +825,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -839,7 +839,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/130
+      uri: https://localhost/wp-json/wc/v3/products/130
     response:
       body:
         {
@@ -848,7 +848,7 @@ interactions:
               "id": 130,
               "name": "V-Neck T-Shirt",
               "slug": "v-neck-t-shirt",
-              "permalink": "https://woo-wildly-inner-cycle.wpcomstaging.com/product/v-neck-t-shirt/",
+              "permalink": "https://localhost/product/v-neck-t-shirt/",
               "date_created": "2023-10-30T13:17:14",
               "date_created_gmt": "2023-10-30T13:17:14",
               "date_modified": "2023-11-02T08:48:01",
@@ -912,7 +912,7 @@ interactions:
                       "date_created_gmt": "2023-09-25T12:57:09",
                       "date_modified": "2023-09-25T12:57:09",
                       "date_modified_gmt": "2023-09-25T12:57:09",
-                      "src": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-content/uploads/2023/09/vneck-tee-2.jpg",
+                      "src": "https://localhost/wp-content/uploads/2023/09/vneck-tee-2.jpg",
                       "name": "vneck-tee-2.jpg",
                       "alt": ""
                   },
@@ -922,7 +922,7 @@ interactions:
                       "date_created_gmt": "2023-09-25T12:57:33",
                       "date_modified": "2023-09-25T12:57:33",
                       "date_modified_gmt": "2023-09-25T12:57:33",
-                      "src": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-content/uploads/2023/09/vnech-tee-green-1.jpg",
+                      "src": "https://localhost/wp-content/uploads/2023/09/vnech-tee-green-1.jpg",
                       "name": "vnech-tee-green-1.jpg",
                       "alt": ""
                   },
@@ -932,7 +932,7 @@ interactions:
                       "date_created_gmt": "2023-09-25T12:57:35",
                       "date_modified": "2023-10-10T13:28:26",
                       "date_modified_gmt": "2023-10-10T13:28:26",
-                      "src": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg",
+                      "src": "https://localhost/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg",
                       "name": "cloth.jpg",
                       "alt": ""
                   }
@@ -969,12 +969,12 @@ interactions:
               "_links": {
                   "self": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/130"
+                          "href": "https://localhost/wp-json/wc/v3/products/130"
                       }
                   ],
                   "collection": [
                       {
-                          "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products"
+                          "href": "https://localhost/wp-json/wc/v3/products"
                       }
                   ]
               }
@@ -988,7 +988,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -1002,7 +1002,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/products/162
+      uri: https://localhost/wp-json/wc/v3/products/162
     response:
       body:
         {
@@ -1113,7 +1113,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
