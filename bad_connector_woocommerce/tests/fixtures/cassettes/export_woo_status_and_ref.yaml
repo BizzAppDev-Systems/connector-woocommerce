@@ -25,7 +25,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: PUT
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/orders/71
+      uri: https://localhost/wp-json/wc/v3/orders/71
     response:
       body:
         {
@@ -220,7 +220,7 @@ interactions:
                     }
                 ],
                 "refunds": [],
-                "payment_url": "https://woo-wildly-inner-cycle.wpcomstaging.com/checkout/order-pay/71/?pay_for_order=true&key=wc_order_qzJgPfO1CWI8B",
+                "payment_url": "https://localhost/checkout/order-pay/71/?pay_for_order=true&key=wc_order_qzJgPfO1CWI8B",
                 "is_editable": false,
                 "needs_payment": false,
                 "needs_processing": true,
@@ -233,17 +233,17 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/orders/71"
+                            "href": "https://localhost/wp-json/wc/v3/orders/71"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/orders"
+                            "href": "https://localhost/wp-json/wc/v3/orders"
                         }
                     ],
                     "customer": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/customers/237660088"
+                            "href": "https://localhost/wp-json/wc/v3/customers/237660088"
                         }
                     ]
               }
@@ -258,7 +258,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
