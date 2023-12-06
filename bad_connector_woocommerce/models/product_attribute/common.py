@@ -60,8 +60,9 @@ class WooProductAttribute(models.Model):
         # it should be without delay
         self.backend_id._sync_from_date(
             model="woo.product.attribute.value",
-            priority=5,
             filters=filters,
+            priority=5,
+            export=False,
         )
 
 
@@ -71,5 +72,4 @@ class WooProductAttributeAdapter(Component):
     _name = "woo.product.attribute.adapter"
     _inherit = "woo.adapter"
     _apply_on = "woo.product.attribute"
-    _woo_model = "products/attributes"
-    _woo_ext_id_key = "id"
+    _remote_model = "products/attributes"

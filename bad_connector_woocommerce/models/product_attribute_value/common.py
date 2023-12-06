@@ -53,8 +53,7 @@ class WooProductAttributeValueAdapter(Component):
     _name = "woo.product.attribute.value.adapter"
     _inherit = "woo.adapter"
     _apply_on = "woo.product.attribute.value"
-    _woo_model = "products/attributes"
-    _woo_ext_id_key = "id"
+    _remote_model = "products/attributes"
 
     def search(self, filters=None, **kwargs):
         """
@@ -63,7 +62,9 @@ class WooProductAttributeValueAdapter(Component):
         the search.
         """
         # TODO: add generic logic in search common adapter based on argument.
-        resource_path = "{}/{}/terms".format(self._woo_model, filters.get("attribute"))
+        resource_path = "{}/{}/terms".format(
+            self._remote_model, filters.get("attribute")
+        )
         result = self._call(
             resource_path=resource_path, arguments=filters, http_method="get"
         )

@@ -5,12 +5,11 @@
     "author": "BizzAppDev Systems Pvt. Ltd.",
     "website": "http://www.bizzappdev.com",
     "depends": [
-        "connector",
-        "mail",
         "contacts",
-        "product",
+        "connector_base",
         "sale_management",
         "delivery",
+        "sale_automatic_workflow",
     ],
     "license": "AGPL-3",
     "data": [
@@ -34,6 +33,7 @@
         "views/woo_sale_status_view.xml",
         "views/delivery_carrier_view.xml",
         "views/woo_settings_view.xml",
+        "views/woo_payment_gateway_views.xml",
         "views/queue_job_view.xml",
         "views/connector_woo_base_menu.xml",
     ],

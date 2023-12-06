@@ -1,0 +1,3 @@
+[submodule ".odoo-common-modules"]
+	path = .odoo-common-modules
+	url = git@github.com:BizzAppDev-Systems/odoo-common-modules.git

@@ -8,5 +8,5 @@ class ConnectorWooBaseComponent(AbstractComponent):
     """
 
     _name = "connector.woo.base"
-    _inherit = "base.connector"
+    _inherit = "base.generic.connector"
     _collection = "woo.backend"

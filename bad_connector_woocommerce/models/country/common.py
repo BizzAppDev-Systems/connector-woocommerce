@@ -34,5 +34,5 @@ class WooResCountryAdapter(Component):
     _name = "woo.res.country.adapter"
     _inherit = "woo.adapter"
     _apply_on = "woo.res.country"
-    _woo_model = "data/countries"
-    _woo_ext_id_key = "code"
+    _remote_model = "data/countries"
+    _remote_ext_id_key = "code"

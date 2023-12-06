@@ -6,13 +6,16 @@ from datetime import datetime
 import requests
 from woocommerce import API
 
-from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import NetworkRetryableError, RetryableJobError
+from odoo.addons.connector_base.components.backend_adapter import (
+    GenericAdapter,
+    GenericAPI,
+)
 
 _logger = logging.getLogger(__name__)
 
 
-class WooLocation(object):
+class WooLocation:
     """The Class is used to set Location"""
 
     def __init__(self, location, client_id, client_secret, version, test_mode):
@@ -28,13 +31,13 @@ class WooLocation(object):
         return self._location
 
 
-class WooAPI(object):
+class WooAPI(GenericAPI):
     def __init__(self, location):
         """
         :param location: Remote location
         :type location: :class:`GenericLocation`
         """
-        self._location = location
+        self._location = location.get("location")
         self._api = None
 
     @property
@@ -50,7 +53,7 @@ class WooAPI(object):
             self._api = woocommerce_client
         return self._api
 
-    def api_call(self, resource_path, arguments, http_method=None):
+    def api_call(self, method, arguments, http_method=None):
         """Adjust available arguments per API"""
         if not self.api:
             return self.api
@@ -60,33 +63,23 @@ class WooAPI(object):
             additional_data.update(params=arguments)
         else:
             additional_data.update(data=arguments)
-        return getattr(self.api, http_method)(resource_path, **additional_data)
+        return getattr(self.api, http_method)(method, **additional_data)
 
-    def __enter__(self):
-        # we do nothing, api is lazy
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        if self._api is not None and hasattr(self._api, "__exit__"):
-            self._api.__exit__(exc_type, exc_value, traceback)
-
-    def call(self, resource_path, arguments, http_method=None):
+    def call(self, method, arguments, http_method=None, is_token=False, **kwargs):
         try:
             if isinstance(arguments, list):
                 while arguments and arguments[-1] is None:
                     arguments.pop()
             start = datetime.now()
             try:
-                result = self.api_call(
-                    resource_path, arguments, http_method=http_method
-                )
+                result = self.api_call(method, arguments, http_method=http_method)
             except Exception:
-                _logger.error("api.call('%s', %s) failed", resource_path, arguments)
+                _logger.error("api.call('%s', %s) failed", method, arguments)
                 raise
             else:
                 _logger.debug(
                     "api.call('%s', %s) returned %s in %s seconds",
-                    resource_path,
+                    method,
                     arguments,
                     result,
                     (datetime.now() - start).seconds,
@@ -134,82 +127,61 @@ class WooAPI(object):
                 raise
 
 
-class WooCRUDAdapter(AbstractComponent):
-    """External Records Adapter for Woocommerce"""
-
-    # pylint: disable=method-required-super
-
-    _name = "woo.crud.adapter"
-    _inherit = ["base.backend.adapter", "connector.woo.base"]
-    _usage = "backend.adapter"
-
-    def search(self, filters=None):
-        """
-        Search records according to some criterias
-        and returns a list of ids
-        """
-        raise NotImplementedError
-
-    def read(self, external_id, attributes=None):
-        """Returns the information of a record"""
-        raise NotImplementedError
-
-    def search_read(self, filters=None):
-        """
-        Search records according to some criterias
-        and returns their information
-        """
-        raise NotImplementedError
-
-    def create(self, data):
-        """Create a record on the external system"""
-        raise NotImplementedError
-
-    def write(self, external_id, data):
-        """Update records on the external system"""
-        raise NotImplementedError
-
-    def delete(self, external_id):
-        """Delete a record on the external system"""
-        raise NotImplementedError
-
-    def _call(self, resource_path, arguments=None, http_method=None):
-        """Method to initiate the connection"""
-        return self.work.woo_api.call(resource_path, arguments, http_method=http_method)
-
-
-class GenericAdapter(AbstractComponent):
+class WooAdapter(GenericAdapter):
     # pylint: disable=method-required-super
 
     _name = "woo.adapter"
-    _inherit = "woo.crud.adapter"
-    _apply_on = "woo.backend"
+    _inherit = "generic.adapter"
+    _remote_model = None
     _last_update_date = "date_modified"
-    _woo_model = None
-    _woo_ext_id_key = "id"
-    _odoo_ext_id_key = "external_id"
+    _remote_datetime_format = "%Y-%m-%dT%H:%M:%S"
+    _woo_product_stock = None
+    _woo_default_currency = None
+    _woo_default_weight = None
+    _woo_default_dimension = None
 
-    def search(self, filters=None, **kwargs):
-        """Method to get the records from woo"""
-        result = self._call(
-            resource_path=self._woo_model, arguments=filters, http_method="get"
+    def search(self, filters=None, http_method=None, **kwargs):
+        """
+        Override Method to get the records of settings from WooCommerce
+        """
+        resource_path = self.get_default_resource_path(
+            "search", filters=filters, **kwargs
         )
-        return result
+        http_method = http_method or self._http_method
+        result = self._call(
+            resource_path, arguments=filters, http_method="get", **kwargs
+        )
+        if kwargs.get("_woo_product_stock", False):
+            setting_stock_result = self._call(
+                resource_path=kwargs.get("_woo_product_stock"),
+                arguments=filters,
+                http_method="get",
+                **kwargs,
+            )
+            result["data"].append(setting_stock_result.get("data"))
 
-    def read(self, external_id=None, attributes=None):
-        """Method to get a data for specified record"""
-        resource_path = "{}/{}".format(self._woo_model, external_id)
-        result = self._call(resource_path, http_method="get")
-        result = result.get("data", [])
-        return result
+        if kwargs.get("_woo_default_currency", False):
+            default_currency_result = self._call(
+                resource_path=kwargs.get("_woo_default_currency"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_currency_result.get("data"))
 
-    def create(self, data):
-        """Creates the data in remote"""
-        result = self._call(self._woo_model, data, http_method="post")
-        return result
+        if kwargs.get("_woo_default_weight", False):
+            default_weight_result = self._call(
+                resource_path=kwargs.get("_woo_default_weight"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_weight_result.get("data"))
 
-    def write(self, external_id, data):
-        """Update records on the external system"""
-        resource_path = "{}/{}".format(self._woo_model, external_id)
-        result = self._call(resource_path, data, http_method="put")
+        if kwargs.get("_woo_default_dimension", False):
+            default_dimension_result = self._call(
+                resource_path=kwargs.get("_woo_default_dimension"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_dimension_result.get("data"))
+
         return result

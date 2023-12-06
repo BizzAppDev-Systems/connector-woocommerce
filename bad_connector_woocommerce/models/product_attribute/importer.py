@@ -53,9 +53,9 @@ class WooProductAttributeImporter(Component):
         binding.sync_attribute_values_from_woo()
         return super(WooProductAttributeImporter, self)._after_import(binding, **kwargs)
 
-    def _must_skip(self):
-        """Skipped Records which have not_real set to be True."""
+    def _must_skip(self, **kwargs):
+        """Override Method: Skipped Records which have not_real set to be True."""
         binding = self._get_binding()
         if binding and binding.not_real:
             return _("This Attribute is exclusively assigned to a specific product.")
-        return super(WooProductAttributeImporter, self)._must_skip()
+        return super(WooProductAttributeImporter, self)._must_skip(**kwargs)

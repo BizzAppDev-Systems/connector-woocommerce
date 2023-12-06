@@ -17,7 +17,19 @@ class WooBackend(models.Model):
 
     _name = "woo.backend"
     _description = "WooCommerce Backend"
-    _inherit = ["mail.thread", "connector.backend"]
+    _inherit = ["mail.thread", "generic.backend"]
+
+    @api.model
+    def _get_stock_field_id(self):
+        """
+        Get the ID of the 'virtual_available' field in the 'product.product'
+        model.
+        """
+        field = self.env["ir.model.fields"].search(
+            [("model", "=", "product.product"), ("name", "=", "virtual_available")],
+            limit=1,
+        )
+        return field
 
     name = fields.Char(
         string="Name", required=True, help="Enter the name of the WooCommerce backend."
@@ -51,9 +63,6 @@ class WooBackend(models.Model):
     client_secret = fields.Char(
         string="Secret key(Live)",
         help="Enter the Secret Key for Live Mode (Password for Basic Authentication).",
-    )
-    test_mode = fields.Boolean(
-        string="Test Mode", default=True, help="Toggle between Test and Live modes."
     )
     test_location = fields.Char(
         string="Test Location", help="Enter the Test Location for WooCommerce."
@@ -137,6 +146,76 @@ class WooBackend(models.Model):
         domain=[("type", "=", "service")],
         help="Select the default fee product for imported orders.",
     )
+    update_stock_inventory = fields.Boolean()
+    warehouse_id = fields.Many2one(
+        comodel_name="stock.warehouse",
+        string="Warehouse",
+        help="Warehouse used to compute the " "stock quantities.",
+    )
+    product_stock_field_id = fields.Many2one(
+        comodel_name="ir.model.fields",
+        string="Product Stock Field",
+        default=_get_stock_field_id,
+        domain="[('model', 'in', ['product.product', 'product.template']),"
+        " ('ttype', '=', 'float')]",
+        help="Choose the field of the product which will be used for "
+        "stock inventory updates.\nIf empty, Quantity Available "
+        "is used.",
+    )
+    woo_setting_id = fields.Many2one(comodel_name="woo.settings")
+    stock_update = fields.Boolean(related="woo_setting_id.stock_update")
+    recompute_qty_step = fields.Integer(string="Recompute Quantity Batch", default=1000)
+
+    @api.onchange("update_stock_inventory", "stock_update")
+    def _onchange_update_stock_inventory(self):
+        """
+        Handle the update of stock inventory based on WooCommerce settings.
+        If 'update_stock_inventory' is attempted to be set to True when 'stock_update'
+        is False, it automatically sets 'update_stock_inventory' to False and displays
+        a warning message.
+        """
+        if not self.stock_update and self.update_stock_inventory:
+            self.update_stock_inventory = False
+            return {
+                "warning": {
+                    "title": "Warning",
+                    "message": "You cannot set 'update_stock_inventory' to True "
+                    "when 'stock_update' is False in the WooCommerce settings "
+                    "level for Mange Stock.",
+                }
+            }
+
+    currency_id = fields.Many2one(
+        comodel_name="res.currency",
+        string="Default Currency",
+        help="Select the default Currency for imported products and orders.",
+    )
+
+    def _get_weight_uom_domain(self):
+        """Return domain for 'weight_uom_id' based on category
+        'uom.product_uom_categ_kgm'."""
+        category_id = self.env.ref("uom.product_uom_categ_kgm")
+        return [("category_id", "=", category_id.id)]
+
+    weight_uom_id = fields.Many2one(
+        "uom.uom",
+        string="Weight UOM",
+        domain=_get_weight_uom_domain,
+        help="Select a weight unit of measure.",
+    )
+
+    def _get_length_uom_domain(self):
+        """Return domain for 'dimension_uom_id' based on category
+        'uom.uom_categ_length'."""
+        category_id = self.env.ref("uom.uom_categ_length")
+        return [("category_id", "=", category_id.id)]
+
+    dimension_uom_id = fields.Many2one(
+        "uom.uom",
+        string="Dimension UOM",
+        domain=_get_length_uom_domain,
+        help="Select a dimension unit of measure.",
+    )
 
     @api.onchange("company_id")
     def _onchange_company(self):
@@ -212,7 +291,7 @@ class WooBackend(models.Model):
         else:
             force = self[force_update_field] if force_update_field else False
             self._import_from_date(
-                model=binding_model,
+                binding_model,
                 from_date_field=from_date_field,
                 filters=filters,
                 job_options=job_options,
@@ -225,31 +304,17 @@ class WooBackend(models.Model):
             backend_vals.update({from_date_field: start_time})
             self.update_backend_vals(backend_vals, **kwargs)
 
-    def update_backend_vals(self, backend_vals, **kwargs):
-        """Method to write the backend values"""
-        self.write(backend_vals)
-
     def get_queue_job_description(self, prefix, model):
-        """New method that returns the queue job description"""
-        if not prefix or not model:
-            _logger.warning("Queue Job description may not be appropriate!")
-        return "{} {}".format(prefix or "", model)
+        """Method that returns the queue job description"""
+        if not model.startswith("WooCommerce"):
+            model = self.env[model]._description
+        return super(WooBackend, self).get_queue_job_description(prefix, model)
 
-    def _import_from_date(
-        self, model, from_date_field, priority=None, filters=None, job_options=None
-    ):
-        """Method to add a filter based on the date."""
-        model.import_batch(backend=self, filters=filters)
-
-    def toggle_test_mode(self):
-        """Test Mode"""
-        for record in self:
-            record.test_mode = not record.test_mode
-
-    @contextmanager
-    def work_on(self, model_name, **kwargs):
-        """Add the work on for woo."""
-        self.ensure_one()
+    def _get_credentials_for_connection(self, model_name=None, **kwargs):
+        """
+        Override Method: to set credentials to establish connection
+        through classes.
+        """
         location = self.location
         client_id = self.client_id
         client_secret = self.client_secret
@@ -266,10 +331,16 @@ class WooBackend(models.Model):
             version=self.version,
             test_mode=self.test_mode,
         )
+        return {"location": woo_location}
 
-        with WooAPI(woo_location) as woo_api:
+    @contextmanager
+    def work_on(self, model_name, **kwargs):
+        """Add the work on for woo."""
+        self.ensure_one()
+        woo_location = self._get_credentials_for_connection(model_name)
+        with WooAPI(woo_location) as remote_api:
             with super(WooBackend, self).work_on(
-                model_name, woo_api=woo_api, **kwargs
+                model_name, remote_api=remote_api, **kwargs
             ) as work:
                 yield work
 
@@ -399,7 +470,7 @@ class WooBackend(models.Model):
             sale_orders = self.env["sale.order"].search(
                 [
                     ("woo_bind_ids.backend_id", "=", backend.id),
-                    ("woo_order_status", "!=", "completed"),
+                    ("is_final_status", "!=", True),
                     ("picking_ids.state", "=", "done"),
                 ]
             )
@@ -433,6 +504,11 @@ class WooBackend(models.Model):
                 priority=5,
                 export=False,
             )
+            backend._sync_from_date(
+                model="woo.payment.gateway",
+                priority=5,
+                export=False,
+            )
         return True
 
     @api.model
@@ -440,3 +516,26 @@ class WooBackend(models.Model):
         """Cron for sync_metadata"""
         backend_ids = self.search(domain or [])
         backend_ids.sync_metadata()
+
+    def _domain_for_update_product_stock_qty(self):
+        """Domain to search WooCommerce product"""
+        return [
+            ("backend_id", "in", self.ids),
+            ("detailed_type", "=", "product"),
+            ("stock_management", "=", True),
+            ("backend_stock_manage", "=", True),
+        ]
+
+    def update_product_stock_qty(self):
+        """Export the Stock Inventory"""
+        woo_product_obj = self.env["woo.product.product"]
+        domain = self._domain_for_update_product_stock_qty()
+        woo_products = woo_product_obj.search(domain)
+        woo_products.recompute_woo_qty()
+        return True
+
+    @api.model
+    def cron_update_stock_qty(self, domain=None):
+        """Cron for Update Stock qty"""
+        backend_ids = self.search(domain or [])
+        backend_ids.update_product_stock_qty()

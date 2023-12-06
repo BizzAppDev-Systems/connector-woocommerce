@@ -77,3 +77,47 @@ class TestImportCountry(BaseWooTestCase):
             False,
             "Include Tax settings is not matched with response!",
         )
+
+    def test_import_stock_manage(self):
+        """Test Import Stock Manage"""
+        external_id = "woocommerce_manage_stock"
+        with recorder.use_cassette("import_woo_stock_manage"):
+            self.env["woo.settings"].import_record(
+                external_id=external_id, backend=self.backend
+            )
+        self.settings_model = self.env["woo.settings"]
+        settings1 = self.settings_model.search([("external_id", "=", external_id)])
+        self.assertEqual(len(settings1), 1)
+
+    def test_import_currency(self):
+        """Test Currency"""
+        external_id = "woocommerce_currency"
+        with recorder.use_cassette("import_woo_currency"):
+            self.env["woo.settings"].import_record(
+                external_id=external_id, backend=self.backend
+            )
+        self.settings_model = self.env["woo.settings"]
+        settings1 = self.settings_model.search([("external_id", "=", external_id)])
+        self.assertEqual(len(settings1), 1)
+
+    def test_import_weight(self):
+        """Test Weight"""
+        external_id = "woocommerce_weight_unit"
+        with recorder.use_cassette("import_woo_currency"):
+            self.env["woo.settings"].import_record(
+                external_id=external_id, backend=self.backend
+            )
+        self.settings_model = self.env["woo.settings"]
+        settings1 = self.settings_model.search([("external_id", "=", external_id)])
+        self.assertEqual(len(settings1), 1)
+
+    def test_import_dimension(self):
+        """Test Dimension"""
+        external_id = "woocommerce_dimension_unit"
+        with recorder.use_cassette("import_woo_currency"):
+            self.env["woo.settings"].import_record(
+                external_id=external_id, backend=self.backend
+            )
+        self.settings_model = self.env["woo.settings"]
+        settings1 = self.settings_model.search([("external_id", "=", external_id)])
+        self.assertEqual(len(settings1), 1)

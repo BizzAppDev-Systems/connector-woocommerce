@@ -2,8 +2,6 @@ from os.path import dirname, join
 
 from vcr import VCR
 
-from odoo.tests import Form
-
 from .test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
@@ -43,7 +41,7 @@ class TestImportSaleOrder(BaseWooTestCase):
             "Order's name is not matched with response!",
         )
         self.assertEqual(
-            sale_order1.woo_order_status,
+            sale_order1.woo_order_status_id.code,
             "processing",
             "Order's status is not matched with response!",
         )
@@ -100,11 +98,8 @@ class TestImportSaleOrder(BaseWooTestCase):
             tracking_reference,
             "Tracking reference not updated for the delivery order",
         )
-        pick_dict = delivery_order.button_validate()
-        stock_immediate_transfer = Form(
-            self.env[pick_dict["res_model"]].with_context(pick_dict["context"])
-        ).save()
-        stock_immediate_transfer.process()
+        delivery_order.move_ids.quantity_done = 10
+        delivery_order.button_validate()
         self.assertEqual(
             sale_order1.picking_ids.state, "done", "Picking state should be done!"
         )
@@ -115,8 +110,20 @@ class TestImportSaleOrder(BaseWooTestCase):
         )
         with recorder.use_cassette("export_woo_status_and_ref"):
             sale_order_odoo.export_delivery_status()
-        self.assertEqual(
-            sale_order_odoo.woo_order_status,
-            "completed",
-            "Sale Order is Not in 'Completed' state in WooCommerce.",
+            self.assertEqual(
+                sale_order1.woo_order_status_id.code,
+                "completed",
+                "Sale Order is Not in 'Completed' state in WooCommerce.",
+            )
+
+    def test_import_sale_order_ship_without_tax(self):
+        """Test Assertions for Sale order"""
+        external_id = "72"
+        with recorder.use_cassette("import_woo_product_product"):
+            self.env["woo.sale.order"].import_record(
+                external_id=external_id, backend=self.backend
+            )
+        sale_order2 = self.env["woo.sale.order"].search(
+            [("external_id", "=", external_id)]
         )
+        self.assertEqual(len(sale_order2), 1)
