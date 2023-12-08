@@ -42,7 +42,7 @@ class WooSaleOrderExporterMapper(Component):
             lambda picking: picking.state == "done"
         )
         if not done_pickings:
-            raise _("No delivery orders in 'done' state.")
+            raise MappingError(_("No delivery orders in 'done' state."))
         if (
             self.backend_record.tracking_info
             and not done_pickings[0].carrier_tracking_ref
