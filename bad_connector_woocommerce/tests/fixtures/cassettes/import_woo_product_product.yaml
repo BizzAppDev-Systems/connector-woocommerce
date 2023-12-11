@@ -149,12 +149,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/products/tags/35"
+                            "href": "http://localhost/wp-json/wc/v3/products/tags/35"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/products/tags"
+                            "href": "http://localhost/wp-json/wc/v3/products/tags"
                         }
                     ]
                 }
@@ -367,7 +367,7 @@ interactions:
                       "price": 999,
                       "image": {
                           "id": "51",
-                          "src": "http://localhost:8080/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
+                          "src": "https://localhost/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
                       },
                       "parent_name": null
                     }
@@ -557,12 +557,12 @@ interactions:
                   "_links": {
                       "self": [
                           {
-                              "href": "http://localhost:8080/wp-json/wc/v3/taxes/1"
+                              "href": "https://localhost/wp-json/wc/v3/taxes/1"
                           }
                       ],
                       "collection": [
                           {
-                              "href": "http://localhost:8080/wp-json/wc/v3/taxes"
+                              "href": "https://localhost/wp-json/wc/v3/taxes"
                           }
                       ]
                   }
@@ -686,12 +686,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/shipping_methods/flat_rate"
+                            "href": "https://localhost/wp-json/wc/v3/shipping_methods/flat_rate"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/shipping_methods"
+                            "href": "https://localhost/wp-json/wc/v3/shipping_methods"
                         }
                     ]
                 }
@@ -1011,7 +1011,7 @@ interactions:
                 "id": 162,
                 "name": "V-Neck T-Shirt - Gray",
                 "slug": "v-neck-t-shirt-gray",
-                "permalink": "http://localhost:8080/product/v-neck-t-shirt/?attribute_pa_color=gray",
+                "permalink": "http://localhost/product/v-neck-t-shirt/?attribute_pa_color=gray",
                 "date_created": "2023-11-01T06:11:54",
                 "date_created_gmt": "2023-11-01T06:11:54",
                 "date_modified": "2023-11-02T08:47:59",
@@ -1089,17 +1089,17 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/products/162"
+                            "href": "https://localhost/wp-json/wc/v3/products/162"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/products"
+                            "href": "https://localhost/wp-json/wc/v3/products"
                         }
                     ],
                     "up": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/products/130"
+                            "href": "https://localhost/wp-json/wc/v3/products/130"
                         }
                     ]
                 }

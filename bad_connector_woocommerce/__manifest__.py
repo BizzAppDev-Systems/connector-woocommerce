@@ -1,9 +1,9 @@
 {
     "name": "Odoo Woocommerce Connector",
-    "version": "16.0.3.0.0",
+    "version": "17.0.1.0.0",
     "category": "Connector",
     "author": "BizzAppDev Systems Pvt. Ltd.",
-    "website": "https://github.com/OCA/sale-workflow",
+    "website": "http://www.bizzappdev.com",
     "depends": [
         "connector",
         "mail",

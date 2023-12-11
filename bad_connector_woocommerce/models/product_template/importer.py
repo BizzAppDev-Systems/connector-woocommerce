@@ -70,18 +70,16 @@ class WooProductTemplateImportMapper(Component):
             product_template = template_binder.to_internal(
                 record.get("id"), unwrap=True
             )
-
-            # Check if the attribute line already exists for the product_template.
             existing_attribute_line = product_template.attribute_line_ids.filtered(
-                lambda line: line.attribute_id.id == attribute.id
+                lambda line, attribute=attribute: line.attribute_id.id == attribute.id
             )
-
             value_ids = [
                 value.id
                 for option in woo_attribute.get("options", [])
-                for value in attribute.value_ids.filtered(lambda v: v.name == option)
+                for value in attribute.value_ids.filtered(
+                    lambda val, option=option: val.name == option
+                )
             ]
-
             # If the attribute line already exists, update it.
             if existing_attribute_line:
                 existing_attribute_line.write({"value_ids": [(6, 0, value_ids)]})

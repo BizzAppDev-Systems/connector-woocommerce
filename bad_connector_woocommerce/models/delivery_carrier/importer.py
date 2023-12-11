@@ -40,6 +40,7 @@ class WooDeliveryCarrierImportMapper(Component):
 
     @mapping
     def product_id(self, record):
+        """Mapping for product_id"""
         product_id = self.backend_record.default_carrier_product_id
         if not product_id:
             raise MappingError(

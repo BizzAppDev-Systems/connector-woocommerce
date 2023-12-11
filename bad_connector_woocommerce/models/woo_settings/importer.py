@@ -31,7 +31,8 @@ class WooSettingsImportMapper(Component):
         """Mapping for Name"""
         name = record.get("label")
         if not name:
-            raise MappingError(_("Settings Name doesn't exist please check !!!"))
+            error_message = f"Settings Name doesn't exist please check: {name}"
+            raise MappingError(error_message)
         return {"name": name}
 
     @mapping

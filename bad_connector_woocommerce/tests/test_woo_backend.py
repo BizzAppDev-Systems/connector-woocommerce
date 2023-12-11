@@ -30,25 +30,29 @@ class BaseWooTestCase(TransactionComponentCase):
                 "update_stock_inventory": True,
             }
         )
-        self.backend_data = {
-            "name": "Woo Backend",
-            "default_limit": 10,
-            "company_id": self.env.company.id,
-            "version": "wc/v3",
-            "test_mode": False,
-            "product_categ_id": self.env.ref("product.product_category_all").id,
-            "location": "https://localhost",
-            "client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
-            "client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
-            "default_carrier_product_id": self.env.ref("product.expense_product").id,
-            "default_fee_product_id": self.env.ref("product.product_product_1").id,
-            "default_product_type": "product",
-            "include_tax": False,
-            "mark_completed": True,
-            "tracking_info": True,
-            "warehouse_id": warehouse.id,
-            "update_stock_inventory": True,
-        }
+        self.backend2 = self.backend_record.create(
+            {
+                "name": "Woo Backend",
+                "default_limit": 10,
+                "company_id": self.env.company.id,
+                "version": "wc/v3",
+                "test_mode": False,
+                "product_categ_id": self.env.ref("product.product_category_all").id,
+                "location": "https://localhost",
+                "client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
+                "client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
+                "default_carrier_product_id": self.env.ref(
+                    "product.expense_product"
+                ).id,
+                "default_fee_product_id": self.env.ref("product.product_product_1").id,
+                "default_product_type": "product",
+                "include_tax": False,
+                "mark_completed": True,
+                "tracking_info": True,
+                "warehouse_id": warehouse.id,
+                "update_stock_inventory": True,
+            }
+        )
 
     def test_backend_test_mode_true(self):
         """Test case for backend with test_mode True"""
@@ -68,15 +72,14 @@ class BaseWooTestCase(TransactionComponentCase):
 
     def test_backend_test_mode_false(self):
         """Test case for backend with test_mode False"""
-        self.backend = self.env["woo.backend"].create(self.backend_data)
-        self.assertEqual(self.backend.test_mode, False)
-        self.assertEqual(self.backend.version, "wc/v3")
-        self.assertEqual(self.backend.location, "https://localhost")
+        self.assertEqual(self.backend2.test_mode, False)
+        self.assertEqual(self.backend2.version, "wc/v3")
+        self.assertEqual(self.backend2.location, "https://localhost")
         self.assertEqual(
-            self.backend.client_id, "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf"
+            self.backend2.client_id, "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf"
         )
         self.assertEqual(
-            self.backend.client_secret, "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139"
+            self.backend2.client_secret, "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139"
         )
 
     def test_toggle_test_mode(self):

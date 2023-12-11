@@ -84,4 +84,3 @@ class WooSaleOrderBatchExporter(Component):
                 )
             )
         binding.write({"woo_order_status_id": woo_order_status.id})
-        binding.write({"woo_order_status": "completed"})

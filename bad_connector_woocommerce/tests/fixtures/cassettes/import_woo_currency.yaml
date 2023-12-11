@@ -30,12 +30,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/settings/general/woocommerce_currency"
+                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/general/woocommerce_currency"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/settings/general"
+                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/settings/general"
                         }
                     ]
                 }

@@ -10,7 +10,7 @@
                 <div
                     class="alert alert-danger"
                     role="alert"
-                    attrs="{'invisible': [('variant_different', '=', False)]}"
+                    invisible="not variant_different"
                 >
                     <div class="o_row">
                         <div
@@ -35,16 +35,11 @@
                 <page
                     string="WooCommerce Connector"
                     name="woo_connector"
-                    attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                    invisible="not woo_bind_ids"
                     groups="connector.group_connector_manager"
                 >
                     <field name="woo_bind_ids" nolabel="1" readonly="1">
-                        <tree
-                            string="WooCommerce Product Template"
-                            delete="false"
-                            edit="false"
-                            create="false"
-                        >
+                        <tree delete="false" edit="false" create="false">
                             <field name="backend_id" widget="selection" />
                             <field name="external_id" />
                         </tree>

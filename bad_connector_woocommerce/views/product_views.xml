@@ -7,34 +7,28 @@
         <field name="inherit_id" ref="product.product_normal_form_view" />
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
-                <header>
+
                     <field name="woo_bind_ids" invisible="1" />
                     <field name="stock_manage" invisible="1" />
                     <field name="backend_stock_manage" invisible="1" />
                     <button
-                        name="update_stock_qty"
-                        title="Update stock inventory To Woocommerce."
-                        type="object"
-                        class="oe_highlight"
-                        string="Update Stock Inventory"
-                        attrs="{'invisible': ['|','|',('woo_bind_ids', '=', []),('stock_manage','=',False),('backend_stock_manage','=',False)]}"
-                    />
-                </header>
+                    name="update_stock_qty"
+                    title="Update stock inventory To Woocommerce."
+                    type="object"
+                    class="oe_highlight"
+                    string="Update Stock Inventory"
+                    invisible="not woo_bind_ids or not stock_manage or not backend_stock_manage"
+                />
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page
                     string="WooCommerce Connector"
                     name="woo_connector"
-                    attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                    invisible="not woo_bind_ids"
                     groups="connector.group_connector_manager"
                 >
                     <field name="woo_bind_ids" nolabel="1" readonly="1">
-                        <tree
-                            string="WooCommerce Product"
-                            delete="false"
-                            edit="false"
-                            create="false"
-                        >
+                        <tree delete="false" edit="false" create="false">
                             <field name="backend_id" widget="selection" />
                             <field name="external_id" />
                         </tree>
