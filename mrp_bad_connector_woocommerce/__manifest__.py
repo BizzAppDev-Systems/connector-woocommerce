@@ -3,7 +3,7 @@
     "version": "16.0.3.0.0",
     "category": "Connector",
     "author": "BizzAppDev Systems Pvt. Ltd.",
-    "website": "http://www.bizzappdev.com",
+    "website": "https://github.com/OCA/sale-workflow",
     "depends": [
         "bad_connector_woocommerce",
         "mrp",

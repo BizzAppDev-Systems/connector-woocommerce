@@ -12,7 +12,7 @@ from odoo.addons.connector.exception import NetworkRetryableError, RetryableJobE
 _logger = logging.getLogger(__name__)
 
 
-class WooLocation(object):
+class WooLocation:
     """The Class is used to set Location"""
 
     def __init__(self, location, client_id, client_secret, version, test_mode):
@@ -28,7 +28,7 @@ class WooLocation(object):
         return self._location
 
 
-class WooAPI(object):
+class WooAPI:
     def __init__(self, location):
         """
         :param location: Remote location
@@ -117,7 +117,7 @@ class WooAPI(object):
                 )
             result.raise_for_status()
             return result
-        except (socket.gaierror, socket.error, socket.timeout) as err:
+        except (OSError, socket.gaierror, socket.timeout) as err:
             raise NetworkRetryableError(
                 "A network error caused the failure of the job: " "%s" % err
             ) from err
@@ -230,7 +230,7 @@ class GenericAdapter(AbstractComponent):
 
     def read(self, external_id=None, attributes=None):
         """Method to get a data for specified record"""
-        resource_path = "{}/{}".format(self._woo_model, external_id)
+        resource_path = f"{self._woo_model}/{external_id}"
         result = self._call(resource_path, http_method="get")
         result = result.get("data", [])
         return result
@@ -242,7 +242,7 @@ class GenericAdapter(AbstractComponent):
 
     def write(self, external_id, data):
         """Update records on the external system"""
-        resource_path = "{}/{}".format(self._woo_model, external_id)
+        resource_path = f"{self._woo_model}/{external_id}"
         if data.get("template_external_id", False):
             resource_path = "{}/{}/variations/{}".format(
                 self._woo_model, data.get("template_external_id"), external_id
