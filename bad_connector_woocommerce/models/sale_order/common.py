@@ -21,7 +21,6 @@ class SaleOrder(models.Model):
     has_done_picking = fields.Boolean(
         string="Has Done Picking", compute="_compute_has_done_picking", store=True
     )
-    # TODO: phase 2 convert me to m2o to new object with migration script.
     woo_order_status = fields.Selection(
         selection=[
             ("completed", "Completed"),
@@ -33,18 +32,31 @@ class SaleOrder(models.Model):
             ("failed", "Failed"),
             ("trash", "Trash"),
         ],
-        string="WooCommerce Order Status",
+        string="WooCommerce Status",
     )
-    tax_different = fields.Boolean(compute="_compute_tax_diffrent")
-    total_amount_different = fields.Boolean(compute="_compute_total_amount_diffrent")
+    woo_order_status_id = fields.Many2one(
+        comodel_name="woo.sale.status",
+        string="WooCommerce Order Status",
+        ondelete="restrict",
+    )
+    is_final_status = fields.Boolean(
+        related="woo_order_status_id.is_final_status", string="Final Status"
+    )
+    tax_different = fields.Boolean(compute="_compute_tax_different")
+    total_amount_different = fields.Boolean(compute="_compute_total_amount_different")
     woo_coupon = fields.Char()
+    woo_payment_mode_id = fields.Many2one(
+        comodel_name="woo.payment.gateway",
+        string="WooCommerce Payment Mode",
+        readonly=True,
+    )
 
     @api.depends(
         "woo_bind_ids",
         "order_line.woo_bind_ids.total_tax_line",
         "order_line.price_tax",
     )
-    def _compute_tax_diffrent(self):
+    def _compute_tax_different(self):
         """
         Compute the 'tax_different' field for the sale order.
 
@@ -73,7 +85,7 @@ class SaleOrder(models.Model):
             order.tax_different = tax_different
 
     @api.depends("amount_total", "woo_bind_ids.woo_amount_total")
-    def _compute_total_amount_diffrent(self):
+    def _compute_total_amount_different(self):
         """
         Compute the 'total_amount_different' field for each record in the current
         recordset.
@@ -167,7 +179,7 @@ class WooSaleOrder(models.Model):
         )
         if not picking_ids:
             raise ValidationError(_("No delivery orders in 'done' state."))
-        if "completed" in self.mapped("woo_order_status"):
+        if self.is_final_status:
             raise ValidationError(
                 _("WooCommerce Sale Order is already in Completed Status.")
             )

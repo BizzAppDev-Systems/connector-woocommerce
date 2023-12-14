@@ -26,4 +26,6 @@ class WooModelBinder(Component):
         "woo.res.country",
         "woo.settings",
         "woo.tax",
+        "woo.payment.gateway",
+        "woo.product.template",
     ]

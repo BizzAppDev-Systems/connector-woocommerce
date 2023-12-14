@@ -304,5 +304,105 @@
             <field name="method">import_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
+
+        <!-- Import Record product.template related action queue job -->
+        <record
+            id="job_function_woo_import_product_template_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_template"
+            />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!-- Import Batch product.template related action queue job -->
+        <record
+            id="job_function_woo_import_product_template_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_template"
+            />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+
+        <!--Stock Update Export Batch related action queue job -->
+        <record
+            id="job_function_woo_stock_inventory_export_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_product"
+            />
+            <field name="method">export_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!--Stock Inventory Export Record related action queue job -->
+        <record
+            id="job_function_woo_product_product_stock_export_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_product"
+            />
+            <field name="method">export_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+
+        <!--Stock Update Export Batch Template related action queue job -->
+        <record
+            id="job_function_woo_stock_inventory_template_export_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_template"
+            />
+            <field name="method">export_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!--Stock Inventory Export Record Template related action queue job -->
+        <record
+            id="job_function_woo_product_template_stock_export_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_template"
+            />
+            <field name="method">export_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+
+        <!-- Import Payment Gateways related action queue job -->
+        <record
+            id="job_function_woo_import_payment_gateway_batch"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_payment_gateway"
+            />
+            <field name="method">import_batch</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!-- Import Payment Gateways related action queue job -->
+        <record
+            id="job_function_woo_import_payment_gateway_import_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_payment_gateway"
+            />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
     </data>
 </odoo>
