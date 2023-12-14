@@ -1,12 +1,12 @@
-**MRP Odoo Woocommerce Connector**
-==================================
+**Grouped Product Odoo Woocommerce Connector**
+==============================================
 
 **Description**
 ***************
 
-* Technical name: mrp_bad_connector_woocommerce.
+* Technical name: grouped_product_bad_connector_woocommerce.
 * This module consist all the functionality of bad_connector_woocommerce.
-* This module works as glue module to make the link between the bad_connector_woocommerce and mrp application.
+* This module works as glue module to import grouped type products using bad_connector_woocommerce.
 
 **Author**
 **********
@@ -23,7 +23,7 @@
 **Installation**
 ****************
 
-* Under applications, the application mrp_bad_connector_woocommerce can be installed/uninstalled.
+* Under applications, the application grouped_product_bad_connector_woocommerce can be installed/uninstalled.
 
 
 **Configuration**
