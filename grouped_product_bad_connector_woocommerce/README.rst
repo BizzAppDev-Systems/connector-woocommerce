@@ -6,7 +6,6 @@
 
 * Technical name: grouped_product_bad_connector_woocommerce.
 * This module consist all the functionality of bad_connector_woocommerce.
-* This module works as glue module to import grouped type products using bad_connector_woocommerce.
 
 **Author**
 **********
