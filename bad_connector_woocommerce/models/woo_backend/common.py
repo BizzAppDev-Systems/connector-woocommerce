@@ -262,7 +262,7 @@ class WooBackend(models.Model):
         force=False,
         force_update_field=None,
         job_options=None,
-        **kwargs
+        **kwargs,
     ):
         """New Method: Generic Method to import/export records based on the params"""
         self.ensure_one()
@@ -300,7 +300,7 @@ class WooBackend(models.Model):
                 filters=filters,
                 date_field=date_field,
                 job_options=job_options,
-                **kwargs
+                **kwargs,
             )
         else:
             force = self[force_update_field] if force_update_field else False
