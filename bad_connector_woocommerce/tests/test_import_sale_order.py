@@ -98,7 +98,7 @@ class TestImportSaleOrder(BaseWooTestCase):
             tracking_reference,
             "Tracking reference not updated for the delivery order",
         )
-        delivery_order.move_ids.quantity_done = 10
+        delivery_order.move_ids[0].quantity = 10
         delivery_order.button_validate()
         self.assertEqual(
             sale_order1.picking_ids.state, "done", "Picking state should be done!"

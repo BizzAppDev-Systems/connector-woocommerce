@@ -18,7 +18,7 @@
                         type="object"
                         class="oe_highlight"
                         string="Import Attribute Value"
-                        attrs="{'invisible': ['|',('woo_bind_ids', '=', []),('not_real','=', True)]}"
+                        invisible="not woo_bind_ids or not_real"
                     />
                 </header>
             </xpath>
@@ -30,16 +30,11 @@
                 <page
                     string="WooCommerce Connector"
                     name="woo_connector"
-                    attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                    invisible="not woo_bind_ids"
                     groups="connector.group_connector_manager"
                 >
                     <field name="woo_bind_ids" nolabel="1" readonly="1">
-                        <tree
-                            string="WooCommerce Product Attribute"
-                            delete="false"
-                            edit="false"
-                            create="false"
-                        >
+                        <tree delete="false" edit="false" create="false">
                             <field name="backend_id" widget="selection" />
                             <field name="external_id" />
                         </tree>

@@ -150,7 +150,7 @@ class WooImporter(AbstractComponent):
             record = self.remote_record
             model, key = dependency
             datas = record.get(key)
-            if not isinstance(datas, (list, tuple)):
+            if not isinstance(datas, (list | tuple)):
                 datas = [{"id": datas}]
             for data in datas:
                 external_id = data.get("id")
@@ -168,7 +168,7 @@ class WooImporter(AbstractComponent):
             record = self.remote_record
             model, key = dependency
             datas = record.get(key)
-            if not isinstance(datas, (list, tuple)):
+            if not isinstance(datas, (list | tuple)):
                 datas = [{"id": datas}]
             for data in datas:
                 external_id = data.get("id")

@@ -146,10 +146,18 @@ class WooSaleOrderImportMapper(Component):
     def name(self, record):
         """Return name data with sale prefix."""
         name = record.get("order_key")
+        order_id = record.get("id")
         if not name:
-            raise MappingError(_("Sale Order Name not found Please check!!!"))
+            error_message = (
+                _("Sale Order Name not found Please check Order ID: %s") % order_id
+            )
+            raise MappingError(error_message)
         if self.backend_record.order_prefix:
-            name = "{}{}".format(self.backend_record.order_prefix, record.get("id"))
+            name = _(
+                "%(order_prefix)s%(order_id)s",
+                order_prefix=self.backend_record.order_prefix,
+                order_id=order_id,
+            )
         return {"name": name}
 
     @only_create
@@ -237,12 +245,6 @@ class WooSaleOrderImportMapper(Component):
         return {"amount_tax": total_tax} if total_tax else {}
 
     @mapping
-    def woo_order_status(self, record):
-        """Mapping for Order Status"""
-        status = record.get("status")
-        return {"woo_order_status": status} if status else {}
-
-    @mapping
     def woo_order_status_id(self, record):
         """Mapping for woo_order_status_id"""
         status = record.get("status")
@@ -267,7 +269,10 @@ class WooSaleOrderImportMapper(Component):
         """Update the woo_order_id"""
         woo_order_id = record.get("id")
         if not woo_order_id:
-            raise MappingError(_("WooCommerce Order ID not found Please check!!!"))
+            error_message = _(
+                "WooCommerce Order ID not found Please check Order ID: {woo_order_id}"
+            )
+            raise MappingError(error_message)
         self.options.update(woo_order_id=woo_order_id, order_record=record)
         return {"woo_order_id": woo_order_id}
 
@@ -424,8 +429,10 @@ class WooSaleOrderLineImportMapper(Component):
         if not product_qty:
             product = self.get_product(record)
             error_message = (
-                f"Order Line Product Quantity not found for Product: {product.name}"
+                _("Order Line Product Quantity not found for Product: %s")
+                % product.name
             )
+
             raise MappingError(error_message)
         return {"product_uom_qty": product_qty}
 

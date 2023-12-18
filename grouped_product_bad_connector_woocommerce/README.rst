@@ -7,6 +7,7 @@
 * Technical name: grouped_product_bad_connector_woocommerce.
 * This module consist all the functionality of bad_connector_woocommerce.
 
+
 **Author**
 **********
 

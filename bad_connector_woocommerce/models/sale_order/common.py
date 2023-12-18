@@ -21,19 +21,6 @@ class SaleOrder(models.Model):
     has_done_picking = fields.Boolean(
         string="Has Done Picking", compute="_compute_has_done_picking", store=True
     )
-    woo_order_status = fields.Selection(
-        selection=[
-            ("completed", "Completed"),
-            ("pending", "Pending payment"),
-            ("processing", "Processing"),
-            ("on-hold", "On hold"),
-            ("cancelled", "Cancelled"),
-            ("refunded", "Refunded"),
-            ("failed", "Failed"),
-            ("trash", "Trash"),
-        ],
-        string="WooCommerce Status",
-    )
     woo_order_status_id = fields.Many2one(
         comodel_name="woo.sale.status",
         string="WooCommerce Order Status",

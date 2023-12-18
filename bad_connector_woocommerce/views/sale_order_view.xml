@@ -6,11 +6,11 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
-            <xpath expr="//form/sheet/div[hasclass('oe_button_box')]" position="inside">
+            <xpath expr="//header" position="after">
                 <div
                     class="alert alert-danger"
                     role="alert"
-                    attrs="{'invisible': [('tax_different', '=', False)]}"
+                    invisible="not tax_different"
                 >
                     <div class="o_row">
                         <div
@@ -32,7 +32,7 @@
                 <div
                     class="alert alert-danger"
                     role="alert"
-                    attrs="{'invisible': [('total_amount_different', '=', False)]}"
+                    invisible="not total_amount_different"
                 >
                     <div class="o_row">
                         <div
@@ -60,7 +60,7 @@
                     name="export_delivery_status"
                     type="object"
                     class="oe_highlight"
-                    attrs="{'invisible': ['|','|',('is_final_status','=',True),('has_done_picking', '=', False),('woo_bind_ids','=',False)]}"
+                    invisible="is_final_status or not has_done_picking or not woo_bind_ids"
                     string="Export Delivery Status"
                 />
             </xpath>
@@ -71,13 +71,9 @@
                 <field
                     name="woo_order_status_id"
                     readonly="1"
-                    attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                    invisible="not woo_bind_ids"
                 />
-                <field
-                    name="woo_coupon"
-                    readonly="1"
-                    attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
-                />
+                <field name="woo_coupon" readonly="1" invisible="not woo_bind_ids" />
                 <field name="tax_different" invisible="1" />
                 <field name="total_amount_different" invisible="1" />
             </xpath>
@@ -95,16 +91,11 @@
                     <page
                         string="WooCommerce Connector"
                         name="woo_connector"
-                        attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                        invisible="not woo_bind_ids"
                         groups="connector.group_connector_manager"
                     >
                         <field name="woo_bind_ids" nolabel="1" readonly="1">
-                            <tree
-                                string="WooCommerce Sale Order Line"
-                                delete="false"
-                                edit="false"
-                                create="false"
-                            >
+                            <tree delete="false" edit="false" create="false">
                                 <field name="backend_id" widget="selection" />
                                 <field name="external_id" />
                             </tree>
@@ -140,16 +131,11 @@
                 <page
                     string="WooCommerce Connector"
                     name="woo_connector"
-                    attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
+                    invisible="not woo_bind_ids"
                     groups="connector.group_connector_manager"
                 >
                     <field name="woo_bind_ids" nolabel="1" readonly="1">
-                        <tree
-                            string="WooCommerce Order"
-                            delete="false"
-                            edit="false"
-                            create="false"
-                        >
+                        <tree delete="false" edit="false" create="false">
                             <field name="backend_id" widget="selection" />
                             <field name="external_id" />
                         </tree>

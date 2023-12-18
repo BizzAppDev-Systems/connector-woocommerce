@@ -91,7 +91,7 @@ interactions:
                         "price": 999,
                         "image": {
                             "id": "51",
-                            "src": "https://localhost:8080/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
+                            "src": "http://localhost/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
                         },
                         "parent_name": null
                     }
@@ -261,12 +261,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/shipping_methods/flat_rate"
+                            "href": "http://localhost/wp-json/wc/v3/shipping_methods/flat_rate"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "http://localhost:8080/wp-json/wc/v3/shipping_methods"
+                            "href": "http://localhost/wp-json/wc/v3/shipping_methods"
                         }
                     ]
                 }
