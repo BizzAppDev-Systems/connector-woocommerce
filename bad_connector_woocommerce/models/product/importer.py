@@ -272,13 +272,14 @@ class WooDownloadableProductImporter(Component):
         name = download_product_info.get("name")
         url = download_product_info.get("file")
         existing_downloadable = self._find_existing_downloadable(file_id, url)
-        downloadable_values = {
-            "file_id": file_id,
-            "name": name,
-            "url": url,
-        }
         if not existing_downloadable:
-            return self.env["woo.downloadable.product"].create(downloadable_values)
+            return self.env["woo.downloadable.product"].create(
+                {
+                    "file_id": file_id,
+                    "name": name,
+                    "url": url,
+                }
+            )
         return existing_downloadable
 
     def _find_existing_downloadable(self, file_id, url):

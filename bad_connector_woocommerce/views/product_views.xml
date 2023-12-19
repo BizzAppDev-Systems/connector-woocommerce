@@ -58,7 +58,7 @@
                                     <field name="price" />
                                     <field name="regular_price" />
                                     <field name="stock_management" />
-                                    <field name="downloadable_product" />
+                                    <field name="downloadable_product" readonly="1" />
                                 </group>
                                 <label
                                     for="woo_product_categ_ids"
