@@ -56,6 +56,7 @@
     - Added 'Product Category' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Category for imported WooCommerce Product.
     - Added 'Default Product Type' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Type for imported WooCommerce Product.
     - Added 'WooCommerce Product Image URL' which is located at Product Binding level, designed to store Other Product Images which will store in woo.product.image.url object instead of initial Image.
+    -Added 'WooCommerce Downloadable Product' which is located at Product Binding level, designed to store Dowanloadable Product files which will store in woo.downloadable.product object.
     - By Clicking the "Import Products" button different product type such as Simple and Variable will get imported from woocommerce in odoo.
 
 * Product Templates Import:
