@@ -1,7 +1,7 @@
 from odoo import fields, models
 
 
-class WooProductImageUrl(models.Model):
+class WooDownloadableProduct(models.Model):
     _name = "woo.downloadable.product"
     _description = "WooCommerce Downloadable Product"
 
