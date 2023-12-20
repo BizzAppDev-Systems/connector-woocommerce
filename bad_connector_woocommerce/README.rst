@@ -15,6 +15,7 @@
 * Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
 * Add "Import Partners","Import Products","Import Product Templates","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes" and "Update Stock Inventory" at backend level.
 * Required field to Import the Partners,Product Templates,Products,Product Attributes,Taxes,Product Tags,Product Category,Update Stock Inventory and Sale Orders are Location,Client Id,Client Secret,Product Category,Company and Warehouse.
+* Already uptodate record functionality based on record modification date.
 
 **Author**
 **********
