@@ -126,7 +126,7 @@ class WooProductProduct(models.Model):
         string="Computed Quantity",
         help="""Last computed quantity to send " "on WooCommerce.""",
     )
-    downloadable_product = fields.Boolean()
+    downloadable_product = fields.Boolean(readonly=True)
     woo_downloadable_product_ids = fields.Many2many(
         comodel_name="woo.downloadable.product",
         string="WooCommerce Downloadable Product",

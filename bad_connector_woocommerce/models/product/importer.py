@@ -205,6 +205,46 @@ class WooProductProductImportMapper(Component):
         downloadable_product = record.get("downloadable")
         return {"downloadable_product": True} if downloadable_product else {}
 
+    @mapping
+    def woo_downloadable_product_ids(self, record):
+        """Mapping of downloadable product ids"""
+        downloadable_ids = [
+            self._import_downloadable_product(download_product_info).id
+            for download_product_info in record.get("downloads", [])
+        ]
+        return (
+            {"woo_downloadable_product_ids": [(6, 0, downloadable_ids)]}
+            if downloadable_ids
+            else {}
+        )
+
+    def _import_downloadable_product(self, download_product_info):
+        """
+        Get or create a downloadable record.
+        :param download_product_info: Information about the downloadable product.
+        :return: downloadable product record.
+        """
+        file_id, name, url = (
+            download_product_info.get("id"),
+            download_product_info.get("name"),
+            download_product_info.get("file"),
+        )
+        existing_downloadable = self._find_existing_downloadable(file_id, url)
+        return existing_downloadable or self.env["woo.downloadable.product"].create(
+            {"file_id": file_id, "name": name, "url": url}
+        )
+
+    def _find_existing_downloadable(self, file_id, url):
+        """
+        Find an existing downloadable product record based on file_id and URL.
+        :param file id: The id of the downloadable.
+        :param url: The URL of the downloadable.
+        :return: Existing downloadable product record or None if not found.
+        """
+        return self.env["woo.downloadable.product"].search(
+            [("file_id", "=", file_id), ("url", "=", url)], limit=1
+        )
+
 
 class WooProductProductImporter(Component):
     """Importer the WooCommerce Product"""
@@ -221,74 +261,8 @@ class WooProductProductImporter(Component):
         """
         result = super(WooProductProductImporter, self)._after_import(binding, **kwargs)
         image_record = self.remote_record.get("images")
-        if image_record:
-            image_importer = self.component(usage="product.image.importer")
-            image_importer.run(self.external_id, binding, image_record)
-
-        download_product_record = self.remote_record.get("downloads", [])
-        if download_product_record:
-            download_product_importer = self.component(
-                usage="downloadable.product.importer"
-            )
-            download_product_importer.run(
-                self.external_id, binding, download_product_record
-            )
+        if not image_record:
+            return result
+        image_importer = self.component(usage="product.image.importer")
+        image_importer.run(self.external_id, binding, image_record)
         return result
-
-
-class WooDownloadableProductImporter(Component):
-    """
-    Import translations for a record.
-
-    Usually called from importers, in ``_after_import``.
-    For instance from the products and products' Downloadable importers.
-    """
-
-    _name = "woo.downloadable.product.importer"
-    _inherit = "woo.importer"
-    _usage = "downloadable.product.importer"
-
-    def run(self, external_id, binding, download_product_record):
-        """
-        Import and associate downloadable product.
-        :param download_product_record: List of downloadable information.
-        """
-        downloadable_ids = []
-        for download_product_info in download_product_record:
-            downloadable_record = self._import_downloadable_product(
-                download_product_info
-            )
-            downloadable_ids.append(downloadable_record.id)
-        if downloadable_ids:
-            binding.write({"woo_downloadable_product_ids": [(6, 0, downloadable_ids)]})
-
-    def _import_downloadable_product(self, download_product_info):
-        """
-        Get or create a secondary downloadable record.
-        :param download_product_info: Information about the downloadable product.
-        :return: downloadable product record.
-        """
-        file_id = download_product_info.get("id")
-        name = download_product_info.get("name")
-        url = download_product_info.get("file")
-        existing_downloadable = self._find_existing_downloadable(file_id, url)
-        if not existing_downloadable:
-            return self.env["woo.downloadable.product"].create(
-                {
-                    "file_id": file_id,
-                    "name": name,
-                    "url": url,
-                }
-            )
-        return existing_downloadable
-
-    def _find_existing_downloadable(self, file_id, url):
-        """
-        Find an existing downloadable product record based on name and URL.
-        :param name: The id of the downloadable.
-        :param url: The URL of the downloadable.
-        :return: Existing downloadable product record or None if not found.
-        """
-        return self.env["woo.downloadable.product"].search(
-            [("file_id", "=", file_id), ("url", "=", url)], limit=1
-        )
