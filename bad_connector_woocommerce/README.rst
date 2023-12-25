@@ -172,6 +172,7 @@
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
   - Transfer Stock Manage Settings from WooCommerce to Odoo and handle the mapping during import process.
+* Test
 
 **Known issues/Roadmap**
 ************************
