@@ -71,7 +71,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
             "catalog_visibility": "visible",
             "description": "",
             "short_description": "",
-            "sku": "",
+            "sku": "product-21-sku",
             "price": "98",
             "regular_price": "100",
             "sale_price": "98",
@@ -312,7 +312,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
         self.backend.cron_import_product_templates()
         self.backend.generate_token()
 
-    def test_product_update_webhook(self):
+    def test_product_create_webhook(self):
         """Called webhook for Product"""
         product_webhook_url = "/update_product/woo_webhook/{}".format(
             self.backend.access_token
@@ -320,22 +320,30 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
         self.base_url = "http://{}:{}".format(
             common.HOST, odoo.tools.config["http_port"]
         )
-        self.woocommerce_response = self.opener.post(
+        self.woocommerce_product_response = self.opener.post(
             url="{}/{}".format(self.base_url, product_webhook_url),
             json=self.woocommerce_product_payload,
         )
-        self.assertEqual(self.woocommerce_response.status_code, 200, "Should be OK")
+        product_response = self.woocommerce_product_response.json()
+        self.assertEqual(
+            self.woocommerce_product_response.status_code, 200, "Should be OK"
+        )
+        self.assertEqual(product_response.get("id"), 382, "Should be match")
 
-    def test_order_update_webhook(self):
+    def test_order_create_webhook(self):
         """Called webhook for Order"""
-        product_webhook_url = "/update_order/woo_webhook/{}".format(
+        order_webhook_url = "/update_order/woo_webhook/{}".format(
             self.backend.access_token
         )
         self.base_url = "http://{}:{}".format(
             common.HOST, odoo.tools.config["http_port"]
         )
-        self.woocommerce_response = self.opener.post(
-            url="{}/{}".format(self.base_url, product_webhook_url),
+        self.woocommerce_order_response = self.opener.post(
+            url="{}/{}".format(self.base_url, order_webhook_url),
             json=self.woocommerce_order_payload,
         )
-        self.assertEqual(self.woocommerce_response.status_code, 200, "Should be OK")
+        order_response = self.woocommerce_order_response.json()
+        self.assertEqual(
+            self.woocommerce_order_response.status_code, 200, "Should be OK"
+        )
+        self.assertEqual(order_response.get("id"), 369, "Should be match")
