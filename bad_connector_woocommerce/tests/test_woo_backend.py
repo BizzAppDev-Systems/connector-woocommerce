@@ -310,6 +310,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
         self.backend.cron_export_sale_order_status()
         self.backend.cron_update_stock_qty()
         self.backend.cron_import_product_templates()
+        self.backend.generate_token()
 
     def test_product_update_webhook(self):
         """Called webhook for Product"""
