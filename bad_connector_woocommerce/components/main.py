@@ -1,6 +1,7 @@
 import json
 
-from odoo import http
+from odoo import _, http
+from odoo.exceptions import UserError
 from odoo.http import request
 
 
@@ -14,13 +15,16 @@ class WooWebhook(http.Controller):
             .sudo()
             .search([("access_token", "=", access_token)], limit=1)
         )
+        if not backend:
+            raise UserError(
+                _("No WooCommerce backend found. Check your Access Token and try again")
+            )
         model = request.env[model_name]
         description = backend.get_queue_job_description(
             prefix=model.import_record.__doc__ or f"Record Import Of {model_name}",
             model=model._description,
         )
         job_options["description"] = description
-
         return model.with_delay(**job_options or {}).import_record(
             backend=backend, external_id=payload.get("id"), data=payload
         )
