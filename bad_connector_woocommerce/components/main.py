@@ -1,8 +1,12 @@
 import json
+import logging
 
-from odoo import _, http
-from odoo.exceptions import UserError
+from werkzeug.exceptions import Forbidden
+
+from odoo import http
 from odoo.http import request
+
+_logger = logging.getLogger(__name__)
 
 
 class WooWebhook(http.Controller):
@@ -16,9 +20,10 @@ class WooWebhook(http.Controller):
             .search([("access_token", "=", access_token)], limit=1)
         )
         if not backend:
-            raise UserError(
-                _("No WooCommerce backend found. Check your Access Token and try again")
+            _logger.error(
+                "No WooCommerce backend found. Check your Access Token and try again"
             )
+            raise Forbidden()
         model = request.env[model_name]
         description = backend.get_queue_job_description(
             prefix=model.import_record.__doc__ or f"Record Import Of {model_name}",
