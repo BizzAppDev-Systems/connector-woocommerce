@@ -229,20 +229,21 @@ class WooProductProductImportMapper(Component):
             download_product_info.get("name"),
             download_product_info.get("file"),
         )
-        existing_downloadable = self._find_existing_downloadable(file_id, url)
+        existing_downloadable = self._find_existing_downloadable(file_id, name, url)
         return existing_downloadable or self.env["woo.downloadable.product"].create(
             {"file_id": file_id, "name": name, "url": url}
         )
 
-    def _find_existing_downloadable(self, file_id, url):
+    def _find_existing_downloadable(self, file_id, name, url):
         """
         Find an existing downloadable product record based on file_id and URL.
         :param file id: The id of the downloadable.
+        :param name: The name of the downloadable.
         :param url: The URL of the downloadable.
         :return: Existing downloadable product record or None if not found.
         """
         return self.env["woo.downloadable.product"].search(
-            [("file_id", "=", file_id), ("url", "=", url)], limit=1
+            [("file_id", "=", file_id), ("name", "=", name), ("url", "=", url)], limit=1
         )
 
 
