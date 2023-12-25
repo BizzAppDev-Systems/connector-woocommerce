@@ -55,6 +55,7 @@ class WooProductAttributeValueAdapter(Component):
     _apply_on = "woo.product.attribute.value"
     _woo_model = "products/attributes"
     _woo_ext_id_key = "id"
+    _check_import_sync_date = False
 
     def search(self, filters=None, **kwargs):
         """

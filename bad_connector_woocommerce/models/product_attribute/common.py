@@ -33,7 +33,6 @@ class WooProductAttribute(models.Model):
     _inherit = "woo.binding"
     _inherits = {"product.attribute": "odoo_id"}
     _description = "WooCommerce Product Attribute"
-
     _rec_name = "name"
 
     odoo_id = fields.Many2one(
@@ -73,3 +72,4 @@ class WooProductAttributeAdapter(Component):
     _apply_on = "woo.product.attribute"
     _woo_model = "products/attributes"
     _woo_ext_id_key = "id"
+    _check_import_sync_date = False

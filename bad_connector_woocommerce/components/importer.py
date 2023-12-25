@@ -238,7 +238,7 @@ class WooImporter(AbstractComponent):
         """Hook called at the end of the import"""
         return
 
-    def run(self, external_id, data=None, force=False):
+    def run(self, external_id, data=None, force=False, **kwargs):
         """Run the synchronization
 
         :param external_id: identifier of the record on remote system
@@ -262,7 +262,8 @@ class WooImporter(AbstractComponent):
         if skip:
             return skip
         binding = self._get_binding()
-
+        if not force and self._is_uptodate(binding, **kwargs):
+            return _("Already up-to-date.")
         # Keep a lock on this import until the transaction is committed
         # The lock is kept since we have detected that the information
         # will be updated into Odoo
@@ -300,7 +301,7 @@ class WooBatchImporter(AbstractComponent):
     _inherit = ["base.importer", "connector.woo.base"]
     _usage = "batch.importer"
 
-    def run(self, filters=None, force=None, job_options=None):
+    def run(self, filters=None, force=None, job_options=None, **kwargs):
         """Run the synchronization"""
         filters = filters or {}
         if "record_count" not in filters:
@@ -309,7 +310,7 @@ class WooBatchImporter(AbstractComponent):
         records = data.get("data", [])
         for record in records:
             external_id = record.get(self.backend_adapter._woo_ext_id_key)
-            self._import_record(external_id, job_options, data=record)
+            self._import_record(external_id, job_options, data=record, **kwargs)
         filters["record_count"] += len(records)
         record_count = data.get("record_count", 0)
         filters_record_count = filters.get("record_count", 0)
