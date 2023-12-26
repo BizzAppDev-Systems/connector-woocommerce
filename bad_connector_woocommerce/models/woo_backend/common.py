@@ -180,7 +180,8 @@ class WooBackend(models.Model):
     woo_setting_id = fields.Many2one(comodel_name="woo.settings")
     stock_update = fields.Boolean(related="woo_setting_id.stock_update")
     recompute_qty_step = fields.Integer(string="Recompute Quantity Batch", default=1000)
-    access_token = fields.Char(string="Access Token", readonly=True)
+    access_token = fields.Char(string="Access Token(Live)", readonly=True)
+    test_access_token = fields.Char(string="Access Token(Staging)", readonly=True)
     webhook_config = fields.Html(
         string="Webhook Configurations",
         readonly=True,
@@ -621,5 +622,9 @@ class WooBackend(models.Model):
 
     def generate_token(self):
         """Generates a unique access token"""
-        self.access_token = str(uuid.uuid4())
-        return self.access_token
+        for backend in self:
+            token = str(uuid.uuid4())
+            if backend.test_mode:
+                backend.test_access_token = token
+            else:
+                backend.access_token = token

@@ -17,7 +17,18 @@ class WooWebhook(http.Controller):
         backend = (
             request.env["woo.backend"]
             .sudo()
-            .search([("access_token", "=", access_token)], limit=1)
+            .search(
+                [
+                    "|",
+                    "&",
+                    ("test_mode", "!=", True),
+                    ("access_token", "=", access_token),
+                    "&",
+                    ("test_access_token", "=", access_token),
+                    ("test_mode", "=", True),
+                ],
+                limit=1,
+            )
         )
         if not backend:
             _logger.error(
