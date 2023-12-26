@@ -49,3 +49,4 @@ class WooProductTagAdapter(Component):
     _apply_on = "woo.product.tag"
     _woo_model = "products/tags"
     _woo_ext_id_key = "id"
+    _check_import_sync_date = False

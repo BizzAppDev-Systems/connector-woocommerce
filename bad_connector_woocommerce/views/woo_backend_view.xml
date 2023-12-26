@@ -164,6 +164,12 @@
                                             />
                                         </div>
                                     </group>
+                                    <group>
+                                        <field
+                                            name="force_import_partners"
+                                            class="oe_inline"
+                                        />
+                                    </group>
                                 </group>
                                 <group>
                                     <group>
@@ -257,6 +263,12 @@
                                             />
                                         </div>
                                     </group>
+                                    <group>
+                                        <field
+                                            name="force_import_variable_products"
+                                            class="oe_inline"
+                                        />
+                                    </group>
                                 </group>
                                 <group>
                                     <group>
@@ -283,6 +295,12 @@
                                                 string="Import Products"
                                             />
                                         </div>
+                                    </group>
+                                    <group>
+                                        <field
+                                            name="force_import_products"
+                                            class="oe_inline"
+                                        />
                                     </group>
                                 </group>
                                 <group>

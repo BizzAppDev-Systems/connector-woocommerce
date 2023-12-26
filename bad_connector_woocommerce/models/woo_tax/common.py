@@ -43,3 +43,4 @@ class WooTaxAdapter(Component):
     _apply_on = "woo.tax"
     _woo_model = "taxes"
     _woo_ext_id_key = "id"
+    _check_import_sync_date = False

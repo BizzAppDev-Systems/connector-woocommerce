@@ -33,14 +33,14 @@ class WooBinding(models.AbstractModel):
             filters = filters or {}
         with backend.work_on(self._name) as work:
             importer = work.component(usage="batch.importer")
-            return importer.run(filters=filters, **kwargs)
+            return importer.run(filters=filters, force=force, **kwargs)
 
     @api.model
     def import_record(self, backend, external_id, data=None, force=False, **kwargs):
         """Import Record Of"""
         with backend.work_on(self._name) as work:
             importer = work.component(usage="record.importer")
-            return importer.run(external_id, data=data, **kwargs)
+            return importer.run(external_id, data=data, force=force, **kwargs)
 
     @api.model
     def export_batch(self, backend, filters=None, **kwargs):

@@ -180,6 +180,19 @@ class WooBackend(models.Model):
     stock_update = fields.Boolean(related="woo_setting_id.stock_update")
     recompute_qty_step = fields.Integer(string="Recompute Quantity Batch", default=1000)
 
+    force_import_partners = fields.Boolean(
+        help="""If true,Customers will be forcefully imported from Woocommerce
+        whether it is upto date or not"""
+    )
+    force_import_products = fields.Boolean(
+        help="""If true,products will be forcefully imported
+        whether it is upto date or not"""
+    )
+    force_import_variable_products = fields.Boolean(
+        help="""If true,varaible products will be forcefully imported
+        whether it is upto date or not"""
+    )
+
     @api.onchange("update_stock_inventory", "stock_update")
     def _onchange_update_stock_inventory(self):
         """
@@ -309,6 +322,7 @@ class WooBackend(models.Model):
                 from_date_field=from_date_field,
                 filters=filters,
                 job_options=job_options,
+                force=force,
                 **kwargs
             )
             if force:
@@ -335,11 +349,12 @@ class WooBackend(models.Model):
         from_date_field,
         priority=None,
         filters=None,
+        force=False,
         job_options=None,
         **kwargs
     ):
         """Method to add a filter based on the date."""
-        model.import_batch(backend=self, filters=filters, **kwargs)
+        model.import_batch(backend=self, filters=filters, force=force, **kwargs)
 
     def toggle_test_mode(self):
         """Test Mode"""
@@ -380,6 +395,7 @@ class WooBackend(models.Model):
                 model="woo.res.partner",
                 priority=5,
                 export=False,
+                force_update_field="force_import_partners",
             )
         return True
 
@@ -397,6 +413,7 @@ class WooBackend(models.Model):
                 from_date_field="import_products_from_date",
                 priority=5,
                 export=False,
+                force_update_field="force_import_products",
                 filters={"type": "simple"},
             )
         return True
@@ -576,6 +593,7 @@ class WooBackend(models.Model):
                 model="woo.product.template",
                 from_date_field="import_products_tmpl_from_date",
                 priority=5,
+                force_update_field="force_import_variable_products",
                 export=False,
                 filters={"type": "variable"},
             )

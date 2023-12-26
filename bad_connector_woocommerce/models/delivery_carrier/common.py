@@ -45,3 +45,4 @@ class WooDeliveryCarrierAdapter(Component):
     _woo_model = "shipping_methods"
     _woo_key = "id"
     _woo_ext_id_key = "id"
+    _check_import_sync_date = False
