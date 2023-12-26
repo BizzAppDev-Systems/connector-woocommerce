@@ -37,6 +37,7 @@
         "views/woo_payment_gateway_views.xml",
         "views/queue_job_view.xml",
         "views/product_template_view.xml",
+        "views/stock_picking.xml",
         "views/connector_woo_base_menu.xml",
     ],
     "images": ["static/description/banner.gif"],
