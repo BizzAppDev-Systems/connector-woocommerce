@@ -1,6 +1,6 @@
 import logging
 
-from odoo import _, api, fields, models
+from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
@@ -22,10 +22,25 @@ class StockPicking(models.Model):
     )
     is_refund = fields.Boolean(string="Refund")
 
-    def export_refund(self):
+    def export_refund(self, job_options=None):
         """Change state of a sales order on WooCommerce"""
         print(self, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
-        for binding in self.woo_bind_ids:
+        woo_model = self.env["woo.stock.picking.refund"]
+        # if self._context.get("execute_from_cron"):
+        if job_options is None:
+            job_options = {}
+        if "description" not in job_options:
+            # description = self.export_record.__doc__
+            description = "test"
+            job_options["description"] = self.backend_id.get_queue_job_description(
+                description, self._description
+            )
+        woo_model = woo_model.with_delay(**job_options or {})
+        for woo_order in self:
+            # if not self._context.get("execute_from_cron"):
+            #     woo_order.validate_delivery_orders_done()
+            woo_model.export_record(woo_order.backend_id, woo_order)
+        # for binding in self.woo_bind_ids:
         #     if not binding.backend_id.mark_completed:
         #         raise ValidationError(
         #             _(
@@ -93,20 +108,20 @@ class WooStockPickingRefund(models.Model):
 
     # def update_woo_order_fulfillment_status(self, job_options=None):
     #     """Change status of a sales order on WooCommerce"""
-    #     woo_model = self.env["woo.sale.order"]
-    #     if self._context.get("execute_from_cron"):
-    #         if job_options is None:
-    #             job_options = {}
-    #         if "description" not in job_options:
-    #             description = self.export_record.__doc__
-    #             job_options["description"] = self.backend_id.get_queue_job_description(
-    #                 description, self._description
-    #             )
-    #         woo_model = woo_model.with_delay(**job_options or {})
-    #     for woo_order in self:
-    #         if not self._context.get("execute_from_cron"):
-    #             woo_order.validate_delivery_orders_done()
-    #         woo_model.export_record(woo_order.backend_id, woo_order)
+    # woo_model = self.env["woo.sale.order"]
+    # if self._context.get("execute_from_cron"):
+    #     if job_options is None:
+    #         job_options = {}
+    #     if "description" not in job_options:
+    #         description = self.export_record.__doc__
+    #         job_options["description"] = self.backend_id.get_queue_job_description(
+    #             description, self._description
+    #         )
+    #     woo_model = woo_model.with_delay(**job_options or {})
+    # for woo_order in self:
+    #     if not self._context.get("execute_from_cron"):
+    #         woo_order.validate_delivery_orders_done()
+    #     woo_model.export_record(woo_order.backend_id, woo_order)
 
 
 class WooStockPickingReturnAdapter(Component):

@@ -18,6 +18,15 @@ class WooStockPickingRefundExporterMapper(Component):
     def status(self, record):
         """Mapping for Status"""
         print(record, "ssssssssssssssssssssssssssssssssssss")
+        line_items = [{"id": "349","quantity": line["product_qty"],"refund_total": 18}]
+        for product in record:
+
+
+        return {
+            "amount": "18",
+            "line_items": line_items,
+            "api_refund": False,
+        }
 
     #     if record.is_final_status:
     #         raise MappingError(
