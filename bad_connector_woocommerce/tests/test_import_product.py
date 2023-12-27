@@ -2,6 +2,8 @@ from os.path import dirname, join
 
 from vcr import VCR
 
+from odoo import fields
+
 from .test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
@@ -153,3 +155,8 @@ class TestImportProduct(BaseWooTestCase):
             [("external_id", "=", external_id)], limit=1
         )
         self.assertTrue(product1, "Woo Product is not imported!")
+        product1.write({"sync_date": fields.Datetime.now()})
+        with recorder.use_cassette("import_woo_product_product"):
+            self.env["woo.product.template"].import_record(
+                external_id=product1.external_id, backend=self.backend
+            )
