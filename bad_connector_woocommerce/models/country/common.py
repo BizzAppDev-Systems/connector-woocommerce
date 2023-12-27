@@ -36,4 +36,3 @@ class WooResCountryAdapter(Component):
     _apply_on = "woo.res.country"
     _woo_model = "data/countries"
     _woo_ext_id_key = "code"
-    _check_import_sync_date = False

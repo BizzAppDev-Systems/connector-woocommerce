@@ -72,4 +72,3 @@ class WooProductAttributeAdapter(Component):
     _apply_on = "woo.product.attribute"
     _woo_model = "products/attributes"
     _woo_ext_id_key = "id"
-    _check_import_sync_date = False

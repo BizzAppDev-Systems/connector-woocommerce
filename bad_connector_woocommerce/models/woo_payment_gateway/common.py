@@ -27,4 +27,3 @@ class WooPaymentGatewayAdapter(Component):
     _apply_on = "woo.payment.gateway"
     _woo_model = "payment_gateways"
     _woo_ext_id_key = "id"
-    _check_import_sync_date = False

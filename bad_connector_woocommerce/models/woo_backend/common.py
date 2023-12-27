@@ -181,16 +181,16 @@ class WooBackend(models.Model):
     recompute_qty_step = fields.Integer(string="Recompute Quantity Batch", default=1000)
 
     force_import_partners = fields.Boolean(
-        help="""If true,Customers will be forcefully imported from Woocommerce
-        whether it is upto date or not"""
+        help="""If true, customers will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
     )
     force_import_products = fields.Boolean(
-        help="""If true,products will be forcefully imported
-        whether it is upto date or not"""
+        help="""If true, products will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
     )
     force_import_variable_products = fields.Boolean(
-        help="""If true,varaible products will be forcefully imported
-        whether it is upto date or not"""
+        help="""If true, variable products will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
     )
 
     @api.onchange("update_stock_inventory", "stock_update")
