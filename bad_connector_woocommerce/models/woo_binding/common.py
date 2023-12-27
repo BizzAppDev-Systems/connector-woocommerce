@@ -26,7 +26,7 @@ class WooBinding(models.AbstractModel):
 
     @api.model
     def import_batch(
-        self, backend, filters=None, job_options=None, force=False, **kwargs
+        self, backend, filters=None, force=False, job_options=None, **kwargs
     ):
         """Preparing Batch Import of"""
         if filters is None:

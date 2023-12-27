@@ -15,7 +15,7 @@
 * Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
 * Add "Import Partners","Import Products","Import Product Templates","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes" and "Update Stock Inventory" at backend level.
 * Required field to Import the Partners,Product Templates,Products,Product Attributes,Taxes,Product Tags,Product Category,Update Stock Inventory and Sale Orders are Location,Client Id,Client Secret,Product Category,Company and Warehouse.
-* Already uptodate record functionality based on record modification date.
+
 
 **Author**
 **********
@@ -45,12 +45,14 @@
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Partners.
     - Click 'Import Partners' button to Import the Partners from Woocommerce.
+    - When 'force_import_partners' boolean option is set to 'True', customers can be imported from Woocommerce,irrespective of whether the data is up-to-date or not.
     - At the WooCommerce backend level, a new boolean option 'Allow Partners without Email' has been introduced. When this option is set to 'True', the system will import all partners from child_ids that do not have an email. Conversely, when the option is set to 'False', the system will import only those partners from child_ids that have an email.
 
 * Products Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Import Products.
     - Click the 'Import Products' button to import Products from WooCommerce.
+    - When 'force_import_products' boolean option is set to 'True', products can be imported from Woocommerce,irrespective of whether the data is up-to-date or not.
     - At the WooCommerce backend level, a new boolean option 'Allow Product without SKU' has been introduced. When this option is set to 'True', the system will import all Products from WooCommerce that do not have an SKU. Conversely, when the option is set to 'False', the system will import only those Products from WooCommerce that have an SKU.
     - At the WooCommerce backend level, in 'Advanced Configuration' tab there is 'Product Category' from that select any category in which you have to keep your Product.
     - Added a Price,Regular Price,Stock Status,Tax Status,WooCommerce Product Attribute Values, and Status at the binding level.
@@ -64,6 +66,7 @@
     - Add Backend Credentials to Import Product Templates.
     - Click the 'Import Product Templates' button to import Product templates and it's variations from WooCommerce.
     - By Clicking the "Import Product Templates" button product type Variable will get imported from woocommerce in odoo.
+    - When 'force_import_variable_products' boolean option is set to 'True', variable products can be imported from Woocommerce,irrespective of whether the data is up-to-date or not.
     - "Import Product Templates" follows same configurations as the "Import Products" functionality.
 
 * Product Attributes Import:

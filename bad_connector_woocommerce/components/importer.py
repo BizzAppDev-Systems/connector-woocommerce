@@ -327,10 +327,10 @@ class WooBatchImporter(AbstractComponent):
         ):
             filters.update({"page": filters.get("page", 1) + 1})
             self.process_next_page(
-                filters=filters, job_options=job_options, force=force
+                filters=filters, force=force, job_options=job_options
             )
 
-    def process_next_page(self, filters=None, job_options=None, force=False, **kwargs):
+    def process_next_page(self, filters=None, force=False, job_options=None, **kwargs):
         """Method to trigger batch import for Next page"""
         if not filters:
             filters = {}
@@ -380,7 +380,7 @@ class WooDelayedBatchImporter(AbstractComponent):
     _inherit = "woo.batch.importer"
 
     def _import_record(
-        self, external_id, force=False, job_options=None, data=None, **kwargs
+        self, external_id, data=None, force=False, job_options=None, **kwargs
     ):
         """Delay the import of the records"""
         job_options = job_options or {}
@@ -394,5 +394,5 @@ class WooDelayedBatchImporter(AbstractComponent):
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
         delayable.import_record(
-            self.backend_record, external_id, force=force, data=data, **kwargs
+            self.backend_record, external_id, data=data, force=force, **kwargs
         )
