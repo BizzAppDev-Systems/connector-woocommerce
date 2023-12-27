@@ -157,6 +157,7 @@
   - When the Price Tax, recorded at the Order Line level, differs from the Total Tax Line value, recorded at the Order Line's binding level, a 'The WooCommerce Price Tax is different then Total Tax of Odoo.' Danger Banner will be displayed at the sale order level.
   - When the Amount Total, recorded at the Order level, differs from the woo Amount Total value, recorded at the Order binding level, a 'The WooCommerce Amount Total is different then Amount Total of Odoo.' Danger Banner will be displayed at the sale order level.
   - At the backend level, within the 'Connectors' section, specifically under 'WooCommerce' > 'WooCommerce Backends' in the 'Advanced Configuration' tab, there is a 'Filter Sale Orders Based on their Status' Many2many Field. When this field is populated with specific sale order statuses, it will filter and retrieve those sale orders from WooCommerce that match the statuses provided in the 'Filter Sale Orders Based on their Status' field.
+  - We can only mark the Woocommerce status to Completed if the co-responding sleorder's all delivery order are in "Done" or "Cancelled" state.
 
 * Payload Information:
     - At Partner, Product, Product Attribute, Product Attribute Value, Country, Delivery Carrier, Product Tags and Sale order binding form view level the co-responding payload can be viewed in "Woo Data" field.
