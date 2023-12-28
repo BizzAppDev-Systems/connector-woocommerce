@@ -9,9 +9,10 @@
                 <sheet>
                     <group>
                         <group>
+                            <field name="external_id" />
                             <field name="name" />
                             <field name="url" />
-                            <field name="file_id" />
+                            <field name="woo_product_id" />
                         </group>
                     </group>
                 </sheet>

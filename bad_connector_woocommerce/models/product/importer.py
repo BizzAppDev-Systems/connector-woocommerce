@@ -109,6 +109,14 @@ class WooProductProductImportMapper(Component):
     _name = "woo.product.product.import.mapper"
     _inherit = "woo.product.common.mapper"
     _apply_on = "woo.product.product"
+    _map_child_fallback = "woo.map.child.import"
+    children = [
+        (
+            "downloads",
+            "woo_downloadable_product_ids",
+            "woo.downloadable.product",
+        ),
+    ]
 
     @only_create
     @mapping
@@ -205,46 +213,35 @@ class WooProductProductImportMapper(Component):
         downloadable_product = record.get("downloadable")
         return {"downloadable_product": True} if downloadable_product else {}
 
-    @mapping
-    def woo_downloadable_product_ids(self, record):
-        """Mapping of downloadable product ids"""
-        downloadable_ids = [
-            self._import_downloadable_product(download_product_info).id
-            for download_product_info in record.get("downloads", [])
+    def _unlink_downloadable_product(self, map_record, product_ids):
+        """Unlink downloadable products if they are removed from woocommerce."""
+        product_binder = self.binder_for("woo.product.product")
+        product_id = map_record.source.get("id")
+        downloadable_in_record = ()
+        if product_id:
+            product = product_binder.to_internal(product_id)
+            if product:
+                downloadable_in_record = product.woo_downloadable_product_ids.mapped(
+                    "external_id"
+                )
+        removable_product = set(product_ids).symmetric_difference(
+            downloadable_in_record
+        )
+        if removable_product:
+            records_to_unlink = self.env["woo.downloadable.product"].search(
+                [("external_id", "in", list(removable_product))]
+            )
+            records_to_unlink.unlink()
+
+    def finalize(self, map_record, values):
+        """Unlink downloadable product that no longer exist"""
+        values = super().finalize(map_record, values)
+        product_ids = [
+            value[2].get("external_id")
+            for value in values.get("woo_downloadable_product_ids")
         ]
-        return (
-            {"woo_downloadable_product_ids": [(6, 0, downloadable_ids)]}
-            if downloadable_ids
-            else {}
-        )
-
-    def _import_downloadable_product(self, download_product_info):
-        """
-        Get or create a downloadable record.
-        :param download_product_info: Information about the downloadable product.
-        :return: downloadable product record.
-        """
-        file_id, name, url = (
-            download_product_info.get("id"),
-            download_product_info.get("name"),
-            download_product_info.get("file"),
-        )
-        existing_downloadable = self._find_existing_downloadable(file_id, name, url)
-        return existing_downloadable or self.env["woo.downloadable.product"].create(
-            {"file_id": file_id, "name": name, "url": url}
-        )
-
-    def _find_existing_downloadable(self, file_id, name, url):
-        """
-        Find an existing downloadable product record based on file_id and URL.
-        :param file id: The id of the downloadable.
-        :param name: The name of the downloadable.
-        :param url: The URL of the downloadable.
-        :return: Existing downloadable product record or None if not found.
-        """
-        return self.env["woo.downloadable.product"].search(
-            [("file_id", "=", file_id), ("name", "=", name), ("url", "=", url)], limit=1
-        )
+        self._unlink_downloadable_product(map_record, product_ids)
+        return values
 
 
 class WooProductProductImporter(Component):

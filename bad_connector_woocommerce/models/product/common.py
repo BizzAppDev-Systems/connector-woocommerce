@@ -127,10 +127,10 @@ class WooProductProduct(models.Model):
         help="""Last computed quantity to send " "on WooCommerce.""",
     )
     downloadable_product = fields.Boolean(readonly=True)
-    woo_downloadable_product_ids = fields.Many2many(
+    woo_downloadable_product_ids = fields.One2many(
         comodel_name="woo.downloadable.product",
+        inverse_name="woo_product_id",
         string="WooCommerce Downloadable Product",
-        ondelete="restrict",
     )
 
     def recompute_woo_qty(self):

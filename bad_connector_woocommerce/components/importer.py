@@ -288,6 +288,32 @@ class WooMapChildImport(AbstractComponent):
     _inherit = ["connector.woo.base", "base.map.child.import"]
     _usage = "import.map.child"
 
+    def format_items(self, items_values):
+        """Format the values of the items mapped from the child Mappers.
+
+        It can be overridden for instance to add the Odoo
+        relationships commands ``(6, 0, [IDs])``, ...
+
+        As instance, it can be modified to handle update of existing
+        items: check if an 'id' has been defined by
+        :py:meth:`get_item_values` then use the ``(1, ID, {values}``)
+        command
+
+        :param items_values: list of values for the items to create
+        :type items_values: list
+
+        """
+        final_vals = []
+        for item in items_values:
+            external_id = item["external_id"]
+            binder = self.binder_for(model=self.model)
+            binding = binder.to_internal(external_id)
+            if binding:
+                final_vals.append((1, binding.id, item))  # update
+            else:
+                final_vals.append((0, 0, item))  # create
+        return final_vals
+
 
 class WooBatchImporter(AbstractComponent):
     """
