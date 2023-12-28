@@ -98,6 +98,7 @@ class BaseWooTestCase(TransactionComponentCase):
 
     def test_backend_cron(self):
         """Test case for cron method"""
+        self.backend.force_import_products = True
         self.backend.cron_import_partners()
         self.backend.cron_import_product_tags()
         self.backend.cron_import_product_attributes()
