@@ -317,7 +317,7 @@ class WooBackend(models.Model):
             )
         else:
             force = self[force_update_field] if force_update_field else False
-            kwargs["Force"] = force
+            kwargs["force"] = force
             self._import_from_date(
                 model=binding_model,
                 from_date_field=from_date_field,

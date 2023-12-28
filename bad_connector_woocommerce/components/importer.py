@@ -262,7 +262,6 @@ class WooImporter(AbstractComponent):
         if skip:
             return skip
         binding = self._get_binding()
-        force = kwargs.get("Force")
         if not force and self._is_uptodate(binding, **kwargs):
             return _("Already up-to-date.")
         # Keep a lock on this import until the transaction is committed
@@ -304,6 +303,8 @@ class WooBatchImporter(AbstractComponent):
 
     def run(self, filters=None, force=None, job_options=None, **kwargs):
         """Run the synchronization"""
+        if force:
+            kwargs["force"] = force
         filters = filters or {}
         if "record_count" not in filters:
             filters.update({"record_count": 0})
