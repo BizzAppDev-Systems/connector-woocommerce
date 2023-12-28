@@ -262,6 +262,7 @@ class WooImporter(AbstractComponent):
         if skip:
             return skip
         binding = self._get_binding()
+        force = kwargs.get("Force")
         if not force and self._is_uptodate(binding, **kwargs):
             return _("Already up-to-date.")
         # Keep a lock on this import until the transaction is committed
@@ -301,7 +302,7 @@ class WooBatchImporter(AbstractComponent):
     _inherit = ["base.importer", "connector.woo.base"]
     _usage = "batch.importer"
 
-    def run(self, filters=None, force=False, job_options=None, **kwargs):
+    def run(self, filters=None, force=None, job_options=None, **kwargs):
         """Run the synchronization"""
         filters = filters or {}
         if "record_count" not in filters:
@@ -310,13 +311,7 @@ class WooBatchImporter(AbstractComponent):
         records = data.get("data", [])
         for record in records:
             external_id = record.get(self.backend_adapter._woo_ext_id_key)
-            self._import_record(
-                external_id=external_id,
-                data=record,
-                force=force,
-                job_options=job_options,
-                **kwargs
-            )
+            self._import_record(external_id, job_options, data=record, **kwargs)
         filters["record_count"] += len(records)
         record_count = data.get("record_count", 0)
         filters_record_count = filters.get("record_count", 0)
@@ -326,11 +321,9 @@ class WooBatchImporter(AbstractComponent):
             and int(record_count) > int(filters_record_count)
         ):
             filters.update({"page": filters.get("page", 1) + 1})
-            self.process_next_page(
-                filters=filters, force=force, job_options=job_options
-            )
+            self.process_next_page(filters=filters, job_options=job_options, **kwargs)
 
-    def process_next_page(self, filters=None, force=False, job_options=None, **kwargs):
+    def process_next_page(self, filters=None, job_options=None, **kwargs):
         """Method to trigger batch import for Next page"""
         if not filters:
             filters = {}
@@ -345,14 +338,10 @@ class WooBatchImporter(AbstractComponent):
         if not kwargs.get("no_delay"):
             model = model.with_delay(**job_options or {})
         model.import_batch(
-            self.backend_record,
-            filters=filters,
-            force=force,
-            job_options=job_options,
-            **kwargs
+            self.backend_record, filters=filters, job_options=job_options, **kwargs
         )
 
-    def _import_record(self, external_id, force=False, **kwargs):
+    def _import_record(self, external_id, job_options=None, data=None, **kwargs):
         """
         Import a record directly or delay the import of the record.
         Method to implement in sub-classes.
@@ -366,10 +355,14 @@ class WooDirectBatchImporter(AbstractComponent):
     _name = "woo.direct.batch.importer"
     _inherit = "woo.batch.importer"
 
-    def _import_record(self, external_id, force=False, **kwargs):
+    def _import_record(self, external_id, data=None, force=None, **kwargs):
         """Import the record directly"""
         self.model.import_record(
-            self.backend_record, external_id, force=force, **kwargs
+            self.backend_record,
+            external_id=external_id,
+            data=data,
+            force=force,
+            **kwargs
         )
 
 
@@ -379,9 +372,7 @@ class WooDelayedBatchImporter(AbstractComponent):
     _name = "woo.delayed.batch.importer"
     _inherit = "woo.batch.importer"
 
-    def _import_record(
-        self, external_id, data=None, force=False, job_options=None, **kwargs
-    ):
+    def _import_record(self, external_id, job_options=None, data=None, **kwargs):
         """Delay the import of the records"""
         job_options = job_options or {}
         if "identity_key" not in job_options:
@@ -393,6 +384,4 @@ class WooDelayedBatchImporter(AbstractComponent):
             )
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
-        delayable.import_record(
-            self.backend_record, external_id, data=data, force=force, **kwargs
-        )
+        delayable.import_record(self.backend_record, external_id, data=data, **kwargs)

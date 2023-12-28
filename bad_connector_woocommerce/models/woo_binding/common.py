@@ -26,34 +26,34 @@ class WooBinding(models.AbstractModel):
 
     @api.model
     def import_batch(
-        self, backend, filters=None, force=False, job_options=None, **kwargs
+        self, backend, filters=None, job_options=None, force=False, **kwargs
     ):
         """Preparing Batch Import of"""
         if filters is None:
             filters = filters or {}
         with backend.work_on(self._name) as work:
             importer = work.component(usage="batch.importer")
-            return importer.run(filters=filters, force=force, **kwargs)
+            return importer.run(filters=filters, **kwargs)
 
     @api.model
     def import_record(self, backend, external_id, data=None, force=False, **kwargs):
         """Import Record Of"""
         with backend.work_on(self._name) as work:
             importer = work.component(usage="record.importer")
-            return importer.run(external_id, data=data, force=force, **kwargs)
+            return importer.run(external_id, data=data, **kwargs)
 
     @api.model
-    def export_batch(self, backend, filters=None, **kwargs):
+    def export_batch(self, backend, filters=None):
         """Preparing Batch Export of"""
         if filters is None:
             filters = {}
         with backend.work_on(self._name) as work:
             exporter = work.component(usage="batch.exporter")
-            return exporter.run(filters=filters, **kwargs)
+            return exporter.run(filters=filters)
 
-    def export_record(self, backend, record, fields=None, job_options=None, **kwargs):
+    def export_record(self, backend, record, fields=None, job_options=None):
         """Export Record To"""
         record.ensure_one()
         with backend.work_on(self._name) as work:
             exporter = work.component(usage="record.exporter")
-            return exporter.run(self, record, fields, **kwargs)
+            return exporter.run(self, record, fields)
