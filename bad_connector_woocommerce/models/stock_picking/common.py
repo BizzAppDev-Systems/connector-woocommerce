@@ -30,16 +30,20 @@ class StockPicking(models.Model):
         if job_options is None:
             job_options = {}
         if "description" not in job_options:
-            # description = self.export_record.__doc__
-            description = "test"
-            job_options["description"] = self.backend_id.get_queue_job_description(
+            description = woo_model.export_record.__doc__
+            job_options[
+                "description"
+            ] = self.sale_id.woo_bind_ids.backend_id.get_queue_job_description(
                 description, self._description
             )
         woo_model = woo_model.with_delay(**job_options or {})
         for woo_order in self:
             # if not self._context.get("execute_from_cron"):
             #     woo_order.validate_delivery_orders_done()
-            woo_model.export_record(woo_order.backend_id, woo_order)
+            print(woo_order, "ldmskdsdsdjsdsjdjdijdisdjsi")
+            woo_model.export_record(
+                woo_order.sale_id.woo_bind_ids.backend_id, woo_order
+            )
         # for binding in self.woo_bind_ids:
         #     if not binding.backend_id.mark_completed:
         #         raise ValidationError(
@@ -124,12 +128,12 @@ class WooStockPickingRefund(models.Model):
     #     woo_model.export_record(woo_order.backend_id, woo_order)
 
 
-class WooStockPickingReturnAdapter(Component):
-    _name = "woo.stock.picking.return.adapter"
+class WooStockPickingRefundAdapter(Component):
+    _name = "woo.stock.picking.refund.adapter"
     _inherit = "woo.adapter"
-    _apply_on = "woo.stock.picking.return"
+    _apply_on = "woo.stock.picking.refund"
 
-    _woo_model = "refunds"
+    _woo_model = "orders"
     _woo_key = "id"
     _woo_ext_id_key = "id"
     # _model_dependencies = [

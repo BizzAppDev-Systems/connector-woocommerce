@@ -237,7 +237,10 @@ class GenericAdapter(AbstractComponent):
 
     def create(self, data):
         """Creates the data in remote"""
-        result = self._call(self._woo_model, data, http_method="post")
+        print("helllllllllllllllllllooooooooooooooooooooooooooooooooo")
+        resource_path = "{}/{}/refunds".format(self._woo_model, "437")
+        print(resource_path, "[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]")
+        result = self._call(resource_path, data, http_method="post")
         return result
 
     def write(self, external_id, data):

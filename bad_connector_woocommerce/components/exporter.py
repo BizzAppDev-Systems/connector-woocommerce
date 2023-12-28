@@ -239,6 +239,7 @@ class WooExporter(AbstractComponent):
         # self._lock()
         map_record = self._map_data()
         if self.external_id:
+            print(self.external_id, "ssssqqq")
             record = self._update_data(map_record, fields=fields)
             if not record:
                 return _("Nothing to export.")
