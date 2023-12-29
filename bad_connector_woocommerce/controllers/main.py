@@ -13,7 +13,6 @@ class WooWebhook(http.Controller):
     def _common_webhook_handler(self, access_token, model_name):
         """Common handler for processing WooCommerce webhooks."""
         job_options = {}
-        payload = json.loads(request.httprequest.data)
         backend = (
             request.env["woo.backend"]
             .sudo()
@@ -35,6 +34,7 @@ class WooWebhook(http.Controller):
                 "No WooCommerce backend found. Check your Access Token and try again"
             )
             raise Forbidden()
+        payload = json.loads(request.httprequest.data)
         model = request.env[model_name]
         description = backend.get_queue_job_description(
             prefix=model.import_record.__doc__ or f"Record Import Of {model_name}",

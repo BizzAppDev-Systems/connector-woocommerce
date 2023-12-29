@@ -33,29 +33,33 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
                 "tracking_info": True,
                 "warehouse_id": warehouse.id,
                 "update_stock_inventory": True,
+                "test_access_token": "d4ea64d3-8f85-4955-be49-4aeb29151801",
+            }
+        )
+        self.backend_data = self.env["woo.backend"].create(
+            {
+                "name": "Woo Backend",
+                "default_limit": 10,
+                "company_id": self.env.company.id,
+                "version": "wc/v3",
+                "test_mode": False,
+                "product_categ_id": self.env.ref("product.product_category_all").id,
+                "location": "https://localhost",
+                "client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
+                "client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
+                "default_carrier_product_id": self.env.ref(
+                    "product.expense_product"
+                ).id,
+                "default_fee_product_id": self.env.ref("product.product_product_1").id,
+                "default_product_type": "product",
+                "include_tax": False,
+                "mark_completed": True,
+                "tracking_info": True,
+                "warehouse_id": warehouse.id,
+                "update_stock_inventory": True,
                 "access_token": "d4ea64d3-8f85-4955-be49-4aeb29151801",
             }
         )
-        self.backend_data = {
-            "name": "Woo Backend",
-            "default_limit": 10,
-            "company_id": self.env.company.id,
-            "version": "wc/v3",
-            "test_mode": False,
-            "product_categ_id": self.env.ref("product.product_category_all").id,
-            "location": "https://localhost",
-            "client_id": "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf",
-            "client_secret": "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
-            "default_carrier_product_id": self.env.ref("product.expense_product").id,
-            "default_fee_product_id": self.env.ref("product.product_product_1").id,
-            "default_product_type": "product",
-            "include_tax": False,
-            "mark_completed": True,
-            "tracking_info": True,
-            "warehouse_id": warehouse.id,
-            "update_stock_inventory": True,
-            "access_token": "d4ea64d3-8f85-4955-be49-4aeb29151801",
-        }
         self.woocommerce_product_payload = {
             "id": 382,
             "name": "product-21",
@@ -269,15 +273,15 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
 
     def test_backend_test_mode_false(self):
         """Test case for backend with test_mode False"""
-        self.backend = self.env["woo.backend"].create(self.backend_data)
-        self.assertEqual(self.backend.test_mode, False)
-        self.assertEqual(self.backend.version, "wc/v3")
-        self.assertEqual(self.backend.location, "https://localhost")
+        self.assertEqual(self.backend_data.test_mode, False)
+        self.assertEqual(self.backend_data.version, "wc/v3")
+        self.assertEqual(self.backend_data.location, "https://localhost")
         self.assertEqual(
-            self.backend.client_id, "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf"
+            self.backend_data.client_id, "ck_0e98f5d84573948942454e07e899c1e0f3bfd7cf"
         )
         self.assertEqual(
-            self.backend.client_secret, "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139"
+            self.backend_data.client_secret,
+            "cs_c2e24b2662280a0a1a6cae494d9c9b2e05d5c139",
         )
 
     def test_toggle_test_mode(self):
@@ -315,7 +319,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
     def test_product_create_webhook(self):
         """Called webhook for Product"""
         product_webhook_url = "/update_product/woo_webhook/{}".format(
-            self.backend.access_token
+            self.backend.test_access_token
         )
         self.base_url = "http://{}:{}".format(
             common.HOST, odoo.tools.config["http_port"]
@@ -333,7 +337,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
     def test_order_create_webhook(self):
         """Called webhook for Order"""
         order_webhook_url = "/update_order/woo_webhook/{}".format(
-            self.backend.access_token
+            self.backend_data.access_token
         )
         self.base_url = "http://{}:{}".format(
             common.HOST, odoo.tools.config["http_port"]
