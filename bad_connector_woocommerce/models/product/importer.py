@@ -217,16 +217,15 @@ class WooProductProductImportMapper(Component):
         """Unlink downloadable products if they are removed from woocommerce."""
         product_binder = self.binder_for("woo.product.product")
         product_id = map_record.source.get("id")
-        downloadable_in_record = ()
+        downloadable_in_record = set()
         if product_id:
             product = product_binder.to_internal(product_id)
             if product:
-                downloadable_in_record = product.woo_downloadable_product_ids.mapped(
-                    "external_id"
+                downloadable_in_record = set(
+                    product.woo_downloadable_product_ids.mapped("external_id")
                 )
-        removable_product = set(product_ids).symmetric_difference(
-            downloadable_in_record
-        )
+
+        removable_product = set(product_ids) ^ downloadable_in_record
         if removable_product:
             records_to_unlink = self.env["woo.downloadable.product"].search(
                 [("external_id", "in", list(removable_product))]
@@ -235,7 +234,7 @@ class WooProductProductImportMapper(Component):
 
     def finalize(self, map_record, values):
         """Unlink downloadable product that no longer exist"""
-        values = super().finalize(map_record, values)
+        values = super(WooProductProductImportMapper, self).finalize(map_record, values)
         product_ids = [
             value[2].get("external_id")
             for value in values.get("woo_downloadable_product_ids")

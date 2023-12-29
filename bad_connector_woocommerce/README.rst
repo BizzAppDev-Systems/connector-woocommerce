@@ -7,7 +7,7 @@
 * Technical name: bad_connector_woocommerce.
 * Add new menu in Connectors > Woocommerce > WooCommerce Backends.
 * Add new menu in Connectors > Configrations > Settings.
-* Add object woo.backend, woo.product.category, woo.product.image.url, woo.tax, woo.payment.gateway and woo.sale.status on submenu Connectors.
+* Add object woo.backend, woo.product.category, woo.product.image.url, woo.tax, woo.payment.gateway, woo.sale.status and woo.downloadable.product on submenu Connectors.
 * Add object woo.settings, res.config.setting and woo.sale.status in Configuration submenu of woocommerce backend.
 * Submenu of Configurations > WooCommerce Sale Status which is use to store all the WooCommerce Sale Order Status.
 * Required field are Location,Client Key,Client Secret.
@@ -56,7 +56,7 @@
     - Added 'Product Category' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Category for imported WooCommerce Product.
     - Added 'Default Product Type' field which is located at Connectors> WooCommerce > Advanced Configuration which is use to Set Odoo Product Type for imported WooCommerce Product.
     - Added 'WooCommerce Product Image URL' which is located at Product Binding level, designed to store Other Product Images which will store in woo.product.image.url object instead of initial Image.
-    - Added 'WooCommerce Downloadable Product' which is located at Product Binding level, designed to store Downloadable Product files which will store in woo.downloadable.product object.
+    - Added 'WooCommerce Downloadable Product' which is located at Product Binding level, designed to store Downloadable Product files which will store in woo.downloadable.product object also The downloadable product in odoo is imported as Service type.
     - By Clicking the "Import Products" button different product type such as Simple and Variable will get imported from woocommerce in odoo.
 
 * Product Templates Import:
