@@ -240,7 +240,8 @@ class WooProductProductImportMapper(Component):
             value[2].get("external_id")
             for value in values.get("woo_downloadable_product_ids")
         ]
-        self._unlink_downloadable_product(map_record, product_ids)
+        if product_ids:
+            self._unlink_downloadable_product(map_record, product_ids)
         return values
 
 
