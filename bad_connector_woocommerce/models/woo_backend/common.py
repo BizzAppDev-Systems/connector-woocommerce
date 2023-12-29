@@ -331,7 +331,7 @@ class WooBackend(models.Model):
             start_time = start_time - timedelta(seconds=IMPORT_DELTA_BUFFER)
             start_time = fields.Datetime.to_string(start_time)
             backend_vals.update({from_date_field: start_time})
-            self.update_backend_vals(backend_vals, **kwargs)
+        self.update_backend_vals(backend_vals, **kwargs)
 
     def update_backend_vals(self, backend_vals, **kwargs):
         """Method to write the backend values"""
