@@ -385,6 +385,7 @@
                                             groups="base.group_system"
                                             attrs="{'invisible': [('test_mode', '=', False)]}"
                                         />
+                                        <field name="base_url" invisible="1" />
                                         <separator string="Customers Configuration" />
                                         <field name="without_email" />
                                     </group>

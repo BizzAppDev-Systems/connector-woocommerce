@@ -187,15 +187,16 @@ class WooBackend(models.Model):
         readonly=True,
         compute="_compute_webhook_config",
     )
+    base_url = fields.Char()
 
-    @api.depends("test_mode", "test_access_token", "access_token")
+    @api.depends("test_mode", "test_access_token", "access_token", "base_url")
     def _compute_webhook_config(self):
         """
         Compute method for creating dynamic Html Content for webhook configration
         tab
         """
         for record in self:
-            web_url = "http://www.website.com:8080"
+            web_url = record.base_url
             token = (
                 record.test_access_token if record.test_mode else record.access_token
             )
