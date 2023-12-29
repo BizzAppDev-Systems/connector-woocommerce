@@ -60,7 +60,7 @@
                     name="export_delivery_status"
                     type="object"
                     class="oe_highlight"
-                    attrs="{'invisible': ['|','|',('is_final_status','=',True),('has_done_picking', '=', False),('woo_bind_ids','=',[])]}"
+                    attrs="{'invisible': ['|','|',('is_final_status','=',True),('has_done_picking', '=', False),('woo_bind_ids','=',False)]}"
                     string="Export Delivery Status"
                 />
             </xpath>
@@ -85,11 +85,7 @@
                 expr="//form/sheet/group/group/field[@name='payment_term_id']"
                 position="after"
             >
-                <field
-                    name="woo_payment_mode_id"
-                    attrs="{'invisible': [('woo_bind_ids', '=', [])]}"
-                />
-                <field name="woo_bind_ids" invisible="1" />
+                <field name="woo_payment_mode_id" />
             </xpath>
             <xpath expr="//field[@name='order_line']//tree" position="attributes">
                 <attribute name="editable" />
