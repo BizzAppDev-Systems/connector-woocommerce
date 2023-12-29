@@ -318,7 +318,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
 
     def test_product_create_webhook(self):
         """Called webhook for Product"""
-        product_webhook_url = "/update_product/woo_webhook/{}".format(
+        product_webhook_url = "/create_product/woo_webhook/{}".format(
             self.backend.test_access_token
         )
         self.base_url = "http://{}:{}".format(
@@ -336,7 +336,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
 
     def test_order_create_webhook(self):
         """Called webhook for Order"""
-        order_webhook_url = "/update_order/woo_webhook/{}".format(
+        order_webhook_url = "/create_order/woo_webhook/{}".format(
             self.backend_data.access_token
         )
         self.base_url = "http://{}:{}".format(
