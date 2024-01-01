@@ -18,7 +18,11 @@
                 </header>
             </xpath>
             <xpath expr="//sheet/group/group/field[@name='origin']" position="after">
-                <field name="is_refund" />
+                <field name="is_return_picking" invisible="1" />
+                <field
+                    name="is_refund"
+                    attrs="{'invisible':[('is_return_picking','=','False')]}"
+                />
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page
