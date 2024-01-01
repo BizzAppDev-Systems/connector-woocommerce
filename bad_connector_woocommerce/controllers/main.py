@@ -1,6 +1,5 @@
 import json
 import logging
-from urllib.parse import urlparse
 
 from werkzeug.exceptions import Forbidden
 
@@ -14,6 +13,12 @@ class WooWebhook(http.Controller):
     def _common_webhook_handler(self, access_token, model_name):
         """Common handler for processing WooCommerce webhooks."""
         job_options = {}
+        if not access_token:
+            _logger.error(
+                "No Access Token found in WooCommerce backend. Please generate the "
+                "Access Token!!"
+            )
+            raise Forbidden()
         backend = (
             request.env["woo.backend"]
             .sudo()
@@ -35,10 +40,6 @@ class WooWebhook(http.Controller):
                 "No WooCommerce backend found. Check your Access Token and try again"
             )
             raise Forbidden()
-        base_url = request.httprequest.base_url
-        parsed_url = urlparse(base_url)
-        base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
-        backend.write({"base_url": base_url})
         payload = json.loads(request.httprequest.data)
         model = request.env[model_name]
         description = backend.get_queue_job_description(
