@@ -8,20 +8,22 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <header>
+                    <field name="woo_bind_ids" invisible="1" />
                     <button
                         name="export_refund"
                         type="object"
                         class="oe_highlight"
                         string="Export Refund"
-                        attrs="{'invisible': [('is_refund', '=', False)]}"
+                        attrs="{'invisible': ['|',('is_refund', '=', False),('woo_bind_ids', '!=', [])]}"
                     />
                 </header>
             </xpath>
             <xpath expr="//sheet/group/group/field[@name='origin']" position="after">
                 <field name="is_return_picking" invisible="1" />
+                <field name="woo_bind_ids" invisible="1" />
                 <field
                     name="is_refund"
-                    attrs="{'invisible':[('is_return_picking','=','False')]}"
+                    attrs="{'invisible':['|','|',('is_return_picking','=',False),('state','not in','done'),('woo_bind_ids', '!=', [])]}"
                 />
             </xpath>
             <xpath expr="//notebook" position="inside">

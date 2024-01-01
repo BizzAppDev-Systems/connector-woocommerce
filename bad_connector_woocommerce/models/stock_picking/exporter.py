@@ -6,9 +6,6 @@ from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
 
-# from odoo.exceptions import ValidationError
-
-
 _logger = logging.getLogger(__name__)
 
 
@@ -39,57 +36,59 @@ class WooStockPickingRefundExporterMapper(Component):
                             "Quantity done of move line is greater than quantity in WooCommerce Product Quantity."
                         )
                     )
-
                 if order_line.woo_bind_ids.product_uom_qty > move.quantity_done:
-                    print(
-                        order_line.woo_bind_ids[0].total_tax_line,
-                        "totallll taxxxx line",
-                    )
-                    print(move.quantity_done, "quuuaannntityyyyy doneeee")
                     divided_tax = (
                         float(order_line.woo_bind_ids[0].total_tax_line)
                         / order_line.woo_bind_ids[0].product_uom_qty
                     )
-                    print(divided_tax, "dwowookokokokokokokokokokokokoko")
-
                     list_item = {
                         "id": order_line.woo_bind_ids[0].external_id,
                         "quantity": move.quantity_done,
-                        "refund_total": float(order_line.woo_bind_ids[0].price_unit),
+                        "refund_total": float(order_line.woo_bind_ids[0].price_unit)
+                        * move.quantity_done,
                         "refund_tax": [
                             {
-                                "id": str(record.sale_id.id),
-                                "refund_total": divided_tax,
+                                "id": str(move.id),
+                                "refund_total": divided_tax * move.quantity_done,
                             }
                         ],
                     }
                     total_amount = (
                         total_amount
-                        + float(order_line.woo_bind_ids[0].price_unit) * divided_tax
+                        + (
+                            float(order_line.woo_bind_ids[0].price_unit)
+                            * move.quantity_done
+                        )
+                        + (divided_tax * move.quantity_done)
                     )
                 else:
                     list_item = {
                         "id": order_line.woo_bind_ids[0].external_id,
                         "quantity": move.quantity_done,
-                        "refund_total": float(order_line.woo_bind_ids[0].price_unit),
+                        "refund_total": float(order_line.woo_bind_ids[0].price_unit)
+                        * move.quantity_done,
                         "refund_tax": [
                             {
-                                "id": str(record.sale_id.id + 1),
+                                "id": str(move.id),
                                 "refund_total": float(
                                     order_line.woo_bind_ids[0].total_tax_line
-                                ),
+                                )
+                                * move.quantity_done,
                             }
                         ],
                     }
-                    print(list_item, "jddiijisjiwsjwisjwisjiwsjwisjisji")
                     total_amount = (
                         total_amount
-                        + float(order_line.woo_bind_ids[0].price_unit)
-                        + float(order_line.woo_bind_ids[0].total_tax_line)
+                        + (
+                            float(order_line.woo_bind_ids[0].price_unit)
+                            * move.quantity_done
+                        )
+                        + (
+                            float(order_line.woo_bind_ids[0].total_tax_line)
+                            * move.quantity_done
+                        )
                     )
                 line_items.append(list_item)
-        print(line_items, "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm")
-        print(total_amount, "dsdudhwudwhuwhuhwuisdhwudhwudwidhu")
         return {
             "order_id": record.sale_id.woo_bind_ids[0].external_id,
             "amount": str(total_amount),
