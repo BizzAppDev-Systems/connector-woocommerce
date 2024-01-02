@@ -17,3 +17,4 @@ from . import delivery_carrier
 from . import woo_settings
 from . import product_template
 from . import woo_payment_gateway
+from . import woo_downloadable_product
