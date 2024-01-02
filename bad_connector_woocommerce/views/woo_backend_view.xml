@@ -17,6 +17,12 @@
                         type="object"
                         class="oe_highlight"
                     />
+                    <button
+                        name="generate_token"
+                        type="object"
+                        class="oe_highlight"
+                        string="Generate Token"
+                    />
                 </header>
                 <div
                     class="alert alert-danger"
@@ -387,6 +393,16 @@
                                         <field name="default_limit" />
                                         <field name="warehouse_id" required="1" />
                                         <field name="currency_id" />
+                                        <field
+                                            name="access_token"
+                                            groups="base.group_system"
+                                            invisible="test_mode"
+                                        />
+                                        <field
+                                            name="test_access_token"
+                                            groups="base.group_system"
+                                            invisible="not test_mode"
+                                        />
                                         <separator string="Customers Configuration" />
                                         <field name="without_email" />
                                     </group>
@@ -444,6 +460,12 @@
                                         <field name="include_tax" />
                                     </group>
                                 </group>
+                            </page>
+                            <page
+                                name="webhook_configuration"
+                                string="Webhook Configuration"
+                            >
+                                <field name="webhook_config" />
                             </page>
                         </notebook>
                     </group>
