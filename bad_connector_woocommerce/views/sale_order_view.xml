@@ -81,7 +81,8 @@
                 expr="//form/sheet/group/group/field[@name='payment_term_id']"
                 position="after"
             >
-                <field name="woo_payment_mode_id" />
+                <field name="woo_payment_mode_id" invisible="not woo_bind_ids" />
+                <field name="woo_bind_ids" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']//tree" position="attributes">
                 <attribute name="editable" />
