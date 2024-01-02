@@ -15,6 +15,7 @@
 * Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
 * Add "Import Partners","Import Products","Import Product Templates","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes" and "Update Stock Inventory" at backend level.
 * Required field to Import the Partners,Product Templates,Products,Product Attributes,Taxes,Product Tags,Product Category,Update Stock Inventory and Sale Orders are Location,Client Id,Client Secret,Product Category,Company and Warehouse.
+* Add Button of "GENERATE TOKEN" to generate the "Access Token".
 
 
 **Author**
@@ -106,6 +107,11 @@
     - Add Backend Credentials to Import Taxes.
     - Click 'Import Taxes' button to Import the Taxes from Woocommerce.
 
+* WooCommerce Webhook:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Generate the token to get the "Access Token".
+    - Follow the step which is mention in "Webhook Configuration" Tab.
+
 **Usage**
 *********
 
@@ -177,6 +183,9 @@
   - Added 'Tax Include' in field at backend level which get the setting of 'Tax Include'.
   - Added Condition on search tax base on 'Included in Price'.
   - Transfer Stock Manage Settings from WooCommerce to Odoo and handle the mapping during import process.
+
+* Import of Webhook Record:
+  - In the backend settings, navigate to the 'Connectors' section and select 'WooCommerce.' Within the 'WooCommerce Backends' subsection, locate the "GENERATE TOKEN" button, which is used to generate the necessary authentication token. In the "Webhook Configuration" tab, follow the outlined steps to establish the connection and receive webhook responses from WooCommerce to Odoo.
 
 **Known issues/Roadmap**
 ************************

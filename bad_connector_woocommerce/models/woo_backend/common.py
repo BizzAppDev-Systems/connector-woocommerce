@@ -1,4 +1,5 @@
 import logging
+import uuid
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 
@@ -179,6 +180,62 @@ class WooBackend(models.Model):
     woo_setting_id = fields.Many2one(comodel_name="woo.settings")
     stock_update = fields.Boolean(related="woo_setting_id.stock_update")
     recompute_qty_step = fields.Integer(string="Recompute Quantity Batch", default=1000)
+    access_token = fields.Char(string="Access Token(Live)", readonly=True)
+    test_access_token = fields.Char(string="Access Token(Staging)", readonly=True)
+    webhook_config = fields.Html(
+        string="Webhook Configurations",
+        readonly=True,
+        compute="_compute_webhook_config",
+    )
+
+    @api.depends("test_mode", "test_access_token", "access_token")
+    def _compute_webhook_config(self):
+        """
+        Compute method for creating dynamic Html Content for webhook configration
+        tab
+        """
+        for record in self:
+            web_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+            token = (
+                record.test_access_token if record.test_mode else record.access_token
+            )
+            dynamic_html = """
+            <div>
+                <h2>Follow these steps to set up a WooCommerce webhook for
+                bad_connector_woocommerce integration:</h2>
+                <ol>
+                    <li>Navigate to WooCommerce > Settings > Advanced > Webhooks.</li>
+                    <li>Click "Add Webhook" and provide the following details:</li>
+                </ol>
+                <ul>
+                    <li><strong>Name:</strong> Update Product</li>
+                    <li><strong>Status:</strong> Active</li>
+                    <li><strong>Topic:</strong> Product Update</li>
+                    <li><strong>Delivery URL:</strong>
+                        {web_url}/update_product/woo_webhook/{token}
+                    </li>
+                    <li><strong>API Version:</strong> WP REST API Integration V3</li>
+                </ul>
+                <p><strong>Note:</strong> Retrieve the Access Token from WooCommerce
+                 Backends by navigating to Advanced Configuration > DEFAULT
+                 CONFIGURATION.Customize the Delivery URL based on the desired
+                 webhook type:</p>
+                <ul>
+                    <li>For "Update Order":
+                        {web_url}/update_order/woo_webhook/{token}
+                    </li>
+                    <li>For "Create Order":
+                        {web_url}/create_order/woo_webhook/{token}
+                    </li>
+                    <li>For "Create Product":
+                        {web_url}/create_product/woo_webhook/{token}
+                    </li>
+                </ul>
+            </div>
+            """.format(
+                web_url=web_url, token=token
+            )
+            record.webhook_config = dynamic_html
 
     force_import_partners = fields.Boolean(
         help="""If true, customers will be imported from Woocommerce,
@@ -603,3 +660,12 @@ class WooBackend(models.Model):
         """Cron for import_product_templates"""
         backend_ids = self.search(domain or [])
         backend_ids.import_product_templates()
+
+    def generate_token(self):
+        """Generates a unique access token"""
+        for backend in self:
+            token = str(uuid.uuid4())
+            if backend.test_mode:
+                backend.test_access_token = token
+            else:
+                backend.access_token = token
