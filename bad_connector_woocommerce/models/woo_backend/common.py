@@ -180,6 +180,19 @@ class WooBackend(models.Model):
     stock_update = fields.Boolean(related="woo_setting_id.stock_update")
     recompute_qty_step = fields.Integer(string="Recompute Quantity Batch", default=1000)
 
+    force_import_partners = fields.Boolean(
+        help="""If true, customers will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
+    )
+    force_import_products = fields.Boolean(
+        help="""If true, products will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
+    )
+    force_import_variable_products = fields.Boolean(
+        help="""If true, variable products will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
+    )
+
     @api.onchange("update_stock_inventory", "stock_update")
     def _onchange_update_stock_inventory(self):
         """
@@ -304,11 +317,13 @@ class WooBackend(models.Model):
             )
         else:
             force = self[force_update_field] if force_update_field else False
+            kwargs["force"] = force
             self._import_from_date(
                 model=binding_model,
                 from_date_field=from_date_field,
                 filters=filters,
                 job_options=job_options,
+                **kwargs,
             )
             if force:
                 backend_vals[force_update_field] = False
@@ -316,7 +331,7 @@ class WooBackend(models.Model):
             start_time = start_time - timedelta(seconds=IMPORT_DELTA_BUFFER)
             start_time = fields.Datetime.to_string(start_time)
             backend_vals.update({from_date_field: start_time})
-            self.update_backend_vals(backend_vals, **kwargs)
+        self.update_backend_vals(backend_vals, **kwargs)
 
     def update_backend_vals(self, backend_vals, **kwargs):
         """Method to write the backend values"""
@@ -329,10 +344,16 @@ class WooBackend(models.Model):
         return "{} {}".format(prefix or "", model)
 
     def _import_from_date(
-        self, model, from_date_field, priority=None, filters=None, job_options=None
+        self,
+        model,
+        from_date_field,
+        priority=None,
+        filters=None,
+        job_options=None,
+        **kwargs,
     ):
         """Method to add a filter based on the date."""
-        model.import_batch(backend=self, filters=filters)
+        model.import_batch(backend=self, filters=filters, **kwargs)
 
     def toggle_test_mode(self):
         """Test Mode"""
@@ -373,6 +394,7 @@ class WooBackend(models.Model):
                 model="woo.res.partner",
                 priority=5,
                 export=False,
+                force_update_field="force_import_partners",
             )
         return True
 
@@ -390,6 +412,7 @@ class WooBackend(models.Model):
                 from_date_field="import_products_from_date",
                 priority=5,
                 export=False,
+                force_update_field="force_import_products",
                 filters={"type": "simple"},
             )
         return True
@@ -569,6 +592,7 @@ class WooBackend(models.Model):
                 model="woo.product.template",
                 from_date_field="import_products_tmpl_from_date",
                 priority=5,
+                force_update_field="force_import_variable_products",
                 export=False,
                 filters={"type": "variable"},
             )

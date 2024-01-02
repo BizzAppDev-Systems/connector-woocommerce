@@ -238,7 +238,7 @@ class WooImporter(AbstractComponent):
         """Hook called at the end of the import"""
         return
 
-    def run(self, external_id, data=None, force=False):
+    def run(self, external_id, data=None, force=False, **kwargs):
         """Run the synchronization
 
         :param external_id: identifier of the record on remote system
@@ -262,7 +262,8 @@ class WooImporter(AbstractComponent):
         if skip:
             return skip
         binding = self._get_binding()
-
+        if not force and self._is_uptodate(binding, **kwargs):
+            return _("Already up-to-date.")
         # Keep a lock on this import until the transaction is committed
         # The lock is kept since we have detected that the information
         # will be updated into Odoo
@@ -322,8 +323,10 @@ class WooBatchImporter(AbstractComponent):
     _inherit = ["base.importer", "connector.woo.base"]
     _usage = "batch.importer"
 
-    def run(self, filters=None, force=None, job_options=None):
+    def run(self, filters=None, force=None, job_options=None, **kwargs):
         """Run the synchronization"""
+        if force:
+            kwargs["force"] = force
         filters = filters or {}
         if "record_count" not in filters:
             filters.update({"record_count": 0})
@@ -331,7 +334,7 @@ class WooBatchImporter(AbstractComponent):
         records = data.get("data", [])
         for record in records:
             external_id = record.get(self.backend_adapter._woo_ext_id_key)
-            self._import_record(external_id, job_options, data=record)
+            self._import_record(external_id, job_options, data=record, **kwargs)
         filters["record_count"] += len(records)
         record_count = data.get("record_count", 0)
         filters_record_count = filters.get("record_count", 0)
@@ -341,7 +344,7 @@ class WooBatchImporter(AbstractComponent):
             and int(record_count) > int(filters_record_count)
         ):
             filters.update({"page": filters.get("page", 1) + 1})
-            self.process_next_page(filters=filters, job_options=job_options)
+            self.process_next_page(filters=filters, job_options=job_options, **kwargs)
 
     def process_next_page(self, filters=None, job_options=None, **kwargs):
         """Method to trigger batch import for Next page"""
@@ -375,10 +378,14 @@ class WooDirectBatchImporter(AbstractComponent):
     _name = "woo.direct.batch.importer"
     _inherit = "woo.batch.importer"
 
-    def _import_record(self, external_id, data=None, force=None):
+    def _import_record(self, external_id, data=None, force=None, **kwargs):
         """Import the record directly"""
         self.model.import_record(
-            self.backend_record, external_id=external_id, data=data, force=force
+            self.backend_record,
+            external_id=external_id,
+            data=data,
+            force=force,
+            **kwargs,
         )
 
 
