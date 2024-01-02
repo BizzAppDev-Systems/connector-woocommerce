@@ -1,6 +1,7 @@
 import logging
 
 from odoo import _
+from odoo.exceptions import ValidationError
 
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
@@ -77,3 +78,17 @@ class WooStockPickingRefundBatchExporter(Component):
     _name = "woo.stock.picking.refund.batch.exporter"
     _inherit = "woo.exporter"
     _apply_on = ["woo.stock.picking.refund"]
+
+    def _after_export(self, binding):
+        """Update the Woocommerce status as Refunded of sale order."""
+        woo_order_status = self.env["woo.sale.status"].search(
+            [("code", "=", "refunded"), ("is_final_status", "=", False)], limit=1
+        )
+        if not woo_order_status:
+            raise ValidationError(
+                _(
+                    "The WooCommerce order status with the code 'refunded' is not "
+                    "available in Odoo."
+                )
+            )
+        binding.sale_id.write({"woo_order_status_id": woo_order_status.id})
