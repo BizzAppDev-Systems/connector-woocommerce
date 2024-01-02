@@ -10,5 +10,5 @@ class WooDownloadableProduct(models.Model):
     url = fields.Char(string="File URL")
     woo_product_id = fields.Many2one(
         "woo.product.product",
-        ondelete="restrict",
+        ondelete="cascade",
     )
