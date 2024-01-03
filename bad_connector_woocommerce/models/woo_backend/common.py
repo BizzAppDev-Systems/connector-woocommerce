@@ -579,3 +579,26 @@ class WooBackend(models.Model):
         """Cron for import_product_templates"""
         backend_ids = self.search(domain or [])
         backend_ids.import_product_templates()
+
+    def _domain_for_export_refund(self):
+        """Domain to search WooCommerce Order Refunds"""
+        return [
+            ("sale_id.woo_bind_ids.backend_id", "in", self.ids),
+            ("is_return_picking", "=", True),
+            ("is_refund", "=", True),
+            ("woo_bind_ids", "=", False),
+        ]
+
+    def export_refunds(self):
+        """Export Refunds"""
+        domain = self._domain_for_export_refund()
+        woo_order_refunds = self.env["stock.picking"].search(domain)
+        for woo_order_refund in woo_order_refunds:
+            woo_order_refund.export_refund()
+        return True
+
+    @api.model
+    def cron_export_refunds(self, domain=None):
+        """Cron for export_refunds"""
+        backend_ids = self.search(domain or [])
+        backend_ids.export_refunds()

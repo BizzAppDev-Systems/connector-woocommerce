@@ -4,23 +4,23 @@ interactions:
         {
           string:
             '
-                {
-                    "amount": "2997.00",
-                    "line_items": [
-                        {
-                            "id": "10",
-                            "quantity": 3.0,
-                            "refund_total": "2427.7",
-                            "refund_tax": [
-                                {
-                                    "id":"222",
-                                    "refund_total": "569.43"
-                                }
-                            ]
-                        }
-                    ],
-                    "api_refund": false
-                }
+              {
+                  "amount": "999.04",
+                  "line_items": [
+                      {
+                          "id": "10",
+                          "quantity": 1.0,
+                          "refund_total": "809.23",
+                          "refund_tax": [
+                              {
+                                  "id": "222",
+                                  "refund_total": "189.81"
+                              }
+                          ]
+                      }
+                  ],
+                  "api_refund": false
+              }
             ',
         }
       headers:
@@ -36,112 +36,58 @@ interactions:
           string:
             '
               {
-                "id": 71,
-                "parent_id": 0,
-                "status": "refunded",
-                "currency": "USD",
-                "version": "7.9.0",
-                "prices_include_tax": false,
-                "date_created": "2023-07-27T13:39:35",
-                "date_modified": "2023-07-27T13:39:36",
-                "discount_total": "-40.00",
-                "discount_tax": "1.00",
-                "shipping_total": "10.00",
-                "shipping_tax": "1.00",
-                "cart_tax": "0.00",
-                "total": "50.00",
-                "total_tax": "0.00",
-                "customer_id": 237660088,
-                "order_key": "wc_order_qzJgPfO1CWI8B",
-                "billing": {
-                    "first_name": "john",
-                    "last_name": "Doe",
-                    "company": "",
-                    "address_1": "969 Market",
-                    "address_2": "",
-                    "city": "San Francisco",
-                    "state": "CA",
-                    "postcode": "94103",
-                    "country": "US",
-                    "email": "john.doe@gmail.com",
-                    "phone": "(555) 555-5555"
-                },
-                "shipping": {
-                    "first_name": "john",
-                    "last_name": "Doe",
-                    "company": "",
-                    "address_1": "969 Market",
-                    "address_2": "",
-                    "city": "San Francisco",
-                    "state": "CA",
-                    "postcode": "94103",
-                    "country": "US",
-                    "phone": ""
-                },
-                "payment_method": "bacs",
-                "payment_method_title": "Direct Bank Transfer",
-                "transaction_id": "",
-                "customer_ip_address": "",
-                "customer_user_agent": "",
-                "created_via": "rest-api",
-                "customer_note": "",
-                "date_completed": null,
-                "date_paid": "2023-07-27T13:39:36",
-                "cart_hash": "",
-                "number": "71",
+                "id": 493,
+                "date_created": "2024-01-02T11:28:38",
+                "date_created_gmt": "2024-01-02T11:28:38",
+                "amount": "999.04",
+                "reason": "",
+                "refunded_by": 1,
+                "refunded_payment": false,
+                "meta_data": [],
                 "line_items": [
                     {
                         "id": 10,
-                        "name": "Cloth",
-                        "product_id": 14,
+                        "name": "Shirt",
+                        "product_id": 50,
                         "variation_id": 0,
-                        "quantity": 3,
+                        "quantity": -1,
                         "tax_class": "",
-                        "subtotal": "2997.00",
-                        "subtotal_tax": "569.43",
-                        "total": "2997.00",
-                        "total_tax": "569.43",
-                        "taxes": [
-                            {
-                                "id": 1,
-                                "total": "569.43",
-                                "subtotal": "569.43"
-                            }
-                        ],
-                        "meta_data": [],
+                        "subtotal": "-809.23",
+                        "subtotal_tax": "0.00",
+                        "total": "-90.00",
+                        "total_tax": "0.00",
+                        "taxes": [],
                         "sku": "cloth-sku",
                         "price": 999,
+                        "image": {
+                            "id": "61",
+                            "src": "http://localhost/wp-content/uploads/2023/09/hoodie-with-logo-2.jpg"
+                        },
                         "parent_name": null
                     }
                 ],
+                "shipping_lines": [],
                 "tax_lines": [],
                 "fee_lines": [],
-                "refunds": [
-                    {
-                        "id": 493,
-                        "reason": "",
-                        "total": "-2427.7"
-                    }
-                ],
-                "is_editable": false,
-                "needs_payment": false,
-                "needs_processing": true,
-                "gift_cards": [],
-                "currency_symbol": "$",
                 "_links": {
                     "self": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/orders/71"
+                            "href": "http://localhost/wp-json/wc/v3/orders/71/refunds/493"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/orders"
+                            "href": "http://localhost/wp-json/wc/v3/orders/71/refunds"
+                        }
+                    ],
+                    "up": [
+                        {
+                            "href": "http://localhost/wp-json/wc/v3/orders/71"
                         }
                     ]
-                }
-            }
-          ',
+                  }
+              }
+            ',
         }
       headers:
         Cache-Control: ["no-store, no-cache, must-revalidate"]

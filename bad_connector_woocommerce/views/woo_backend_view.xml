@@ -356,6 +356,28 @@
                                         </div>
                                     </group>
                                 </group>
+                                <group>
+                                    <group>
+                                        <label
+                                            for="export_refunds"
+                                            string="Export Refunds"
+                                            style="font-weight:bold;"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="export_refunds"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Export Refunds"
+                                            />
+                                        </div>
+                                    </group>
+                                </group>
                             </page>
                             <page
                                 name="advanced_configuration"
@@ -411,7 +433,6 @@
                                             widget="many2many_tags"
                                         />
                                     </group>
-
                                     <group>
                                         <field name="default_shipping_method_id" />
                                         <field

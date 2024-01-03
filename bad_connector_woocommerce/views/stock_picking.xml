@@ -54,9 +54,6 @@
                                     <field name="backend_id" widget="selection" />
                                     <field name="external_id" />
                                 </group>
-                                <group>
-                                    <field name="woo_data" />
-                                </group>
                             </group>
                         </form>
                     </field>

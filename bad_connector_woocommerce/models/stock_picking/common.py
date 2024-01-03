@@ -37,7 +37,6 @@ class StockPicking(models.Model):
             job_options = {}
         if "description" not in job_options:
             description = woo_model.export_record.__doc__
-
         for woo_binding in self.sale_id.woo_bind_ids:
             job_options[
                 "description"

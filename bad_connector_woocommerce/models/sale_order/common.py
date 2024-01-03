@@ -42,6 +42,7 @@ class SaleOrder(models.Model):
     is_final_status = fields.Boolean(
         related="woo_order_status_id.is_final_status", string="Final Status"
     )
+    woo_order_status_code = fields.Char(related="woo_order_status_id.code")
     tax_different = fields.Boolean(compute="_compute_tax_different")
     total_amount_different = fields.Boolean(compute="_compute_total_amount_different")
     woo_coupon = fields.Char()
