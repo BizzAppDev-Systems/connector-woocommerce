@@ -11,6 +11,7 @@
         "sale_management",
         "delivery",
         "sale_automatic_workflow",
+        "stock_return_reason",
     ],
     "license": "AGPL-3",
     "data": [

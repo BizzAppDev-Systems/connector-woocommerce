@@ -13,7 +13,7 @@ class StockPicking(models.Model):
     woo_bind_ids = fields.One2many(
         comodel_name="woo.stock.picking.refund",
         inverse_name="odoo_id",
-        string="WooCommerce Bindings",
+        string="WooCommerce Bindings(Stock)",
         copy=False,
     )
     is_refund = fields.Boolean(string="Refund Quantity With Amount")
@@ -22,6 +22,7 @@ class StockPicking(models.Model):
         compute="_compute_is_return_picking",
         store=True,
     )
+    sale_woo_binding_ids = fields.One2many(related="sale_id.woo_bind_ids")
 
     @api.depends("origin")
     def _compute_is_return_picking(self):
