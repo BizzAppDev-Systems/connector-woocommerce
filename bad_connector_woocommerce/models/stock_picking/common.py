@@ -23,6 +23,13 @@ class StockPicking(models.Model):
         store=True,
     )
     sale_woo_binding_ids = fields.One2many(related="sale_id.woo_bind_ids")
+    create_return_again = fields.Boolean(
+        string="Return Again",
+        readonly=True,
+        # compute="_compute_return_again",
+        # store=True
+    )
+    return_picking_id = fields.Many2one("stock.picking", string="Original Picking")
 
     @api.depends("origin")
     def _compute_is_return_picking(self):

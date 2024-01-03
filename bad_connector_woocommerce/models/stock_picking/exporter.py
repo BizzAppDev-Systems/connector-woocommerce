@@ -2,6 +2,7 @@ import logging
 
 from odoo import _
 from odoo.exceptions import ValidationError
+from odoo.tools import html2plaintext
 
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
@@ -16,8 +17,8 @@ class WooStockPickingRefundExporterMapper(Component):
     _apply_on = "woo.stock.picking.refund"
 
     @mapping
-    def quantity(self, record):
-        """Mapping for Quantity"""
+    def quantity_and_amount(self, record):
+        """Mapping for Quantity and Amount"""
         line_items = []
         total_amount = 0.00
         sale_order_products = {
@@ -35,7 +36,6 @@ class WooStockPickingRefundExporterMapper(Component):
                 )
                 if not order_line:
                     continue
-
                 quantity_done = move.quantity_done
                 price_unit = float(order_line.woo_bind_ids[0].price_unit)
                 total_tax_line = float(order_line.woo_bind_ids[0].total_tax_line)
@@ -65,10 +65,11 @@ class WooStockPickingRefundExporterMapper(Component):
                 }
                 total_amount += (price_unit + divided_tax) * quantity_done
                 line_items.append(list_item)
-
+        return_reason_text = html2plaintext(record.return_reason or "")
         return {
             "order_id": record.sale_id.woo_bind_ids[0].external_id,
             "amount": str(total_amount),
+            "reason": return_reason_text,
             "line_items": line_items,
             "api_refund": False,
         }
@@ -91,4 +92,5 @@ class WooStockPickingRefundBatchExporter(Component):
                     "available in Odoo."
                 )
             )
+        # if binding.sale_id.order_line.woo_amount_total>
         binding.sale_id.write({"woo_order_status_id": woo_order_status.id})

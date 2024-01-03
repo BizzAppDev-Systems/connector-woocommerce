@@ -27,6 +27,7 @@
                     name="is_refund"
                     attrs="{'invisible':['|','|','|',('is_return_picking','=',False),('state','not in','done'),('woo_bind_ids', '!=', []),('sale_woo_binding_ids','=',[])]}"
                 />
+                <field name="create_return_again" />
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page

@@ -107,15 +107,13 @@ class TestExportRefund(BaseWooTestCase):
                 active_id=delivery_order.id, active_model="stock.picking"
             )
         )
+        return_form.return_reason = "Defective Product"
         wizard = return_form.save()
         wizard.product_return_moves.write({"quantity": 1.0})
         res = wizard.create_returns()
         return01 = self.env["stock.picking"].browse(res["res_id"])
         return01.move_ids.quantity_done = 1
         return01.button_validate()
-        # self.assertEqual(
-        #     sale_order_odoo.order_line.qty_delivered, 0.0, "Delivered components: 0/4"
-        # )
         self.assertTrue(
             return01.is_return_picking, "Return is not created for the Stock Picking"
         )
