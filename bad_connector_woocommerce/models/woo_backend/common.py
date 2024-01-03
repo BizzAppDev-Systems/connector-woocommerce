@@ -495,6 +495,7 @@ class WooBackend(models.Model):
                     ("woo_bind_ids.backend_id", "=", backend.id),
                     ("is_final_status", "!=", True),
                     ("picking_ids.state", "=", "done"),
+                    ("is_fully_returned", "=", False),
                 ]
             )
             for sale_order in sale_orders:
@@ -587,6 +588,7 @@ class WooBackend(models.Model):
             ("is_return_picking", "=", True),
             ("is_refund", "=", True),
             ("woo_bind_ids", "=", False),
+            ("is_fully_returned", "=", False),
         ]
 
     def export_refunds(self):

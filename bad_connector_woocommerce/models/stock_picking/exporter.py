@@ -82,6 +82,10 @@ class WooStockPickingRefundBatchExporter(Component):
 
     def _after_export(self, binding):
         """Update the Woocommerce status as Refunded of sale order."""
+        if binding.sale_id.is_partially_returned:
+            return super(WooStockPickingRefundBatchExporter, self)._after_export(
+                binding
+            )
         woo_order_status = self.env["woo.sale.status"].search(
             [("code", "=", "refunded"), ("is_final_status", "=", False)], limit=1
         )
@@ -92,5 +96,4 @@ class WooStockPickingRefundBatchExporter(Component):
                     "available in Odoo."
                 )
             )
-        # if binding.sale_id.order_line.woo_amount_total>
         binding.sale_id.write({"woo_order_status_id": woo_order_status.id})

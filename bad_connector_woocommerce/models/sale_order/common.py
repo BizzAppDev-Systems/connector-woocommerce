@@ -51,6 +51,30 @@ class SaleOrder(models.Model):
         string="WooCommerce Payment Mode",
         readonly=True,
     )
+    is_fully_returned = fields.Boolean(
+        string="Fully Returned",
+        compute="_compute_is_fully_returned",
+        store=True,
+        readonly=True,
+    )
+
+    @api.depends("order_line.qty_delivered", "order_line.product_uom_qty")
+    def _compute_is_fully_returned(self):
+        """
+        Compute the 'is_fully_returned' field for the sale order.
+
+        This method checks whether all products in the sale order have been fully
+        returned.It iterates through each order line and compares the delivered quantity
+        with the ordered quantity to determine if the order is fully returned.
+        """
+        for order in self:
+            is_fully_returned = all(
+                [
+                    line.qty_delivered == line.product_uom_qty
+                    for line in order.order_line
+                ]
+            )
+            order.is_fully_returned = is_fully_returned
 
     @api.depends(
         "woo_bind_ids",
