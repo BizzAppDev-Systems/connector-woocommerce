@@ -124,6 +124,6 @@ class TestExportRefund(BaseWooTestCase):
             self.env["woo.stock.picking.refund"].export_record(self.backend, return01)
         self.assertEqual(
             sale_order1.woo_order_status_id.code,
-            "refunded",
-            "Sale Order is Not in 'Refunded' state in WooCommerce.",
+            "processing",
+            "Sale Order is Not in 'Partially Refunded' in WooCommerce.",
         )

@@ -87,7 +87,7 @@ class SaleOrder(models.Model):
                 if total_quantity_done != order_line.product_uom_qty:
                     flag_fully_return = False
                     break
-        order.is_fully_returned = flag_fully_return
+            order.is_fully_returned = flag_fully_return
 
     @api.depends(
         "woo_bind_ids",
