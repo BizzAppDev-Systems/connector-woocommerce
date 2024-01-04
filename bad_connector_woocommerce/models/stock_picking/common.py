@@ -1,6 +1,6 @@
 import logging
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 from odoo.addons.component.core import Component
 
@@ -17,27 +17,8 @@ class StockPicking(models.Model):
         copy=False,
     )
     is_refund = fields.Boolean(string="Refund Quantity With Amount")
-    is_return_picking = fields.Boolean(
-        string="Is Return Picking",
-        compute="_compute_is_return_picking",
-        store=True,
-    )
     sale_woo_binding_ids = fields.One2many(related="sale_id.woo_bind_ids")
     return_picking_id = fields.Many2one("stock.picking", string="Original Picking")
-
-    @api.depends("origin")
-    def _compute_is_return_picking(self):
-        """
-        Compute the 'is_return_picking' field for each record.
-        This method iterates over the records and sets the 'is_return_picking' field
-        based on the 'origin' field. If the 'origin' field starts with the string
-        'Return', then 'is_return_picking' is set to True; otherwise, it is set to
-        False.
-        """
-        for picking in self:
-            picking.is_return_picking = picking.origin and picking.origin.startswith(
-                "Return"
-            )
 
     def export_refund(self, job_options=None):
         """Export Refund on WooCommerce"""
@@ -80,3 +61,12 @@ class WooStockPickingRefundAdapter(Component):
     _woo_model = "orders"
     _woo_key = "id"
     _woo_ext_id_key = "id"
+
+    def create(self, data):
+        """
+        Overrides:This method overrides to use the Order Id in reasource_path
+        """
+        resource_path = "{}/{}/refunds".format(self._woo_model, data["order_id"])
+        data.pop("order_id")
+        result = self._call(resource_path, data, http_method="post")
+        return result

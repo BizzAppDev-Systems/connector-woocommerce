@@ -20,7 +20,6 @@
                 </header>
             </xpath>
             <xpath expr="//sheet/group/group/field[@name='origin']" position="after">
-                <field name="is_return_picking" invisible="1" />
                 <field name="woo_bind_ids" invisible="1" />
                 <field name="sale_woo_binding_ids" invisible="1" />
                 <field

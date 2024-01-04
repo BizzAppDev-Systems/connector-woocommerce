@@ -59,27 +59,31 @@ class SaleOrder(models.Model):
         readonly=True,
     )
 
-    @api.depends("order_line.qty_delivered", "order_line.product_uom_qty")
+    @api.depends(
+        "order_line.qty_delivered", "order_line.product_uom_qty", "picking_ids"
+    )
     def _compute_is_fully_returned(self):
         """
         Compute the 'is_fully_returned' field for the sale order.
 
         This method checks whether all products in the sale order have been fully
-        returned.It iterates through each order line and compares the delivered quantity
-        with the ordered quantity to determine if the order is fully returned.
+        returned. It considers pickings with a refund and checks if the total quantity
+        done in those pickings is equal to the ordered quantity.
         """
         for order in self:
             flag_fully_return = False
+            related_pickings = order.picking_ids.filtered(
+                lambda p: any(move.origin_returned_move_id for move in p.move_ids)
+            )
             is_fully_returned = all(
-                [
-                    line.qty_delivered == line.product_uom_qty
-                    for line in order.order_line
-                ]
+                all(
+                    move.quantity_done == move.product_uom_qty
+                    for move in picking.move_ids
+                )
+                for picking in related_pickings
             )
             if is_fully_returned:
                 flag_fully_return = True
-            else:
-                flag_fully_return = False
             order.is_fully_returned = flag_fully_return
 
     @api.depends(
