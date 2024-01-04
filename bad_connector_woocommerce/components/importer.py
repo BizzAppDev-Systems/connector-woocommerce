@@ -250,6 +250,8 @@ class WooImporter(AbstractComponent):
             self.work.model_name,
             external_id,
         )
+        if force:
+            kwargs["force"] = force
         if data:
             self.remote_record = data
         else:
@@ -281,7 +283,7 @@ class WooImporter(AbstractComponent):
             record = self._create_data(map_record)
             binding = self._create(record)
         self.binder.bind(self.external_id, binding)
-        self._after_import(binding)
+        self._after_import(binding, **kwargs)
 
 
 class WooMapChildImport(AbstractComponent):
