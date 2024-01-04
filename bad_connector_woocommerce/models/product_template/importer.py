@@ -109,7 +109,6 @@ class WooProductTemplateImporter(Component):
         result = super(WooProductTemplateImporter, self)._after_import(
             binding, **kwargs
         )
-
         variant_ids = self.remote_record.get("variations")
         product_model = self.env["woo.product.product"]
         for variant_id in variant_ids:
@@ -121,7 +120,6 @@ class WooProductTemplateImporter(Component):
             job_options["description"] = description
             delayable = product_model.with_delay(**job_options or {})
             delayable.import_record(
-                backend=self.backend_record,
-                external_id=variant_id,
+                backend=self.backend_record, external_id=variant_id, **kwargs
             )
         return result
