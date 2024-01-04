@@ -51,6 +51,7 @@ class SaleOrder(models.Model):
         string="WooCommerce Payment Mode",
         readonly=True,
     )
+
     is_fully_returned = fields.Boolean(
         string="Fully Returned",
         compute="_compute_is_fully_returned",

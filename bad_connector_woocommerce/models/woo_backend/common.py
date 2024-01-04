@@ -496,6 +496,7 @@ class WooBackend(models.Model):
                     ("is_final_status", "!=", True),
                     ("picking_ids.state", "=", "done"),
                     ("is_fully_returned", "=", False),
+                    ("woo_order_status_code", "!=", "refunded"),
                 ]
             )
             for sale_order in sale_orders:
