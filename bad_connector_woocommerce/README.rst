@@ -182,7 +182,7 @@
 * Export of Refunds:
   - Enable the Export functionality in bad_connector_woocommerce to transfer Refunds from Odoo to WooCommerce.
   - Handle mapping of Refund data during the export process.
-  - Stock Picking Level Enhancement:After confirming the Sale Order, validating the Delivery Order, Create the Return with its Return Reason and then validate Return, there we added a new field called "Refund Quantity With Amount" at the stock.picking level.If the boolean associated with this field is set to True, it allows the export of refunds to WooCommerce.
+  - Stock Picking Level Enhancement: After confirming the Sale Order, validating the Delivery Order, Creating the Return with its Return Reason, and then validating the Return, there we added a new field called "Refund Quantity With Amount" at the stock.picking level. If the boolean associated with this field is set to True, it allows the export of refunds to WooCommerce by clicking on the "Export Refund" boolean.
   - Backend Functionality:Introduced a new feature – "Export Refunds" button at the backend level.This button facilitates the export of all eligible returns for refunds.
 
 **Known issues/Roadmap**
