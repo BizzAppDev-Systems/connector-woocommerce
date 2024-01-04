@@ -12,6 +12,9 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
         super().setUp()
         self.backend_record = self.env["woo.backend"]
         warehouse = self.env.ref("stock.warehouse0")
+        woo_status = self.env["woo.sale.status"].search(
+            [("code", "=", "processing")], limit=1
+        )
         self.backend = self.backend_record.create(
             {
                 "name": "Test Woo Backend",
@@ -58,6 +61,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
                 "warehouse_id": warehouse.id,
                 "update_stock_inventory": True,
                 "access_token": "d4ea64d3-8f85-4955-be49-4aeb29151801",
+                "woo_sale_status_ids": [(6, 0, [woo_status.id])],
             }
         )
         self.woocommerce_product_payload = {
