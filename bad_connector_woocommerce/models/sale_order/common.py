@@ -68,13 +68,13 @@ class SaleOrder(models.Model):
         done in those pickings is equal to the ordered quantity.
         """
         for order in self:
+            flag_fully_return = True
             return_pickings = order.picking_ids.filtered(
                 lambda p: p.is_return_stock_picking
             )
             if not return_pickings:
                 order.is_fully_returned = False
                 continue
-            flag_fully_return = True
             for order_line in order.order_line:
                 total_quantity_done = sum(
                     move.quantity_done
