@@ -51,7 +51,6 @@ class SaleOrder(models.Model):
         string="WooCommerce Payment Mode",
         readonly=True,
     )
-
     is_fully_returned = fields.Boolean(
         string="Fully Returned",
         compute="_compute_is_fully_returned",
@@ -59,9 +58,31 @@ class SaleOrder(models.Model):
         readonly=True,
     )
 
-    @api.depends(
-        "order_line.qty_delivered", "order_line.product_uom_qty", "picking_ids"
-    )
+    # @api.depends("order_line.qty_delivered", "order_line.product_uom_qty",
+    # "picking_ids.move_ids.quantity_done")
+    # def _compute_is_fully_returned(self):
+    #     for order in self:
+    #         flag_fully_return = False
+    #         related_pickings = order.picking_ids.filtered(
+    #             lambda p: any(move.origin_returned_move_id for move in p.move_ids)
+    #         )
+    #         print(related_pickings, "oooooooooooooooooooooooooo  related picking")
+
+    #         is_fully_returned = all(
+    #             all(
+    #                 move.quantity_done == order_line.product_uom_qty
+    #                 for order_line in order.order_line
+    #                 if move.origin_returned_move_id == order_line.product_id
+    #             )
+    #             for picking in related_pickings
+    #             for move in picking.move_ids
+    #         )
+
+    #         if is_fully_returned:
+    #             flag_fully_return = True
+
+    #         order.is_fully_returned = flag_fully_return
+    @api.depends("order_line.qty_delivered", "order_line.product_uom_qty")
     def _compute_is_fully_returned(self):
         """
         Compute the 'is_fully_returned' field for the sale order.

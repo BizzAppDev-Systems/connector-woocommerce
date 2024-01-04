@@ -115,7 +115,8 @@ class TestExportRefund(BaseWooTestCase):
         return01.move_ids.quantity_done = 1
         return01.button_validate()
         self.assertTrue(
-            return01.is_return_picking, "Return is not created for the Stock Picking"
+            return01.is_return_stock_picking,
+            "Return is not created for the Stock Picking",
         )
         return01.is_refund = True
         self.assertTrue(return01.is_refund, "You cannot create refund")

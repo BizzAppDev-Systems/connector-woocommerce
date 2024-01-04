@@ -585,7 +585,6 @@ class WooBackend(models.Model):
         """Domain to search WooCommerce Order Refunds"""
         return [
             ("sale_id.woo_bind_ids.backend_id", "in", self.ids),
-            ("is_return_picking", "=", True),
             ("is_refund", "=", True),
             ("woo_bind_ids", "=", False),
             ("sale_id.is_fully_returned", "=", False),

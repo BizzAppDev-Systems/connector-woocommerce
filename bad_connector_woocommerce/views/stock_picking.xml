@@ -22,9 +22,10 @@
             <xpath expr="//sheet/group/group/field[@name='origin']" position="after">
                 <field name="woo_bind_ids" invisible="1" />
                 <field name="sale_woo_binding_ids" invisible="1" />
+                <field name="is_return_stock_picking" invisible="1" />
                 <field
                     name="is_refund"
-                    attrs="{'invisible':['|','|','|',('is_return_picking','=',False),('state','not in','done'),('woo_bind_ids', '!=', []),('sale_woo_binding_ids','=',[])]}"
+                    attrs="{'invisible':['|','|','|',('is_return_stock_picking','=',False),('state','not in','done'),('woo_bind_ids', '!=', []),('sale_woo_binding_ids','=',[])]}"
                 />
             </xpath>
             <xpath expr="//notebook" position="inside">

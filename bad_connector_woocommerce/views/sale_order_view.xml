@@ -57,7 +57,6 @@
                 <field name="woo_bind_ids" invisible="1" />
                 <field name="is_final_status" invisible="1" />
                 <field name="woo_order_status_code" invisible="1" />
-                <field name="is_fully_returned" invisible="1" />
                 <button
                     name="export_delivery_status"
                     type="object"
@@ -82,7 +81,7 @@
                 />
                 <field name="tax_different" invisible="1" />
                 <field name="total_amount_different" invisible="1" />
-                <field name="is_fully_returned" invisible="1" />
+                <field name="is_fully_returned" />
             </xpath>
             <xpath
                 expr="//form/sheet/group/group/field[@name='payment_term_id']"
