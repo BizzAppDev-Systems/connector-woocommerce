@@ -27,6 +27,13 @@ class StockPicking(models.Model):
 
     @api.depends("origin")
     def _compute_is_return_picking(self):
+        """
+        Compute the 'is_return_picking' field for each record.
+        This method iterates over the records and sets the 'is_return_picking' field
+        based on the 'origin' field. If the 'origin' field starts with the string
+        'Return', then 'is_return_picking' is set to True; otherwise, it is set to
+        False.
+        """
         for picking in self:
             picking.is_return_picking = picking.origin and picking.origin.startswith(
                 "Return"

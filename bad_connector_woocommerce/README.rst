@@ -14,7 +14,7 @@
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
 * Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" and its "Refunds" data between connected Woocommerce and Odoo.
 * Add "Import Partners","Import Products","Import Product Templates","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes", "Update Stock Inventory" and "Export Refunds" at backend level.
-* Required field to Import the Partners,Product Templates,Products,Product Attributes,Taxes,Product Tags,Product Category,Update Stock Inventory, Sale Orders and its Refunds are Location,Client Id,Client Secret,Product Category,Company and Warehouse.
+* Required field to Import the Partners,Product Templates,Products,Product Attributes,Taxes,Product Tags,Product Category,Update Stock Inventory, Sale Orders and Export Sale Order Refunds are Location,Client Id,Client Secret,Product Category,Company and Warehouse.
 
 **Author**
 **********
