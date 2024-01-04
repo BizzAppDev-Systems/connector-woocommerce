@@ -58,7 +58,12 @@ class SaleOrder(models.Model):
         readonly=True,
     )
 
-    @api.depends("order_line.qty_delivered", "order_line.product_uom_qty")
+    @api.depends(
+        "order_line.qty_delivered",
+        "order_line.product_uom_qty",
+        "picking_ids",
+        "picking_ids.is_return_stock_picking",
+    )
     def _compute_is_fully_returned(self):
         """
         Compute the 'is_fully_returned' field for the sale order.
