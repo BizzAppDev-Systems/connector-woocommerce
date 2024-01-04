@@ -102,7 +102,7 @@
     - Click 'Import Taxes' button to Import the Taxes from Woocommerce.
 
 * Refunds Export:
-     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
     - Add Backend Credentials to Export Refunds.
     - Click 'Export Refunds' button to Export the Refunds to Woocommerce.
 
@@ -165,7 +165,7 @@
   - At the backend level, within the 'Connectors' section, specifically under 'WooCommerce' > 'WooCommerce Backends' in the 'Advanced Configuration' tab, there is a 'Filter Sale Orders Based on their Status' Many2many Field. When this field is populated with specific sale order statuses, it will filter and retrieve those sale orders from WooCommerce that match the statuses provided in the 'Filter Sale Orders Based on their Status' field.
 
 * Payload Information:
-    - At Partner, Product, Product Attribute, Product Attribute Value, Country, Delivery Carrier, Product Tags and Sale order binding form view level the co-responding payload can be viewed in "Woo Data" field.
+  - At Partner, Product, Product Attribute, Product Attribute Value, Country, Delivery Carrier, Product Tags and Sale order binding form view level the co-responding payload can be viewed in "Woo Data" field.
 
 * Import of Taxes:
   - Enable the import functionality in bad_connector_woocommerce to transfer Taxes from WooCommerce to Odoo.
@@ -182,8 +182,9 @@
 * Export of Refunds:
   - Enable the Export functionality in bad_connector_woocommerce to transfer Refunds from Odoo to WooCommerce.
   - Handle mapping of Refund data during the export process.
-  - Stock Picking Level Enhancement: After confirming the Sale Order, validating the Delivery Order, Creating the Return with its Return Reason, and then validating the Return, there we added a new field called "Refund Quantity With Amount" at the stock.picking level. If the boolean associated with this field is set to True, it allows the export of refunds to WooCommerce by clicking on the "Export Refund" boolean.
-  - Backend Functionality:Introduced a new feature – "Export Refunds" button at the backend level.This button facilitates the export of all eligible returns for refunds.
+  - After confirming the Sale Order, validating the Delivery Order, Creating the Return with its Return Reason, and then validating the Return, there we added a new field called "Refund Quantity With Amount" at the stock.picking level. If the boolean associated with this field is set to True, it allows the export of refunds to WooCommerce by clicking on the "Export Refund" boolean.
+  - Added "Export Refunds" button at the backend level. This button facilitates the export of all eligible returns for refunds.
+
 
 **Known issues/Roadmap**
 ************************
