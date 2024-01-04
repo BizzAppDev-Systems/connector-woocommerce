@@ -82,7 +82,7 @@ class WooStockPickingRefundBatchExporter(Component):
 
     def _after_export(self, binding):
         """Update the Woocommerce status as Refunded of sale order."""
-        if binding.sale_id.is_partially_returned:
+        if binding.sale_id.is_fully_returned:
             return super(WooStockPickingRefundBatchExporter, self)._after_export(
                 binding
             )
