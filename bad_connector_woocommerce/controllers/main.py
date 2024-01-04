@@ -41,6 +41,11 @@ class WooWebhook(http.Controller):
             )
             raise Forbidden()
         payload = json.loads(request.httprequest.data)
+        status = []
+        for status_id in backend.woo_sale_status_ids:
+            status.append(status_id.code)
+        if status and payload.get("status") not in status:
+            return True
         model = request.env[model_name]
         description = backend.get_queue_job_description(
             prefix=model.import_record.__doc__ or f"Record Import Of {model_name}",
