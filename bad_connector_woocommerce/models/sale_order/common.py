@@ -68,13 +68,18 @@ class SaleOrder(models.Model):
         with the ordered quantity to determine if the order is fully returned.
         """
         for order in self:
+            flag_fully_return = False
             is_fully_returned = all(
                 [
                     line.qty_delivered == line.product_uom_qty
                     for line in order.order_line
                 ]
             )
-            order.is_fully_returned = is_fully_returned
+            if is_fully_returned:
+                flag_fully_return = True
+            else:
+                flag_fully_return = False
+            order.is_fully_returned = flag_fully_return
 
     @api.depends(
         "woo_bind_ids",
