@@ -81,6 +81,7 @@ class WooStockPickingRefundBatchExporter(Component):
     _name = "woo.stock.picking.refund.batch.exporter"
     _inherit = "woo.exporter"
     _apply_on = ["woo.stock.picking.refund"]
+    _default_binding_field = "woo_return_bind_ids"
 
     def _after_export(self, binding):
         """Update the Woocommerce status as Refunded of sale order."""

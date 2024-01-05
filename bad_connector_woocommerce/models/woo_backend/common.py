@@ -586,8 +586,8 @@ class WooBackend(models.Model):
         return [
             ("sale_id.woo_bind_ids.backend_id", "in", self.ids),
             ("is_refund", "=", True),
-            ("woo_bind_ids", "=", False),
-            ("sale_id.is_fully_returned", "=", False),
+            ("woo_return_bind_ids", "=", False),
+            ("sale_id.woo_order_status_code", "!=", "refunded"),
         ]
 
     def export_refunds(self):

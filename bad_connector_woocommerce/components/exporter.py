@@ -28,7 +28,7 @@ class WooExporter(AbstractComponent):
     _name = "woo.exporter"
     _inherit = ["generic.exporter", "connector.woo.base"]
     _usage = "record.exporter"
-    _default_binding_field = "woo_bind_ids"
+    _default_binding_field = None
 
     def __init__(self, work_context):
         super(WooExporter, self).__init__(work_context)
