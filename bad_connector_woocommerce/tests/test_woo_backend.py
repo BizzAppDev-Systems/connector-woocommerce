@@ -12,6 +12,9 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
         super().setUp()
         self.backend_record = self.env["woo.backend"]
         warehouse = self.env.ref("stock.warehouse0")
+        woo_status = self.env["woo.sale.status"].search(
+            [("code", "=", "processing")], limit=1
+        )
         self.backend = self.backend_record.create(
             {
                 "name": "Test Woo Backend",
@@ -58,6 +61,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
                 "warehouse_id": warehouse.id,
                 "update_stock_inventory": True,
                 "access_token": "d4ea64d3-8f85-4955-be49-4aeb29151801",
+                "woo_sale_status_ids": [(6, 0, [woo_status.id])],
             }
         )
         self.woocommerce_product_payload = {
@@ -136,6 +140,129 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
             "id": 369,
             "parent_id": 0,
             "status": "processing",
+            "currency": "USD",
+            "version": "8.4.0",
+            "prices_include_tax": False,
+            "date_created": "2023-12-18T11:15:42",
+            "date_modified": "2023-12-18T11:18:52",
+            "discount_total": "0.00",
+            "discount_tax": "0.00",
+            "shipping_total": "0.00",
+            "shipping_tax": "0.00",
+            "cart_tax": "18.81",
+            "total": "117.81",
+            "total_tax": "18.81",
+            "customer_id": 1,
+            "order_key": "wc_order_9SqgUEeqgd0z7",
+            "billing": {
+                "first_name": "BAD",
+                "last_name": "User",
+                "company": "",
+                "address_1": "Test Address",
+                "address_2": "Test Address 2",
+                "city": "Ahmedabad",
+                "state": "GJ",
+                "postcode": "380054",
+                "country": "IN",
+                "email": "BADUser@example.com",
+                "phone": "1234567890",
+            },
+            "shipping": {
+                "first_name": "BAD",
+                "last_name": "User",
+                "company": "",
+                "address_1": "Test Add 1",
+                "address_2": "Test Add 2",
+                "city": "Ahmedabad",
+                "state": "GJ",
+                "postcode": "380054",
+                "country": "IN",
+                "phone": "",
+            },
+            "payment_method": "bacs",
+            "payment_method_title": "PayPal",
+            "transaction_id": "",
+            "customer_ip_address": "172.19.0.1",
+            "customer_note": "",
+            "date_paid": "2023-12-18T11:18:52",
+            "cart_hash": "f9463793b7f8dd3ed2a00cb23e149004",
+            "number": "369",
+            "meta_data": [{"id": 8552, "key": "is_vat_exempt", "value": "no"}],
+            "line_items": [
+                {
+                    "id": 304,
+                    "name": "downloadable product",
+                    "product_id": 348,
+                    "variation_id": 0,
+                    "quantity": 1,
+                    "tax_class": "",
+                    "subtotal": "99.00",
+                    "subtotal_tax": "18.81",
+                    "total": "99.00",
+                    "total_tax": "18.81",
+                    "taxes": [{"id": 1, "total": "18.81", "subtotal": "18.81"}],
+                    "meta_data": [],
+                    "sku": "test-downloadable",
+                    "price": 99,
+                    "image": {"id": "", "src": ""},
+                }
+            ],
+            "tax_lines": [
+                {
+                    "id": 306,
+                    "rate_code": "TAX-1",
+                    "rate_id": 1,
+                    "label": "Tax",
+                    "compound": False,
+                    "tax_total": "18.81",
+                    "shipping_tax_total": "0.00",
+                    "rate_percent": 19,
+                    "meta_data": [],
+                }
+            ],
+            "shipping_lines": [
+                {
+                    "id": 305,
+                    "method_title": "Free shipping",
+                    "method_id": "free_shipping",
+                    "instance_id": "1",
+                    "total": "0.00",
+                    "total_tax": "0.00",
+                    "taxes": [{"id": 1, "total": "", "subtotal": ""}],
+                    "meta_data": [
+                        {
+                            "id": 2427,
+                            "key": "Items",
+                            "value": "downloadable product &times; 1",
+                            "display_key": "Items",
+                            "display_value": "downloadable product &times; 1",
+                        }
+                    ],
+                }
+            ],
+            "fee_lines": [],
+            "coupon_lines": [],
+            "refunds": [],
+            "is_editable": False,
+            "needs_payment": False,
+            "needs_processing": True,
+            "date_created_gmt": "2023-12-18T11:15:42",
+            "date_modified_gmt": "2023-12-18T11:18:52",
+            "date_paid_gmt": "2023-12-18T11:18:52",
+            "currency_symbol": "$",
+            "_links": {
+                "self": [{"href": "http://localhost:8081/wp-json/wc/v3/orders/369"}],
+                "collection": [{"href": "http://localhost:8081/wp-json/wc/v3/orders"}],
+                "customer": [
+                    {"href": "http://localhost:8081/wp-json/wc/v3/customers/1"}
+                ],
+            },
+        }
+
+        self.woocommerce_order_payload_no_status = {
+            "id": 369,
+            "parent_id": 0,
+            "status": "pending",
             "currency": "USD",
             "version": "8.4.0",
             "prices_include_tax": False,
@@ -346,6 +473,27 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
         self.woocommerce_order_response = self.opener.post(
             url="{}/{}".format(self.base_url, order_webhook_url),
             json=self.woocommerce_order_payload,
+        )
+        order_response = self.woocommerce_order_response.json()
+        self.assertEqual(
+            self.woocommerce_order_response.status_code, 200, "Should be OK"
+        )
+        self.assertEqual(order_response.get("id"), 369, "Should be match")
+
+    def test_order_create_webhook_no_status(self):
+        """
+        Called webhook for Order with status present in woo_sale_status_ids but not
+        same as response status
+        """
+        order_webhook_url = "/create_order/woo_webhook/{}".format(
+            self.backend_data.access_token
+        )
+        self.base_url = "http://{}:{}".format(
+            common.HOST, odoo.tools.config["http_port"]
+        )
+        self.woocommerce_order_response = self.opener.post(
+            url="{}/{}".format(self.base_url, order_webhook_url),
+            json=self.woocommerce_order_payload_no_status,
         )
         order_response = self.woocommerce_order_response.json()
         self.assertEqual(
