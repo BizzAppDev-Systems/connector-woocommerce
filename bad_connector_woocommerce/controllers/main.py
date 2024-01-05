@@ -41,9 +41,14 @@ class WooWebhook(http.Controller):
             )
             raise Forbidden()
         payload = json.loads(request.httprequest.data)
+        payload_status = payload.get("status")
         if model_name == "woo.sale.order":
             status = backend.woo_sale_status_ids.mapped("code")
-            if status and payload.get("status") not in status:
+            if status and payload_status not in status:
+                _logger.info(
+                    "Skipping sale order import due to status: %s",
+                    payload_status,
+                )
                 return True
         model = request.env[model_name]
         description = backend.get_queue_job_description(
