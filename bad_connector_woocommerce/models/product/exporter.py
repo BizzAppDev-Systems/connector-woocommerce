@@ -31,4 +31,3 @@ class ProductInventoryExporter(Component):
     _name = "woo.product.product.exporter"
     _inherit = "woo.exporter"
     _apply_on = ["woo.product.product"]
-    _default_binding_field = "woo_bind_ids"

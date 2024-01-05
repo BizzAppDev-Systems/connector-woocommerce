@@ -70,7 +70,6 @@ class WooSaleOrderBatchExporter(Component):
     _name = "woo.sale.order.batch.exporter"
     _inherit = "woo.exporter"
     _apply_on = ["woo.sale.order"]
-    _default_binding_field = "woo_bind_ids"
 
     def _after_export(self, binding):
         """Import the transaction lines after checking WooCommerce order status."""
