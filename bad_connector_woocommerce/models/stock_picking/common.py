@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    woo_bind_ids = fields.One2many(
+    woo_return_bind_ids = fields.One2many(
         comodel_name="woo.stock.picking.refund",
         inverse_name="odoo_id",
         string="WooCommerce Bindings(Stock)",
@@ -18,17 +18,17 @@ class StockPicking(models.Model):
     )
     is_refund = fields.Boolean(string="Refund Quantity With Amount")
     sale_woo_binding_ids = fields.One2many(related="sale_id.woo_bind_ids")
-    return_picking_id = fields.Many2one("stock.picking", string="Original Picking")
     is_return_stock_picking = fields.Boolean(
         compute="_compute_is_return_stock_picking",
         store=True,
     )
 
-    @api.depends("move_ids_without_package")
+    @api.depends("move_ids")
     def _compute_is_return_stock_picking(self):
+        """Compute 'is_return_stock_picking' based on move origin_returned_move_id."""
         for picking in self:
             picking.is_return_stock_picking = any(
-                m.origin_returned_move_id for m in picking.move_ids_without_package
+                m.origin_returned_move_id for m in picking.move_ids
             )
 
     def export_refund(self, job_options=None):
