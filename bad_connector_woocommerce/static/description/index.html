@@ -153,13 +153,14 @@
                 <b><h3>Key Features of the Woocommerce Connector</h3></b>
                 <div style="display: inline-block; text-align: left; padding-top: 20px;">
                     <ul class="h4" style="color: #383835; display: inline-block; text-align: left;">
+                        <li>Supports Webhook for Product and Orders.</li>
                         <li>Import Partners.</li>
                         <li>Import Products, Product Categories, Product Attributes and Product Tags.</li>
                         <li>Update Stock Inventory.</li>
                         <li>Import Taxes.</li>
                         <li>Import Sale orders.</li>
                         <li>Exporting Sale order status and Tracking Information to Woocommerce.</li>
-                        <li>Exporting Refund Requests to Woocommerce.</li>
+                        <li>Send Refund Information from Odoo to Woocommerce.</li>
                     </ul>
                 </div>
             </div>
@@ -184,7 +185,7 @@
         </div>
         <div class="text-center" style="padding-top: 20px;">
             <img class="img img-fluid col-md-11 my-3 rounded px-0" style="border: 1px solid #000;"
-            src="images/woo_backend_import_buttons_view.png" />
+            src="images/woo_backend_import_buttons.png" />
             <br/>
         </div>
     </div>
@@ -519,6 +520,43 @@
     </div>
 </section>
 
+<section style="padding-top: 40px;">
+    <div class="text-center">
+        <div style="color: #383835;">
+            <b><h3>Refunds Management</h3></b>
+        </div>
+    </div>
+</section>
+
+<section style="font-family: sans-serif;padding-top: 40px;">
+    <div>
+        <div class="h4 text-center">
+            <div style="color: #5d5d59;">
+                <b>After creating and validating the order return, We need to enable the 'Refund Quantity With Amount' boolean, followed by a simple<br/> click on the 'EXPORT REFUND' button to seamlessly transfer the refund information to Woocommerce.</b>
+            </div>
+        </div>
+        <div class="text-center" style="padding-top: 20px;">
+            <img class="img img-fluid col-md-11 my-3 rounded px-0" style="border: 1px solid #000;"
+            src="images/DO_return_button_view.png" />
+            <br/>
+        </div>
+    </div>
+</section>
+
+<section style="font-family: sans-serif;padding-top: 40px;">
+    <div>
+        <div class="h4 text-center">
+            <div style="color: #5d5d59;">
+                <b>The corresponding Woocommerce order changed to the 'Refunded' state upon completion of the refund process.</b>
+            </div>
+        </div>
+        <div class="text-center" style="padding-top: 20px;">
+            <img class="img img-fluid col-md-11 my-3 rounded px-0" style="border: 1px solid #000;"
+            src="images/woo_refunded_status.png" />
+            <br/>
+        </div>
+    </div>
+</section>
 
 <section style="padding-top: 40px;">
     <div class="text-center">
@@ -573,3 +611,4 @@
         </div>
     </div>
 </section>
+
