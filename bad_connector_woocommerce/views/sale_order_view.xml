@@ -81,7 +81,7 @@
                 />
                 <field name="tax_different" invisible="1" />
                 <field name="total_amount_different" invisible="1" />
-                <field name="is_fully_returned" />
+                <field name="is_fully_returned" invisible="1" />
             </xpath>
             <xpath
                 expr="//form/sheet/group/group/field[@name='payment_term_id']"
