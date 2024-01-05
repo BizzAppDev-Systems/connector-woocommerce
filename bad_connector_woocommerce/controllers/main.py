@@ -46,7 +46,8 @@ class WooWebhook(http.Controller):
             status = backend.woo_sale_status_ids.mapped("code")
             if status and payload_status not in status:
                 _logger.info(
-                    "Skipping sale order import due to status %s is not found",
+                    "Skipping sale order import due to status %s is not configured for "
+                    "import",
                     payload_status,
                 )
                 return True
