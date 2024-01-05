@@ -90,8 +90,3 @@ class TestImportPartner(BaseWooTestCase):
                 trap.assert_jobs_count(1)
                 # And then skip enqueued jobs
                 trap.perform_enqueued_jobs()
-                # import pdb
-
-                # pdb.set_trace()
-                # trap.assert_jobs_count(2)
-                # trap.perform_enqueued_jobs()
