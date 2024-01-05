@@ -574,7 +574,7 @@ class WooBackend(models.Model):
                 [
                     ("woo_bind_ids.backend_id", "=", backend.id),
                     ("is_final_status", "!=", True),
-                    ("picking_ids.state", "=", "done"),
+                    ("has_done_picking", "=", True),
                     ("woo_order_status_code", "!=", "refunded"),
                 ]
             )
