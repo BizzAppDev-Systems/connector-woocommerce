@@ -25,6 +25,7 @@ class StockPicking(models.Model):
 
     @api.depends("move_ids")
     def _compute_is_return_stock_picking(self):
+        """Compute 'is_return_stock_picking' based on move origin_returned_move_id."""
         for picking in self:
             picking.is_return_stock_picking = any(
                 m.origin_returned_move_id for m in picking.move_ids
