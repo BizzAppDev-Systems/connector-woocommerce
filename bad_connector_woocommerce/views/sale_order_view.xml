@@ -56,11 +56,12 @@
                 <field name="has_done_picking" invisible="1" />
                 <field name="woo_bind_ids" invisible="1" />
                 <field name="is_final_status" invisible="1" />
+                <field name="woo_order_status_code" invisible="1" />
                 <button
                     name="export_delivery_status"
                     type="object"
                     class="oe_highlight"
-                    attrs="{'invisible': ['|','|',('is_final_status','=',True),('has_done_picking', '=', False),('woo_bind_ids','=',False)]}"
+                    attrs="{'invisible': ['|','|','|',('is_final_status','=',True),('has_done_picking', '=', False),('woo_bind_ids','=',False),('woo_order_status_code','=','refunded')]}"
                     string="Export Delivery Status"
                 />
             </xpath>
@@ -80,6 +81,7 @@
                 />
                 <field name="tax_different" invisible="1" />
                 <field name="total_amount_different" invisible="1" />
+                <field name="is_fully_returned" />
             </xpath>
             <xpath
                 expr="//form/sheet/group/group/field[@name='payment_term_id']"
