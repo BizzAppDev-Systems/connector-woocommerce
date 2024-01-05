@@ -29,6 +29,7 @@ class SaleOrder(models.Model):
     is_final_status = fields.Boolean(
         related="woo_order_status_id.is_final_status", string="Final Status"
     )
+    woo_order_status_code = fields.Char(related="woo_order_status_id.code")
     tax_different = fields.Boolean(compute="_compute_tax_different")
     total_amount_different = fields.Boolean(compute="_compute_total_amount_different")
     woo_coupon = fields.Char()
@@ -37,6 +38,47 @@ class SaleOrder(models.Model):
         string="WooCommerce Payment Mode",
         readonly=True,
     )
+    is_fully_returned = fields.Boolean(
+        string="Fully Returned",
+        compute="_compute_is_fully_returned",
+        store=True,
+        readonly=True,
+    )
+
+    @api.depends(
+        "order_line.qty_delivered",
+        "order_line.product_uom_qty",
+        "picking_ids",
+        "picking_ids.is_return_stock_picking",
+    )
+    def _compute_is_fully_returned(self):
+        """
+        Compute the 'is_fully_returned' field for the sale order.
+        This method checks whether all products in the sale order have been fully
+        returned. It considers pickings with a refund and checks if the total quantity
+        done in those pickings is equal to the ordered quantity.
+        """
+        for order in self:
+            flag_fully_return = True
+            return_pickings = order.picking_ids.filtered(
+                lambda p: p.is_return_stock_picking
+            )
+            if not return_pickings:
+                order.is_fully_returned = False
+                continue
+            for order_line in order.order_line:
+                total_quantity_done = sum(
+                    move.quantity
+                    for move in order.picking_ids.mapped("move_ids")
+                    if (
+                        move.origin_returned_move_id
+                        and move.product_id == order_line.product_id
+                    )
+                )
+                if total_quantity_done != order_line.product_uom_qty:
+                    flag_fully_return = False
+                    break
+            order.is_fully_returned = flag_fully_return
 
     @api.depends(
         "woo_bind_ids",

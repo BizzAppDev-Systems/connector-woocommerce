@@ -110,6 +110,11 @@
     - Generate the token to get the "Access Token".
     - Follow the step which is mention in "Webhook Configuration" Tab.
 
+* Refunds Export:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Export Refunds.
+    - Click 'Export Refunds' button to Export the Refunds to Woocommerce.
+
 **Usage**
 *********
 

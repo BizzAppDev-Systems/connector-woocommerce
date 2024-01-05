@@ -11,6 +11,7 @@
         "sale_management",
         "delivery",
         "sale_automatic_workflow",
+        "stock_return_reason",
     ],
     "license": "AGPL-3",
     "data": [
@@ -38,6 +39,7 @@
         "views/queue_job_view.xml",
         "views/product_template_view.xml",
         "views/woo_downloadable_product_views.xml",
+        "views/stock_picking.xml",
         "views/connector_woo_base_menu.xml",
     ],
     "images": ["static/description/banner.gif"],

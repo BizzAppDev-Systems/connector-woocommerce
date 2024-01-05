@@ -18,3 +18,4 @@ from . import woo_settings
 from . import product_template
 from . import woo_payment_gateway
 from . import woo_downloadable_product
+from . import stock_picking
