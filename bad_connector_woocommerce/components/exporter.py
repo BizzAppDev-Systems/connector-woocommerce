@@ -88,7 +88,6 @@ class WooExporter(AbstractComponent):
             if not record:
                 raise ValidationError(_("No record found to export!!!"))
             binding = self.create_get_binding(record)
-
         self.binding = binding
         self.external_id = self.binder.to_external(self.binding)
         try:
