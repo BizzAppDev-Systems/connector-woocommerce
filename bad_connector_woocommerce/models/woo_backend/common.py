@@ -1,4 +1,5 @@
 import logging
+import uuid
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 
@@ -179,6 +180,75 @@ class WooBackend(models.Model):
     woo_setting_id = fields.Many2one(comodel_name="woo.settings")
     stock_update = fields.Boolean(related="woo_setting_id.stock_update")
     recompute_qty_step = fields.Integer(string="Recompute Quantity Batch", default=1000)
+    access_token = fields.Char(string="Access Token(Live)", readonly=True)
+    test_access_token = fields.Char(string="Access Token(Staging)", readonly=True)
+    webhook_config = fields.Html(
+        string="Webhook Configurations",
+        readonly=True,
+        compute="_compute_webhook_config",
+    )
+
+    @api.depends("test_mode", "test_access_token", "access_token")
+    def _compute_webhook_config(self):
+        """
+        Compute method for creating dynamic Html Content for webhook configration
+        tab
+        """
+        for record in self:
+            web_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+            token = (
+                record.test_access_token if record.test_mode else record.access_token
+            )
+            dynamic_html = """
+            <div>
+                <h2>Follow these steps to set up a WooCommerce webhook for
+                bad_connector_woocommerce integration:</h2>
+                <ol>
+                    <li>Navigate to WooCommerce > Settings > Advanced > Webhooks.</li>
+                    <li>Click "Add Webhook" and provide the following details:</li>
+                </ol>
+                <ul>
+                    <li><strong>Name:</strong> Update Product</li>
+                    <li><strong>Status:</strong> Active</li>
+                    <li><strong>Topic:</strong> Product Update</li>
+                    <li><strong>Delivery URL:</strong>
+                        {web_url}/update_product/woo_webhook/{token}
+                    </li>
+                    <li><strong>API Version:</strong> WP REST API Integration V3</li>
+                </ul>
+                <p><strong>Note:</strong> Retrieve the Access Token from WooCommerce
+                 Backends by navigating to Advanced Configuration > DEFAULT
+                 CONFIGURATION.Customize the Delivery URL based on the desired
+                 webhook type:</p>
+                <ul>
+                    <li>For "Update Order":
+                        {web_url}/update_order/woo_webhook/{token}
+                    </li>
+                    <li>For "Create Order":
+                        {web_url}/create_order/woo_webhook/{token}
+                    </li>
+                    <li>For "Create Product":
+                        {web_url}/create_product/woo_webhook/{token}
+                    </li>
+                </ul>
+            </div>
+            """.format(
+                web_url=web_url, token=token
+            )
+            record.webhook_config = dynamic_html
+
+    force_import_partners = fields.Boolean(
+        help="""If true, customers will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
+    )
+    force_import_products = fields.Boolean(
+        help="""If true, products will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
+    )
+    force_import_variable_products = fields.Boolean(
+        help="""If true, variable products will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
+    )
 
     @api.onchange("update_stock_inventory", "stock_update")
     def _onchange_update_stock_inventory(self):
@@ -304,11 +374,13 @@ class WooBackend(models.Model):
             )
         else:
             force = self[force_update_field] if force_update_field else False
+            kwargs["force"] = force
             self._import_from_date(
                 model=binding_model,
                 from_date_field=from_date_field,
                 filters=filters,
                 job_options=job_options,
+                **kwargs
             )
             if force:
                 backend_vals[force_update_field] = False
@@ -316,7 +388,7 @@ class WooBackend(models.Model):
             start_time = start_time - timedelta(seconds=IMPORT_DELTA_BUFFER)
             start_time = fields.Datetime.to_string(start_time)
             backend_vals.update({from_date_field: start_time})
-            self.update_backend_vals(backend_vals, **kwargs)
+        self.update_backend_vals(backend_vals, **kwargs)
 
     def update_backend_vals(self, backend_vals, **kwargs):
         """Method to write the backend values"""
@@ -329,10 +401,16 @@ class WooBackend(models.Model):
         return "{} {}".format(prefix or "", model)
 
     def _import_from_date(
-        self, model, from_date_field, priority=None, filters=None, job_options=None
+        self,
+        model,
+        from_date_field,
+        priority=None,
+        filters=None,
+        job_options=None,
+        **kwargs
     ):
         """Method to add a filter based on the date."""
-        model.import_batch(backend=self, filters=filters)
+        model.import_batch(backend=self, filters=filters, **kwargs)
 
     def toggle_test_mode(self):
         """Test Mode"""
@@ -373,6 +451,7 @@ class WooBackend(models.Model):
                 model="woo.res.partner",
                 priority=5,
                 export=False,
+                force_update_field="force_import_partners",
             )
         return True
 
@@ -390,6 +469,7 @@ class WooBackend(models.Model):
                 from_date_field="import_products_from_date",
                 priority=5,
                 export=False,
+                force_update_field="force_import_products",
                 filters={"type": "simple"},
             )
         return True
@@ -494,7 +574,8 @@ class WooBackend(models.Model):
                 [
                     ("woo_bind_ids.backend_id", "=", backend.id),
                     ("is_final_status", "!=", True),
-                    ("picking_ids.state", "=", "done"),
+                    ("has_done_picking", "=", True),
+                    ("woo_order_status_code", "!=", "refunded"),
                 ]
             )
             for sale_order in sale_orders:
@@ -569,6 +650,7 @@ class WooBackend(models.Model):
                 model="woo.product.template",
                 from_date_field="import_products_tmpl_from_date",
                 priority=5,
+                force_update_field="force_import_variable_products",
                 export=False,
                 filters={"type": "variable"},
             )
@@ -579,3 +661,35 @@ class WooBackend(models.Model):
         """Cron for import_product_templates"""
         backend_ids = self.search(domain or [])
         backend_ids.import_product_templates()
+
+    def _domain_for_export_refund(self):
+        """Domain to search WooCommerce Order Refunds"""
+        return [
+            ("sale_id.woo_bind_ids.backend_id", "in", self.ids),
+            ("is_refund", "=", True),
+            ("woo_return_bind_ids", "=", False),
+            ("sale_id.woo_order_status_code", "!=", "refunded"),
+        ]
+
+    def export_refunds(self):
+        """Export Refunds"""
+        domain = self._domain_for_export_refund()
+        woo_order_refunds = self.env["stock.picking"].search(domain)
+        for woo_order_refund in woo_order_refunds:
+            woo_order_refund.export_refund()
+        return True
+
+    @api.model
+    def cron_export_refunds(self, domain=None):
+        """Cron for export_refunds"""
+        backend_ids = self.search(domain or [])
+        backend_ids.export_refunds()
+
+    def generate_token(self):
+        """Generates a unique access token"""
+        for backend in self:
+            token = str(uuid.uuid4())
+            if backend.test_mode:
+                backend.test_access_token = token
+            else:
+                backend.access_token = token

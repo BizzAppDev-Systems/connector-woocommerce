@@ -109,6 +109,14 @@ class WooProductProductImportMapper(Component):
     _name = "woo.product.product.import.mapper"
     _inherit = "woo.product.common.mapper"
     _apply_on = "woo.product.product"
+    _map_child_fallback = "woo.map.child.import"
+    children = [
+        (
+            "downloads",
+            "woo_downloadable_product_ids",
+            "woo.downloadable.product",
+        ),
+    ]
 
     @only_create
     @mapping
@@ -198,6 +206,42 @@ class WooProductProductImportMapper(Component):
         """Mapping for stock_status"""
         stock_status = record.get("stock_status")
         return {"stock_status": stock_status} if stock_status else {}
+
+    @mapping
+    def downloadable_product(self, record):
+        """Mapping of downloadable product"""
+        downloadable_product = record.get("downloadable")
+        return {"downloadable_product": True} if downloadable_product else {}
+
+    def _unlink_downloadable_product(self, map_record, product_ids):
+        """Unlink downloadable products if they are removed from woocommerce."""
+        product_binder = self.binder_for("woo.product.product")
+        product_id = map_record.source.get("id")
+        downloadable_in_record = set()
+        if product_id:
+            product = product_binder.to_internal(product_id)
+            if product:
+                downloadable_in_record = set(
+                    product.woo_downloadable_product_ids.mapped("external_id")
+                )
+
+        removable_product = set(product_ids) ^ downloadable_in_record
+        if removable_product:
+            records_to_unlink = self.env["woo.downloadable.product"].search(
+                [("external_id", "in", list(removable_product))]
+            )
+            records_to_unlink.unlink()
+
+    def finalize(self, map_record, values):
+        """Unlink downloadable product that no longer exist"""
+        values = super(WooProductProductImportMapper, self).finalize(map_record, values)
+        product_ids = [
+            value[2].get("external_id")
+            for value in values.get("woo_downloadable_product_ids")
+        ]
+        if product_ids:
+            self._unlink_downloadable_product(map_record, product_ids)
+        return values
 
 
 class WooProductProductImporter(Component):
