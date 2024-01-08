@@ -10,11 +10,13 @@
 * Add object woo.backend, woo.product.category, woo.product.image.url, woo.tax, woo.payment.gateway, woo.sale.status and woo.downloadable.product on submenu Connectors.
 * Add object woo.settings, res.config.setting and woo.sale.status in Configuration submenu of woocommerce backend.
 * Submenu of Configurations > WooCommerce Sale Status which is use to store all the WooCommerce Sale Order Status.
+* Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
-* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" data between connected Woocommerce and Odoo.
-* Add "Import Partners","Import Products","Import Product Templates","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata" and "Import Taxes" and "Update Stock Inventory" at backend level.
-* Required field to Import the Partners,Product Templates,Products,Product Attributes,Taxes,Product Tags,Product Category,Update Stock Inventory and Sale Orders are Location,Client Id,Client Secret,Product Category,Company and Warehouse.
+* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" and its "Refunds" data between connected Woocommerce and Odoo.
+* Add "Import Partners","Import Products","Import Product Templates","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata", "Import Taxes", "Update Stock Inventory" and "Export Refunds" at backend level.
+* Required field to Import the Partners,Product Templates,Products,Product Attributes,Taxes,Product Tags,Product Category,Update Stock Inventory, Sale Orders and Export Sale Order Refunds are Location,Client Id,Client Secret,Product Category,Company and Warehouse.
 * Add Button of "GENERATE TOKEN" to generate the "Access Token".
+
 
 **Author**
 **********
@@ -174,7 +176,7 @@
   - To set the WooCommerce status to "Completed," ensure that all corresponding sale orders have their delivery orders in either the "Done" or "Cancelled" state.
 
 * Payload Information:
-    - At Partner, Product, Product Attribute, Product Attribute Value, Country, Delivery Carrier, Product Tags and Sale order binding form view level the co-responding payload can be viewed in "Woo Data" field.
+  - At Partner, Product, Product Attribute, Product Attribute Value, Country, Delivery Carrier, Product Tags and Sale order binding form view level the co-responding payload can be viewed in "Woo Data" field.
 
 * Import of Taxes:
   - Enable the import functionality in bad_connector_woocommerce to transfer Taxes from WooCommerce to Odoo.
@@ -190,6 +192,12 @@
 
 * Import of Webhook Record:
   - In the backend settings, navigate to the 'Connectors' section and select 'WooCommerce.' Within the 'WooCommerce Backends' subsection, locate the "GENERATE TOKEN" button, which is used to generate the necessary authentication token. In the "Webhook Configuration" tab, follow the outlined steps to establish the connection and receive webhook responses from WooCommerce to Odoo.
+
+* Export of Refunds:
+  - Enable the Export functionality in bad_connector_woocommerce to transfer Refunds from Odoo to WooCommerce.
+  - Handle mapping of Refund data during the export process.
+  - After confirming the Sale Order, validating the Delivery Order, Creating the Return with its Return Reason, and then validating the Return, there we added a new field called "Refund Quantity With Amount" at the stock.picking level. If the boolean associated with this field is set to True, it allows the export of refunds to WooCommerce by clicking on the "Export Refund" boolean.
+  - Added "Export Refunds" button at the backend level. This button facilitates the export of all eligible returns for refunds.
 
 **Known issues/Roadmap**
 ************************
