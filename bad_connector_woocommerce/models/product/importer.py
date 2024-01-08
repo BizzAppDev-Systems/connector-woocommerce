@@ -225,7 +225,7 @@ class WooProductProductImportMapper(Component):
                     product.woo_downloadable_product_ids.mapped("external_id")
                 )
 
-        removable_product = set(product_ids) ^ downloadable_in_record
+        removable_product = downloadable_in_record - set(product_ids)
         if removable_product:
             records_to_unlink = self.env["woo.downloadable.product"].search(
                 [("external_id", "in", list(removable_product))]
