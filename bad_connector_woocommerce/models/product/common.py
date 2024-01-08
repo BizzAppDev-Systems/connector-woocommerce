@@ -126,6 +126,12 @@ class WooProductProduct(models.Model):
         string="Computed Quantity",
         help="""Last computed quantity to send " "on WooCommerce.""",
     )
+    downloadable_product = fields.Boolean(readonly=True)
+    woo_downloadable_product_ids = fields.One2many(
+        comodel_name="woo.downloadable.product",
+        inverse_name="woo_product_id",
+        string="WooCommerce Downloadable Product",
+    )
 
     def recompute_woo_qty(self):
         """
@@ -195,6 +201,7 @@ class WooProductProductAdapter(Component):
     _apply_on = "woo.product.product"
     _woo_model = "products"
     _woo_ext_id_key = "id"
+    _check_import_sync_date = True
     _model_dependencies = {
         (
             "woo.product.category",

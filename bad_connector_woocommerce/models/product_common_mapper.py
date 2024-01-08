@@ -77,6 +77,8 @@ class ProductCommonImportMapper(Component):
         """Mapping for detailed_type"""
         if self.is_product_type_variation(record):
             return {}
+        if record.get("downloadable"):
+            return {"detailed_type": "service"}
         return {
             "detailed_type": "product"
             if record.get("manage_stock")

@@ -14,5 +14,6 @@ class WooBackend(models.Model):
                 from_date_field="import_products_from_date",
                 priority=5,
                 export=False,
+                force_update_field="force_import_products",
             )
         return True

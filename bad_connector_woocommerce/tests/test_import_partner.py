@@ -2,6 +2,8 @@ from os.path import dirname, join
 
 from vcr import VCR
 
+from odoo.addons.queue_job.tests.common import trap_jobs
+
 from .test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
@@ -72,3 +74,19 @@ class TestImportPartner(BaseWooTestCase):
             state.id,
             "Partner's State is not matched with response!",
         )
+
+    def test_import_res_partner_batch(self):
+        """Test Assertions for Partner"""
+        self.backend.force_import_partners = True
+        with recorder.use_cassette("import_woo_res_partner"):
+            with trap_jobs() as trap:
+                self.backend._sync_from_date(
+                    model="woo.res.partner",
+                    export=False,
+                    with_delay=True,
+                    force_update_field="force_import_partners",
+                )
+                # Assert that how many queuejobs are being prepared.
+                trap.assert_jobs_count(1)
+                # And then skip enqueued jobs
+                trap.perform_enqueued_jobs()

@@ -22,12 +22,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/products/tags/36"
+                            "href": "http://localhost/wp-json/wc/v3/products/tags/36"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/products/tags"
+                            "href": "http://localhost/wp-json/wc/v3/products/tags"
                         }
                     ]
                 }

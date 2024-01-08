@@ -12,31 +12,29 @@ interactions:
       body:
         {
           string:
-              '
-                {
-                  "id": 1374,
-                  "name": "Men",
-                  "slug": "men",
-                  "parent": 0,
-                  "description": "Men-category",
-                  "display": "default",
-                  "image": null,
-                  "menu_order": 0,
-                  "count": 4,
-                  "_links": {
-                      "self": [
-                          {
-                              "href": "https://localhost/wp-json/wc/v3/products/categories/1374"
-                          }
-                      ],
-                      "collection": [
-                          {
-                              "href": "https://localhost/wp-json/wc/v3/products/categories"
-                          }
-                      ]
-                  }
-                }
-              ',
+            '{
+              "id": 1374,
+              "name": "Men",
+              "slug": "men",
+              "parent": 0,
+              "description": "Men-category",
+              "display": "default",
+              "image": null,
+              "menu_order": 0,
+              "count": 4,
+              "_links": {
+                  "self": [
+                      {
+                          "href": "https://localhost/wp-json/wc/v3/products/categories/1374"
+                      }
+                  ],
+                  "collection": [
+                      {
+                          "href": "https://localhost/wp-json/wc/v3/products/categories"
+                      }
+                  ]
+              }
+            }',
         }
       headers:
         Cache-Control: ["no-store, no-cache, must-revalidate"]

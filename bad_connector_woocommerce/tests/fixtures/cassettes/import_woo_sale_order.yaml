@@ -91,7 +91,7 @@ interactions:
                         "price": 999,
                         "image": {
                             "id": "51",
-                            "src": "http://localhost/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
+                            "src": "https://localhost/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
                         },
                         "parent_name": null
                     }

@@ -17,6 +17,12 @@
                         type="object"
                         class="oe_highlight"
                     />
+                    <button
+                        name="generate_token"
+                        type="object"
+                        class="oe_highlight"
+                        string="Generate Token"
+                    />
                 </header>
                 <div
                     class="alert alert-danger"
@@ -164,6 +170,12 @@
                                             />
                                         </div>
                                     </group>
+                                    <group>
+                                        <field
+                                            name="force_import_partners"
+                                            class="oe_inline"
+                                        />
+                                    </group>
                                 </group>
                                 <group>
                                     <group>
@@ -257,6 +269,12 @@
                                             />
                                         </div>
                                     </group>
+                                    <group>
+                                        <field
+                                            name="force_import_variable_products"
+                                            class="oe_inline"
+                                        />
+                                    </group>
                                 </group>
                                 <group>
                                     <group>
@@ -283,6 +301,12 @@
                                                 string="Import Products"
                                             />
                                         </div>
+                                    </group>
+                                    <group>
+                                        <field
+                                            name="force_import_products"
+                                            class="oe_inline"
+                                        />
                                     </group>
                                 </group>
                                 <group>
@@ -356,6 +380,28 @@
                                         </div>
                                     </group>
                                 </group>
+                                <group>
+                                    <group>
+                                        <label
+                                            for="export_refunds"
+                                            string="Export Refunds"
+                                            style="font-weight:bold;"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="export_refunds"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Export Refunds"
+                                            />
+                                        </div>
+                                    </group>
+                                </group>
                             </page>
                             <page
                                 name="advanced_configuration"
@@ -369,6 +415,16 @@
                                         <field name="default_limit" />
                                         <field name="warehouse_id" required="1" />
                                         <field name="currency_id" />
+                                        <field
+                                            name="access_token"
+                                            groups="base.group_system"
+                                            invisible="test_mode"
+                                        />
+                                        <field
+                                            name="test_access_token"
+                                            groups="base.group_system"
+                                            invisible="not test_mode"
+                                        />
                                         <separator string="Customers Configuration" />
                                         <field name="without_email" />
                                     </group>
@@ -426,6 +482,12 @@
                                         <field name="include_tax" />
                                     </group>
                                 </group>
+                            </page>
+                            <page
+                                name="webhook_configuration"
+                                string="Webhook Configuration"
+                            >
+                                <field name="webhook_config" />
                             </page>
                         </notebook>
                     </group>

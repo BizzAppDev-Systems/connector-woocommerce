@@ -28,4 +28,6 @@ class WooModelBinder(Component):
         "woo.tax",
         "woo.payment.gateway",
         "woo.product.template",
+        "woo.downloadable.product",
+        "woo.stock.picking.refund",
     ]

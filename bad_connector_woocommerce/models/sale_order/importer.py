@@ -342,16 +342,25 @@ class WooSaleOrderImporter(Component):
         product_ids = []
         tax_ids = []
         for line in record.get("line_items", []):
-            if line["product_id"] in product_ids:
+            product_id = (
+                line["variation_id"]
+                if line["variation_id"] != 0
+                else line["product_id"]
+            )
+
+            if product_id in product_ids:
                 continue
-            product_ids.append(line["product_id"])
+
+            product_ids.append(product_id)
+
             lock_name = "import({}, {}, {}, {})".format(
                 self.backend_record._name,
                 self.backend_record.id,
                 "woo.product.product",
-                line["product_id"],
+                product_id,
             )
             self.advisory_lock_or_retry(lock_name)
+
         for tax_line in record.get("tax_lines", []):
             if tax_line["rate_id"] in tax_ids:
                 continue
@@ -379,7 +388,12 @@ class WooSaleOrderImporter(Component):
         for line in record.get("line_items", []):
             _logger.debug("line: %s", line)
             if "product_id" in line:
-                self._import_dependency(line["product_id"], "woo.product.product")
+                product_id = (
+                    line["variation_id"]
+                    if line["variation_id"] != 0
+                    else line["product_id"]
+                )
+                self._import_dependency(product_id, "woo.product.product")
 
         for shipping_line in record.get("shipping_lines", []):
             _logger.debug("shipping_line: %s", shipping_line)
@@ -403,14 +417,10 @@ class WooSaleOrderLineImportMapper(Component):
     ]
 
     def get_product(self, record):
-        """Get The Binding of Product"""
-        product_rec = record.get("product_id")
-        if not product_rec:
-            return False
+        """Get the Binding of Product"""
+        product_id = record.get("variation_id", 0) or record.get("product_id", 0)
         binder = self.binder_for("woo.product.product")
-        product = binder.to_internal(product_rec, unwrap=True)
-        if not product:
-            product = binder.to_internal(record.get("variation_id"), unwrap=True)
+        product = binder.to_internal(product_id, unwrap=True)
         return product
 
     @mapping

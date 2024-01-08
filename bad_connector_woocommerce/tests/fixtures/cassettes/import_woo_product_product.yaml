@@ -367,7 +367,7 @@ interactions:
                       "price": 999,
                       "image": {
                           "id": "51",
-                          "src": "https://localhost/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
+                          "src": "http://localhost/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
                       },
                       "parent_name": null
                     }
@@ -557,12 +557,12 @@ interactions:
                   "_links": {
                       "self": [
                           {
-                              "href": "https://localhost/wp-json/wc/v3/taxes/1"
+                              "href": "http://localhost/wp-json/wc/v3/taxes/1"
                           }
                       ],
                       "collection": [
                           {
-                              "href": "https://localhost/wp-json/wc/v3/taxes"
+                              "href": "http://localhost/wp-json/wc/v3/taxes"
                           }
                       ]
                   }
@@ -686,12 +686,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/shipping_methods/flat_rate"
+                            "href": "http://localhost/wp-json/wc/v3/shipping_methods/flat_rate"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/shipping_methods"
+                            "href": "http://localhost/wp-json/wc/v3/shipping_methods"
                         }
                     ]
                 }
@@ -1089,20 +1089,158 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/products/162"
+                            "href": "http://localhost/wp-json/wc/v3/products/162"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/products"
+                            "href": "http://localhost/wp-json/wc/v3/products"
                         }
                     ],
                     "up": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/products/130"
+                            "href": "http://localhost/wp-json/wc/v3/products/130"
                         }
                     ]
                 }
+            }',
+        }
+      headers:
+        Cache-Control: ["no-store, no-cache, must-revalidate"]
+        Connection: [keep-alive]
+        Content-Type: [application/json; charset=utf-8]
+        Date: ["Mon, 17 jul 2023 05:38:29 GMT"]
+        Expires: ["Jan 23 23:59:59 2023 GMT"]
+        Server: [nginx/1.14.0 (Ubuntu)]
+        Set-Cookie:
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
+        Transfer-Encoding: [chunked]
+        Vary: [Accept-Encoding]
+        X-Frame-Options: [SAMEORIGIN]
+        content-length: ["1378"]
+      status: {code: 200, message: OK}
+  - request:
+      body: null
+      headers:
+        Accept: ["*/*"]
+        Accept-Encoding: ["gzip, deflate, br"]
+        Connection: [keep-alive]
+        User-Agent: [python-requests/2.19.1]
+      method: GET
+      uri: https://localhost/wp-json/wc/v3/products/90
+    response:
+      body:
+        {
+          string:
+            '{
+              "id": 90,
+              "name": "Shirt",
+              "slug": "Shirt",
+              "type": "simple",
+              "status": "publish",
+              "featured": false,
+              "catalog_visibility": "visible",
+              "description": "<p>shirt.</p>\n",
+              "short_description": "<p>shirt.</p>\n",
+              "sku": "shirt-sku",
+              "price": 500,
+              "regular_price": "599",
+              "sale_price": "",
+              "on_sale": false,
+              "purchasable": false,
+              "total_sales": 0,
+              "virtual": false,
+              "downloadable": true,
+              "downloads": [
+                  {
+                      "id": "5eaf17cb-793e-4c92-a1c5-62f7f22ea84e",
+                      "name": "album",
+                      "file": "http://localhost/wp-content/uploads/2023/09/album-1.jpg"
+                  },
+                  {
+                      "id": "82449af2-fc01-4ad2-ae24-3e7d897b6020",
+                      "name": "zzz",
+                      "file": "http://localhost/wp-content/uploads/2023/09/hoodie-with-pocket-2.jpg"
+                  }
+              ],
+              "download_limit": -1,
+              "download_expiry": -1,
+              "external_url": "",
+              "button_text": "",
+              "tax_status": "taxable",
+              "tax_class": "",
+              "manage_stock": true,
+              "stock_quantity": 2000,
+              "backorders": "no",
+              "backorders_allowed": false,
+              "backordered": false,
+              "sold_individually": false,
+              "weight": "",
+              "dimensions": {
+                  "length": "",
+                  "width": "",
+                  "height": ""
+              },
+              "shipping_required": true,
+              "shipping_taxable": true,
+              "shipping_class": "",
+              "shipping_class_id": 0,
+              "reviews_allowed": true,
+              "average_rating": "0.00",
+              "rating_count": 0,
+              "categories": [
+                   {
+                      "id": 1374,
+                      "name": "Men",
+                      "slug": "men"
+                  }
+              ],
+              "tags": [
+                  {
+                      "id": 35,
+                      "name": "Latest",
+                      "slug": "latest"
+                  }
+              ],
+              "images": [],
+              "attributes": [
+                  {
+                    "id": 0,
+                    "name": "Design",
+                    "position": 1,
+                    "visible": true,
+                    "variation": false,
+                    "options": [
+                        "Simple",
+                        "Hard"
+                    ]
+                }
+              ],
+              "price_html": "",
+              "stock_status": "instock",
+              "has_options": false,
+              "bundled_by": [],
+              "bundle_stock_status": "instock",
+              "bundle_virtual": false,
+              "bundle_layout": "",
+              "bundle_add_to_cart_form_location": "",
+              "bundle_editable_in_cart": false,
+              "jetpack_publicize_connections": [],
+              "jetpack_sharing_enabled": true,
+              "jetpack_likes_enabled": true,
+              "brands": [],
+              "_links": {
+                  "self": [
+                      {
+                          "href": "https://localhost/wp-json/wc/v3/products/90"
+                      }
+                  ],
+                  "collection": [
+                      {
+                          "href": "https://localhost/wp-json/wc/v3/products"
+                      }
+                  ]
+              }
             }',
         }
       headers:

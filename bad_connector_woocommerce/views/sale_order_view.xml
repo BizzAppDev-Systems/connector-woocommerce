@@ -56,11 +56,12 @@
                 <field name="has_done_picking" invisible="1" />
                 <field name="woo_bind_ids" invisible="1" />
                 <field name="is_final_status" invisible="1" />
+                <field name="woo_order_status_code" invisible="1" />
                 <button
                     name="export_delivery_status"
                     type="object"
                     class="oe_highlight"
-                    invisible="is_final_status or not has_done_picking or not woo_bind_ids"
+                    invisible="is_final_status or not has_done_picking or not woo_bind_ids or woo_order_status_code == 'refunded'"
                     string="Export Delivery Status"
                 />
             </xpath>
@@ -76,12 +77,14 @@
                 <field name="woo_coupon" readonly="1" invisible="not woo_bind_ids" />
                 <field name="tax_different" invisible="1" />
                 <field name="total_amount_different" invisible="1" />
+                <field name="is_fully_returned" invisible="1" />
             </xpath>
             <xpath
                 expr="//form/sheet/group/group/field[@name='payment_term_id']"
                 position="after"
             >
-                <field name="woo_payment_mode_id" />
+                <field name="woo_payment_mode_id" invisible="not woo_bind_ids" />
+                <field name="woo_bind_ids" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='order_line']//tree" position="attributes">
                 <attribute name="editable" />
