@@ -367,7 +367,7 @@ interactions:
                       "price": 999,
                       "image": {
                           "id": "51",
-                          "src": "https://localhost/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
+                          "src": "http://localhost/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
                       },
                       "parent_name": null
                     }
@@ -557,12 +557,12 @@ interactions:
                   "_links": {
                       "self": [
                           {
-                              "href": "https://localhost/wp-json/wc/v3/taxes/1"
+                              "href": "http://localhost/wp-json/wc/v3/taxes/1"
                           }
                       ],
                       "collection": [
                           {
-                              "href": "https://localhost/wp-json/wc/v3/taxes"
+                              "href": "http://localhost/wp-json/wc/v3/taxes"
                           }
                       ]
                   }
@@ -686,12 +686,12 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/shipping_methods/flat_rate"
+                            "href": "http://localhost/wp-json/wc/v3/shipping_methods/flat_rate"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/shipping_methods"
+                            "href": "http://localhost/wp-json/wc/v3/shipping_methods"
                         }
                     ]
                 }
@@ -1089,17 +1089,17 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/products/162"
+                            "href": "http://localhost/wp-json/wc/v3/products/162"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/products"
+                            "href": "http://localhost/wp-json/wc/v3/products"
                         }
                     ],
                     "up": [
                         {
-                            "href": "https://localhost/wp-json/wc/v3/products/130"
+                            "href": "http://localhost/wp-json/wc/v3/products/130"
                         }
                     ]
                 }
@@ -1155,12 +1155,12 @@ interactions:
                   {
                       "id": "5eaf17cb-793e-4c92-a1c5-62f7f22ea84e",
                       "name": "album",
-                      "file": "http://localhost:8080/wp-content/uploads/2023/09/album-1.jpg"
+                      "file": "http://localhost/wp-content/uploads/2023/09/album-1.jpg"
                   },
                   {
                       "id": "82449af2-fc01-4ad2-ae24-3e7d897b6020",
                       "name": "zzz",
-                      "file": "http://localhost:8080/wp-content/uploads/2023/09/hoodie-with-pocket-2.jpg"
+                      "file": "http://localhost/wp-content/uploads/2023/09/hoodie-with-pocket-2.jpg"
                   }
               ],
               "download_limit": -1,
