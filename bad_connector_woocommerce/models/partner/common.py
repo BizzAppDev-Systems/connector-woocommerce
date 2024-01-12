@@ -60,7 +60,8 @@ class ResPartner(models.Model):
         if state and not state_record:
             raise MappingError(
                 _(
-                    f"State code '{state}' not found in Odoo records for country '{country}'."
+                    f"State code '{state}' not found in Odoo records for "
+                    "country '{country}'."
                 )
             )
         vals = {
@@ -164,3 +165,4 @@ class WooResPartnerAdapter(Component):
     _apply_on = "woo.res.partner"
     _woo_model = "customers"
     _odoo_ext_id_key = "id"
+    _check_import_sync_date = True

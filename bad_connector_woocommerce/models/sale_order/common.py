@@ -21,7 +21,6 @@ class SaleOrder(models.Model):
     has_done_picking = fields.Boolean(
         string="Has Done Picking", compute="_compute_has_done_picking", store=True
     )
-    # TODO: phase 2 convert me to m2o to new object with migration script.
     woo_order_status = fields.Selection(
         selection=[
             ("completed", "Completed"),
@@ -33,18 +32,74 @@ class SaleOrder(models.Model):
             ("failed", "Failed"),
             ("trash", "Trash"),
         ],
-        string="WooCommerce Order Status",
+        string="WooCommerce Status",
     )
-    tax_different = fields.Boolean(compute="_compute_tax_diffrent")
-    total_amount_different = fields.Boolean(compute="_compute_total_amount_diffrent")
+    woo_order_status_id = fields.Many2one(
+        comodel_name="woo.sale.status",
+        string="WooCommerce Order Status",
+        ondelete="restrict",
+    )
+    is_final_status = fields.Boolean(
+        related="woo_order_status_id.is_final_status", string="Final Status"
+    )
+    woo_order_status_code = fields.Char(related="woo_order_status_id.code")
+    tax_different = fields.Boolean(compute="_compute_tax_different")
+    total_amount_different = fields.Boolean(compute="_compute_total_amount_different")
     woo_coupon = fields.Char()
+    woo_payment_mode_id = fields.Many2one(
+        comodel_name="woo.payment.gateway",
+        string="WooCommerce Payment Mode",
+        readonly=True,
+    )
+    is_fully_returned = fields.Boolean(
+        string="Fully Returned",
+        compute="_compute_is_fully_returned",
+        store=True,
+        readonly=True,
+    )
+
+    @api.depends(
+        "order_line.qty_delivered",
+        "order_line.product_uom_qty",
+        "picking_ids",
+        "picking_ids.is_return_stock_picking",
+    )
+    def _compute_is_fully_returned(self):
+        """
+        Compute the 'is_fully_returned' field for the sale order.
+
+        This method checks whether all products in the sale order have been fully
+        returned. It considers pickings with a refund and checks if the total quantity
+        done in those pickings is equal to the ordered quantity.
+        """
+        for order in self:
+            flag_fully_return = True
+            return_pickings = order.picking_ids.filtered(
+                lambda p: p.is_return_stock_picking
+            )
+            if not return_pickings:
+                order.is_fully_returned = False
+                continue
+            for order_line in order.order_line:
+                total_quantity_done = sum(
+                    move.quantity_done
+                    for move in order.picking_ids.mapped("move_ids")
+                    if (
+                        move.origin_returned_move_id
+                        and move.product_id == order_line.product_id
+                    )
+                )
+                if total_quantity_done != order_line.product_uom_qty:
+                    flag_fully_return = False
+                    break
+            order.is_fully_returned = flag_fully_return
 
     @api.depends(
         "woo_bind_ids",
         "order_line.woo_bind_ids.total_tax_line",
         "order_line.price_tax",
     )
-    def _compute_tax_diffrent(self):
+    def _compute_tax_different(self):
         """
         Compute the 'tax_different' field for the sale order.
 
@@ -73,7 +128,7 @@ class SaleOrder(models.Model):
             order.tax_different = tax_different
 
     @api.depends("amount_total", "woo_bind_ids.woo_amount_total")
-    def _compute_total_amount_diffrent(self):
+    def _compute_total_amount_different(self):
         """
         Compute the 'total_amount_different' field for each record in the current
         recordset.
@@ -117,11 +172,9 @@ class SaleOrder(models.Model):
             if not binding.backend_id.mark_completed:
                 raise ValidationError(
                     _(
-                        _(
-                            "Export Delivery Status is Not Allowed from WooCommerce"
-                            " Backend '%s'.",
-                            binding.backend_id.name,
-                        )
+                        "Export Delivery Status is Not Allow from WooCommerce"
+                        " Backend '%s'.",
+                        binding.backend_id.name,
                     )
                 )
             binding.update_woo_order_fulfillment_status()
@@ -169,7 +222,7 @@ class WooSaleOrder(models.Model):
         )
         if not picking_ids:
             raise ValidationError(_("No delivery orders in 'done' state."))
-        if "completed" in self.mapped("woo_order_status"):
+        if self.is_final_status:
             raise ValidationError(
                 _("WooCommerce Sale Order is already in Completed Status.")
             )

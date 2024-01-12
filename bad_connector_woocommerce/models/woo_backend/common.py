@@ -1,4 +1,5 @@
 import logging
+import uuid
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 
@@ -18,6 +19,18 @@ class WooBackend(models.Model):
     _name = "woo.backend"
     _description = "WooCommerce Backend"
     _inherit = ["mail.thread", "connector.backend"]
+
+    @api.model
+    def _get_stock_field_id(self):
+        """
+        Get the ID of the 'virtual_available' field in the 'product.product'
+        model.
+        """
+        field = self.env["ir.model.fields"].search(
+            [("model", "=", "product.product"), ("name", "=", "virtual_available")],
+            limit=1,
+        )
+        return field
 
     name = fields.Char(
         string="Name", required=True, help="Enter the name of the WooCommerce backend."
@@ -80,7 +93,18 @@ class WooBackend(models.Model):
     )
     import_orders_from_date = fields.Datetime(string="Import Orders from date")
     order_prefix = fields.Char(string="Sale Order Prefix", default="WOO_")
-    import_products_from_date = fields.Datetime(string="Import products from date")
+    import_products_from_date = fields.Datetime(
+        string="Import products from date",
+        help="""Specify the date and time to initiate the process of import for
+        Basic, Grouped, and Variant type products.Only products modified or added
+        after this date will be considered in the import.""",
+    )
+    import_products_tmpl_from_date = fields.Datetime(
+        string="Import product Templates from date",
+        help="""Specify the date and time to initiate the process of import for
+        Product Templates.This includes Variable type products.Only templates
+        modified or added after this date will be considered in the import.""",
+    )
     without_sku = fields.Boolean(
         string="Allow Product without SKU",
         help="""If this Boolean is set to True, the system will import products
@@ -137,6 +161,146 @@ class WooBackend(models.Model):
         domain=[("type", "=", "service")],
         help="Select the default fee product for imported orders.",
     )
+    update_stock_inventory = fields.Boolean()
+    warehouse_id = fields.Many2one(
+        comodel_name="stock.warehouse",
+        string="Warehouse",
+        help="Warehouse used to compute the " "stock quantities.",
+    )
+    product_stock_field_id = fields.Many2one(
+        comodel_name="ir.model.fields",
+        string="Product Stock Field",
+        default=_get_stock_field_id,
+        domain="[('model', 'in', ['product.product', 'product.template']),"
+        " ('ttype', '=', 'float')]",
+        help="Choose the field of the product which will be used for "
+        "stock inventory updates.\nIf empty, Quantity Available "
+        "is used.",
+    )
+    woo_setting_id = fields.Many2one(comodel_name="woo.settings")
+    stock_update = fields.Boolean(related="woo_setting_id.stock_update")
+    recompute_qty_step = fields.Integer(string="Recompute Quantity Batch", default=1000)
+    access_token = fields.Char(string="Access Token(Live)", readonly=True)
+    test_access_token = fields.Char(string="Access Token(Staging)", readonly=True)
+    webhook_config = fields.Html(
+        string="Webhook Configurations",
+        readonly=True,
+        compute="_compute_webhook_config",
+    )
+
+    @api.depends("test_mode", "test_access_token", "access_token")
+    def _compute_webhook_config(self):
+        """
+        Compute method for creating dynamic Html Content for webhook configration
+        tab
+        """
+        for record in self:
+            web_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+            token = (
+                record.test_access_token if record.test_mode else record.access_token
+            )
+            dynamic_html = """
+            <div>
+                <h2>Follow these steps to set up a WooCommerce webhook for
+                bad_connector_woocommerce integration:</h2>
+                <ol>
+                    <li>Navigate to WooCommerce > Settings > Advanced > Webhooks.</li>
+                    <li>Click "Add Webhook" and provide the following details:</li>
+                </ol>
+                <ul>
+                    <li><strong>Name:</strong> Update Product</li>
+                    <li><strong>Status:</strong> Active</li>
+                    <li><strong>Topic:</strong> Product Update</li>
+                    <li><strong>Delivery URL:</strong>
+                        {web_url}/update_product/woo_webhook/{token}
+                    </li>
+                    <li><strong>API Version:</strong> WP REST API Integration V3</li>
+                </ul>
+                <p><strong>Note:</strong> Retrieve the Access Token from WooCommerce
+                 Backends by navigating to Advanced Configuration > DEFAULT
+                 CONFIGURATION.Customize the Delivery URL based on the desired
+                 webhook type:</p>
+                <ul>
+                    <li>For "Update Order":
+                        {web_url}/update_order/woo_webhook/{token}
+                    </li>
+                    <li>For "Create Order":
+                        {web_url}/create_order/woo_webhook/{token}
+                    </li>
+                    <li>For "Create Product":
+                        {web_url}/create_product/woo_webhook/{token}
+                    </li>
+                </ul>
+            </div>
+            """.format(
+                web_url=web_url, token=token
+            )
+            record.webhook_config = dynamic_html
+
+    force_import_partners = fields.Boolean(
+        help="""If true, customers will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
+    )
+    force_import_products = fields.Boolean(
+        help="""If true, products will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
+    )
+    force_import_variable_products = fields.Boolean(
+        help="""If true, variable products will be imported from Woocommerce,
+        irrespective of whether the data is up-to-date or not."""
+    )
+
+    @api.onchange("update_stock_inventory", "stock_update")
+    def _onchange_update_stock_inventory(self):
+        """
+        Handle the update of stock inventory based on WooCommerce settings.
+        If 'update_stock_inventory' is attempted to be set to True when 'stock_update'
+        is False, it automatically sets 'update_stock_inventory' to False and displays
+        a warning message.
+        """
+        if not self.stock_update and self.update_stock_inventory:
+            self.update_stock_inventory = False
+            return {
+                "warning": {
+                    "title": "Warning",
+                    "message": "You cannot set 'update_stock_inventory' to True "
+                    "when 'stock_update' is False in the WooCommerce settings "
+                    "level for Mange Stock.",
+                }
+            }
+
+    currency_id = fields.Many2one(
+        comodel_name="res.currency",
+        string="Default Currency",
+        help="Select the default Currency for imported products and orders.",
+    )
+
+    def _get_weight_uom_domain(self):
+        """Return domain for 'weight_uom_id' based on category
+        'uom.product_uom_categ_kgm'."""
+        category_id = self.env.ref("uom.product_uom_categ_kgm")
+        return [("category_id", "=", category_id.id)]
+
+    weight_uom_id = fields.Many2one(
+        "uom.uom",
+        string="Weight UOM",
+        domain=_get_weight_uom_domain,
+        help="Select a weight unit of measure.",
+    )
+
+    def _get_length_uom_domain(self):
+        """Return domain for 'dimension_uom_id' based on category
+        'uom.uom_categ_length'."""
+        category_id = self.env.ref("uom.uom_categ_length")
+        return [("category_id", "=", category_id.id)]
+
+    dimension_uom_id = fields.Many2one(
+        "uom.uom",
+        string="Dimension UOM",
+        domain=_get_length_uom_domain,
+        help="Select a dimension unit of measure.",
+    )
+
     @api.onchange("company_id")
     def _onchange_company(self):
         """Set sale team id False everytime company_id is changed"""
@@ -210,6 +374,7 @@ class WooBackend(models.Model):
             )
         else:
             force = self[force_update_field] if force_update_field else False
+            # kwargs["force"] = force
             self._import_from_date(
                 binding_model=binding_model,
                 from_date_field=from_date_field,
@@ -224,7 +389,7 @@ class WooBackend(models.Model):
             start_time = start_time - timedelta(seconds=IMPORT_DELTA_BUFFER)
             start_time = fields.Datetime.to_string(start_time)
             backend_vals.update({from_date_field: start_time})
-            self.update_backend_vals(backend_vals, **kwargs)
+        self.update_backend_vals(backend_vals, **kwargs)
 
     def update_backend_vals(self, backend_vals, **kwargs):
         """Method to write the backend values"""
@@ -294,6 +459,7 @@ class WooBackend(models.Model):
                 model="woo.res.partner",
                 priority=5,
                 export=False,
+                force_update_field="force_import_partners",
             )
         return True
 
@@ -311,6 +477,8 @@ class WooBackend(models.Model):
                 from_date_field="import_products_from_date",
                 priority=5,
                 export=False,
+                force_update_field="force_import_products",
+                filters={"type": "simple"},
             )
         return True
 
@@ -413,8 +581,9 @@ class WooBackend(models.Model):
             sale_orders = self.env["sale.order"].search(
                 [
                     ("woo_bind_ids.backend_id", "=", backend.id),
-                    ("woo_order_status", "!=", "completed"),
-                    ("picking_ids.state", "=", "done"),
+                    ("is_final_status", "!=", True),
+                    ("has_done_picking", "=", True),
+                    ("woo_order_status_code", "!=", "refunded"),
                 ]
             )
             for sale_order in sale_orders:
@@ -447,6 +616,11 @@ class WooBackend(models.Model):
                 priority=5,
                 export=False,
             )
+            backend._sync_from_date(
+                model="woo.payment.gateway",
+                priority=5,
+                export=False,
+            )
         return True
 
     @api.model
@@ -454,3 +628,76 @@ class WooBackend(models.Model):
         """Cron for sync_metadata"""
         backend_ids = self.search(domain or [])
         backend_ids.sync_metadata()
+
+    def _domain_for_update_product_stock_qty(self):
+        """Domain to search WooCommerce product"""
+        return [
+            ("backend_id", "in", self.ids),
+            ("detailed_type", "=", "product"),
+            ("stock_management", "=", True),
+            ("backend_id.update_stock_inventory", "=", True),
+        ]
+
+    def update_product_stock_qty(self):
+        """Export the Stock Inventory"""
+        domain = self._domain_for_update_product_stock_qty()
+        woo_products = self.env["woo.product.product"].search(domain)
+        woo_products.recompute_woo_qty()
+        return True
+
+    @api.model
+    def cron_update_stock_qty(self, domain=None):
+        """Cron for Update Stock qty"""
+        backend_ids = self.search(domain or [])
+        backend_ids.update_product_stock_qty()
+
+    def import_product_templates(self):
+        """Import Product templates from backend"""
+        for backend in self:
+            backend._sync_from_date(
+                model="woo.product.template",
+                from_date_field="import_products_tmpl_from_date",
+                priority=5,
+                force_update_field="force_import_variable_products",
+                export=False,
+                filters={"type": "variable"},
+            )
+        return True
+
+    @api.model
+    def cron_import_product_templates(self, domain=None):
+        """Cron for import_product_templates"""
+        backend_ids = self.search(domain or [])
+        backend_ids.import_product_templates()
+
+    def _domain_for_export_refund(self):
+        """Domain to search WooCommerce Order Refunds"""
+        return [
+            ("sale_id.woo_bind_ids.backend_id", "in", self.ids),
+            ("is_refund", "=", True),
+            ("woo_return_bind_ids", "=", False),
+            ("sale_id.woo_order_status_code", "!=", "refunded"),
+        ]
+
+    def export_refunds(self):
+        """Export Refunds"""
+        domain = self._domain_for_export_refund()
+        woo_order_refunds = self.env["stock.picking"].search(domain)
+        for woo_order_refund in woo_order_refunds:
+            woo_order_refund.export_refund()
+        return True
+
+    @api.model
+    def cron_export_refunds(self, domain=None):
+        """Cron for export_refunds"""
+        backend_ids = self.search(domain or [])
+        backend_ids.export_refunds()
+
+    def generate_token(self):
+        """Generates a unique access token"""
+        for backend in self:
+            token = str(uuid.uuid4())
+            if backend.test_mode:
+                backend.test_access_token = token
+            else:
+                backend.access_token = token

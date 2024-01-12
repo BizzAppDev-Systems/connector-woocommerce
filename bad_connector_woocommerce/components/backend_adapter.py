@@ -176,7 +176,7 @@ class WooCRUDAdapter(AbstractComponent):
     def _call(self, resource_path, arguments=None, http_method=None):
         """Method to initiate the connection"""
         try:
-            woo_api = getattr(self.work, "woo_api")
+            woo_api = getattr(self.work, "woo_api", None)
         except AttributeError:
             raise AttributeError(
                 "You must provide a woo_api attribute with a "
@@ -194,8 +194,9 @@ class GenericAdapter(AbstractComponent):
     _name = "woo.adapter"
     _inherit = "woo.crud.adapter"
     _apply_on = "woo.backend"
-    _last_update_date = "date_modified"
+    _last_update_date = "date_modified_gmt"
     _woo_model = None
+    _check_import_sync_date = False
     _woo_ext_id_key = "id"
     _odoo_ext_id_key = "external_id"
 
@@ -204,6 +205,38 @@ class GenericAdapter(AbstractComponent):
         result = self._call(
             resource_path=self._woo_model, arguments=filters, http_method="get"
         )
+        if kwargs.get("_woo_product_stock", False):
+            setting_stock_result = self._call(
+                resource_path=kwargs.get("_woo_product_stock"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(setting_stock_result.get("data", []))
+
+        if kwargs.get("_woo_default_currency", False):
+            default_currency_result = self._call(
+                resource_path=kwargs.get("_woo_default_currency"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_currency_result.get("data"))
+
+        if kwargs.get("_woo_default_weight", False):
+            default_weight_result = self._call(
+                resource_path=kwargs.get("_woo_default_weight"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_weight_result.get("data"))
+
+        if kwargs.get("_woo_default_dimension", False):
+            default_dimension_result = self._call(
+                resource_path=kwargs.get("_woo_default_dimension"),
+                arguments=filters,
+                http_method="get",
+            )
+            result["data"].append(default_dimension_result.get("data"))
+
         return result
 
     def read(self, external_id=None, attributes=None, **kwargs):
@@ -221,5 +254,12 @@ class GenericAdapter(AbstractComponent):
     def write(self, external_id, data, **kwargs):
         """Update records on the external system"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
-        result = self._call(resource_path=resource_path, arguments=data, http_method="put")
+        if data.get("template_external_id", False):
+            resource_path = "{}/{}/variations/{}".format(
+                self._woo_model, data.get("template_external_id"), external_id
+            )
+            data.pop("template_external_id")
+        result = self._call(
+            resource_path=resource_path, arguments=data, http_method="put"
+        )
         return result

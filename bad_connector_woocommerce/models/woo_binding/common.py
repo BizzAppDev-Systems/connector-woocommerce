@@ -29,17 +29,21 @@ class WooBinding(models.AbstractModel):
         self, backend, filters=None, job_options=None, force=False, **kwargs
     ):
         """Preparing Batch Import of"""
+        # if force:
+        #    kwargs["force"] = force
         if filters is None:
             filters = filters or {}
         with backend.work_on(self._name) as work:
             importer = work.component(usage="batch.importer")
-            return importer.run(filters=filters)
+            return importer.run(filters=filters, **kwargs)
 
     @api.model
     def import_record(
         self, backend, external_id, data=None, force=False, job_options=None, **kwargs
     ):
         """Import Record Of"""
+        # if force:
+        #    kwargs["force"] = force
         with backend.work_on(self._name) as work:
             importer = work.component(usage="record.importer")
             return importer.run(external_id=external_id, data=data, **kwargs)

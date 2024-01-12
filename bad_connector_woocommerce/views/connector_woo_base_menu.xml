@@ -70,4 +70,18 @@
         parent="menu_woo_root"
         action="action_woo_tax"
     />
+    <!-- Define the menu item WooCommerce payment gateway -->
+    <menuitem
+        id="menu_woo_payment_gateway"
+        name="WooCommerce Payment Gateway"
+        parent="menu_woo_root"
+        action="action_woo_payment_gateway"
+    />
+    <!-- Define the menu item WooCommerce Downloadable Product -->
+    <menuitem
+        id="menu_woo_downloadable_product"
+        name="WooCommerce Downloadable Product"
+        parent="menu_woo_root"
+        action="action_woo_downloadable_product"
+    />
 </odoo>

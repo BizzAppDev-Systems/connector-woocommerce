@@ -17,6 +17,12 @@
                         type="object"
                         class="oe_highlight"
                     />
+                    <button
+                        name="generate_token"
+                        type="object"
+                        class="oe_highlight"
+                        string="Generate Token"
+                    />
                 </header>
                 <div
                     class="alert alert-danger"
@@ -35,7 +41,9 @@
                                     class="fa fa-exclamation-triangle"
                                     style="font-size:20px;"
                                 />
-                                Warning:Enabling tax inclusion in WooCommerce may affect the total tax in Odoo, so it's advisable NOT to use tax inclusion in Odoo.
+                                Warning:Enabling tax inclusion in WooCommerce may affect
+                                the total tax in Odoo, so it's advisable NOT to use tax
+                                inclusion in Odoo.
                             </span>
                         </div>
                     </div>
@@ -162,6 +170,12 @@
                                             />
                                         </div>
                                     </group>
+                                    <group>
+                                        <field
+                                            name="force_import_partners"
+                                            class="oe_inline"
+                                        />
+                                    </group>
                                 </group>
                                 <group>
                                     <group>
@@ -232,6 +246,39 @@
                                 <group>
                                     <group>
                                         <label
+                                            for="import_product_templates"
+                                            string="Import Variable Products"
+                                            style="font-weight:bold; white-space: nowrap;"
+                                            class="oe_inline"
+                                        />
+                                        <field
+                                            name="import_products_tmpl_from_date"
+                                            nolabel="1"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="import_product_templates"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Import Variable Products"
+                                            />
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <field
+                                            name="force_import_variable_products"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <label
                                             for="import_products"
                                             string="Import Products"
                                             style="font-weight:bold; white-space: nowrap;"
@@ -252,6 +299,34 @@
                                                 type="object"
                                                 class="oe_highlight"
                                                 string="Import Products"
+                                            />
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <field
+                                            name="force_import_products"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <label
+                                            for="update_product_stock_qty"
+                                            string="Update Stock Inventory"
+                                            style="font-weight:bold; white-space: nowrap;"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="update_product_stock_qty"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Update Stock Inventory"
                                             />
                                         </div>
                                     </group>
@@ -305,6 +380,28 @@
                                         </div>
                                     </group>
                                 </group>
+                                <group>
+                                    <group>
+                                        <label
+                                            for="export_refunds"
+                                            string="Export Refunds"
+                                            style="font-weight:bold;"
+                                            class="oe_inline"
+                                        />
+                                    </group>
+                                    <group>
+                                        <div
+                                            style="min-width: 300px; max-width: 300px;"
+                                        >
+                                            <button
+                                                name="export_refunds"
+                                                type="object"
+                                                class="oe_highlight"
+                                                string="Export Refunds"
+                                            />
+                                        </div>
+                                    </group>
+                                </group>
                             </page>
                             <page
                                 name="advanced_configuration"
@@ -316,11 +413,19 @@
                                         string="Default Configuration"
                                     >
                                         <field name="default_limit" />
-                                    </group>
-                                    <group
-                                        name="Partner_configuration"
-                                        string="Customers Configuration"
-                                    >
+                                        <field name="warehouse_id" required="1" />
+                                        <field name="currency_id" />
+                                        <field
+                                            name="access_token"
+                                            groups="base.group_system"
+                                            attrs="{'invisible': [('test_mode', '=', True)]}"
+                                        />
+                                        <field
+                                            name="test_access_token"
+                                            groups="base.group_system"
+                                            attrs="{'invisible': [('test_mode', '=', False)]}"
+                                        />
+                                        <separator string="Customers Configuration" />
                                         <field name="without_email" />
                                     </group>
                                     <group
@@ -330,21 +435,39 @@
                                         <field name="without_sku" />
                                         <field name="default_product_type" />
                                         <field name="product_categ_id" />
+                                        <field
+                                            name="product_stock_field_id"
+                                            widget="selection"
+                                            domain="[('model', 'in', ['product.product', 'product.template']), ('ttype', '=', 'float')]"
+                                        />
+                                        <field name="recompute_qty_step" />
+                                        <field name="update_stock_inventory" />
+                                        <field name="weight_uom_id" />
+                                        <field name="dimension_uom_id" />
                                     </group>
-                                    <group
-                                        name="sale_order_configuration"
-                                        string="Orders Configuration"
-                                    >
+                                </group>
+                                <group
+                                    name="sale_order_configuration"
+                                    string="Orders Configuration"
+                                >
+                                    <group>
                                         <field name="order_prefix" />
                                         <field name="company_id" />
                                         <field
                                             name="sale_team_id"
-                                            domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
-                                
+                                            domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+                                        />
+
                                         <field
                                             name="default_carrier_product_id"
                                             context="{'default_detailed_type': 'service'}"
                                         />
+                                        <field
+                                            name="woo_sale_status_ids"
+                                            widget="many2many_tags"
+                                        />
+                                    </group>
+                                    <group>
                                         <field name="default_shipping_method_id" />
                                         <field
                                             name="default_fee_product_id"
@@ -355,13 +478,15 @@
                                             name="tracking_info"
                                             attrs="{'invisible': [('mark_completed', '=', False)]}"
                                         />
-                                        <field
-                                            name="woo_sale_status_ids"
-                                            widget="many2many_tags"
-                                        />
                                         <field name="include_tax" />
                                     </group>
                                 </group>
+                            </page>
+                            <page
+                                name="webhook_configuration"
+                                string="Webhook Configuration"
+                            >
+                                <field name="webhook_config" />
                             </page>
                         </notebook>
                     </group>

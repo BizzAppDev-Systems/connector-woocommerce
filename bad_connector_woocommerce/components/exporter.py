@@ -88,7 +88,6 @@ class WooExporter(AbstractComponent):
             if not record:
                 raise ValidationError(_("No record found to export!!!"))
             binding = self.create_get_binding(record)
-
         self.binding = binding
         self.external_id = self.binder.to_external(self.binding)
         try:
@@ -113,7 +112,7 @@ class WooExporter(AbstractComponent):
         self._after_export(self.binding)
         return result
 
-    def _after_export(self):
+    def _after_export(self, binding):
         pass
 
     def _export_dependency(
@@ -283,7 +282,9 @@ class WooBatchExporter(AbstractComponent):
         """Run the synchronization"""
         records = self.backend_adapter.search(filters)
         for record in records:
-            self._export_record(record=record, fields=fields, job_options=job_options, **kwargs)
+            self._export_record(
+                record=record, fields=fields, job_options=job_options, **kwargs
+            )
 
     def _export_record(self, record, fields=None, job_options=None, **kwargs):
         """
@@ -292,7 +293,11 @@ class WooBatchExporter(AbstractComponent):
         Method to implement in sub-classes.
         """
         self.model.export_record(
-            self.backend_record, record=record, fields=fields, job_options=job_options, **kwargs
+            self.backend_record,
+            record=record,
+            fields=fields,
+            job_options=job_options,
+            **kwargs
         )
 
 
@@ -315,7 +320,11 @@ class WooDirectBatchExporter(AbstractComponent):
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
         delayable.export_record(
-            self.backend_record, record=record, fields=fields, job_options=job_options, **kwargs
+            self.backend_record,
+            record=record,
+            fields=fields,
+            job_options=job_options,
+            **kwargs
         )
 
 
@@ -338,5 +347,9 @@ class WooDelayedBatchExporter(AbstractComponent):
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
         delayable.export_record(
-            self.backend_record, record=record, fields=fields, job_options=job_options, **kwargs
+            self.backend_record,
+            record=record,
+            fields=fields,
+            job_options=job_options,
+            **kwargs
         )

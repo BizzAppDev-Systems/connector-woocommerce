@@ -7,7 +7,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/orders/71
+      uri: https://localhost/wp-json/wc/v3/orders/71
     response:
       body:
         {
@@ -67,24 +67,136 @@ interactions:
                 "cart_hash": "",
                 "number": "71",
                 "meta_data": [],
-                "line_items": [],
-                "tax_lines": [],
-                "shipping_lines": [
+                "line_items": [
                     {
-                        "id": 43,
-                        "method_title": "Flat Rate",
-                        "method_id": "flat_rate",
-                        "instance_id": "",
-                        "total": "10.00",
-                        "total_tax": "0.00",
-                        "taxes": [],
-                        "meta_data": []
+                        "id": 10,
+                        "name": "Cloth",
+                        "product_id": 14,
+                        "variation_id": 0,
+                        "quantity": 3,
+                        "tax_class": "",
+                        "subtotal": "2997.00",
+                        "subtotal_tax": "569.43",
+                        "total": "2997.00",
+                        "total_tax": "569.43",
+                        "taxes": [
+                            {
+                                "id": 1,
+                                "total": "569.43",
+                                "subtotal": "569.43"
+                            }
+                        ],
+                        "meta_data": [],
+                        "sku": "cloth-sku",
+                        "price": 999,
+                        "image": {
+                            "id": "51",
+                            "src": "https://localhost:8080/wp-content/uploads/2023/09/vnech-tee-blue-1.jpg"
+                        },
+                        "parent_name": null
                     }
                 ],
+                "tax_lines": [],
+                "shipping_lines": [
+                            {
+                                "id": 43,
+                                "method_title": "Flat Rate",
+                                "method_id": "flat_rate",
+                                "instance_id": "",
+                                "total": "10.00",
+                                "total_tax": "0.00",
+                                "taxes": [],
+                                "meta_data": []
+                            }
+                        ],
                 "fee_lines": [],
-                "coupon_lines": [],
+                "coupon_lines": [
+                    {
+                        "id": 20,
+                        "code": "flat50",
+                        "discount": "50",
+                        "discount_tax": "9.5",
+                        "meta_data": [
+                            {
+                                "id": 135,
+                                "key": "coupon_data",
+                                "value": {
+                                    "id": 76,
+                                    "code": "flat50",
+                                    "amount": "50",
+                                    "status": "publish",
+                                    "date_created": {
+                                        "date": "2023-10-09 11:01:17.000000",
+                                        "timezone_type": 1,
+                                        "timezone": "+00:00"
+                                    },
+                                    "date_modified": {
+                                        "date": "2023-10-09 11:01:17.000000",
+                                        "timezone_type": 1,
+                                        "timezone": "+00:00"
+                                    },
+                                    "date_expires": null,
+                                    "discount_type": "fixed_cart",
+                                    "description": "",
+                                    "usage_count": 1,
+                                    "individual_use": false,
+                                    "product_ids": [],
+                                    "excluded_product_ids": [],
+                                    "usage_limit": 0,
+                                    "usage_limit_per_user": 0,
+                                    "limit_usage_to_x_items": null,
+                                    "free_shipping": false,
+                                    "product_categories": [],
+                                    "excluded_product_categories": [],
+                                    "exclude_sale_items": false,
+                                    "minimum_amount": "",
+                                    "maximum_amount": "",
+                                    "email_restrictions": [],
+                                    "virtual": false,
+                                    "meta_data": []
+                                },
+                                "display_key": "coupon_data",
+                                "display_value": {
+                                    "id": 76,
+                                    "code": "flat50",
+                                    "amount": "50",
+                                    "status": "publish",
+                                    "date_created": {
+                                        "date": "2023-10-09 11:01:17.000000",
+                                        "timezone_type": 1,
+                                        "timezone": "+00:00"
+                                    },
+                                    "date_modified": {
+                                        "date": "2023-10-09 11:01:17.000000",
+                                        "timezone_type": 1,
+                                        "timezone": "+00:00"
+                                    },
+                                    "date_expires": null,
+                                    "discount_type": "fixed_cart",
+                                    "description": "",
+                                    "usage_count": 1,
+                                    "individual_use": false,
+                                    "product_ids": [],
+                                    "excluded_product_ids": [],
+                                    "usage_limit": 0,
+                                    "usage_limit_per_user": 0,
+                                    "limit_usage_to_x_items": null,
+                                    "free_shipping": false,
+                                    "product_categories": [],
+                                    "excluded_product_categories": [],
+                                    "exclude_sale_items": false,
+                                    "minimum_amount": "",
+                                    "maximum_amount": "",
+                                    "email_restrictions": [],
+                                    "virtual": false,
+                                    "meta_data": []
+                                }
+                            }
+                        ]
+                    }
+                ],
                 "refunds": [],
-                "payment_url": "https://woo-wildly-inner-cycle.wpcomstaging.com/checkout/order-pay/71/?pay_for_order=true&key=wc_order_qzJgPfO1CWI8B",
+                "payment_url": "https://localhost/checkout/order-pay/71/?pay_for_order=true&key=wc_order_qzJgPfO1CWI8B",
                 "is_editable": false,
                 "needs_payment": false,
                 "needs_processing": true,
@@ -97,17 +209,17 @@ interactions:
                 "_links": {
                     "self": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/orders/71"
+                            "href": "https://localhost/wp-json/wc/v3/orders/71"
                         }
                     ],
                     "collection": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/orders"
+                            "href": "https://localhost/wp-json/wc/v3/orders"
                         }
                     ],
                     "customer": [
                         {
-                            "href": "https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/customers/237660088"
+                            "href": "https://localhost/wp-json/wc/v3/customers/237660088"
                         }
                     ]
               }
@@ -122,7 +234,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]
@@ -136,7 +248,7 @@ interactions:
         Connection: [keep-alive]
         User-Agent: [python-requests/2.19.1]
       method: GET
-      uri: https://woo-wildly-inner-cycle.wpcomstaging.com/wp-json/wc/v3/shipping_methods/flat_rate
+      uri: https://localhost/wp-json/wc/v3/shipping_methods/flat_rate
     response:
       body:
         {
@@ -169,7 +281,7 @@ interactions:
         Expires: ["Jan 23 23:59:59 2023 GMT"]
         Server: [nginx/1.14.0 (Ubuntu)]
         Set-Cookie:
-          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=everstox; HttpOnly"]
+          ["expires=Fri, 30-Jun-2017 15:27:02 GMT; path=/; domain=woocommerce; HttpOnly"]
         Transfer-Encoding: [chunked]
         Vary: [Accept-Encoding]
         X-Frame-Options: [SAMEORIGIN]

@@ -6,6 +6,21 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view" />
         <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <header>
+                    <field name="woo_bind_ids" invisible="1" />
+                    <field name="stock_manage" invisible="1" />
+                    <field name="backend_stock_manage" invisible="1" />
+                    <button
+                        name="update_stock_qty"
+                        title="Update stock inventory To Woocommerce."
+                        type="object"
+                        class="oe_highlight"
+                        string="Update Stock Inventory"
+                        attrs="{'invisible': ['|','|',('woo_bind_ids', '=', []),('stock_manage','=',False),('backend_stock_manage','=',False)]}"
+                    />
+                </header>
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page
                     string="WooCommerce Connector"
@@ -35,11 +50,15 @@
                                     <field name="external_id" />
                                     <field name="status" />
                                     <field name="tax_status" />
+                                    <field name="woo_product_qty" />
                                 </group>
                                 <group>
+                                    <field name="woo_product_name" />
                                     <field name="stock_status" />
                                     <field name="price" />
                                     <field name="regular_price" />
+                                    <field name="stock_management" />
+                                    <field name="downloadable_product" />
                                 </group>
                                 <label
                                     for="woo_product_categ_ids"
@@ -74,6 +93,11 @@
                                     string="WooCommerce Product Image URL"
                                 />
                                 <field name="woo_product_image_url_ids" />
+                                <label
+                                    for="woo_downloadable_product_ids"
+                                    string="WooCommerce Downloadable Product"
+                                />
+                                <field name="woo_downloadable_product_ids" />
                                 <group>
                                     <field name="woo_data" />
                                 </group>
