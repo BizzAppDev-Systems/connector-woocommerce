@@ -374,7 +374,6 @@ class WooBackend(models.Model):
             )
         else:
             force = self[force_update_field] if force_update_field else False
-            # kwargs["force"] = force
             self._import_from_date(
                 binding_model=binding_model,
                 from_date_field=from_date_field,
@@ -415,8 +414,8 @@ class WooBackend(models.Model):
         binding_model.import_batch(
             backend=self,
             filters=filters,
-            job_options=job_options,
             force=force,
+            job_options=job_options,
             **kwargs
         )
 
