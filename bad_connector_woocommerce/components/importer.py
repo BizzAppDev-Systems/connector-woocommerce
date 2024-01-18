@@ -204,7 +204,7 @@ class WooImporter(AbstractComponent):
         """
         return
 
-    def _get_binding(self, **kwargs):
+    def _get_binding(self):
         return self.binder.to_internal(self.external_id)
 
     def _create_data(self, map_record, **kwargs):
