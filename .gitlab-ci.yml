@@ -1,0 +1,4 @@
+include:
+  - project: "bizzappdev/ci"
+    file: "/templates/.gitlab-ci-template-common.yml"
+
