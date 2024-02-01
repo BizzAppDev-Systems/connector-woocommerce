@@ -1,0 +1,3 @@
+vcrpy
+odoo-addon-connector@ git+https://github.com/OCA/connector@refs/pull/476/head#subdirectory=setup/connector
+odoo-addon-sale_automatic_workflow@ git+https://github.com/OCA/sale-workflow@refs/pull/2826/head#subdirectory=setup/sale_automatic_workflow
