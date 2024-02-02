@@ -245,7 +245,9 @@ class WooSaleOrder(models.Model):
                 job_options["description"] = self.backend_id.get_queue_job_description(
                     description, self._description
                 )
-            woo_model = woo_model.with_delay(**job_options or {})
+            woo_model = woo_model.with_company(self.backend_id.company_id).with_delay(
+                **job_options or {}
+            )
         for woo_order in self:
             if not self._context.get("execute_from_cron"):
                 woo_order.validate_delivery_orders_done()

@@ -120,7 +120,9 @@ class WooProductTemplateImporter(Component):
                 model=product_model._description,
             )
             job_options["description"] = description
-            delayable = product_model.with_delay(**job_options or {})
+            delayable = product_model.with_company(
+                binding.backend_id.company_id
+            ).with_delay(**job_options or {})
             delayable.import_record(
                 backend=self.backend_record, external_id=variant_id, **kwargs
             )

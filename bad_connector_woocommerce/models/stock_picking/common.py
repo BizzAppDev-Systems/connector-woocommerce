@@ -44,7 +44,9 @@ class StockPicking(models.Model):
             ] = woo_binding.backend_id.get_queue_job_description(
                 description, woo_model._description
             )
-            woo_model = woo_model.with_delay(**job_options or {})
+            woo_model = woo_model.with_company(
+                woo_binding.backend_id.company_id
+            ).with_delay(**job_options or {})
             woo_model.export_record(woo_binding.backend_id, self)
 
 

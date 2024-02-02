@@ -253,6 +253,8 @@ class WooBindingProductListener(Component):
                     description, record._description
                 )
             job_options["priority"] = 20
-            record.with_delay(**job_options or {}).export_record(
+            record.with_company(record.backend_id.company_id).with_delay(
+                **job_options or {}
+            ).export_record(
                 backend=record.backend_id, record=record, fields=inventory_fields
             )
