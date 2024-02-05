@@ -165,6 +165,7 @@ class WooBackend(models.Model):
     warehouse_id = fields.Many2one(
         comodel_name="stock.warehouse",
         string="Warehouse",
+        check_company=True,
         help="Warehouse used to compute the " "stock quantities.",
     )
     product_stock_field_id = fields.Many2one(
