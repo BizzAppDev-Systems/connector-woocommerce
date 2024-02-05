@@ -29,5 +29,5 @@ class WooModelBinder(Component):
         "woo.payment.gateway",
         "woo.product.template",
         "woo.downloadable.product",
-        "woo.stock.picking.refund",
+        "woo.stock.picking.out.return",
     ]

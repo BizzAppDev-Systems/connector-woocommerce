@@ -121,5 +121,16 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
         </record>
+
+        <!-- Import Order Refund -->
+        <record id="ir_cron_woo_stock_picking_refund_import" model="ir.cron">
+            <field name="name">Woocommerce: Import Order Refunds</field>
+            <field name="model_id" ref="model_woo_backend" />
+            <field name="state">code</field>
+            <field name="code">model.cron_import_order_refunds()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
     </data>
 </odoo>
