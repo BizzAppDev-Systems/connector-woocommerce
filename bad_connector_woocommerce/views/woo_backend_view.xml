@@ -413,7 +413,11 @@
                                         string="Default Configuration"
                                     >
                                         <field name="default_limit" />
-                                        <field name="warehouse_id" required="1" />
+                                        <field
+                                            name="warehouse_id"
+                                            required="1"
+                                            domain="[('company_id','in',[company_id,False])]"
+                                        />
                                         <field name="currency_id" />
                                         <field
                                             name="access_token"

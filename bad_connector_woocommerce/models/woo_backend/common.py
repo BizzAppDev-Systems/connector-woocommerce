@@ -303,8 +303,9 @@ class WooBackend(models.Model):
 
     @api.onchange("company_id")
     def _onchange_company(self):
-        """Set sale team id False everytime company_id is changed"""
+        """Set sale team id and warehouse id False everytime company_id is changed"""
         self.sale_team_id = False
+        self.warehouse_id = False
 
     def get_filters(self, model=None):
         """New Method: Returns the filter"""
