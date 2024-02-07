@@ -5,6 +5,7 @@ from odoo.tests import Form
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping, only_create
 from odoo.addons.connector.exception import MappingError
+from odoo.addons.queue_job.job import identity_exact
 
 # pylint: disable=W7950
 
@@ -15,6 +16,33 @@ class WooSaleOrderBatchImporter(Component):
     _name = "woo.sale.order.batch.importer"
     _inherit = "woo.delayed.batch.importer"
     _apply_on = "woo.sale.order"
+
+    def _import_record(self, external_id, job_options=None, data=None, **kwargs):
+        """Delay the import of the records"""
+        if not data.get("refunds", []):
+            return super(WooSaleOrderBatchImporter, self)._import_record(
+                external_id, **kwargs
+            )
+        refunds = data.get("refunds", [])
+        for refund in refunds:
+            job_options = job_options or {}
+            if "identity_key" not in job_options:
+                job_options["identity_key"] = identity_exact
+            if "description" not in kwargs:
+                description = self.backend_record.get_queue_job_description(
+                    prefix=self.env["woo.stock.picking.refund"].import_record.__doc__
+                    or "Record Import Of",
+                    model=self.env["woo.stock.picking.refund"]._description,
+                )
+                job_options["description"] = description
+            kwargs["order_id"] = data.get("id")
+            kwargs["return"] = True
+            delayable = self.env["woo.stock.picking.refund"].with_delay(
+                **job_options or {}
+            )
+            delayable.import_record(
+                self.backend_record, refund.get("id"), data=data, **kwargs
+            )
 
 
 class WooSaleOrderImportMapper(Component):

@@ -40,6 +40,7 @@
         "views/product_template_view.xml",
         "views/woo_downloadable_product_views.xml",
         "views/stock_picking.xml",
+        # "views/stock_picking_out_return_view.xml",
         "views/connector_woo_base_menu.xml",
     ],
     "images": ["static/description/banner.gif"],

@@ -81,3 +81,14 @@ class WooStockPickingRefundAdapter(Component):
         data.pop("order_id")
         self._woo_model = resource_path
         return super(WooStockPickingRefundAdapter, self).create(data)
+
+    def read(self, external_id=None, attributes=None):
+        """Method to get a data for specified record"""
+        order_id = attributes.get("order_id")
+        resource_path = "{}/{}/refunds/{}".format(
+            self._woo_model, order_id, external_id
+        )
+        result = self._call(resource_path, http_method="get")
+        result_data = result.get("data")
+        result_data["order_id"] = order_id
+        return result_data
