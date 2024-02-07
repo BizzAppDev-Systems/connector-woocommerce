@@ -61,27 +61,3 @@ class WooBinding(models.AbstractModel):
         with backend.work_on(self._name) as work:
             exporter = work.component(usage="record.exporter")
             return exporter.run(self, record, fields)
-
-    @api.model
-    def import_refund_batch(
-        self, backend, filters=None, job_options=None, force=False, **kwargs
-    ):
-        """Preparing Batch Import of"""
-        if force:
-            kwargs["force"] = force
-        if filters is None:
-            filters = filters or {}
-        with backend.work_on(self._name) as work:
-            importer = work.component(usage="record.batch.refund.importer")
-            return importer.run(filters=filters, **kwargs)
-
-    @api.model
-    def import_refund_record(
-        self, backend, external_id, data=None, force=False, **kwargs
-    ):
-        """Import Refund Record Of"""
-        if force:
-            kwargs["force"] = force
-        with backend.work_on(self._name) as work:
-            importer = work.component(usage="record.refund.importer")
-            return importer.run(external_id, data=data, **kwargs)

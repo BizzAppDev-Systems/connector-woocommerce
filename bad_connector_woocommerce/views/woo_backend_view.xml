@@ -402,28 +402,6 @@
                                         </div>
                                     </group>
                                 </group>
-                                <group>
-                                    <group>
-                                        <label
-                                            for="import_order_refunds"
-                                            string="Import Refunds"
-                                            style="font-weight:bold;"
-                                            class="oe_inline"
-                                        />
-                                    </group>
-                                    <group>
-                                        <div
-                                            style="min-width: 300px; max-width: 300px;"
-                                        >
-                                            <button
-                                                name="import_order_refunds"
-                                                type="object"
-                                                class="oe_highlight"
-                                                string="Import Refunds"
-                                            />
-                                        </div>
-                                    </group>
-                                </group>
                             </page>
                             <page
                                 name="advanced_configuration"
