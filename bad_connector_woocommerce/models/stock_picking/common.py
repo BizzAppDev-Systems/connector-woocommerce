@@ -83,7 +83,10 @@ class WooStockPickingRefundAdapter(Component):
         return super(WooStockPickingRefundAdapter, self).create(data)
 
     def read(self, external_id=None, attributes=None):
-        """Method to get a data for specified record"""
+        """
+        Override Method: Inherited this method due to get a data for specified sale order
+        refund record
+        """
         order_id = attributes.get("order_id")
         resource_path = "{}/{}/refunds/{}".format(
             self._woo_model, order_id, external_id

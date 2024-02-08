@@ -1,7 +1,5 @@
 import logging
-from woocommerce import API
 from odoo import _
-from odoo.tests import Form
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping, only_create
 from odoo.addons.connector.exception import MappingError
@@ -36,12 +34,17 @@ class WooSaleOrderBatchImporter(Component):
                 )
                 job_options["description"] = description
             kwargs["order_id"] = data.get("id")
-            kwargs["return"] = True
+            kwargs["refund_order_status"] = data.get("status")
+            refund_data = {
+                'order_id': data.get("id"),
+                'return': True,
+                'refund': refund
+            }
             delayable = self.env["woo.stock.picking.refund"].with_delay(
                 **job_options or {}
             )
             delayable.import_record(
-                self.backend_record, refund.get("id"), data=data, **kwargs
+                self.backend_record, refund.get("id"), data=refund_data, **kwargs
             )
 
 

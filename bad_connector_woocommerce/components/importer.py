@@ -1,8 +1,6 @@
 import logging
 from datetime import datetime
-from copy import deepcopy
 from odoo import _, fields
-from odoo.exceptions import ValidationError
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.exception import NothingToDoJob
@@ -26,7 +24,6 @@ class WooImporter(AbstractComponent):
 
     def _get_remote_data(self, **kwargs):
         """Return the raw data for ``self.external_id``"""
-        print("called here..... but i dont want to come here.......")
         data = self.backend_adapter.read(self.external_id)
         if not data.get(self.backend_adapter._woo_ext_id_key):
             data[self.backend_adapter._woo_ext_id_key] = self.external_id
@@ -218,127 +215,6 @@ class WooImporter(AbstractComponent):
     def _create(self, data):
         """Create the OpenERP record"""
         # special check on data before import
-        # binder = self.binder_for(model="woo.sale.order")
-        # sale_order = binder.to_internal(self.remote_record.get("order_id"), unwrap=True)
-        # delivery_order = sale_order.picking_ids[0]
-        # # T-02039 Create the wizard for return based on the delivery order.
-        # return_wizard = (
-        #     self.env["stock.return.picking"]
-        #     .with_context(active_id=delivery_order.id, active_model="stock.picking")
-        #     .new({})
-        # )
-        # return_wizard._onchange_picking_id()
-        # binder = self.binder_for(model="woo.product.product")
-
-        # # Group by qty based on product id
-        # product_grouped_qty = {}
-        # product_return_qty = {}
-        # for line in self.remote_record.get("line_items"):
-        #     quantity = abs(line.get("quantity"))
-        #     product_id = binder.to_internal(line.get("product_id"), unwrap=True).id
-        #     if product_id not in product_grouped_qty:
-        #         product_grouped_qty[product_id] = 0
-        #     product_grouped_qty[product_id] += quantity
-        #     if product_id not in product_return_qty:
-        #         product_return_qty[product_id] = []
-        #     product_return_qty[product_id].append(
-        #         [line.get("id"), quantity]
-        #     )
-        # print(product_grouped_qty, product_return_qty,"plllllllllllppppppppppppppp")
-        # for item in self.remote_record.get("line_items"):
-        #     product_id = binder.to_internal(item.get("product_id"), unwrap=True).id
-        #     return_line = return_wizard.product_return_moves.filtered(
-        #         lambda r: r.product_id.id == product_id
-        #     )
-        #     # T-02039 move_external_id does have a value of external_id of moves and
-        #     # update quantity set the external id for move.
-        #     return_line.update(
-        #         {
-        #             "quantity": float(product_grouped_qty[product_id]),
-        #         }
-        #     )
-        # picking_returns = return_wizard._convert_to_write(
-        #     {name: return_wizard[name] for name in return_wizard._cache}
-        # )
-        # moves = [(6, 0, [])]
-        # for returns in picking_returns["product_return_moves"]:
-        #     if returns[-1] and "move_external_id" in list(returns[-1].keys()):
-        #         product_id = returns[-1]["product_id"]
-        #         for group_return in product_return_qty[product_id]:
-        #             line_id, qty = group_return
-        #             new_return = deepcopy(returns)
-        #             new_return[-1].update(
-        #                 {"quantity": qty, "move_external_id": line_id}
-        #             )
-        #             moves.append(new_return)
-        # picking_returns["product_return_moves"] = moves
-        # T-02039 creates return for the picking with the moves.
-        # stock_return_picking = (
-        #     self.env["stock.return.picking"]
-        #     .with_context(do_not_merge=True)
-        #     .create(picking_returns)
-        # )
-        # print(stock_return_picking, "pppppppppsssssssssssssmmmmmmmmmmmmmm")
-        # return_id, return_type = stock_return_picking._create_returns()
-        # data["odoo_id"] = return_id
-        # picking_id = self.env["stock.picking"].browse(return_id)
-        # print(picking_id, "lplplplplplplpl")
-        # for item in data.get("everstox_stock_move_out_ids"):
-        #     external_id = item[-1].get("external_id")
-        #     stock_move = picking_id.move_lines.filtered(
-        #         lambda m: m.external_move == external_id
-        #     )
-        #     item[-1]["odoo_id"] = stock_move.id
-
-        #     # Logic to set scrap location in case of defect
-        #     return_status = item[-1]["everstox_return_stock_state_id"]
-        #     item[-1]["everstox_return_stock_state_id"] = return_status.id
-        #     # If not scappable state then continue
-        #     if not return_status.consider_scrap:
-        #         continue
-        #     # Get scrap location from backend
-        #     scrap_location = self.backend_record.scrap_location_id
-        #     # if not scrap_location:
-        #     #     raise MappingError(_("Please select scrap location in Backend!"))
-
-        #     # set scrap location as destination location
-        #     item[-1]["location_dest_id"] = scrap_location.id
-
-        # res = super(EverstoxStockPickingOutReturnImporter, self)._create(data)
-        # T-02039- Filters the moves to create activity.
-        # moves = res.everstox_stock_move_out_ids.filtered(
-        #     lambda r: not r.everstox_return_reason or not r.everstox_return_reason_code
-        # )
-        # # T-02039 Creates the activity for the reason and reason code based on the condition.
-        # message = ""
-        # for move in res.everstox_stock_move_out_ids:
-        #     if move.everstox_return_reason_code and not move.everstox_return_reason:
-        #         message += (
-        #             "Move: %s(%s): Return Reason is missing for the reason code %s\n"
-        #         ) % (
-        #             move.odoo_id.id,
-        #             move.product_id.name,
-        #             move.everstox_return_reason_code,
-        #         )
-        #     elif (
-        #         not move.everstox_return_reason_code and not move.everstox_return_reason
-        #     ):
-        #         message += (
-        #             "Move: %s(%s): Return Reason and Reason code both are missing"
-        #         ) % (move.odoo_id.id, move.product_id.name)
-        # if message:
-        #     self.env["everstox.backend"].create_activity(
-        #         record=res.odoo_id,
-        #         message=message,
-        #         activity_type="connector_settings.mail_activity_data_warning",
-        #         user=self.backend_record.activity_user_id,
-        #     )
-        # return res
-        # print(
-        #     picking_returns,
-        #     "ssssssssssssssssssssssssssssssss picking_returnspicking_returns",
-        # )
-        # print("importer create method")
         self._validate_data(data)
         model = self.model.with_context(connector_no_export=True)
         binding = model.create(data)
@@ -374,13 +250,11 @@ class WooImporter(AbstractComponent):
         )
         if force:
             kwargs["force"] = force
-        if data and "return" not in kwargs:
+        if data and "refund_order_status" not in kwargs:
             self.remote_record = data
         else:
             try:
-                print(kwargs, "ppppppppppp kwargskwargskwargskwargskwargskwargs")
                 self.remote_record = self._get_remote_data(**kwargs)
-                print("hereeeeeeeeeeeeeeeeeeeeeee after _get_remote_data")
             except IDMissingInBackend:
                 return _("Record does no longer exist in remote system")
 
@@ -406,7 +280,6 @@ class WooImporter(AbstractComponent):
         else:
             record = self._create_data(map_record)
             binding = self._create(record)
-            print(binding, "binding binding binding binding")
         self.binder.bind(self.external_id, binding)
         self._after_import(binding, **kwargs)
 
