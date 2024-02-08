@@ -427,46 +427,6 @@ class WooSaleOrderImporter(Component):
                 )
         return super(WooSaleOrderImporter, self)._import_dependencies()
 
-    def _after_import(self, binding, **kwargs):
-        result = super(WooSaleOrderImporter, self)._after_import(binding, **kwargs)
-        if self.remote_record.get("status") == "refunded":
-            order = binding.odoo_id
-            # Confirm the original sales order
-            order.action_confirm()
-            line_items = self.remote_record.get("line_items", [])
-            order.picking_ids.move_ids[0].quantity_done = line_items[0]["quantity"]
-            order.picking_ids[0].button_validate()
-            return_form = Form(
-                self.env["stock.return.picking"].with_context(
-                    active_id=order.picking_ids[0].id, active_model="stock.picking"
-                )
-            )
-            return_form.return_reason = "test reason"
-            wizard = return_form.save()
-            wizard.product_return_moves.write({"quantity": line_items[0]["quantity"]})
-            res = wizard.create_returns()
-            return01 = self.env["stock.picking"].browse(res["res_id"])
-            return01.move_ids.quantity_done = 2
-            return01.button_validate()
-            wc_api = API(
-                url=self.backend_record.location,
-                consumer_key=self.backend_record.client_id,
-                consumer_secret=self.backend_record.client_secret,
-                version=self.backend_record.version,
-            )
-
-            response = wc_api.get(
-                f"orders/{self.remote_record.get('refunds')[0].get('id')}/refunds"
-            )
-            # Check if the refund request was successful
-            if response.status_code == 200:
-                # Store the payload response in woo_data field
-                binding.woo_bind_ids.backend_id = self.backend_record.id
-                binding.woo_bind_ids.external_id = response.json().get("id")
-                binding.woo_bind_ids.woo_data = response.json()
-                binding.woo_bind_ids.write({"woo_data": response.json()})
-        return result
-
 
 # Sale Order Line
 class WooSaleOrderLineImportMapper(Component):
