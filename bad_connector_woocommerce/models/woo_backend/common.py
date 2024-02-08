@@ -693,25 +693,3 @@ class WooBackend(models.Model):
                 backend.test_access_token = token
             else:
                 backend.access_token = token
-
-    def _domain_for_import_refund(self):
-        """Domain to search WooCommerce Order for import There Refunds"""
-        return [
-            ("sale_id.woo_bind_ids.backend_id", "in", self.ids),
-            ("sale_id.woo_order_status_code", "!=", "refunded"),
-        ]
-
-    def cron_import_order_refunds(self, domain=None):
-        """Cron for refund"""
-        backend_ids = self.search(domain or [])
-        backend_ids.import_order_refunds()
-
-    def import_order_refunds(self):
-        """Refunds Import"""
-        filters = {}
-        domain = self._domain_for_import_refund
-        woo_order_import_refunds = self.env["stock.picking"].search(domain)
-        for picking in woo_order_import_refunds:
-            self.env["woo.stock.picking.out.return"].with_delay(
-                priority=5
-            ).import_refund_batch(self, filters=filters)

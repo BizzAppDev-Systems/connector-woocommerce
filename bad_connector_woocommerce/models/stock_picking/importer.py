@@ -7,21 +7,8 @@ _logger = logging.getLogger(__name__)
 
 class WooStockPickingRefundImporter(Component):
     _name = "woo.stock.picking.refund.importer"
-    _inherit = "woo.delayed.batch.importer"
-    _apply_on = "woo.stock.picking.refund"
-
-
-class WooStockPickingRefundExporterMapper(Component):
-    _name = "woo.stock.picking.refund.import.mapper"
-    _inherit = "woo.import.mapper"
-    _apply_on = "woo.stock.picking.refund"
-
-
-class WooStockPickingRefundBatchImporter(Component):
-    _name = "woo.stock.picking.refund.batch.exporter"
     _inherit = "woo.importer"
-    _apply_on = ["woo.stock.picking.refund"]
-    _default_binding_field = "woo_return_bind_ids"
+    _apply_on = "woo.stock.picking.refund"
 
     def _get_remote_data(self, **kwargs):
         """Return the raw data for ``self.external_id``"""
@@ -104,3 +91,15 @@ class WooStockPickingRefundBatchImporter(Component):
         picking_id = self.env["stock.picking"].browse(return_id)
         print(picking_id, "lplplplplplplpl")
         return res
+
+
+class WooStockPickingRefundBatchImporter(Component):
+    _name = "woo.stock.picking.refund.batch.importer"
+    _inherit = "woo.delayed.batch.importer"
+    _apply_on = "woo.stock.picking.refund"
+
+
+class WooStockPickingRefundImportMapper(Component):
+    _name = "woo.stock.picking.refund.import.mapper"
+    _inherit = "woo.import.mapper"
+    _apply_on = "woo.stock.picking.refund"

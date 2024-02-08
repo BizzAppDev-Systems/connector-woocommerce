@@ -416,5 +416,17 @@
             <field name="method">export_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
+        <!-- Import Refund related action queue job -->
+        <record
+            id="job_function_woo_import_woo_stock_picking_refund_import_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_stock_picking_refund"
+            />
+            <field name="method">import_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
     </data>
 </odoo>

@@ -24,7 +24,7 @@ class WooImporter(AbstractComponent):
         self.external_id = None
         self.remote_record = None
 
-    def _get_remote_data(self):
+    def _get_remote_data(self, **kwargs):
         """Return the raw data for ``self.external_id``"""
         print("called here..... but i dont want to come here.......")
         data = self.backend_adapter.read(self.external_id)
@@ -378,8 +378,9 @@ class WooImporter(AbstractComponent):
             self.remote_record = data
         else:
             try:
-                print(kwargs,"ppppppppppp kwargskwargskwargskwargskwargskwargs")
+                print(kwargs, "ppppppppppp kwargskwargskwargskwargskwargskwargs")
                 self.remote_record = self._get_remote_data(**kwargs)
+                print("hereeeeeeeeeeeeeeeeeeeeeee after _get_remote_data")
             except IDMissingInBackend:
                 return _("Record does no longer exist in remote system")
 
