@@ -3,7 +3,6 @@ from copy import deepcopy
 
 from odoo import _
 from odoo.exceptions import ValidationError
-
 from odoo.addons.component.core import Component
 
 _logger = logging.getLogger(__name__)
@@ -105,7 +104,6 @@ class WooStockPickingRefundImporter(Component):
         picking_returns = return_wizard._convert_to_write(
             {name: return_wizard[name] for name in return_wizard._cache}
         )
-        print(picking_returns["product_return_moves"], "ppppss res")
         moves = [(6, 0, [])]
         for returns in picking_returns["product_return_moves"]:
             if returns[-1] and "move_external_id" in list(returns[-1].keys()):
@@ -126,7 +124,37 @@ class WooStockPickingRefundImporter(Component):
         )
         return_id, return_type = stock_return_picking._create_returns()
         data["odoo_id"] = return_id
+        # Add a check for product lots if the product is a lot product
         res = super(WooStockPickingRefundImporter, self)._create(data)
+        product = self.env["product.product"].browse(product_id)
+        picking_id = self.env["stock.picking"].browse([return_id])
+        if product.tracking == "lot":
+            original_move = delivery_order.move_ids.filtered(
+                lambda move: move.product_id.id == product_id
+            )
+            original_lots = original_move.mapped("move_line_ids.lot_id")
+            return_lots = picking_id.move_ids.mapped("move_line_ids.lot_id")
+            if not (return_lots <= original_lots):
+                message = (
+                    "Lot differ from orignal delivery order so please verify and "
+                    "validate manually for product: %s."
+                    % (product.name)
+                )
+                _logger.info(message)
+                if delivery_order.user_id:
+                    self.env["woo.backend"].create_activity(
+                        record=picking_id,
+                        message=message,
+                        activity_type="connector_settings.mail_activity_data_warning",
+                        user=delivery_order.user_id,
+                    )
+                else:
+                    self.env["woo.backend"].create_activity(
+                        record=picking_id,
+                        message=message,
+                        activity_type="connector_settings.mail_activity_data_warning",
+                        user=self.backend_record.activity_user_id,
+                    )
         return res
 
     def _after_import(self, binding, **kwargs):
@@ -139,6 +167,8 @@ class WooStockPickingRefundImporter(Component):
         res = super(WooStockPickingRefundImporter, self)._after_import(
             binding, **kwargs
         )
+        if not self.backend_record.process_return_automatically:
+            return res
         picking = binding.odoo_id
         for move in picking.move_ids:
             move.quantity_done = move.product_uom_qty

@@ -1,7 +1,7 @@
 import logging
 
-from odoo import api, fields, models
-
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 from odoo.addons.component.core import Component
 
 _logger = logging.getLogger(__name__)
@@ -22,6 +22,24 @@ class StockPicking(models.Model):
         compute="_compute_is_return_stock_picking",
         store=True,
     )
+
+    def button_validate(self):
+        res = super(StockPicking, self).button_validate()
+        if self.woo_return_bind_ids:
+            if all(line.qty_delivered != 0 for line in self.sale_id.order_line):
+                return res
+            woo_order_status = self.env["woo.sale.status"].search(
+                [("code", "=", "refunded")], limit=1
+            )
+            if not woo_order_status:
+                raise ValidationError(
+                    _(
+                        "The WooCommerce order status with the code 'refunded' is not "
+                        "available."
+                    )
+                )
+            self.sale_id.write({"woo_order_status_id": woo_order_status.id})
+        return res
 
     @api.depends("move_ids")
     def _compute_is_return_stock_picking(self):
