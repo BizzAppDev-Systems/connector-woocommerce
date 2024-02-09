@@ -48,6 +48,15 @@ class WooStockPickingRefundImporter(Component):
         # special check on data before import
         binder = self.binder_for(model="woo.sale.order")
         sale_order = binder.to_internal(self.remote_record.get("order_id"), unwrap=True)
+        # Check if sale order exists
+        if not sale_order:
+            raise ValidationError(
+                _(
+                    "Sale order is missing for order_id: %s"
+                    % self.remote_record.get("order_id")
+                )
+            )
+
         if not sale_order.picking_ids or sale_order.picking_ids[0].state != "done":
             raise ValidationError(
                 _(
@@ -107,6 +116,7 @@ class WooStockPickingRefundImporter(Component):
                     )
                     moves.append(new_return)
         picking_returns["product_return_moves"] = moves
+        picking_returns["return_reason"] = self.remote_record.get("reason")
         stock_return_picking = (
             self.env["stock.return.picking"]
             .with_context(do_not_merge=True)
@@ -116,17 +126,6 @@ class WooStockPickingRefundImporter(Component):
         data["odoo_id"] = return_id
         res = super(WooStockPickingRefundImporter, self)._create(data)
         return res
-
-    # def _create_stock_transfer_wizard(self, picking):
-    #     """
-    #     Create a wizard for 'stock.immediate.transfer' for the given picking.
-    #     """
-    #     ctx = dict(self.env.context)
-    #     ctx.update({"active_model": "stock.picking", "active_ids": picking.ids})
-    #     transfer_wizard = (
-    #         self.env["stock.immediate.transfer"].with_context(ctx).create({})
-    #     )
-    #     transfer_wizard.process()
 
     def _after_import(self, binding, **kwargs):
         """
@@ -139,13 +138,9 @@ class WooStockPickingRefundImporter(Component):
             binding, **kwargs
         )
         picking = binding.odoo_id
+        for move in picking.move_ids:
+            move.quantity_done = move.product_uom_qty
         picking.button_validate()
-        # wiz_model = self.env[picking['res_model']]
-        # wiz_context = picking['context']
-        # wiz = self.env[wiz_model].with_context(wiz_context).create({})
-        # wiz.process()
-
-        return res
         if self.remote_record.get("refund_order_status") != "refunded":
             return res
         binder = self.binder_for(model="woo.sale.order")
