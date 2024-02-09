@@ -23,22 +23,31 @@ class StockPicking(models.Model):
         store=True,
     )
 
+    def _update_order_status(self, sale_order):
+        """
+        Update the order status of the given sale_order to 'refunded'
+        if all delivered quantities are not zero.
+        """
+        if all(line.qty_delivered != 0 for line in sale_order.order_line):
+            return
+        woo_order_status = self.env["woo.sale.status"].search(
+            [("code", "=", "refunded")], limit=1
+        )
+        message = (
+            "The WooCommerce order status with the code 'refunded' is not available."
+        )
+        if not woo_order_status:
+            raise ValidationError(_(message))
+        sale_order.write({"woo_order_status_id": woo_order_status.id})
+
     def button_validate(self):
+        """
+        Validate  the stock selection and proceed to update the WooCommerce order
+        status if the woo_return_bind_ids is present in the stock picking data.
+        """
         res = super(StockPicking, self).button_validate()
         if self.woo_return_bind_ids:
-            if all(line.qty_delivered != 0 for line in self.sale_id.order_line):
-                return res
-            woo_order_status = self.env["woo.sale.status"].search(
-                [("code", "=", "refunded")], limit=1
-            )
-            if not woo_order_status:
-                raise ValidationError(
-                    _(
-                        "The WooCommerce order status with the code 'refunded' is not "
-                        "available."
-                    )
-                )
-            self.sale_id.write({"woo_order_status_id": woo_order_status.id})
+            self._update_order_status(self.sale_id)
         return res
 
     @api.depends("move_ids")

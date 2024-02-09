@@ -41,15 +41,42 @@ class WooStockPickingRefundImporter(Component):
         data["refund_order_status"] = kwargs["refund_order_status"]
         return data
 
+    def _check_lot_tracking(self, product_id, delivery_order, return_id):
+        """
+        Check if lot tracking is consistent between the original delivery order and
+        the return picking.
+        """
+        product = self.env["product.product"].browse(product_id)
+        picking_id = self.env["stock.picking"].browse([return_id])
+        if product.tracking == "lot":
+            original_move = delivery_order.move_ids.filtered(
+                lambda move: move.product_id.id == product_id
+            )
+            original_lots = original_move.mapped("move_line_ids.lot_id")
+            return_lots = picking_id.move_ids.mapped("move_line_ids.lot_id")
+            if not (return_lots <= original_lots):
+                message = (
+                    "Lot differ from original delivery order so please verify and "
+                    "validate manually for product: %s." % (product.name)
+                )
+                _logger.info(message)
+                user_id = delivery_order.user_id or self.backend_record.activity_user_id
+                self.env["woo.backend"].create_activity(
+                    record=picking_id,
+                    message=message,
+                    activity_type="connector_settings.mail_activity_data_warning",
+                    user=user_id,
+                )
+                return False
+        return True
+
     def _create(self, data):
         """
         Inherit Method: inherit method to creates a return for a WooCommerce sale
         order in Odoo.
         """
-        # special check on data before import
         binder = self.binder_for(model="woo.sale.order")
         sale_order = binder.to_internal(self.remote_record.get("order_id"), unwrap=True)
-        # Check if sale order exists
         if not sale_order:
             raise ValidationError(
                 _(
@@ -57,7 +84,6 @@ class WooStockPickingRefundImporter(Component):
                     % self.remote_record.get("order_id")
                 )
             )
-
         if not sale_order.picking_ids or sale_order.picking_ids[0].state != "done":
             raise ValidationError(
                 _(
@@ -78,7 +104,6 @@ class WooStockPickingRefundImporter(Component):
         )
         return_wizard._onchange_picking_id()
         binder = self.binder_for(model="woo.product.product")
-        # Group by qty based on product id
         product_grouped_qty = {}
         product_return_qty = {}
         for line in self.remote_record.get("line_items"):
@@ -124,37 +149,8 @@ class WooStockPickingRefundImporter(Component):
         )
         return_id, return_type = stock_return_picking._create_returns()
         data["odoo_id"] = return_id
-        # Add a check for product lots if the product is a lot product
         res = super(WooStockPickingRefundImporter, self)._create(data)
-        product = self.env["product.product"].browse(product_id)
-        picking_id = self.env["stock.picking"].browse([return_id])
-        if product.tracking == "lot":
-            original_move = delivery_order.move_ids.filtered(
-                lambda move: move.product_id.id == product_id
-            )
-            original_lots = original_move.mapped("move_line_ids.lot_id")
-            return_lots = picking_id.move_ids.mapped("move_line_ids.lot_id")
-            if not (return_lots <= original_lots):
-                message = (
-                    "Lot differ from orignal delivery order so please verify and "
-                    "validate manually for product: %s."
-                    % (product.name)
-                )
-                _logger.info(message)
-                if delivery_order.user_id:
-                    self.env["woo.backend"].create_activity(
-                        record=picking_id,
-                        message=message,
-                        activity_type="connector_settings.mail_activity_data_warning",
-                        user=delivery_order.user_id,
-                    )
-                else:
-                    self.env["woo.backend"].create_activity(
-                        record=picking_id,
-                        message=message,
-                        activity_type="connector_settings.mail_activity_data_warning",
-                        user=self.backend_record.activity_user_id,
-                    )
+        self._check_lot_tracking(product_id, delivery_order, return_id)
         return res
 
     def _after_import(self, binding, **kwargs):
@@ -177,16 +173,5 @@ class WooStockPickingRefundImporter(Component):
             return res
         binder = self.binder_for(model="woo.sale.order")
         sale_order = binder.to_internal(self.remote_record.get("order_id"), unwrap=True)
-        if all(line.qty_delivered != 0 for line in sale_order.order_line):
-            return res
-        woo_order_status = self.env["woo.sale.status"].search(
-            [("code", "=", "refunded")], limit=1
-        )
-        if not woo_order_status:
-            raise ValidationError(
-                _(
-                    "The WooCommerce order status with the code 'refunded' is not "
-                    "available."
-                )
-            )
-        sale_order.write({"woo_order_status_id": woo_order_status.id})
+        self.env["stock.picking"]._update_order_status(sale_order)
+        return res
