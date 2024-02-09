@@ -3,7 +3,7 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 
-from odoo import api, fields, models, _, SUPERUSER_ID
+from odoo import SUPERUSER_ID, _, api, fields, models
 
 from ...components.backend_adapter import WooAPI, WooLocation
 

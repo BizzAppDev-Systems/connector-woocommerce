@@ -1,7 +1,8 @@
 import logging
 
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+
 from odoo.addons.component.core import Component
 
 _logger = logging.getLogger(__name__)
@@ -101,7 +102,8 @@ class WooStockPickingRefundAdapter(Component):
     _woo_ext_id_key = "id"
 
     def create(self, data):
-        """Inherited: Inherited this method due to create the resource_path to export
+        """
+        Inherited: Inherited this method due to create the resource_path to export
         the refund
         """
         resource_path = "{}/{}/refunds".format(self._woo_model, data["order_id"])
@@ -111,8 +113,8 @@ class WooStockPickingRefundAdapter(Component):
 
     def read(self, external_id=None, attributes=None):
         """
-        Override Method: Inherited this method due to get a data for specified sale order
-        refund record
+        Override Method: Inherited this method due to get a data for specified sale
+        order refund record
         """
         order_id = attributes.get("order_id")
         resource_path = "{}/{}/refunds/{}".format(
