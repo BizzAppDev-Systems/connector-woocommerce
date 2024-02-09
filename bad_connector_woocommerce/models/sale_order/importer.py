@@ -1,5 +1,7 @@
 import logging
+
 from odoo import _
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping, only_create
 from odoo.addons.connector.exception import MappingError
@@ -35,11 +37,7 @@ class WooSaleOrderBatchImporter(Component):
                 job_options["description"] = description
             kwargs["order_id"] = data.get("id")
             kwargs["refund_order_status"] = data.get("status")
-            refund_data = {
-                'order_id': data.get("id"),
-                'return': True,
-                'refund': refund
-            }
+            refund_data = {"order_id": data.get("id"), "return": True, "refund": refund}
             delayable = self.env["woo.stock.picking.refund"].with_delay(
                 **job_options or {}
             )

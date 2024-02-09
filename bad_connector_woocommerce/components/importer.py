@@ -1,6 +1,8 @@
 import logging
 from datetime import datetime
+
 from odoo import _, fields
+
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
 from odoo.addons.queue_job.exception import NothingToDoJob
