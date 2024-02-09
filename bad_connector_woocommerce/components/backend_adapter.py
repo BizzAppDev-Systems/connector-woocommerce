@@ -234,6 +234,8 @@ class GenericAdapter(AbstractComponent):
         resource_path = "{}/{}".format(self._woo_model, external_id)
         result = self._call(resource_path, http_method="get")
         result = result.get("data", [])
+        if attributes is not None and attributes.get("order_id"):
+            result["order_id"] = attributes.get("order_id")
         return result
 
     def create(self, data):

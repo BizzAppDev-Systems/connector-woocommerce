@@ -113,14 +113,10 @@ class WooStockPickingRefundAdapter(Component):
 
     def read(self, external_id=None, attributes=None):
         """
-        Override Method: Inherited this method due to get a data for specified sale
-        order refund record
+        Inherited Method: Inherited this method due to get a data for specified sale
+        order refund record.
         """
         order_id = attributes.get("order_id")
-        resource_path = "{}/{}/refunds/{}".format(
-            self._woo_model, order_id, external_id
-        )
-        result = self._call(resource_path, http_method="get")
-        result_data = result.get("data")
-        result_data["order_id"] = order_id
-        return result_data
+        resource_path = "{}/{}/refunds".format(self._woo_model, order_id)
+        self._woo_model = resource_path
+        return super(WooStockPickingRefundAdapter, self).read(external_id, attributes)
