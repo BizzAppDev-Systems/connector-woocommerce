@@ -55,7 +55,9 @@ class WooStockPickingRefundImporter(Component):
             )
             original_lots = original_move.mapped("move_line_ids.lot_id")
             return_lots = picking_id.move_ids.mapped("move_line_ids.lot_id")
-            if not (return_lots <= original_lots):
+            original_lots = set(original_lots)
+            return_lots = set(return_lots)
+            if not return_lots.issubset(original_lots):
                 message = (
                     "Lot differ from original delivery order so please verify and "
                     "validate manually for product: %s." % (product.name)
@@ -65,7 +67,7 @@ class WooStockPickingRefundImporter(Component):
                 self.env["woo.backend"].create_activity(
                     record=picking_id,
                     message=message,
-                    activity_type="connector_settings.mail_activity_data_warning",
+                    activity_type="mail.mail_activity_data_warning",
                     user=user_id,
                 )
                 return False
@@ -85,7 +87,7 @@ class WooStockPickingRefundImporter(Component):
                     % self.remote_record.get("order_id")
                 )
             )
-        if not sale_order.picking_ids or sale_order.picking_ids[0].state != "done":
+        if not sale_order.picking_ids.filtered(lambda picking: picking.state == "done"):
             raise ValidationError(
                 _(
                     "The delivery order has not been validated, therefore, we cannot "
@@ -116,15 +118,13 @@ class WooStockPickingRefundImporter(Component):
             if product_id not in product_return_qty:
                 product_return_qty[product_id] = []
             product_return_qty[product_id].append([line.get("id"), quantity])
-        for item in self.remote_record.get("line_items"):
-            product_id = binder.to_internal(item.get("product_id"), unwrap=True).id
             return_line = return_wizard.product_return_moves.filtered(
                 lambda r: r.product_id.id == product_id
             )
             return_line.update(
                 {
                     "quantity": float(product_grouped_qty[product_id]),
-                    "move_external_id": item.get("id"),
+                    "move_external_id": line.get("id"),
                 }
             )
         picking_returns = return_wizard._convert_to_write(
@@ -143,11 +143,7 @@ class WooStockPickingRefundImporter(Component):
                     moves.append(new_return)
         picking_returns["product_return_moves"] = moves
         picking_returns["return_reason"] = self.remote_record.get("reason")
-        stock_return_picking = (
-            self.env["stock.return.picking"]
-            .with_context(do_not_merge=True)
-            .create(picking_returns)
-        )
+        stock_return_picking = self.env["stock.return.picking"].create(picking_returns)
         return_id, return_type = stock_return_picking._create_returns()
         data["odoo_id"] = return_id
         res = super(WooStockPickingRefundImporter, self)._create(data)
@@ -169,10 +165,9 @@ class WooStockPickingRefundImporter(Component):
         picking = binding.odoo_id
         for move in picking.move_ids:
             move.quantity_done = move.product_uom_qty
+
         picking.button_validate()
         if self.remote_record.get("refund_order_status") != "refunded":
             return res
-        binder = self.binder_for(model="woo.sale.order")
-        sale_order = binder.to_internal(self.remote_record.get("order_id"), unwrap=True)
-        self.env["stock.picking"]._update_order_status(sale_order)
+        self.env["stock.picking"]._update_order_status()
         return res

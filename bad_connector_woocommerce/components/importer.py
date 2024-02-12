@@ -252,7 +252,7 @@ class WooImporter(AbstractComponent):
         )
         if force:
             kwargs["force"] = force
-        if data and "refund_order_status" not in kwargs:
+        if data:
             self.remote_record = data
         else:
             try:

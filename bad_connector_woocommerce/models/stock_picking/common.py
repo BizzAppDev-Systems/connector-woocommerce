@@ -24,11 +24,12 @@ class StockPicking(models.Model):
         store=True,
     )
 
-    def _update_order_status(self, sale_order):
+    def _update_order_status(self):
         """
         Update the order status of the given sale_order to 'refunded'
         if all delivered quantities are not zero.
         """
+        sale_order = self.sale_id
         if all(line.qty_delivered != 0 for line in sale_order.order_line):
             return
         woo_order_status = self.env["woo.sale.status"].search(
@@ -48,7 +49,7 @@ class StockPicking(models.Model):
         """
         res = super(StockPicking, self).button_validate()
         if self.woo_return_bind_ids:
-            self._update_order_status(self.sale_id)
+            self._update_order_status()
         return res
 
     @api.depends("move_ids")
@@ -113,10 +114,15 @@ class WooStockPickingRefundAdapter(Component):
 
     def read(self, external_id=None, attributes=None):
         """
-        Inherited Method: Inherited this method due to get a data for specified sale
+        Override Method: Override this method due to get a data for specified sale
         order refund record.
         """
+        # pylint: disable=method-required-super
         order_id = attributes.get("order_id")
-        resource_path = "{}/{}/refunds".format(self._woo_model, order_id)
-        self._woo_model = resource_path
-        return super(WooStockPickingRefundAdapter, self).read(external_id, attributes)
+        resource_path = "{}/{}/refunds/{}".format(
+            self._woo_model, order_id, external_id
+        )
+        result = self._call(resource_path, http_method="get")
+        result_data = result.get("data", [])
+        result_data["order_id"] = order_id
+        return result_data

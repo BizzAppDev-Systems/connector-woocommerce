@@ -37,13 +37,11 @@ class WooSaleOrderBatchImporter(Component):
                 job_options["description"] = description
             kwargs["order_id"] = data.get("id")
             kwargs["refund_order_status"] = data.get("status")
-            refund_data = {"order_id": data.get("id"), "return": True, "refund": refund}
+            kwargs["refund_id"] = refund.get("id")
             delayable = self.env["woo.stock.picking.refund"].with_delay(
                 **job_options or {}
             )
-            delayable.import_record(
-                self.backend_record, refund.get("id"), data=refund_data, **kwargs
-            )
+            delayable.import_record(self.backend_record, refund.get("id"), **kwargs)
 
 
 class WooSaleOrderImportMapper(Component):
