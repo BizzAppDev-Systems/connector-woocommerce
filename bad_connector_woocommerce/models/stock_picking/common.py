@@ -29,9 +29,9 @@ class StockPicking(models.Model):
         Update the order status of the given sale_order to 'refunded'
         if all delivered quantities are not zero.
         """
-        print ("---------------------", self, self.sale_id.order_line.mapped('order_line.qty_delivered'))
+        # print ("---------------------", self, self.sale_id.order_line.mapped('order_line.qty_delivered'))
         sale_order = self.sale_id
-        if all(line.qty_delivered != 0 for line in sale_order.order_line):
+        if any(line.qty_delivered != 0 for line in sale_order.order_line):
             return
         woo_order_status = self.env["woo.sale.status"].search(
             [("code", "=", "refunded")], limit=1
@@ -50,6 +50,7 @@ class StockPicking(models.Model):
         """
         res = super(StockPicking, self).button_validate()
         if self.woo_return_bind_ids:
+            print("here in button_validate button_validate,.........")
             self._update_order_status()
         return res
 

@@ -282,6 +282,7 @@ class WooImporter(AbstractComponent):
         else:
             record = self._create_data(map_record)
             binding = self._create(record)
+            print(binding,";;;;;;;;;;;;;;;;;;;;;;; binding binding")
         self.binder.bind(self.external_id, binding)
         self._after_import(binding, **kwargs)
 
