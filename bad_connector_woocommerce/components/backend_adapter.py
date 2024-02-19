@@ -93,7 +93,7 @@ class WooAPI(object):
                 )
             status_code = result.status_code
             if status_code == 201:
-                return result
+                return result.json()
             if status_code == 200:
                 json_response = result.json()
                 record_count = result.headers.get("X-WP-Total")
