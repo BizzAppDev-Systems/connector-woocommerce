@@ -36,9 +36,7 @@ interactions:
         {
           string:
             '
-              {
-                "record_count": null,
-                "data":
+
                   {
                     "id": 493,
                     "date_created": "2024-01-02T11:28:38",
@@ -76,7 +74,6 @@ interactions:
                       "up": [{"href": "http://localhost/wp-json/wc/v3/orders/71"}]
                     }
                   }
-              }
             ',
         }
       headers:

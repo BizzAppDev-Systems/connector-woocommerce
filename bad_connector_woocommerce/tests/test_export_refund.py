@@ -121,7 +121,9 @@ class TestExportRefund(BaseWooTestCase):
         return01.is_refund = True
         self.assertTrue(return01.is_refund, "You cannot create refund")
         with recorder.use_cassette("export_refund"):
-            self.env["woo.stock.picking.refund"].export_record(self.backend, return01)
+            self.env["woo.stock.picking.refund"].export_record(
+                self.backend, record=return01
+            )
         self.assertEqual(
             sale_order1.woo_order_status_id.code,
             "processing",
