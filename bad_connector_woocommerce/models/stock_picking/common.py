@@ -93,6 +93,7 @@ class WooStockPickingRefund(models.Model):
         required=True,
         ondelete="restrict",
     )
+    odoo_ids = fields.Many2many(comodel_name='stock.picking', string='Odoo IDs')
 
 
 class WooStockPickingRefundAdapter(Component):
