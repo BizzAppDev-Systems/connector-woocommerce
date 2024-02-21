@@ -73,7 +73,7 @@ class WooStockPickingRefundImporter(Component):
                 return False
         return True
 
-    def find_original_moves(self, pickings, product_id, return_qty):
+    def _find_original_moves(self, pickings, product_id, return_qty):
         # Function to find original moves for a product in pickings
         moves = pickings.move_ids.filtered(
             lambda move: move.product_id.id == product_id
@@ -98,7 +98,7 @@ class WooStockPickingRefundImporter(Component):
                 return_qty -= remaining_qty
         return to_return_moves
 
-    def prepare_return_data(self, line_id, qty):
+    def _prepare_return_data(self, line_id, qty):
         # Prepare return data for a given product, line ID, and quantity
         return_data = {
             "quantity": qty,
@@ -106,7 +106,7 @@ class WooStockPickingRefundImporter(Component):
         }
         return return_data
 
-    def process_return_moves(self, product_return_qty, returns):
+    def _process_return_moves(self, product_return_qty, returns):
         # Process return moves for product quantities
         moves = [(6, 0, [])]
         for returns in returns:
@@ -117,10 +117,10 @@ class WooStockPickingRefundImporter(Component):
                 line_id, qty = group_return
                 new_return = deepcopy(returns)
                 if new_return[-1].get("quantity") >= qty:
-                    new_return[-1].update(self.prepare_return_data(line_id, qty))
+                    new_return[-1].update(self._prepare_return_data(line_id, qty))
                 elif new_return[-1].get("quantity") < qty:
                     qty = min(new_return[-1].get("quantity"), qty)
-                    new_return[-1].update(self.prepare_return_data(line_id, qty))
+                    new_return[-1].update(self._prepare_return_data(line_id, qty))
                 qty = qty - new_return[-1].get("quantity")
                 moves.append(new_return)
         return moves
@@ -140,7 +140,7 @@ class WooStockPickingRefundImporter(Component):
             else:
                 product_grouped_qty[product_id] += original_quantity
             for delivery_order in original_pickings:
-                moves = self.find_original_moves(
+                moves = self._find_original_moves(
                     delivery_order, product_id, product_grouped_qty[product_id]
                 )
                 if moves and moves.product_qty >= quantity:
@@ -156,7 +156,7 @@ class WooStockPickingRefundImporter(Component):
 
         return list(eligible_pickings)
 
-    def update_return_line(self, return_line, quantity, move_external_id):
+    def _update_return_line(self, return_line, quantity, move_external_id):
         return_line.update(
             {
                 "quantity": quantity,
@@ -198,13 +198,13 @@ class WooStockPickingRefundImporter(Component):
                 if return_line.quantity >= quantity:
                     total_qty = return_line.quantity - quantity
                     if product_id not in repeated_product:
-                        self.update_return_line(
+                        self._update_return_line(
                             return_line,
                             float(product_grouped_qty[product_id]),
                             line.get("id"),
                         )
                     else:
-                        self.update_return_line(
+                        self._update_return_line(
                             return_line, repeated_product[product_id], line.get("id")
                         )
                         if total_qty == 0:
@@ -212,11 +212,11 @@ class WooStockPickingRefundImporter(Component):
                         repeated_product[product_id] = total_qty
                 elif return_line.quantity < quantity and return_line.quantity != 0:
                     if product_id not in repeated_product:
-                        self.update_return_line(
+                        self._update_return_line(
                             return_line, return_line.quantity, line.get("id")
                         )
                     else:
-                        self.update_return_line(
+                        self._update_return_line(
                             return_line, repeated_product[product_id], line.get("id")
                         )
                     total_qty = quantity - return_line.quantity
@@ -227,7 +227,7 @@ class WooStockPickingRefundImporter(Component):
         picking_returns = return_wizard._convert_to_write(
             {name: return_wizard[name] for name in return_wizard._cache}
         )
-        picking_returns["product_return_moves"] = self.process_return_moves(
+        picking_returns["product_return_moves"] = self._process_return_moves(
             product_return_qty, picking_returns["product_return_moves"]
         )
         picking_returns["return_reason"] = self.remote_record.get("reason")
@@ -235,108 +235,6 @@ class WooStockPickingRefundImporter(Component):
         return_id, return_type = stock_return_picking._create_returns()
         # return picking_returns, return_id
         return picking_returns, return_id, product_id
-
-
-def update_return_line(self, return_line, quantity, move_external_id):
-    """
-    Update the return line with the given quantity and move_external_id.
-
-    Args:
-    - return_line: The return line record to update.
-    - quantity: The quantity to set for the return line.
-    - move_external_id: The external ID of the move associated with the return line.
-
-    Returns:
-    - None
-    """
-    return_line.update(
-        {
-            "quantity": quantity,
-            "move_external_id": move_external_id,
-        }
-    )
-
-    # def _process_return_picking(
-    #     self, delivery_order, repeated_product, picking_bindings
-    # ):
-    #     return_wizard = (
-    #         self.env["stock.return.picking"]
-    #         .with_context(active_id=delivery_order.id, active_model="stock.picking")
-    #         .new({})
-    #     )
-    #     self.env["stock.return.picking"].with_context(
-    #         active_ids=delivery_order.ids,
-    #         active_id=delivery_order.ids[0],
-    #         active_model="stock.picking",
-    #     )
-    #     return_wizard._onchange_picking_id()
-    #     binder = self.binder_for(model="woo.product.product")
-    #     product_grouped_qty = {}
-    #     product_return_qty = {}
-
-    #     for line in self.remote_record.get("line_items"):
-    #         quantity = abs(line.get("quantity"))
-    #         product_id = binder.to_internal(line.get("product_id"), unwrap=True).id
-    #         if product_id not in product_grouped_qty:
-    #             product_grouped_qty[product_id] = 0
-    #         product_grouped_qty[product_id] += quantity
-    #         if product_id not in product_return_qty:
-    #             product_return_qty[product_id] = []
-    #         product_return_qty[product_id].append([line.get("id"), quantity])
-    #         return_line = return_wizard.product_return_moves.filtered(
-    #             lambda r: r.product_id.id == product_id
-    #         )
-    #         if return_line:
-    #             if return_line.quantity >= quantity:
-    #                 total_qty = return_line.quantity - quantity
-    #                 if product_id not in repeated_product:
-    #                     return_line.update(
-    #                         {
-    #                             "quantity": float(product_grouped_qty[product_id]),
-    #                             "move_external_id": line.get("id"),
-    #                         }
-    #                     )
-    #                 else:
-    #                     return_line.update(
-    #                         {
-    #                             "quantity": repeated_product[product_id],
-    #                             "move_external_id": line.get("id"),
-    #                         }
-    #                     )
-    #                     if total_qty == 0:
-    #                         continue
-    #                     repeated_product[product_id] = total_qty
-    #             elif return_line.quantity < quantity and return_line.quantity != 0:
-    #                 if product_id not in repeated_product:
-    #                     return_line.update(
-    #                         {
-    #                             "quantity": return_line.quantity,
-    #                             "move_external_id": line.get("id"),
-    #                         }
-    #                     )
-    #                 else:
-    #                     return_line.update(
-    #                         {
-    #                             "quantity": repeated_product[product_id],
-    #                             "move_external_id": line.get("id"),
-    #                         }
-    #                     )
-    #                 total_qty = quantity - return_line.quantity
-    #                 if total_qty == 0:
-    #                     continue
-    #                 repeated_product[product_id] = total_qty
-
-    #     picking_returns = return_wizard._convert_to_write(
-    #         {name: return_wizard[name] for name in return_wizard._cache}
-    #     )
-    #     picking_returns["product_return_moves"] = self.process_return_moves(
-    #         product_return_qty, picking_returns["product_return_moves"]
-    #     )
-    #     picking_returns["return_reason"] = self.remote_record.get("reason")
-    #     stock_return_picking = self.env["stock.return.picking"].create(picking_returns)
-    #     return_id, return_type = stock_return_picking._create_returns()
-    #     # return picking_returns, return_id
-    #     return picking_returns, return_id, product_id
 
     def _create(self, data):
         binder = self.binder_for(model="woo.sale.order")
@@ -372,87 +270,7 @@ def update_return_line(self, return_line, quantity, move_external_id):
             data["odoo_id"] = return_id
             res = super(WooStockPickingRefundImporter, self)._create(data)
             self._check_lot_tracking(product_id, delivery_order, return_id)
-            # return_wizard = (
-            #     self.env["stock.return.picking"]
-            #     .with_context(active_id=delivery_order.id, active_model="stock.picking")
-            #     .new({})
-            # )
-            # self.env["stock.return.picking"].with_context(
-            #     active_ids=delivery_order.ids,
-            #     active_id=delivery_order.ids[0],
-            #     active_model="stock.picking",
-            # )
-            # return_wizard._onchange_picking_id()
-            # binder = self.binder_for(model="woo.product.product")
-            # product_grouped_qty = {}
-            # product_return_qty = {}
-            # for line in self.remote_record.get("line_items"):
-            #     quantity = abs(line.get("quantity"))
-            #     product_id = binder.to_internal(line.get("product_id"), unwrap=True).id
-            #     if product_id not in product_grouped_qty:
-            #         product_grouped_qty[product_id] = 0
-            #     product_grouped_qty[product_id] += quantity
-            #     if product_id not in product_return_qty:
-            #         product_return_qty[product_id] = []
-            #     product_return_qty[product_id].append([line.get("id"), quantity])
-            #     return_line = return_wizard.product_return_moves.filtered(
-            #         lambda r: r.product_id.id == product_id
-            #     )
-            #     if return_line:
-            #         if return_line.quantity >= quantity:
-            #             total_qty = return_line.quantity - quantity
-            #             if product_id not in repeated_product:
-            #                 return_line.update(
-            #                     {
-            #                         "quantity": float(product_grouped_qty[product_id]),
-            #                         "move_external_id": line.get("id"),
-            #                     }
-            #                 )
-            #             else:
-            #                 return_line.update(
-            #                     {
-            #                         "quantity": repeated_product[product_id],
-            #                         "move_external_id": line.get("id"),
-            #                     }
-            #                 )
-            #                 if total_qty == 0:
-            #                     continue
-            #                 repeated_product[product_id] = total_qty
-            #         elif return_line.quantity < quantity and return_line.quantity != 0:
-            #             if product_id not in repeated_product:
-            #                 return_line.update(
-            #                     {
-            #                         "quantity": return_line.quantity,
-            #                         "move_external_id": line.get("id"),
-            #                     }
-            #                 )
-            #             else:
-            #                 return_line.update(
-            #                     {
-            #                         "quantity": repeated_product[product_id],
-            #                         "move_external_id": line.get("id"),
-            #                     }
-            #                 )
-            #             total_qty = quantity - return_line.quantity
-            #             if total_qty == 0:
-            #                 continue
-            #             repeated_product[product_id] = total_qty
-
-            # picking_returns = return_wizard._convert_to_write(
-            #     {name: return_wizard[name] for name in return_wizard._cache}
-            # )
-            # picking_returns["product_return_moves"] = self.process_return_moves(
-            #     product_return_qty, picking_returns["product_return_moves"]
-            # )
-            # picking_returns["return_reason"] = self.remote_record.get("reason")
-            # stock_return_picking = self.env["stock.return.picking"].create(
-            #     picking_returns
-            # )
-            # return_id, return_type = stock_return_picking._create_returns()
-            # data["odoo_id"] = return_id
-            # res = super(WooStockPickingRefundImporter, self)._create(data)
-            # # picking_bindings.append(res)
-            # self._check_lot_tracking(product_id, delivery_order, return_id)
+            # picking_bindings.append(res)
         print(
             picking_bindings,
             ";;;;;;;;;;;;;;;;;;;;;;;;;;; picking_bindingspicking_bindings",
