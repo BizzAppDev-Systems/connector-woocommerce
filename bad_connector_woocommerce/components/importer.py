@@ -244,7 +244,7 @@ class WooImporter(AbstractComponent):
         :param external_id: identifier of the record on remote system
         """
         self.external_id = external_id
-        print(self.external_id,"l,llklklklklklklklk self.external_id")
+        print(self.external_id, "l,llklklklklklklklk self.external_id")
         lock_name = "import({}, {}, {}, {})".format(
             self.backend_record._name,
             self.backend_record.id,
@@ -284,9 +284,23 @@ class WooImporter(AbstractComponent):
         else:
             record = self._create_data(map_record)
             binding = self._create(record)
-            print(binding, ";;;;;;;;;;;;;;;;;;;;;;; binding binding here concentarte in binding")
+            print(
+                binding,
+                ";;;;;;;;;;;;;;;;;;;;;;; binding binding here concentarte in binding",
+            )
+            print(len(binding), "lenth of bindinggggggggggggg")
         print(self.binder, ";;;self.binderself.binder")
+        # count = len(binding)
         self.binder.bind(self.external_id, binding)
+        # if count == 1:
+        # self.binder.bind(self.external_id, binding)
+        # else:
+        #     for index, binder in enumerate(binding):
+        #         if index == 0:
+        #             self.external_id = self.external_id
+        #         else:
+        #             self.external_id = f"{self.external_id}_{index}"
+        # self.binder.bind(new_external_id, binding)
         self._after_import(binding, **kwargs)
 
 

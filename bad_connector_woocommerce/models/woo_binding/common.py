@@ -44,6 +44,7 @@ class WooBinding(models.AbstractModel):
             kwargs["force"] = force
         with backend.work_on(self._name) as work:
             importer = work.component(usage="record.importer")
+            print(external_id,";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
             return importer.run(external_id, data=data, **kwargs)
 
     @api.model
