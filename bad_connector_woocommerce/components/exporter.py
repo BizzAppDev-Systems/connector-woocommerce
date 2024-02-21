@@ -38,15 +38,12 @@ class WooExporter(AbstractComponent):
         # the latest status in odoo instead of sending the import request again
         self.response_data = None
         self.remote_record = None
+        self.odoo_record = None
 
-    def _should_import(self):
-        if not self.binding:
-            return True
-        return False
-
-    def create_get_binding(self, record, extra_data=None):
+    def create_get_binding(self, extra_data=None):
         """Search for the existing binding else create new binding"""
         binder = self.binder_for(model=self.model._name)
+        record = self.odoo_record.with_context(active_test=False)
         external_id = False
         if self._default_binding_field and record[self._default_binding_field]:
             binding = record[self._default_binding_field][:1]
@@ -79,18 +76,24 @@ class WooExporter(AbstractComponent):
             binding = self.model.create(data)
         return binding
 
-    def run(self, binding, record=None, *args, **kwargs):
+    def run(self, binding, record=None, fields=None, *args, **kwargs):
         """
         Run the synchronization
         :param binding: binding record to export
         """
-        if not binding:
-            if not record:
-                raise ValidationError(_("No record found to export!!!"))
-            binding = self.create_get_binding(record)
+        if not record and binding:
+            record = binding.odoo_id
+
+        assert record
+        self.odoo_record = record
 
         self.binding = binding
-        self.external_id = self.binder.to_external(self.binding)
+        self._before_export()
+
+        # Skip record export if external id exist
+        skip = self._has_to_skip()
+        if skip:
+            return skip
         try:
             should_import = self._should_import()
         except IDMissingInBackend:
@@ -98,11 +101,8 @@ class WooExporter(AbstractComponent):
             should_import = False
         if should_import:
             self._delay_import()
-            return
-
+            return  # BAD customization
         result = self._run(*args, **kwargs)
-        if not self.external_id or self.external_id == "False":
-            self.external_id = record.id
         self.binder.bind(self.external_id, self.binding)
         # Commit so we keep the external ID when there are several
         # exports (due to dependencies) and one of them fails.
@@ -110,10 +110,11 @@ class WooExporter(AbstractComponent):
         # record
         if not tools.config["test_enable"]:
             self.env.cr.commit()  # pylint: disable=E8102
-        self._after_export(self.binding)
+
+        self._after_export()
         return result
 
-    def _after_export(self, binding):
+    def _after_export(self):
         pass
 
     def _export_dependency(
@@ -123,6 +124,7 @@ class WooExporter(AbstractComponent):
         component_usage="record.exporter",
         binding_field=None,
         binding_extra_vals=None,
+        **kwargs,
     ):
         exporter = self.component(usage=component_usage, model_name=binding_model)
         # Call importer if we need to import record in dependency
@@ -157,54 +159,20 @@ class WooExporter(AbstractComponent):
         if binding_ids.filtered(
             lambda bind: getattr(bind, binder._external_field)
             and bind.backend_id == self.backend_record
+            and bind.external_id not in ["False", "false"]
         ):
             return
 
         if not relation:
             return
-        # wrap is typically True if the relation is for instance a
-        # 'res.partner' record but the binding model is
-        # 'my_bakend.res.partner'
-        wrap = relation._name != binding_model
 
-        if wrap and hasattr(relation, binding_field):
-            domain = [
-                ("odoo_id", "=", relation.id),
-                ("backend_id", "=", self.backend_record.id),
-            ]
-            binding = self.env[binding_model].search(domain)
-            if binding:
-                assert len(binding) == 1, (
-                    "only 1 binding for a backend is " "supported in _export_dependency"
-                )
-            # we are working with a unwrapped record (e.g.
-            # product.category) and the binding does not exist yet.
-            # Example: I created a product.product and its binding
-            # my_backend.product.product and we are exporting it, but we need
-            # to create the binding for the product.category on which it
-            # depends.
-            else:
-                # BAD customization: moved to create_get_binding
-                with self._retry_unique_violation():
-                    binding = exporter.create_get_binding(
-                        record=relation, extra_data=binding_extra_vals
-                    )
-                    # BAD customization end
-                    if not tools.config["test_enable"]:
-                        self.env.cr.commit()  # pylint: disable=E8102
-        else:
-            # If my_backend_bind_ids does not exist we are typically in a
-            # "direct" binding (the binding record is the same record).
-            # If wrap is True, relation is already a binding record.
-            binding = relation
-
-        if not binder.to_external(binding):
-            exporter.run(binding)
+        binding = self.env[binding_model]
+        exporter.run(binding=binding, record=relation)
 
     def _before_export(self):
         pass
 
-    def _export_dependencies(self):
+    def _export_dependencies(self, **kwargs):
         """
         Import the dependencies for the record
 
@@ -213,7 +181,7 @@ class WooExporter(AbstractComponent):
         """
         if not hasattr(self.backend_adapter, "_model_export_dependencies"):
             return
-        record = self.binding.odoo_id
+        record = self.odoo_record
         for dependency in self.backend_adapter._model_export_dependencies:
             model, key = dependency
             relations = record.mapped(key)
@@ -223,31 +191,39 @@ class WooExporter(AbstractComponent):
                     binding_model=model,
                 )
 
-    def _run(self, fields=None):
+    def _run(self, fields=None, **kwargs):
         """Flow of the synchronization, implemented in inherited classes"""
-        assert self.binding
-
         if not self.external_id:
             fields = None  # should be created with all the fields
 
-        self._before_export()
         # export the missing linked resources
-        self._export_dependencies()
+        # Check before calling export dependencies as we need self.odoo_record
+        if not self.binding and not self.odoo_record:
+            raise ValidationError(_("No record found to export!!!"))
+        if not self.odoo_record:
+            self.odoo_record = self.binding.odoo_id
+        self._export_dependencies(**kwargs)
+
+        # T-02472 BAD-START To prevent empty bindings, create a binding here.
+        if not self.binding:
+            self.binding = self.create_get_binding()
+
+        self.external_id = self.binder.to_external(self.binding)
 
         # prevent other jobs to export the same record
         # will be released on commit (or rollback)
-        # self._lock()
-        map_record = self._map_data()
+        self._lock()
+        map_record = self._map_data(**kwargs)
         if self.external_id:
-            record = self._update_data(map_record, fields=fields)
+            record = self._update_data(map_record, fields=fields, **kwargs)
             if not record:
                 return _("Nothing to export.")
-            self._update(record)
+            self._update(record, **kwargs)
         else:
-            record = self._create_data(map_record, fields=fields)
+            record = self._create_data(map_record, fields=fields, **kwargs)
             if not record:
                 return _("Nothing to export.")
-            res = self._create(record)
+            res = self._create(record, **kwargs)
             # BAD start
             if isinstance(res, dict):
                 # add logger error in case of not getting proper data while exporting
@@ -278,19 +254,27 @@ class WooBatchExporter(AbstractComponent):
     _inherit = ["base.exporter", "connector.woo.base"]
     _usage = "batch.exporter"
 
-    def run(self, filters=None):
+    def run(self, filters=None, fields=None, job_options=None, **kwargs):
         """Run the synchronization"""
         records = self.backend_adapter.search(filters)
         for record in records:
-            self._export_record(record)
+            self._export_record(
+                record=record, fields=fields, job_options=job_options, **kwargs
+            )
 
-    def _export_record(self, record):
+    def _export_record(self, record, fields=None, job_options=None, **kwargs):
         """
         Export a record directly or delay the export of the record.
 
         Method to implement in sub-classes.
         """
-        self.model.export_record(self.backend_record, record)
+        self.model.export_record(
+            self.backend_record,
+            record=record,
+            fields=fields,
+            job_options=job_options,
+            **kwargs,
+        )
 
 
 class WooDirectBatchExporter(AbstractComponent):
@@ -299,7 +283,7 @@ class WooDirectBatchExporter(AbstractComponent):
     _name = "woo.direct.batch.exporter"
     _inherit = "woo.batch.exporter"
 
-    def _export_record(self, record, job_options=None, **kwargs):
+    def _export_record(self, record, fields=None, job_options=None, **kwargs):
         """Delay the export of the records"""
         job_options = job_options or {}
         if "identity_key" not in job_options:
@@ -311,7 +295,13 @@ class WooDirectBatchExporter(AbstractComponent):
             )
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
-        delayable.export_record(self.backend_record, record, **kwargs)
+        delayable.export_record(
+            self.backend_record,
+            record=record,
+            fields=fields,
+            job_options=job_options,
+            **kwargs,
+        )
 
 
 class WooDelayedBatchExporter(AbstractComponent):
@@ -320,7 +310,7 @@ class WooDelayedBatchExporter(AbstractComponent):
     _name = "woo.delayed.batch.exporter"
     _inherit = "woo.batch.exporter"
 
-    def _export_record(self, record, job_options=None, **kwargs):
+    def _export_record(self, record, fields=None, job_options=None, **kwargs):
         """Delay the export of the records"""
         job_options = job_options or {}
         if "identity_key" not in job_options:
@@ -332,4 +322,10 @@ class WooDelayedBatchExporter(AbstractComponent):
             )
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
-        delayable.export_record(self.backend_record, record, **kwargs)
+        delayable.export_record(
+            self.backend_record,
+            record=record,
+            fields=fields,
+            job_options=job_options,
+            **kwargs,
+        )

@@ -71,7 +71,7 @@ class WooSaleOrderBatchExporter(Component):
     _inherit = "woo.exporter"
     _apply_on = ["woo.sale.order"]
 
-    def _after_export(self, binding):
+    def _after_export(self):
         """Import the transaction lines after checking WooCommerce order status."""
         woo_order_status = self.env["woo.sale.status"].search(
             [("code", "=", "completed"), ("is_final_status", "=", True)], limit=1
@@ -83,4 +83,5 @@ class WooSaleOrderBatchExporter(Component):
                     "available in Odoo or isn't marked as 'Final Status'."
                 )
             )
-        binding.write({"woo_order_status_id": woo_order_status.id})
+        self.binding.write({"woo_order_status_id": woo_order_status.id})
+        self.binding.write({"woo_order_status": "completed"})
