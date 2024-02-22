@@ -291,16 +291,17 @@ class WooImporter(AbstractComponent):
             print(len(binding), "lenth of bindinggggggggggggg")
         print(self.binder, ";;;self.binderself.binder")
         # count = len(binding)
-        self.binder.bind(self.external_id, binding)
+        # # self.binder.bind(self.external_id, binding)
         # if count == 1:
-        # self.binder.bind(self.external_id, binding)
+        #     self.binder.bind(self.external_id, binding)
         # else:
         #     for index, binder in enumerate(binding):
         #         if index == 0:
         #             self.external_id = self.external_id
         #         else:
         #             self.external_id = f"{self.external_id}_{index}"
-        # self.binder.bind(new_external_id, binding)
+        #         self.binder.bind(self.external_id, binding)
+        self.binder.bind(self.external_id, binding)
         self._after_import(binding, **kwargs)
 
 
