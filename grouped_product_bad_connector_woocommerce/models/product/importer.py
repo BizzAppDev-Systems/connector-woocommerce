@@ -28,15 +28,15 @@ class WooProductProductMrpImporter(Component):
 
         return result
 
-    def _must_skip(self):
+    def _must_skip(self, **kwargs):
         """Inherited Method :: to Skip Product Records which have type as variable."""
         if self.remote_record.get("type") == "variable":
             return _(
                 "Skipped: Product Type is Variable for Product ID %s"
             ) % self.remote_record.get("id")
-        return super(WooProductProductMrpImporter, self)._must_skip()
+        return super(WooProductProductMrpImporter, self)._must_skip(**kwargs)
 
-    def _import_dependencies(self):
+    def _import_dependencies(self, **kwargs):
         """
         Inherited method :: to import dependencies for WooCommerce products.
         It retrieves grouped products from the remote record.
@@ -55,4 +55,4 @@ class WooProductProductMrpImporter(Component):
             if product:
                 self._import_dependency(product, "woo.product.product")
 
-        return super(WooProductProductMrpImporter, self)._import_dependencies()
+        return super(WooProductProductMrpImporter, self)._import_dependencies(**kwargs)
