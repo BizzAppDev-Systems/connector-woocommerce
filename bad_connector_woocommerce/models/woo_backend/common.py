@@ -360,7 +360,9 @@ class WooBackend(models.Model):
                 )
             if priority or priority == 0:
                 job_options["priority"] = priority
-            binding_model = binding_model.with_delay(**job_options or {})
+            binding_model = binding_model.with_company(self.company_id).with_delay(
+                **job_options or {}
+            )
         if export:
             self._export_from_date(
                 binding_model,

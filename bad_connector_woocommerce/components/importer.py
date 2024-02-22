@@ -361,7 +361,9 @@ class WooBatchImporter(AbstractComponent):
             )
             job_options["description"] = description
         if not kwargs.get("no_delay"):
-            model = model.with_delay(**job_options or {})
+            model = model.with_company(self.backend_record.company_id).with_delay(
+                **job_options or {}
+            )
         model.import_batch(
             self.backend_record, filters=filters, job_options=job_options, **kwargs
         )
@@ -408,5 +410,7 @@ class WooDelayedBatchImporter(AbstractComponent):
                 model=self.model._description,
             )
             job_options["description"] = description
-        delayable = self.model.with_delay(**job_options or {})
+        delayable = self.model.with_company(self.backend_record.company_id).with_delay(
+            **job_options or {}
+        )
         delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
