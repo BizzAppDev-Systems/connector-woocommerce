@@ -31,14 +31,10 @@ class WooImporter(AbstractComponent):
             data[self.backend_adapter._woo_ext_id_key] = self.external_id
         return data
 
-    def _before_import(self):
+    def _before_import(self, **kwargs):
         """Hook called before the import, when we have the
         data from remote system"""
         return
-
-    def get_parsed_date(self, datetime_str):
-        # TODO : Support me for the Date structure.
-        return datetime_str
 
     def _is_uptodate(self, binding, **kwargs):
         """
@@ -79,7 +75,7 @@ class WooImporter(AbstractComponent):
         return remote_date < sync_date
 
     def _import_dependency(
-        self, external_id, binding_model, importer=None, always=False
+        self, external_id, binding_model, always=False, importer=None, **kwargs
     ):
         """
         Import a dependency.
@@ -116,7 +112,7 @@ class WooImporter(AbstractComponent):
                     external_id,
                 )
 
-    def _import_dependencies(self):
+    def _import_dependencies(self, always=False, **kwargs):
         """
         Import the dependencies for the record
         Import of dependencies can be done manually or by calling
@@ -176,14 +172,14 @@ class WooImporter(AbstractComponent):
                     continue
                 self._import_dependency(external_id=external_id, binding_model=model)
 
-    def _map_data(self):
+    def _map_data(self, **kwargs):
         """
         Returns an instance of
         :py:class:`~odoo.addons.connector.components.mapper.MapRecord`
         """
         return self.mapper.map_record(self.remote_record)
 
-    def _validate_data(self, data):
+    def _validate_data(self, data, **kwargs):
         """Check if the values to import are correct
 
         Pro-actively check before the ``_create`` or
@@ -193,7 +189,7 @@ class WooImporter(AbstractComponent):
         """
         return
 
-    def _must_skip(self):
+    def _must_skip(self, **kwargs):
         """
         Hook called right after we read the data from the backend.
 
@@ -214,7 +210,7 @@ class WooImporter(AbstractComponent):
     def _create_data(self, map_record, **kwargs):
         return map_record.values(for_create=True, **kwargs)
 
-    def _create(self, data):
+    def _create(self, data, **kwargs):
         """Create the OpenERP record"""
         # special check on data before import
         self._validate_data(data)
@@ -226,7 +222,7 @@ class WooImporter(AbstractComponent):
     def _update_data(self, map_record, **kwargs):
         return map_record.values(**kwargs)
 
-    def _update(self, binding, data):
+    def _update(self, binding, data, **kwargs):
         """Update an OpenERP record"""
         # special check on data before import
         self._validate_data(data)
@@ -261,7 +257,7 @@ class WooImporter(AbstractComponent):
             except IDMissingInBackend:
                 return _("Record does no longer exist in remote system")
 
-        skip = self._must_skip()  # pylint: disable=assignment-from-none
+        skip = self._must_skip(**kwargs)  # pylint: disable=assignment-from-none
         if skip:
             return skip
         binding = self._get_binding()
@@ -272,12 +268,12 @@ class WooImporter(AbstractComponent):
         # The lock is kept since we have detected that the information
         # will be updated into Odoo
         self.advisory_lock_or_retry(lock_name)
-        self._before_import()
+        self._before_import(**kwargs)
 
         # import the missing linked resources
-        self._import_dependencies()
+        self._import_dependencies(**kwargs)
 
-        map_record = self._map_data()
+        map_record = self._map_data(**kwargs)
         if binding:
             record = self._update_data(map_record)
             self._update(binding, record)
@@ -350,8 +346,6 @@ class WooBatchImporter(AbstractComponent):
 
     def run(self, filters=None, force=None, job_options=None, **kwargs):
         """Run the synchronization"""
-        if force:
-            kwargs["force"] = force
         filters = filters or {}
         if "record_count" not in filters:
             filters.update({"record_count": 0})
@@ -359,7 +353,13 @@ class WooBatchImporter(AbstractComponent):
         records = data.get("data", [])
         for record in records:
             external_id = record.get(self.backend_adapter._woo_ext_id_key)
-            self._import_record(external_id, job_options, data=record, **kwargs)
+            self._import_record(
+                external_id=external_id,
+                job_options=job_options,
+                force=force,
+                data=record,
+                **kwargs
+            )
         filters["record_count"] += len(records)
         record_count = data.get("record_count", 0)
         filters_record_count = filters.get("record_count", 0)
@@ -369,9 +369,11 @@ class WooBatchImporter(AbstractComponent):
             and int(record_count) > int(filters_record_count)
         ):
             filters.update({"page": filters.get("page", 1) + 1})
-            self.process_next_page(filters=filters, job_options=job_options, **kwargs)
+            self.process_next_page(
+                filters=filters, force=force, job_options=job_options, **kwargs
+            )
 
-    def process_next_page(self, filters=None, job_options=None, **kwargs):
+    def process_next_page(self, filters=None, force=False, job_options=None, **kwargs):
         """Method to trigger batch import for Next page"""
         if not filters:
             filters = {}
@@ -385,11 +387,19 @@ class WooBatchImporter(AbstractComponent):
             job_options["description"] = description
         if not kwargs.get("no_delay"):
             model = model.with_delay(**job_options or {})
+        if "identity_key" in job_options:
+            job_options.pop("identity_key")
         model.import_batch(
-            self.backend_record, filters=filters, job_options=job_options, **kwargs
+            self.backend_record,
+            force=force,
+            filters=filters,
+            job_options=job_options,
+            **kwargs
         )
 
-    def _import_record(self, external_id, job_options=None, data=None, **kwargs):
+    def _import_record(
+        self, external_id, force=False, job_options=None, data=None, **kwargs
+    ):
         """
         Import a record directly or delay the import of the record.
         Method to implement in sub-classes.
@@ -403,10 +413,10 @@ class WooDirectBatchImporter(AbstractComponent):
     _name = "woo.direct.batch.importer"
     _inherit = "woo.batch.importer"
 
-    def _import_record(self, external_id, data=None, force=None, **kwargs):
+    def _import_record(self, external_id, data=None, force=False, **kwargs):
         """Import the record directly"""
         self.model.import_record(
-            self.backend_record,
+            backend=self.backend_record,
             external_id=external_id,
             data=data,
             force=force,
@@ -420,7 +430,9 @@ class WooDelayedBatchImporter(AbstractComponent):
     _name = "woo.delayed.batch.importer"
     _inherit = "woo.batch.importer"
 
-    def _import_record(self, external_id, job_options=None, data=None, **kwargs):
+    def _import_record(
+        self, external_id, force=False, job_options=None, data=None, **kwargs
+    ):
         """Delay the import of the records"""
         job_options = job_options or {}
         if "identity_key" not in job_options:
@@ -432,4 +444,10 @@ class WooDelayedBatchImporter(AbstractComponent):
             )
             job_options["description"] = description
         delayable = self.model.with_delay(**job_options or {})
-        delayable.import_record(self.backend_record, external_id, data=data, **kwargs)
+        delayable.import_record(
+            backend=self.backend_record,
+            external_id=external_id,
+            force=force,
+            data=data,
+            **kwargs
+        )

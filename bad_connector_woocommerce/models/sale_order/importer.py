@@ -137,7 +137,6 @@ class WooSaleOrderImportMapper(Component):
                 raise MappingError(
                     _("The default fee product must be set on the backend")
                 )
-
             fee_lines.append(
                 (
                     0,
@@ -346,18 +345,18 @@ class WooSaleOrderImporter(Component):
     _inherit = "woo.importer"
     _apply_on = "woo.sale.order"
 
-    def _must_skip(self):
+    def _must_skip(self, **kwargs):
         """Skipped Record which are already imported."""
         if self.binder.to_internal(self.external_id):
             return _("Already imported")
-        return super(WooSaleOrderImporter, self)._must_skip()
+        return super(WooSaleOrderImporter, self)._must_skip(**kwargs)
 
-    def _import_dependencies(self):
+    def _import_dependencies(self, **kwargs):
         """
         Override method to import dependencies for WooCommerce sale order.
         This method is overridden to handle the import of dependencies, particularly
-        for WooCommerce sale orders. It retrieves line items from the remote record and
-        imports the associated products as dependencies, ensuring that they are
+        for WooCommerce sale orders. It retrieves line items from the remote record
+        and imports the associated products as dependencies, ensuring that they are
         available for the sale order.
         """
         record = self.remote_record
@@ -424,7 +423,7 @@ class WooSaleOrderImporter(Component):
                 self._import_dependency(
                     shipping_line["method_id"], "woo.delivery.carrier"
                 )
-        return super(WooSaleOrderImporter, self)._import_dependencies()
+        return super(WooSaleOrderImporter, self)._import_dependencies(**kwargs)
 
 
 # Sale Order Line
