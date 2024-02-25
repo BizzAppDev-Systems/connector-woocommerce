@@ -200,10 +200,10 @@ class WooStockPickingRefundImporter(Component):
                 return_wizard.product_return_moves,
                 " product returnnnn movesssssssssss",
             )
-            break
         picking_returns = return_wizard._convert_to_write(
             {name: return_wizard[name] for name in return_wizard._cache}
         )
+        print("\n",picking_returns,"\n")
         print(picking_returns["product_return_moves"], "cccccccccccccccccccccccccccc")
         picking_returns["product_return_moves"] = self._process_return_moves(
             picking_moves_dict, picking_returns["product_return_moves"]
