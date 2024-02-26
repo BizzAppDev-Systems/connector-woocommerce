@@ -112,7 +112,7 @@ class WooStockPickingRefundImporter(Component):
     def _process_return_moves(self, to_return_moves, returns):
         moves = [(6, 0, [])]
         for returned in returns:
-            if not returned[-1] or 'move_external_id' not in returned[-1]:
+            if not returned[-1] or "move_external_id" not in returned[-1]:
                 continue
             new_return = deepcopy(returned)
             self._update_return_line(
@@ -240,6 +240,7 @@ class WooStockPickingRefundImporter(Component):
                 picking,
             )
             data["odoo_id"] = return_id
+
             res = super(WooStockPickingRefundImporter, self)._create(data)
             picking_bindings |= res
             for product_id in picking.get("product_ids"):
@@ -248,7 +249,7 @@ class WooStockPickingRefundImporter(Component):
 
     def _after_import(self, binding, **kwargs):
         """
-        Inherit Method: inherit method to checks if the refund order status is
+        Inherit Method: inherit method to check if the refund order status is
         'refunded'. If so, it updates the corresponding sale order's status to
         'refunded' in the local system, if the delivered quantity of all order lines is
         not zero.
@@ -256,13 +257,21 @@ class WooStockPickingRefundImporter(Component):
         res = super(WooStockPickingRefundImporter, self)._after_import(
             binding, **kwargs
         )
+        line_items = self.remote_record.get("line_items")
+        product_id_to_id = {item["product_id"]: item["id"] for item in line_items}
         if not self.backend_record.process_return_automatically:
             return res
+
         for bind in binding:
             for move in bind.odoo_id.move_ids:
+                move.external_move = product_id_to_id[
+                    int(move.product_id.woo_bind_ids.external_id)
+                ]
                 move.quantity_done = move.product_uom_qty
             bind.odoo_id.button_validate()
+
         if self.remote_record.get("refund_order_status") != "refunded":
             return res
+
         self.env["stock.picking"]._update_order_status()
         return res
