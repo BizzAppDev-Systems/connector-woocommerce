@@ -1,7 +1,5 @@
 import logging
 from copy import deepcopy
-
-# from collections import defaultdict
 from odoo import _
 from odoo.exceptions import ValidationError
 

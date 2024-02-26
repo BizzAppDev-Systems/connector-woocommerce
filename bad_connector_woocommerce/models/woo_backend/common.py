@@ -188,7 +188,7 @@ class WooBackend(models.Model):
         compute="_compute_webhook_config",
     )
     process_return_automatically = fields.Boolean()
-    activity_user_id = fields.Many2one("res.users", string="Responsible")
+    activity_user_id = fields.Many2one("res.users", string="Responsible User")
 
     @api.depends("test_mode", "test_access_token", "access_token")
     def _compute_webhook_config(self):
