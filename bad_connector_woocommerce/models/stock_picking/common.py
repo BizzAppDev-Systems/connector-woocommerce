@@ -29,7 +29,6 @@ class StockPicking(models.Model):
         Update the order status of the given sale_order to 'refunded'
         if all delivered quantities are not zero.
         """
-        # print ("---------------------", self, self.sale_id.order_line.mapped('order_line.qty_delivered'))
         sale_order = self.sale_id
         if any(line.qty_delivered != 0 for line in sale_order.order_line):
             return
@@ -92,7 +91,7 @@ class WooStockPickingRefund(models.Model):
         required=True,
         ondelete="restrict",
     )
-    odoo_ids = fields.Many2many(comodel_name='stock.picking', string='Odoo IDs')
+    odoo_ids = fields.Many2many(comodel_name="stock.picking", string="Odoo IDs")
 
 
 class WooStockPickingRefundAdapter(Component):
