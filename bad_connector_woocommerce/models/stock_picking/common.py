@@ -50,7 +50,6 @@ class StockPicking(models.Model):
         """
         res = super(StockPicking, self).button_validate()
         if self.woo_return_bind_ids:
-            print("here in button_validate button_validate,.........")
             self._update_order_status()
         return res
 

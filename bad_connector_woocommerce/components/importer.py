@@ -240,7 +240,6 @@ class WooImporter(AbstractComponent):
         :param external_id: identifier of the record on remote system
         """
         self.external_id = external_id
-        print(self.external_id, "l,llklklklklklklklk self.external_id")
         lock_name = "import({}, {}, {}, {})".format(
             self.backend_record._name,
             self.backend_record.id,
@@ -261,7 +260,6 @@ class WooImporter(AbstractComponent):
         if skip:
             return skip
         binding = self._get_binding()
-        print(binding, "binding binding binding")
         if not force and self._is_uptodate(binding, **kwargs):
             return _("Already up-to-date.")
         # Keep a lock on this import until the transaction is committed
