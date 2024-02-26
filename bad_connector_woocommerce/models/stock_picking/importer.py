@@ -1,6 +1,7 @@
 import logging
 from copy import deepcopy
-from collections import defaultdict
+
+# from collections import defaultdict
 from odoo import _
 from odoo.exceptions import ValidationError
 
@@ -190,7 +191,10 @@ class WooStockPickingRefundImporter(Component):
             return_line = return_wizard.product_return_moves.filtered(
                 lambda r: r.product_id.id == picking_move.get("product_id")
             )
-            print(picking_move.get("quantity"),"its a quanitity which is going.................")
+            print(
+                picking_move.get("quantity"),
+                "its a quanitity which is going.................",
+            )
             self._update_return_line(
                 return_line,
                 picking_move.get("quantity"),
@@ -203,7 +207,7 @@ class WooStockPickingRefundImporter(Component):
         picking_returns = return_wizard._convert_to_write(
             {name: return_wizard[name] for name in return_wizard._cache}
         )
-        print("\n",picking_returns,"\n")
+        print("\n", picking_returns, "\n")
         print(picking_returns["product_return_moves"], "cccccccccccccccccccccccccccc")
         picking_returns["product_return_moves"] = self._process_return_moves(
             picking_moves_dict, picking_returns["product_return_moves"]
@@ -282,6 +286,8 @@ class WooStockPickingRefundImporter(Component):
             }
             final_list.append(new_dict)
         print(final_list, "++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        # picking_bindings = []
+        picking_bindings = self.env["woo.stock.picking.refund"]
         for picking in final_list:
             print(picking, "picking picking")
             (
@@ -295,9 +301,11 @@ class WooStockPickingRefundImporter(Component):
             data["odoo_id"] = return_id
             print(data, "datatatdatdatdatdatadtadtadtdatadtdatadtad")
             res = super(WooStockPickingRefundImporter, self)._create(data)
+            # picking_bindings.append(res)
+            picking_bindings |= res
             for product_id in picking.get("product_ids"):
                 self._check_lot_tracking(product_id, picking, return_id)
-        return res
+        return picking_bindings
 
     def _after_import(self, binding, **kwargs):
         """
@@ -311,43 +319,11 @@ class WooStockPickingRefundImporter(Component):
         )
         if not self.backend_record.process_return_automatically:
             return res
-        print(binding, ";;;;;;;;;;;; binding.odoo_id")
-        # print(
-        #     binding[0].external_id,
-        #     ";;;;;;;;;;;; bindiiinnnnnnnnnngggggggggggggg external_id",
-        # )
-        # print(
-        #     binding[1].external_id,
-        #     ";;;;;;;;;;;; bindiiinnnnnnnnnngggggggggggggg external_id11111",
-        # )
-        # for bind in binding:
-        # print(bind.external_id, "bindiiinnnnnnnnnngggggggggggggg")
-        validated_pickings = binding.odoo_id.sale_id.picking_ids.filtered(
-            lambda p: p.picking_type_id.code == "incoming"
-            and p.state != "done"
-            and p.woo_return_bind_ids
-        )
-        for picking in validated_pickings:
-            # print(
-            #     validated_pickings,
-            #     "validated_pickingsvalidated_pickingsvalidated_pickings",
-            # )
-            # for picking in validated_pickings:
-            print(picking, ";;;;;;;;;;; picking ")
-            for move in picking.move_ids:
+        for bind in binding:
+            for move in bind.odoo_id.move_ids:
                 move.quantity_done = move.product_uom_qty
-            picking.button_validate()
-            # picking = binding.odoo_id
-            # for move in picking.move_ids:
-            #     move.quantity_done = move.product_uom_qty
-
-            # picking.button_validate()
-        print(
-            self.remote_record.get("refund_order_status"),
-            "self.remote_record.get(refund_order_status)",
-        )
+            bind.odoo_id.button_validate()
         if self.remote_record.get("refund_order_status") != "refunded":
-            print("helooooooooooooooooooooooooo i m not refunded")
             return res
         self.env["stock.picking"]._update_order_status()
         return res

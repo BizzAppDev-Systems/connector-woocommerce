@@ -280,24 +280,16 @@ class WooImporter(AbstractComponent):
         else:
             record = self._create_data(map_record)
             binding = self._create(record)
-            print(
-                binding,
-                ";;;;;;;;;;;;;;;;;;;;;;; binding binding here concentarte in binding",
-            )
-            print(len(binding), "lenth of bindinggggggggggggg")
-        print(self.binder, ";;;self.binderself.binder")
-        # count = len(binding)
-        # # self.binder.bind(self.external_id, binding)
-        # if count == 1:
-        #     self.binder.bind(self.external_id, binding)
-        # else:
-        #     for index, binder in enumerate(binding):
-        #         if index == 0:
-        #             self.external_id = self.external_id
-        #         else:
-        #             self.external_id = f"{self.external_id}_{index}"
-        #         self.binder.bind(self.external_id, binding)
-        self.binder.bind(self.external_id, binding)
+        count = len(binding)
+        if count == 1:
+            self.binder.bind(self.external_id, binding)
+        else:
+            for index, binder in enumerate(binding):
+                if index == 0:
+                    binder.external_id = self.external_id
+                else:
+                    binder.external_id = f"{self.external_id}_{index}"
+                self.binder.bind(binder.external_id, binder)
         self._after_import(binding, **kwargs)
 
 
