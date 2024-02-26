@@ -246,6 +246,7 @@ class WooStockPickingRefundImporter(Component):
             res = super(WooStockPickingRefundImporter, self)._create(data)
             picking_bindings |= res
             for product_id in picking.get("product_ids"):
+                picking = next(iter(picking))
                 self._check_lot_tracking(product_id, picking, return_id)
         return picking_bindings
 
