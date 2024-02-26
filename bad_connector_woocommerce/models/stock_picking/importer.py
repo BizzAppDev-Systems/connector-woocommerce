@@ -200,24 +200,19 @@ class WooStockPickingRefundImporter(Component):
         new_dicts_list = {}
         for eligible_move in eligible_moves:
             picking_id = None
+            line_id_counter = {}
             for move, quantity in eligible_move["move"].items():
                 picking_id = move.picking_id
                 if picking_id not in new_dicts_list:
                     new_dicts_list[picking_id] = {
                         "product_moves": [],
-                        "line_id_counter": {},
+                        "line_id_counter": line_id_counter,
                     }
                 line_id_base = eligible_move["line_id"]
-                line_id_counter = new_dicts_list[picking_id]["line_id_counter"]
-                if move.id not in line_id_counter:
-                    line_id_counter[move.id] = 0
-                else:
-                    line_id_counter[move.id] += 1
-                line_id = (
-                    line_id_base
-                    if line_id_counter[move.id] == 0
-                    else f"{line_id_base}_{line_id_counter[move.id]}"
-                )
+                if line_id_base not in line_id_counter:
+                    line_id_counter[line_id_base] = 0
+                line_id_counter[line_id_base] += 1
+                line_id = f"{line_id_base}_{line_id_counter[line_id_base]}"
                 new_dicts_list[picking_id]["product_moves"].append(
                     {
                         "move": move,
