@@ -75,7 +75,7 @@ class WooStockPickingRefundImporter(Component):
         return True
 
     def _find_original_moves(self, pickings, product_id, return_qty):
-        # Function to find original moves for a product in pickings
+        """Find original moves associated with a product for return."""
         moves = pickings.move_ids.filtered(
             lambda move: move.product_id.id == product_id
         )
@@ -102,6 +102,7 @@ class WooStockPickingRefundImporter(Component):
         return to_return_moves
 
     def _update_return_line(self, return_line, quantity, move_external_id):
+        """Update the return line."""
         return_line.update(
             {
                 "quantity": quantity,
@@ -110,6 +111,7 @@ class WooStockPickingRefundImporter(Component):
         )
 
     def _process_return_moves(self, to_return_moves, returns):
+        """Process return moves and update return lines."""
         moves = [(6, 0, [])]
         for returned in returns:
             if not returned[-1] or "move_external_id" not in returned[-1]:
@@ -123,7 +125,8 @@ class WooStockPickingRefundImporter(Component):
             moves.append(new_return)
         return moves
 
-    def _get_eligible_pickings(self, original_pickings):
+    def _get_return_pickings(self, original_pickings):
+        """Retrieve information about return pickings based on original pickings."""
         to_return_moves = {}
         all_return_move = []
         for line in self.remote_record.get("line_items", []):
@@ -144,6 +147,7 @@ class WooStockPickingRefundImporter(Component):
         return all_return_move
 
     def _process_return_picking(self, picking_moves_dict):
+        """Process return picking based on the provided picking moves dictionary."""
         delivery_order = next(iter(picking_moves_dict))
         return_wizard = (
             self.env["stock.return.picking"]
@@ -177,6 +181,7 @@ class WooStockPickingRefundImporter(Component):
         return picking_returns, return_id
 
     def _create(self, data):
+        """Create a refund for the WooCommerce stock picking in Odoo."""
         binder = self.binder_for(model="woo.sale.order")
         sale_order = binder.to_internal(self.remote_record.get("order_id"), unwrap=True)
         if not sale_order:
@@ -196,43 +201,42 @@ class WooStockPickingRefundImporter(Component):
         original_pickings = sale_order.picking_ids.filtered(
             lambda picking: picking.picking_type_id.code == "outgoing"
         )
-        eligible_moves = self._get_eligible_pickings(original_pickings)
-        new_dicts_list = {}
-        for eligible_move in eligible_moves:
+        to_return_moves = self._get_return_pickings(original_pickings)
+        return_picking_data = {}
+        for to_return_move in to_return_moves:
             picking_id = None
             line_id_counter = {}
-            for move, quantity in eligible_move["move"].items():
+            for move, quantity in to_return_move["move"].items():
                 picking_id = move.picking_id
-                if picking_id not in new_dicts_list:
-                    new_dicts_list[picking_id] = {
+                if picking_id not in return_picking_data:
+                    return_picking_data[picking_id] = {
                         "product_moves": [],
                         "line_id_counter": line_id_counter,
                     }
-                line_id_base = eligible_move["line_id"]
+                line_id_base = to_return_move["line_id"]
                 if line_id_base not in line_id_counter:
                     line_id_counter[line_id_base] = 0
                 line_id_counter[line_id_base] += 1
                 line_id = f"{line_id_base}_{line_id_counter[line_id_base]}"
-                new_dicts_list[picking_id]["product_moves"].append(
+                return_picking_data[picking_id]["product_moves"].append(
                     {
                         "move": move,
-                        "product_id": eligible_move["product_id"],
+                        "product_id": to_return_move["product_id"],
                         "quantity": quantity,
                         "line_id": line_id,
                     }
                 )
-        final_list = []
-        for picking_id, value in new_dicts_list.items():
+        picking_moves = []
+        for picking_id, value in return_picking_data.items():
             product_ids = list(
                 set(move["product_id"] for move in value["product_moves"])
             )
-            new_dict = {}
-            new_dict[picking_id] = value["product_moves"]
-            new_dict["product_ids"] = product_ids
-            final_list.append(new_dict)
-        print(final_list, "++++++++++++++++++++++++++++++++++++++++++++++++++++")
+            picking_data = {}
+            picking_data[picking_id] = value["product_moves"]
+            picking_data["product_ids"] = product_ids
+            picking_moves.append(picking_data)
         picking_bindings = self.env["woo.stock.picking.refund"]
-        for picking in final_list:
+        for picking in picking_moves:
             (
                 picking_returns,
                 return_id,
@@ -258,18 +262,16 @@ class WooStockPickingRefundImporter(Component):
             binding, **kwargs
         )
         line_items = self.remote_record.get("line_items")
-        product_id_to_id = {item["product_id"]: item["id"] for item in line_items}
+        product_id_map = {item["product_id"]: item["id"] for item in line_items}
         if not self.backend_record.process_return_automatically:
             return res
-
         for bind in binding:
             for move in bind.odoo_id.move_ids:
-                move.external_move = product_id_to_id[
+                move.external_move = product_id_map[
                     int(move.product_id.woo_bind_ids.external_id)
                 ]
                 move.quantity_done = move.product_uom_qty
             bind.odoo_id.button_validate()
-
         if self.remote_record.get("refund_order_status") != "refunded":
             return res
 
