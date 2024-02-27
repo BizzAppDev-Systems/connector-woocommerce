@@ -327,7 +327,7 @@ class WooBackend(models.Model):
             return
         responsible_id = user and user.id or SUPERUSER_ID
         date = date or fields.Date.today()
-        activity_type = "mail.mail_activity_data_warning"
+        activity_type = activity_type or "mail.mail_activity_data_warning"
         message = message or _("Something wrong. Please check!!!")
         record.activity_schedule(
             activity_type,
