@@ -9,7 +9,10 @@ class WooStockPickingRefundImporter(Component):
     _inherit = "woo.stock.picking.refund.importer"
 
     def _get_return_pickings(self, original_pickings):
-        """Retrieve information about return pickings based on original pickings."""
+        """
+        Overrides method:Retrieve information about return pickings based on
+        original pickings for grouped products.
+        """
         return_moves = []
         for line in self.remote_record.get("line_items", []):
             original_quantity = abs(line.get("quantity"))
@@ -40,15 +43,11 @@ class WooStockPickingRefundImporter(Component):
 
     def _after_import(self, binding, **kwargs):
         """
-        Inherit Method: inherit method to check if the refund order status is
-        'refunded'. If so, it updates the corresponding sale order's status to
-        'refunded' in the local system, if the delivered quantity of all order lines is
-        not zero.
+        Inherit Method: inherit method to set external_move for grouped product.
         """
         line_items = self.remote_record.get("line_items")
         product_id_map = {item["product_id"]: item["id"] for item in line_items}
-
-        for move in binding.mapped('odoo_id.move_ids'):
+        for move in binding.mapped("odoo_id.move_ids"):
             woo_product_id = move.product_id.woo_bind_ids.filtered(
                 lambda a: a.backend_id == self.backend_record
             )
