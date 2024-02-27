@@ -189,7 +189,6 @@ class WooCRUDAdapter(AbstractComponent):
 
 
 class GenericAdapter(AbstractComponent):
-
     # pylint: disable=method-required-super
 
     _name = "woo.adapter"

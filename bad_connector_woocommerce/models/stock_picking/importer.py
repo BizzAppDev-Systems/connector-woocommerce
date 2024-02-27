@@ -242,7 +242,6 @@ class WooStockPickingRefundImporter(Component):
                 picking,
             )
             data["odoo_id"] = return_id
-
             res = super(WooStockPickingRefundImporter, self)._create(data)
             picking_bindings |= res
             for product_id in picking.get("product_ids"):
