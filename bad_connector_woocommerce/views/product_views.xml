@@ -52,6 +52,7 @@
                                     <field name="price" />
                                     <field name="regular_price" />
                                     <field name="stock_management" />
+                                    <field name="downloadable_product" />
                                 </group>
                                 <label
                                     for="woo_product_categ_ids"
@@ -86,6 +87,11 @@
                                     string="WooCommerce Product Image URL"
                                 />
                                 <field name="woo_product_image_url_ids" />
+                                <label
+                                    for="woo_downloadable_product_ids"
+                                    string="WooCommerce Downloadable Product"
+                                />
+                                <field name="woo_downloadable_product_ids" />
                                 <group>
                                     <field name="woo_data" />
                                 </group>

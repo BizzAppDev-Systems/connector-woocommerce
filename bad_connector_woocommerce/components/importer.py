@@ -238,7 +238,7 @@ class WooImporter(AbstractComponent):
         """Hook called at the end of the import"""
         return
 
-    def run(self, external_id, data=None, force=False):
+    def run(self, external_id, data=None, force=False, **kwargs):
         """Run the synchronization
 
         :param external_id: identifier of the record on remote system
@@ -250,6 +250,8 @@ class WooImporter(AbstractComponent):
             self.work.model_name,
             external_id,
         )
+        if force:
+            kwargs["force"] = force
         if data:
             self.remote_record = data
         else:
@@ -262,7 +264,8 @@ class WooImporter(AbstractComponent):
         if skip:
             return skip
         binding = self._get_binding()
-
+        if not force and self._is_uptodate(binding, **kwargs):
+            return _("Already up-to-date.")
         # Keep a lock on this import until the transaction is committed
         # The lock is kept since we have detected that the information
         # will be updated into Odoo
@@ -280,13 +283,35 @@ class WooImporter(AbstractComponent):
             record = self._create_data(map_record)
             binding = self._create(record)
         self.binder.bind(self.external_id, binding)
-        self._after_import(binding)
+        self._after_import(binding, **kwargs)
 
 
 class WooMapChildImport(AbstractComponent):
     _name = "woo.map.child.import"
     _inherit = ["connector.woo.base", "base.map.child.import"]
     _usage = "import.map.child"
+
+    def format_items(self, items_values):
+        """Format the values of the items mapped from the child Mappers.
+        It can be overridden for instance to add the Odoo
+        relationships commands ``(6, 0, [IDs])``, ...
+        As instance, it can be modified to handle update of existing
+        items: check if an 'id' has been defined by
+        :py:meth:`get_item_values` then use the ``(1, ID, {values}``)
+        command
+        :param items_values: list of values for the items to create
+        :type items_values: list
+        """
+        final_vals = []
+        for item in items_values:
+            external_id = item["external_id"]
+            binder = self.binder_for(model=self.model)
+            binding = binder.to_internal(external_id)
+            if binding:
+                final_vals.append((1, binding.id, item))  # update
+            else:
+                final_vals.append((0, 0, item))  # create
+        return final_vals
 
 
 class WooBatchImporter(AbstractComponent):
@@ -300,8 +325,10 @@ class WooBatchImporter(AbstractComponent):
     _inherit = ["base.importer", "connector.woo.base"]
     _usage = "batch.importer"
 
-    def run(self, filters=None, force=None, job_options=None):
+    def run(self, filters=None, force=None, job_options=None, **kwargs):
         """Run the synchronization"""
+        if force:
+            kwargs["force"] = force
         filters = filters or {}
         if "record_count" not in filters:
             filters.update({"record_count": 0})
@@ -309,7 +336,7 @@ class WooBatchImporter(AbstractComponent):
         records = data.get("data", [])
         for record in records:
             external_id = record.get(self.backend_adapter._woo_ext_id_key)
-            self._import_record(external_id, job_options, data=record)
+            self._import_record(external_id, job_options, data=record, **kwargs)
         filters["record_count"] += len(records)
         record_count = data.get("record_count", 0)
         filters_record_count = filters.get("record_count", 0)
@@ -319,7 +346,7 @@ class WooBatchImporter(AbstractComponent):
             and int(record_count) > int(filters_record_count)
         ):
             filters.update({"page": filters.get("page", 1) + 1})
-            self.process_next_page(filters=filters, job_options=job_options)
+            self.process_next_page(filters=filters, job_options=job_options, **kwargs)
 
     def process_next_page(self, filters=None, job_options=None, **kwargs):
         """Method to trigger batch import for Next page"""
@@ -353,10 +380,14 @@ class WooDirectBatchImporter(AbstractComponent):
     _name = "woo.direct.batch.importer"
     _inherit = "woo.batch.importer"
 
-    def _import_record(self, external_id, data=None, force=None):
+    def _import_record(self, external_id, data=None, force=None, **kwargs):
         """Import the record directly"""
         self.model.import_record(
-            self.backend_record, external_id=external_id, data=data, force=force
+            self.backend_record,
+            external_id=external_id,
+            data=data,
+            force=force,
+            **kwargs,
         )
 
 

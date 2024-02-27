@@ -44,3 +44,4 @@ class TestImportProductAttributes(BaseWooTestCase):
             False,
             "has_archives is not match with response",
         )
+        productattribute1.odoo_id.import_product_attribute_value()

@@ -60,6 +60,7 @@ class WooProductTemplateAdapter(Component):
     _apply_on = "woo.product.template"
     _woo_model = "products"
     _woo_ext_id_key = "id"
+    _check_import_sync_date = True
     _model_dependencies = {
         (
             "woo.product.category",
