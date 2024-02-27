@@ -263,9 +263,12 @@ class WooStockPickingRefundImporter(Component):
             return res
         for bind in binding:
             for move in bind.odoo_id.move_ids:
-                move.external_move = product_id_map[
-                    int(move.product_id.woo_bind_ids.external_id)
-                ]
+                woo_product_id = move.product_id.woo_bind_ids.filtered(
+                    lambda a: a.backend_id == self.backend_record
+                )
+                if int(woo_product_id.external_id) not in product_id_map:
+                    continue
+                move.external_move = product_id_map[int(woo_product_id.external_id)]
                 move.quantity_done = move.product_uom_qty
             bind.odoo_id.button_validate()
         if self.remote_record.get("refund_order_status") != "refunded":
