@@ -67,7 +67,6 @@ class WooStockPickingRefundImporter(Component):
                 self.env["woo.backend"].create_activity(
                     record=picking_id,
                     message=message,
-                    activity_type="mail.mail_activity_data_warning",
                     user=user_id,
                 )
                 return False
