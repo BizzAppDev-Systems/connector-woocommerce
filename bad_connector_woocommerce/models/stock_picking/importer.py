@@ -80,14 +80,17 @@ class WooStockPickingRefundImporter(Component):
         )
         remaining_moves = {}
         for move in moves:
-            returned_qty = move.returned_move_ids.mapped("product_qty")
-            if returned_qty:
-                remaining_qty = move.product_qty - returned_qty[0]
-                if remaining_qty == 0:
-                    continue
-                remaining_moves[move] = remaining_qty
-            else:
-                remaining_moves[move] = move.product_qty
+            returned_qty = sum(
+                move.returned_move_ids.filtered(
+                    lambda r_move: r_move.product_id.id == product_id
+                ).mapped("product_qty")
+            )
+            remaining_qty = move.product_qty - returned_qty
+            if remaining_qty <= 0:
+                continue
+            remaining_moves[move] = remaining_qty
+        else:
+            remaining_moves[move] = move.product_qty
         to_return_moves = {}
         for remaining_move, remaining_qty in remaining_moves.items():
             if return_qty < remaining_qty:

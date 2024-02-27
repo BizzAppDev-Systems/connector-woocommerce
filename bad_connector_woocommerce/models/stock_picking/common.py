@@ -44,12 +44,13 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         """
-        Validate  the stock selection and proceed to update the WooCommerce order
+        Validate the stock selection and proceed to update the WooCommerce order
         status if the woo_return_bind_ids is present in the stock picking data.
         """
         res = super(StockPicking, self).button_validate()
-        if self.woo_return_bind_ids:
-            self._update_order_status()
+        return_picking = self.filtered(lambda picking: picking.woo_return_bind_ids)
+        if return_picking:
+            return_picking._update_order_status()
         return res
 
     @api.depends("move_ids")
