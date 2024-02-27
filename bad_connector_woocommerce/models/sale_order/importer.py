@@ -24,19 +24,19 @@ class WooSaleOrderBatchImporter(Component):
                 external_id, **kwargs
             )
         refunds = data.get("refunds", [])
+        if "description" not in kwargs:
+            description = self.backend_record.get_queue_job_description(
+                prefix=self.env["woo.stock.picking.refund"].import_record.__doc__
+                or "Record Import Of",
+                model=self.env["woo.stock.picking.refund"]._description,
+            )
+            job_options["description"] = description
+        kwargs["order_id"] = data.get("id")
+        kwargs["refund_order_status"] = data.get("status")
         for refund in refunds:
             job_options = job_options or {}
             if "identity_key" not in job_options:
                 job_options["identity_key"] = identity_exact
-            if "description" not in kwargs:
-                description = self.backend_record.get_queue_job_description(
-                    prefix=self.env["woo.stock.picking.refund"].import_record.__doc__
-                    or "Record Import Of",
-                    model=self.env["woo.stock.picking.refund"]._description,
-                )
-                job_options["description"] = description
-            kwargs["order_id"] = data.get("id")
-            kwargs["refund_order_status"] = data.get("status")
             kwargs["refund_id"] = refund.get("id")
             delayable = self.env["woo.stock.picking.refund"].with_delay(
                 **job_options or {}

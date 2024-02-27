@@ -103,7 +103,7 @@ class WooStockPickingRefundAdapter(Component):
     _woo_key = "id"
     _woo_ext_id_key = "id"
 
-    def create(self, data):
+    def create(self, data, **kwargs):
         """
         Inherited: Inherited this method due to create the resource_path to export
         the refund
@@ -113,7 +113,7 @@ class WooStockPickingRefundAdapter(Component):
         self._woo_model = resource_path
         return super(WooStockPickingRefundAdapter, self).create(data)
 
-    def read(self, external_id=None, attributes=None):
+    def read(self, external_id=None, attributes=None, **kwargs):
         """
         Override Method: Override this method due to get a data for specified sale
         order refund record.

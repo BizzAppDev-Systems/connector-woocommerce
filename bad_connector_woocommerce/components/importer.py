@@ -282,12 +282,12 @@ class WooImporter(AbstractComponent):
         if count == 1:
             self.binder.bind(self.external_id, binding)
         else:
-            for index, binder in enumerate(binding):
+            for index, binding_record in enumerate(binding):
                 if index == 0:
-                    binder.external_id = self.external_id
+                    binding_record.external_id = self.external_id
                 else:
-                    binder.external_id = f"{self.external_id}_{index}"
-                self.binder.bind(binder.external_id, binder)
+                    binding_record.external_id = f"{self.external_id}_{index}"
+                self.binder.bind(binding_record.external_id, binding_record)
         self._after_import(binding, **kwargs)
 
 
