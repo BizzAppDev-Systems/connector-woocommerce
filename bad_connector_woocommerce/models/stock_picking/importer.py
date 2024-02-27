@@ -1,5 +1,6 @@
 import logging
 from copy import deepcopy
+
 from odoo import _
 from odoo.exceptions import ValidationError
 
@@ -226,19 +227,14 @@ class WooStockPickingRefundImporter(Component):
                 )
         picking_moves = []
         for picking_id, value in return_picking_data.items():
-            product_ids = list(
-                set(move["product_id"] for move in value["product_moves"])
-            )
+            product_ids = list({move["product_id"] for move in value["product_moves"]})
             picking_data = {}
             picking_data[picking_id] = value["product_moves"]
             picking_data["product_ids"] = product_ids
             picking_moves.append(picking_data)
         picking_bindings = self.env["woo.stock.picking.refund"]
         for picking in picking_moves:
-            (
-                picking_returns,
-                return_id,
-            ) = self._process_return_picking(
+            (picking_returns, return_id,) = self._process_return_picking(
                 picking,
             )
             data["odoo_id"] = return_id

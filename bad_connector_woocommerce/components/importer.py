@@ -348,7 +348,7 @@ class WooBatchImporter(AbstractComponent):
                 job_options=job_options,
                 force=force,
                 data=record,
-                **kwargs
+                **kwargs,
             )
         filters["record_count"] += len(records)
         record_count = data.get("record_count", 0)
@@ -384,7 +384,7 @@ class WooBatchImporter(AbstractComponent):
             force=force,
             filters=filters,
             job_options=job_options,
-            **kwargs
+            **kwargs,
         )
 
     def _import_record(
@@ -410,7 +410,7 @@ class WooDirectBatchImporter(AbstractComponent):
             external_id=external_id,
             data=data,
             force=force,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -439,5 +439,5 @@ class WooDelayedBatchImporter(AbstractComponent):
             external_id=external_id,
             force=force,
             data=data,
-            **kwargs
+            **kwargs,
         )
