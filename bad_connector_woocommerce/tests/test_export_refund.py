@@ -112,7 +112,7 @@ class TestExportRefund(BaseWooTestCase):
         wizard.product_return_moves.write({"quantity": 1.0})
         res = wizard.create_returns()
         return01 = self.env["stock.picking"].browse(res["res_id"])
-        return01.move_ids.quantity_done = 1
+        return01.move_ids.quantity = 1
         return01.button_validate()
         self.assertTrue(
             return01.is_return_stock_picking,
