@@ -44,12 +44,13 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         """
-        Validate  the stock selection and proceed to update the WooCommerce order
+        Validate the stock selection and proceed to update the WooCommerce order
         status if the woo_return_bind_ids is present in the stock picking data.
         """
         res = super(StockPicking, self).button_validate()
-        if self.woo_return_bind_ids:
-            self._update_order_status()
+        return_picking = self.filtered(lambda picking: picking.woo_return_bind_ids)
+        if return_picking:
+            return_picking._update_order_status()
         return res
 
     @api.depends("move_ids")
@@ -103,7 +104,7 @@ class WooStockPickingRefundAdapter(Component):
     _woo_key = "id"
     _woo_ext_id_key = "id"
 
-    def create(self, data):
+    def create(self, data, **kwargs):
         """
         Inherited: Inherited this method due to create the resource_path to export
         the refund
@@ -113,7 +114,7 @@ class WooStockPickingRefundAdapter(Component):
         self._woo_model = resource_path
         return super(WooStockPickingRefundAdapter, self).create(data)
 
-    def read(self, external_id=None, attributes=None):
+    def read(self, external_id=None, attributes=None, **kwargs):
         """
         Override Method: Override this method due to get a data for specified sale
         order refund record.
