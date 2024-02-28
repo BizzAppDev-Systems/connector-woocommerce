@@ -20,28 +20,9 @@ class WooStockPickingRefundImporter(Component):
             product_id = binder.to_internal(line.get("product_id"), unwrap=True)
             line_id = line.get("id")
             if not product_id.bom_ids:
-               to_return_moves = self._find_original_moves(
+                to_return_moves = self._find_original_moves(
                     original_pickings, product_id.id, original_quantity
                 )
-               continue
-             for bom in product_id.bom_ids:
-                    boms, lines = bom.explode(product_id, original_quantity)
-                    for bom_line in lines:
-                        move_product_id = bom_line[0].product_id
-                        to_return_qty = bom_line[1]["qty"]
-                        to_return_moves = self._find_original_moves(
-                            original_pickings,
-                            move_product_id.id,
-                            to_return_qty,
-                        )
-                        return_moves.append(
-                            {
-                                "move": to_return_moves,
-                                "product_id": move_product_id.id,
-                                "line_id": line_id,
-                            }
-                        )
-                
                 return_moves.append(
                     {
                         "move": to_return_moves,
@@ -49,6 +30,24 @@ class WooStockPickingRefundImporter(Component):
                         "line_id": line_id,
                     }
                 )
+                continue
+            for bom in product_id.bom_ids:
+                boms, lines = bom.explode(product_id, original_quantity)
+                for bom_line in lines:
+                    move_product_id = bom_line[0].product_id
+                    to_return_qty = bom_line[1]["qty"]
+                    to_return_moves = self._find_original_moves(
+                        original_pickings,
+                        move_product_id.id,
+                        to_return_qty,
+                    )
+                    return_moves.append(
+                        {
+                            "move": to_return_moves,
+                            "product_id": move_product_id.id,
+                            "line_id": line_id,
+                        }
+                    )
         return return_moves
 
     def _after_import(self, binding, **kwargs):
