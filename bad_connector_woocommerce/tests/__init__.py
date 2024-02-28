@@ -13,3 +13,4 @@ from . import test_import_product_tag1
 from . import test_import_payment_gateway
 from . import test_export_refund
 from . import test_import_refund
+from . import test_import_refund2

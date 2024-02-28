@@ -15,12 +15,12 @@ recorder = VCR(
 )
 
 
-class TestImportRefund(BaseWooTestCase):
+class TestImportRefund2(BaseWooTestCase):
     def setUp(self):
-        """Setup configuration for Sale order refund."""
+        """Setup configuration for Sale order refund2."""
         super().setUp()
 
-    def test_import_order_for_refund(self):
+    def test_import_order_for_refund2(self):
         """Test Assertions for Import refund"""
         external_id = "71"
 
@@ -68,12 +68,12 @@ class TestImportRefund(BaseWooTestCase):
         sale_order_odoo.picking_ids[0].move_ids[0].quantity_done = 2
         sale_order_odoo.picking_ids[0].button_validate()
         self.assertEqual(
-            sale_order1.picking_ids[0].state, "done", "Picking state should be done!"
+            sale_order_odoo.picking_ids[0].state, "done", "Picking state should be done!"
         )
         self.assertEqual(
-            sale_order1.picking_ids[1].state, "done", "Picking state should be done!"
+            sale_order_odoo.picking_ids[1].state, "done", "Picking state should be done!"
         )
-        self.backend.process_return_automatically = True
+        self.backend.process_return_automatically = False
         with recorder.use_cassette("import_woo_order_refund"):
             kwargs = {}
             kwargs["order_id"] = 71
@@ -81,6 +81,11 @@ class TestImportRefund(BaseWooTestCase):
             self.env["woo.stock.picking.refund"].import_record(
                 external_id="1481", backend=self.backend, **kwargs
             )
+        return_picking = sale_order_odoo.picking_ids.filtered(lambda picking: picking.woo_return_bind_ids)
+        for picking in return_picking:
+            for move in picking.move_ids:
+                move.quantity_done = move.product_uom_qty
+            picking.button_validate()
         self.assertEqual(
             sale_order_odoo.woo_order_status_id.code,
             "refunded",
