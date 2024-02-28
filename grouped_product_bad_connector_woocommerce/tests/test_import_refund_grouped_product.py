@@ -2,8 +2,6 @@ from os.path import dirname, join
 
 from vcr import VCR
 
-from odoo.tests import Form
-
 from ...bad_connector_woocommerce.tests.test_woo_backend import BaseWooTestCase
 
 recorder = VCR(
