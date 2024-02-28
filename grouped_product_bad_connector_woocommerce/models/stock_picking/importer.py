@@ -10,7 +10,7 @@ class WooStockPickingRefundImporter(Component):
 
     def _get_return_pickings(self, original_pickings):
         """
-        Overrides method:Retrieve information about return pickings based on
+        Overrides method: Retrieve information about return pickings based on
         original pickings for grouped products.
         """
         return_moves = []
@@ -19,23 +19,36 @@ class WooStockPickingRefundImporter(Component):
             binder = self.binder_for(model="woo.product.product")
             product_id = binder.to_internal(line.get("product_id"), unwrap=True)
             if product_id.bom_ids:
-                product_ids = [
-                    bom_line.product_id.id
-                    for bom in product_id.bom_ids
-                    if bom.type == "phantom"
-                    for bom_line in bom.bom_line_ids
-                ]
+                for bom in product_id.bom_ids:
+                    boms, lines = bom.explode(
+                        product_id,
+                        original_quantity
+                    )
+                    for bom_line in lines:
+                        move_product_id = bom_line[0].product_id
+                        to_return_qty = bom_line[1]['qty']
+                        to_return_moves = self._find_original_moves(
+                            original_pickings,
+                            move_product_id.id,
+                            to_return_qty,
+                        )
+                        line_id = line.get("id")
+                        return_moves.append(
+                            {
+                                "move": to_return_moves,
+                                "product_id": move_product_id.id,
+                                "line_id": line_id,
+                            }
+                        )
             else:
-                product_ids = [product_id.id]
-            for product_id in product_ids:
                 to_return_moves = self._find_original_moves(
-                    original_pickings, product_id, original_quantity
+                    original_pickings, product_id.id, original_quantity
                 )
                 line_id = line.get("id")
                 return_moves.append(
                     {
                         "move": to_return_moves,
-                        "product_id": product_id,
+                        "product_id": product_id.id,
                         "line_id": line_id,
                     }
                 )
