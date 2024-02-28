@@ -12,5 +12,5 @@ from . import test_woo_tax_setting
 from . import test_import_product_tag1
 from . import test_import_payment_gateway
 from . import test_export_refund
+from . import test_auto_process_return
 from . import test_import_refund
-from . import test_import_refund2
