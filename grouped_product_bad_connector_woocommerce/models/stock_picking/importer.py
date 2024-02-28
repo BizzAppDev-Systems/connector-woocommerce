@@ -19,8 +19,12 @@ class WooStockPickingRefundImporter(Component):
             binder = self.binder_for(model="woo.product.product")
             product_id = binder.to_internal(line.get("product_id"), unwrap=True)
             line_id = line.get("id")
-            if product_id.bom_ids:
-                for bom in product_id.bom_ids:
+            if not product_id.bom_ids:
+               to_return_moves = self._find_original_moves(
+                    original_pickings, product_id.id, original_quantity
+                )
+               continue
+             for bom in product_id.bom_ids:
                     boms, lines = bom.explode(product_id, original_quantity)
                     for bom_line in lines:
                         move_product_id = bom_line[0].product_id
@@ -37,10 +41,7 @@ class WooStockPickingRefundImporter(Component):
                                 "line_id": line_id,
                             }
                         )
-            else:
-                to_return_moves = self._find_original_moves(
-                    original_pickings, product_id.id, original_quantity
-                )
+                
                 return_moves.append(
                     {
                         "move": to_return_moves,
