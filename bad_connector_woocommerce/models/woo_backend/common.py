@@ -3,7 +3,7 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 
-from odoo import api, fields, models
+from odoo import SUPERUSER_ID, _, api, fields, models
 
 from ...components.backend_adapter import WooAPI, WooLocation
 
@@ -201,6 +201,8 @@ class WooBackend(models.Model):
         readonly=True,
         compute="_compute_webhook_config",
     )
+    process_return_automatically = fields.Boolean()
+    activity_user_id = fields.Many2one("res.users", string="Responsible User")
 
     @api.depends("test_mode", "test_access_token", "access_token")
     def _compute_webhook_config(self):
@@ -314,6 +316,24 @@ class WooBackend(models.Model):
         """New Method: Returns the filter"""
         # model: In case we want to update the job options based on the model name
         return {}
+
+    @api.model
+    def create_activity(
+        self, record, message, activity_type=None, date=None, user=None
+    ):
+        """generic method to create activity in given `record`"""
+        if not record:
+            return
+        responsible_id = user and user.id or SUPERUSER_ID
+        date = date or fields.Date.today()
+        activity_type = activity_type or "mail.mail_activity_data_warning"
+        message = message or _("Something wrong. Please check!!!")
+        record.activity_schedule(
+            activity_type,
+            date,
+            note=message,
+            user_id=responsible_id,
+        )
 
     def get_additional_filter(self):
         """Add Filter"""

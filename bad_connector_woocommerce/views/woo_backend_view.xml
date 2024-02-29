@@ -415,6 +415,7 @@
                                         <field name="default_limit" />
                                         <field name="warehouse_id" required="1" />
                                         <field name="currency_id" />
+                                        <field name="activity_user_id" />
                                         <field
                                             name="access_token"
                                             groups="base.group_system"
@@ -480,6 +481,7 @@
                                             invisible="not mark_completed"
                                         />
                                         <field name="include_tax" />
+                                        <field name="process_return_automatically" />
                                     </group>
                                 </group>
                             </page>

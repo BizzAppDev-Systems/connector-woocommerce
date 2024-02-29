@@ -256,7 +256,7 @@ class WooImporter(AbstractComponent):
             self.remote_record = data
         else:
             try:
-                self.remote_record = self._get_remote_data()
+                self.remote_record = self._get_remote_data(**kwargs)
             except IDMissingInBackend:
                 return _("Record does no longer exist in remote system")
 
@@ -282,7 +282,16 @@ class WooImporter(AbstractComponent):
         else:
             record = self._create_data(map_record)
             binding = self._create(record)
-        self.binder.bind(self.external_id, binding)
+        count = len(binding)
+        if count == 1:
+            self.binder.bind(self.external_id, binding)
+        else:
+            for index, binding_record in enumerate(binding):
+                if index == 0:
+                    binding_record.external_id = self.external_id
+                else:
+                    binding_record.external_id = f"{self.external_id}_{index}"
+                self.binder.bind(binding_record.external_id, binding_record)
         self._after_import(binding, **kwargs)
 
 
