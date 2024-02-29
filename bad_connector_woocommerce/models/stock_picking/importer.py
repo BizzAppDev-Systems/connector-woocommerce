@@ -257,22 +257,24 @@ class WooStockPickingRefundImporter(Component):
         res = super(WooStockPickingRefundImporter, self)._after_import(
             binding, **kwargs
         )
+
         line_items = self.remote_record.get("line_items")
         product_id_map = {item["product_id"]: item["id"] for item in line_items}
-        if not self.backend_record.process_return_automatically:
-            return res
         for bind in binding:
             for move in bind.odoo_id.move_ids:
                 woo_product_id = move.product_id.woo_bind_ids.filtered(
                     lambda a: a.backend_id == self.backend_record
                 )
-                if int(woo_product_id.external_id) not in product_id_map:
+                ext_id = int(woo_product_id.external_id)
+                if ext_id not in product_id_map:
                     continue
-                move.external_move = product_id_map[int(woo_product_id.external_id)]
+                move.external_move = product_id_map[ext_id]
                 move.quantity_done = move.product_uom_qty
-            bind.odoo_id.button_validate()
+                if not self.backend_record.process_return_automatically:
+                    continue
+                bind.odoo_id.button_validate()
         if self.remote_record.get("refund_order_status") != "refunded":
             return res
-
         self.env["stock.picking"]._update_order_status()
+
         return res
