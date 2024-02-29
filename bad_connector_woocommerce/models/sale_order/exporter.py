@@ -35,32 +35,28 @@ class WooSaleOrderExporterMapper(Component):
     @mapping
     def tracking_number(self, record):
         """Mapping for tracking number"""
-        tracking_number = False
+        tracking_numbers = []
         if not self.backend_record.tracking_info:
             return {}
         done_pickings = record.picking_ids.filtered(
-            lambda picking: picking.state == "done"
+            lambda picking: picking.picking_type_id.code == "outgoing"
+            and picking.state == "done"
         )
         if not done_pickings:
             raise MappingError(_("No delivery orders in 'done' state."))
-        if (
-            self.backend_record.tracking_info
-            and not done_pickings[0].carrier_tracking_ref
-        ):
-            raise MappingError(
-                _("Tracking Reference not found in Delivery Order! %s")
-                % done_pickings[0].name
-            )
-        tracking_number = done_pickings[0].carrier_tracking_ref
+
+        for picking in done_pickings:
+            if not picking.carrier_tracking_ref:
+                raise MappingError(
+                    _("Tracking Reference not found in Delivery Order! %s")
+                    % picking.name
+                )
+            tracking_numbers.append({"tracking_number": picking.carrier_tracking_ref})
         return {
             "meta_data": [
                 {
                     "key": "_wc_shipment_tracking_items",
-                    "value": [
-                        {
-                            "tracking_number": tracking_number,
-                        }
-                    ],
+                    "value": tracking_numbers,
                 }
             ]
         }
@@ -83,5 +79,17 @@ class WooSaleOrderBatchExporter(Component):
                     "available in Odoo or isn't marked as 'Final Status'."
                 )
             )
+        for picking in binding.odoo_id.picking_ids.filtered(
+            lambda p: p.picking_type_id.code == "outgoing"
+        ):
+            if picking.state not in ["done", "cancel"]:
+                raise ValidationError(
+                    _(
+                        "Not all pickings associated with sale order %s are in 'done' "
+                        "or 'cancel' state."
+                    )
+                    % binding.odoo_id.name
+                )
         binding.write({"woo_order_status_id": woo_order_status.id})
         binding.write({"woo_order_status": "completed"})
+        return super(WooSaleOrderBatchExporter, self)._after_export(binding)

@@ -218,7 +218,7 @@ class WooSaleOrder(models.Model):
         based on delivery order state.
         """
         picking_ids = self.mapped("picking_ids").filtered(
-            lambda p: p.state in ["done", "cancel"]
+            lambda p: p.state == "done" and p.picking_type_id.code == "outgoing"
         )
         if not picking_ids:
             raise ValidationError(_("No delivery orders in 'done' state."))
