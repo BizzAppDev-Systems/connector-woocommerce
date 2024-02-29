@@ -66,7 +66,6 @@ class WooStockPickingRefundImporter(Component):
                 lambda a: a.backend_id == self.backend_record
             )
             move.external_move = product_id_map[int(woo_product_id.external_id)]
-            move.quantity_done = move.product_uom_qty
         return super(WooStockPickingRefundImporter, self)._after_import(
             binding, **kwargs
         )
