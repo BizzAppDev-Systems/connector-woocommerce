@@ -125,5 +125,4 @@ class WooStockPickingRefundAdapter(Component):
         result = self._call(resource_path, http_method="get")
         result_data = result.get("data", [])
         result_data["order_id"] = order_id
-        print(resource_path,"resource_path resource_path resource_path")
         return result_data

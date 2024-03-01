@@ -12,7 +12,7 @@
 * Submenu of Configurations > WooCommerce Sale Status which is use to store all the WooCommerce Sale Order Status.
 * Required field are Location,Client Key,Client Secret.
 * 'Test' mode is used to test the environment using test data, while the 'Production' mode is used for the live environment that contains real customer data and requires production-level credentials.
-* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders" and export of "Orders" and its "Refunds" data between connected Woocommerce and Odoo.
+* Create a module named bad_connector_woocommerce This module focuses on the import of "Customers", "Products","Product Attributes","Product Categories", "Taxes", "Orders", "Refunds" and export of "Orders" and its "Refunds" data between connected Woocommerce and Odoo.
 * Add "Import Partners","Import Products","Import Product Templates","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata", "Import Taxes", "Update Stock Inventory" and "Export Refunds" at backend level.
 * Required field to Import the Partners,Product Templates,Products,Product Attributes,Taxes,Product Tags,Product Category,Update Stock Inventory, Sale Orders and Export Sale Order Refunds are Location,Client Id,Client Secret,Product Category,Company and Warehouse.
 * Add Button of "GENERATE TOKEN" to generate the "Access Token".
@@ -117,6 +117,13 @@
     - Add Backend Credentials to Export Refunds.
     - Click 'Export Refunds' button to Export the Refunds to Woocommerce.
 
+
+* Refunds Import:
+    - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
+    - Add Backend Credentials to Import Refunds.
+    - Click 'Import Orders' button to Import the Refunds from Woocommerce.
+
+
 **Usage**
 *********
 
@@ -198,6 +205,11 @@
   - Handle mapping of Refund data during the export process.
   - After confirming the Sale Order, validating the Delivery Order, Creating the Return with its Return Reason, and then validating the Return, there we added a new field called "Refund Quantity With Amount" at the stock.picking level. If the boolean associated with this field is set to True, it allows the export of refunds to WooCommerce by clicking on the "Export Refund" boolean.
   - Added "Export Refunds" button at the backend level. This button facilitates the export of all eligible returns for refunds.
+
+* Import of Refunds:
+  - Enable the Import functionality in bad_connector_woocommerce to transfer Refunds from WooCommerce to Odoo.
+  - Handle mapping of Refund data during the Import process.
+  - After Import the Sale Order, Validating the Delivery Order, and Then Click on "Import Order" from Backend Level to import the refunds from WooCommerce.
 
 **Known issues/Roadmap**
 ************************
