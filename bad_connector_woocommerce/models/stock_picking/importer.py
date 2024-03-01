@@ -236,7 +236,10 @@ class WooStockPickingRefundImporter(Component):
             picking_moves.append(picking_data)
         picking_bindings = self.env["woo.stock.picking.refund"]
         for picking in picking_moves:
-            (picking_returns, return_id,) = self._process_return_picking(
+            (
+                picking_returns,
+                return_id,
+            ) = self._process_return_picking(
                 picking,
             )
             data["odoo_id"] = return_id

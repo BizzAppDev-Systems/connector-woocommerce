@@ -10,7 +10,7 @@
                 expr="//page[@name='operations']//field[@name='move_ids_without_package']/tree//field[@name='description_picking']"
                 position="after"
             >
-                <field name="external_move" optional="hide"/>
+                <field name="external_move" optional="hide" />
             </xpath>
             <xpath expr="//header" position="inside">
                     <field name="woo_return_bind_ids" invisible="1" />

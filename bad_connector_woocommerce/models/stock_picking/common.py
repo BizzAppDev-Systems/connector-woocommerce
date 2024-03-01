@@ -1,9 +1,9 @@
 import logging
 
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 from odoo.addons.component.core import Component
-from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -119,9 +119,7 @@ class WooStockPickingRefundAdapter(Component):
         """
         # pylint: disable=method-required-super
         order_id = attributes.get("order_id")
-        resource_path = "{}/{}/refunds/{}".format(
-            self._woo_model, order_id, external_id
-        )
+        resource_path = f"{self._woo_model}/{order_id}/refunds/{external_id}"
         result = self._call(resource_path, http_method="get")
         result_data = result.get("data", [])
         result_data["order_id"] = order_id
