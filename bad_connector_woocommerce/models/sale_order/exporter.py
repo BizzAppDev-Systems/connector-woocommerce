@@ -80,18 +80,17 @@ class WooSaleOrderBatchExporter(Component):
                     "available in Odoo or isn't marked as 'Final Status'."
                 )
             )
-        for picking in self.binding.odoo_id.picking_ids.filtered(
+        pickings = self.binding.odoo_id.picking_ids.filtered(
             lambda p: p.picking_type_id.code == "outgoing"
             and p.state not in ["done", "cancel"]
-            and not p.woo_return_bind_ids
-            and not p.is_return_stock_picking
-        ):
+        )
+        if pickings:
             raise ValidationError(
                 _(
                     "Not all pickings associated with sale order %s are in 'done' "
                     "or 'cancel' state."
                 )
-                % picking.sale_id.name
+                % self.binding.odoo_id.name
             )
         self.binding.write({"woo_order_status_id": woo_order_status.id})
         return super(WooSaleOrderBatchExporter, self)._after_export()
