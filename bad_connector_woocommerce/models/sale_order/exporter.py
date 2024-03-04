@@ -41,6 +41,8 @@ class WooSaleOrderExporterMapper(Component):
         done_pickings = record.picking_ids.filtered(
             lambda picking: picking.picking_type_id.code == "outgoing"
             and picking.state == "done"
+            and not picking.woo_return_bind_ids
+            and not picking.is_return_stock_picking
         )
         if not done_pickings:
             raise MappingError(_("No delivery orders in 'done' state."))
@@ -81,15 +83,17 @@ class WooSaleOrderBatchExporter(Component):
             )
         for picking in binding.odoo_id.picking_ids.filtered(
             lambda p: p.picking_type_id.code == "outgoing"
+            and p.state not in ["done", "cancel"]
+            and not p.woo_return_bind_ids
+            and not p.is_return_stock_picking
         ):
-            if picking.state not in ["done", "cancel"]:
-                raise ValidationError(
-                    _(
-                        "Not all pickings associated with sale order %s are in 'done' "
-                        "or 'cancel' state."
-                    )
-                    % binding.odoo_id.name
+            raise ValidationError(
+                _(
+                    "Not all pickings associated with sale order %s are in 'done' "
+                    "or 'cancel' state."
                 )
+                % binding.odoo_id.name
+            )
         binding.write({"woo_order_status_id": woo_order_status.id})
         binding.write({"woo_order_status": "completed"})
         return super(WooSaleOrderBatchExporter, self)._after_export(binding)
