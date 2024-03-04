@@ -92,7 +92,7 @@ class WooSaleOrderBatchExporter(Component):
                     "Not all pickings associated with sale order %s are in 'done' "
                     "or 'cancel' state."
                 )
-                % binding.odoo_id.name
+                % picking.sale_id.name
             )
         binding.write({"woo_order_status_id": woo_order_status.id})
         binding.write({"woo_order_status": "completed"})
