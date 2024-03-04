@@ -163,7 +163,8 @@ class WooStockPickingRefundImporter(Component):
         return_wizard._compute_moves_locations()
         for picking_move in picking_moves_dict[delivery_order]:
             return_line = return_wizard.product_return_moves.filtered(
-                lambda r: r.product_id.id == picking_move.get("product_id")
+                lambda r, picking_move=picking_move: r.product_id.id
+                == picking_move.get("product_id")
             )
             self._update_return_line(
                 return_line,
