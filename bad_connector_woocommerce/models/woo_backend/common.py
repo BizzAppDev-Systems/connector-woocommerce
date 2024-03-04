@@ -187,7 +187,10 @@ class WooBackend(models.Model):
         readonly=True,
         compute="_compute_webhook_config",
     )
-    process_return_automatically = fields.Boolean()
+    process_return_automatically = fields.Boolean(
+        help="""When set to 'True', returns associated with the sale order will be
+        processed and validated automatically.""",
+    )
     activity_user_id = fields.Many2one("res.users", string="Responsible User")
 
     @api.depends("test_mode", "test_access_token", "access_token")
