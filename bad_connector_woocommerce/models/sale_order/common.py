@@ -328,3 +328,4 @@ class SaleOrderLine(models.Model):
         copy=False,
     )
     woo_line_id = fields.Char()
+    update_qty = fields.Float()

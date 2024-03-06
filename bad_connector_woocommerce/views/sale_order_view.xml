@@ -97,6 +97,7 @@
                 <attribute name="editable" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form" position="inside">
+                <field name="update_qty"/>
                 <notebook>
                     <page
                         string="WooCommerce Connector"
