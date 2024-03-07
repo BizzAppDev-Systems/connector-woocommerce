@@ -32,15 +32,17 @@ class WooStockPickingRefundExporterMapper(Component):
             if move.picking_id.sale_id.order_line:
                 sale_order_line = move.picking_id.sale_id.order_line[0]
                 product_id = sale_order_line.product_id
-                if product_id:
-                    bom, bom_lines = product_id.bom_ids[0].explode(
-                        product_id, move.sale_line_id.product_uom_qty
-                    )
-                    print(bom, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
-                    print(bom_lines, "((((((((((()))))))))))")
-                    for line, line_data in bom_lines:
-                        print(line)
-                        print(line_data)
+                # if product_id:
+                #     bom, bom_lines = product_id.bom_ids[0].explode(
+                #         product_id, move.sale_line_id.product_uom_qty
+                #     )
+                #     print(bom, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
+                #     print(bom_lines, "((((((((((()))))))))))")
+                move._compute_kit_quantities(product_id,move.)
+                # for line, line_data in bom_lines:
+                #     print(line)
+                #     print(line_data)
+
                     # Here, if move contains the product which is there in bom_lines
                     # and its quantity is less than or equal to qty present in move
                     # then it should increase the count by one
