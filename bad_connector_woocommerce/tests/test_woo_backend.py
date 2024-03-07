@@ -1,6 +1,7 @@
 import odoo
 from odoo import tests
 from odoo.tests import common
+
 from odoo.addons.component.tests.common import TransactionComponentCase
 
 
@@ -12,10 +13,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
         self.backend_record = self.env["woo.backend"]
         warehouse = self.env.ref("stock.warehouse0")
         warehouse_1 = self.env["stock.warehouse"].create(
-            {
-                "name": "Warehouse 1",
-                "code": "WIL"
-            }
+            {"name": "Warehouse 1", "code": "WIL"}
         )
         woo_status = self.env["woo.sale.status"].search(
             [("code", "=", "processing")], limit=1
