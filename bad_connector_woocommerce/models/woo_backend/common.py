@@ -188,7 +188,7 @@ class WooBackend(models.Model):
         readonly=True,
         compute="_compute_webhook_config",
     )
-    warehouse_ids = fields.Many2one(
+    stock_inventory_warehouse_ids = fields.Many2many(
         comodel_name="stock.warehouse",
         string="Stock Inventory Warehouse",
         help="Warehouse used to compute the " "stock quantities.",
