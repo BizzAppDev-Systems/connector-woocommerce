@@ -414,6 +414,7 @@
                                     >
                                         <field name="default_limit" />
                                         <field name="warehouse_id" required="1" />
+                                        <field name="warehouse_ids" widget="many2many_tags" required="1" />
                                         <field name="currency_id" />
                                         <field
                                             name="access_token"
