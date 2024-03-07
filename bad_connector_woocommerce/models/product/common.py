@@ -179,10 +179,9 @@ class WooProductProduct(models.Model):
                 records = self_with_location.browse(chunk_ids)
                 for product in records:
                     new_qty = self._woo_qty(product, backend, location, stock_field)
-                    warehouse_product_qty.setdefault(product.id, 0)
-                    warehouse_product_qty[product.id] += new_qty
-        for product_id, total_qty in warehouse_product_qty.items():
-            product = self.browse(product_id)
+                    warehouse_product_qty.setdefault(product, 0)
+                    warehouse_product_qty[product] += new_qty
+        for product, total_qty in warehouse_product_qty.items():
             if total_qty != product.woo_product_qty:
                 product.woo_product_qty = total_qty
 

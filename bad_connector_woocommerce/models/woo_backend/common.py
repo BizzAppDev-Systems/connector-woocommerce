@@ -191,7 +191,7 @@ class WooBackend(models.Model):
     stock_inventory_warehouse_ids = fields.Many2many(
         comodel_name="stock.warehouse",
         string="Stock Inventory Warehouse",
-        help="Warehouse used to compute the " "stock quantities.",
+        help="Warehouse used to compute the stock quantities.",
     )
 
     @api.depends("test_mode", "test_access_token", "access_token")

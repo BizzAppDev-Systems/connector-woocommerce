@@ -12,6 +12,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
         super().setUp()
         self.backend_record = self.env["woo.backend"]
         warehouse = self.env.ref("stock.warehouse0")
+        # warehouse1 = self.env.ref("stock.warehouse1")
         woo_status = self.env["woo.sale.status"].search(
             [("code", "=", "processing")], limit=1
         )
