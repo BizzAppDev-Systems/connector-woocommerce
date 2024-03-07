@@ -37,7 +37,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
                 "warehouse_id": warehouse.id,
                 "update_stock_inventory": True,
                 "test_access_token": "d4ea64d3-8f85-4955-be49-4aeb29151801",
-                "stock_inventory_warehouse_ids": warehouse.id,
+                "stock_inventory_warehouse_ids": warehouse.ids,
             }
         )
         self.backend_data = self.env["woo.backend"].create(
@@ -63,7 +63,7 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
                 "update_stock_inventory": True,
                 "access_token": "d4ea64d3-8f85-4955-be49-4aeb29151801",
                 "woo_sale_status_ids": [(6, 0, [woo_status.id])],
-                "stock_inventory_warehouse_ids": warehouse.id,
+                "stock_inventory_warehouse_ids": warehouse.ids,
             }
         )
         self.woocommerce_product_payload = {
