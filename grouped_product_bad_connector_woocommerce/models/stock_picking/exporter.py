@@ -21,9 +21,8 @@ class WooStockPickingRefundExporterMapper(Component):
         sale_order_products = {
             order_line.product_id for order_line in record.sale_id.order_line
         }
-        print(sale_order_products, "llllllllllllllllll sale_order_products")
         already_process_grouped_product = []
-        quantity = 0  # Initialize quantity variable
+        returned_quantity_per_bom_product = {}  # Dictionary to store returned quantities for each BOM product
         prev_product = None  # Variable to store the previous product
         for move in record.move_ids:
             if move.sale_line_id.product_id in already_process_grouped_product:
@@ -31,37 +30,91 @@ class WooStockPickingRefundExporterMapper(Component):
 
             if move.picking_id.sale_id.order_line:
                 sale_order_line = move.picking_id.sale_id.order_line[0]
-                product_id = sale_order_line.product_id
-                # if product_id:
-                #     bom, bom_lines = product_id.bom_ids[0].explode(
-                #         product_id, move.sale_line_id.product_uom_qty
-                #     )
-                #     print(bom, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
-                #     print(bom_lines, "((((((((((()))))))))))")
-                move._compute_kit_quantities(product_id,move.)
-                # for line, line_data in bom_lines:
-                #     print(line)
-                #     print(line_data)
+                # Check if the sale order line product is a BOM product
+                if sale_order_line.product_id.bom_ids:
+                    bom_product = sale_order_line.product_id
+                    # Find the BOM components for the sale order line product
+                    bom_components = bom_product.bom_ids[0].bom_line_ids
+                    for bom_line in bom_components:
+                        # Check if the returned move is for any of the BOM components
+                        if bom_line.product_id == move.product_id:
+                            # Calculate the returned quantity for the main/BOM product based on the BOM line quantity
+                            returned_quantity = move.product_qty * bom_line.product_qty
+                            returned_quantity_per_bom_product.setdefault(bom_product, 0)
+                            returned_quantity_per_bom_product[bom_product] += returned_quantity
+                            break  # Once found, break the loop
 
-                    # Here, if move contains the product which is there in bom_lines
-                    # and its quantity is less than or equal to qty present in move
-                    # then it should increase the count by one
-                    # for line in bom_lines:
-                    #     print(line, "lllllllllllllllmmmmmmmmmmmmmmmmmm")
-                    #     if (
-                    #         line[1]["product"] == move.product_id
-                    #         and line[1]["qty"] <= move.product_qty
-                    #     ):
-                            # if (
-                            #     prev_product == move.sale_line_id.product_id
-                            # ):  # Check if it's the same product as previous
-                            #     continue  # Skip counting if it's the same product
-                            # print("dededeeeeededeedededededdedededededdedededded")
-                            # quantity += 1  # Increment quantity
-                            # prev_product = move.sale_line_id.product_id  # Update previous product
-                            # Do something else if needed
-                    # already_process_grouped_product.append(move.sale_line_id.product_id)
-        # print("Total Quantity:", quantity)  # Print total quantity after the loop
+        # Now you have a dictionary returned_quantity_per_bom_product with returned quantities for each BOM product
+        print(returned_quantity_per_bom_product,"???????")
+
+
+    # @mapping
+    # def quantity_and_amount(self, record):
+    #     """Mapping for Quantity and Amount"""
+    #     line_items = []
+    #     total_amount = 0.00
+    #     sale_order_products = {
+    #         order_line.product_id for order_line in record.sale_id.order_line
+    #     }
+    #     print(sale_order_products, "llllllllllllllllll sale_order_products")
+    #     already_process_grouped_product = []
+    #     quantity = 0  # Initialize quantity variable
+    #     prev_product = None  # Variable to store the previous product
+    #     for move in record.move_ids:
+    #         if move.sale_line_id.product_id in already_process_grouped_product:
+    #             continue
+
+    #         if move.picking_id.sale_id.order_line:
+    #             sale_order_line = move.picking_id.sale_id.order_line[0]
+    #             print(sale_order_line.qty_delivered,"its now qty_deliveredsale_order_line")
+    # compute_qty_delivered=sale_order_line._compute_qty_delivered()
+    # print(compute_qty_delivered,";;;;;;;;;;;;;;;;;;;;ppppppppppppppppppp")
+    # product_id = sale_order_line.product_id
+    # if product_id:
+    #     bom, bom_lines = product_id.bom_ids[0].explode(
+    #         product_id, move.sale_line_id.product_uom_qty
+    #     )
+    #     print(bom, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
+    #     print(bom_lines, "((((((((((()))))))))))")
+    # filters = {
+    #     "incoming_moves": lambda m: m.location_dest_id.usage == "customer"
+    #     and (
+    #         not m.origin_returned_move_id
+    #         or (m.origin_returned_move_id and m.to_refund)
+    #     ),
+    #     "outgoing_moves": lambda m: m.location_dest_id.usage != "customer"
+    #     and m.to_refund,
+    # }
+    # computed_value=move._compute_kit_quantities(
+    #     product_id,
+    #     sale_order_line.product_uom_qty,
+    #     product_id.bom_ids[0],
+    #     filters,
+    # )
+    # print(computed_value,";;;;;;;;;;;;;;;;;;;;;;;;;;;;")
+    # for line, line_data in bom_lines:
+    #     print(line)
+    #     print(line_data)
+
+    # Here, if move contains the product which is there in bom_lines
+    # and its quantity is less than or equal to qty present in move
+    # then it should increase the count by one
+    # for line in bom_lines:
+    #     print(line, "lllllllllllllllmmmmmmmmmmmmmmmmmm")
+    #     if (
+    #         line[1]["product"] == move.product_id
+    #         and line[1]["qty"] <= move.product_qty
+    #     ):
+    # if (
+    #     prev_product == move.sale_line_id.product_id
+    # ):  # Check if it's the same product as previous
+    #     continue  # Skip counting if it's the same product
+    # print("dededeeeeededeedededededdedededededdedededded")
+    # quantity += 1  # Increment quantity
+    # prev_product = move.sale_line_id.product_id  # Update previous product
+    # Do something else if needed
+    # already_process_grouped_product.append(move.sale_line_id.product_id)
+    # print("Total Quantity:", quantity)  # Print total quantity after the loop
 
     # @mapping
     # def quantity_and_amount(self, record):
