@@ -1,3 +1,3 @@
 [submodule ".generic_misc_modules"]
 	path = .generic_misc_modules
-	url = git@git.bizzappdev.com:bizzappdev/misc/generic_misc_modules.git
+	url = https://git.bizzappdev.com/bizzappdev/misc/generic_misc_modules.git
