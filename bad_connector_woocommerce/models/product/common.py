@@ -124,7 +124,7 @@ class WooProductProduct(models.Model):
     stock_management = fields.Boolean(readonly=True)
     woo_product_qty = fields.Float(
         string="Computed Quantity",
-        help="""Last computed quantity to send " "on WooCommerce.""",
+        help="""Last computed quantity to send on WooCommerce.""",
     )
     downloadable_product = fields.Boolean(readonly=True)
     woo_downloadable_product_ids = fields.One2many(
