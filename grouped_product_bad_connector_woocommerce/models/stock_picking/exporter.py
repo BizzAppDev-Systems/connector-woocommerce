@@ -1,6 +1,8 @@
 import logging
 import math
 
+from odoo.tools import html2plaintext
+
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
 
@@ -14,6 +16,7 @@ class WooStockPickingRefundExporterMapper(Component):
     def quantity_and_amount(self, record):
         """Mapping for Quantity and Amount"""
         returned_quantity_per_bom_product = {}
+        line_items = []
 
         for move in record.move_ids:
             if move.sale_line_id and move.sale_line_id.product_id.bom_ids:
@@ -26,6 +29,7 @@ class WooStockPickingRefundExporterMapper(Component):
 
                 # Initialize values for the main BOM
                 max_returned_qty = 0
+                max_amount = 0
                 main_bom = None
 
                 # Iterate through the BOM lines
@@ -36,57 +40,132 @@ class WooStockPickingRefundExporterMapper(Component):
                         returned_qty = move.product_uom_qty / bom_line_qty
                         returned_qty = math.ceil(returned_qty)
 
-                        # Store the returned quantity for the BOM product
-                        returned_quantity_per_bom_product[bom_product] = returned_qty
+                        # Calculate the amount for the BOM product
+                        amount = returned_qty * move.sale_line_id.price_unit
+
+                        # Store the returned quantity and amount for the BOM product
+                        returned_quantity_per_bom_product[bom_product] = {
+                            "returned_qty": returned_qty,
+                            "amount": amount,
+                        }
 
                         # Update values for the main BOM
                         if returned_qty > max_returned_qty:
                             max_returned_qty = returned_qty
+                            max_amount = amount
                             main_bom = bom_product
 
-                # Update the returned quantity for the main BOM
+                # Update the returned quantity and amount for the main BOM
                 if main_bom:
-                    returned_quantity_per_bom_product[main_bom] = max_returned_qty
+                    returned_quantity_per_bom_product[main_bom] = {
+                        "returned_qty": max_returned_qty,
+                        "amount": max_amount,
+                    }
 
-        print(returned_quantity_per_bom_product, "Final Result")
+            list_item = {
+                "id": move.sale_line_id.woo_bind_ids[0].external_id,
+                "quantity": max_returned_qty,
+                "refund_total": max_amount,
+                "refund_tax": [
+                    {
+                        "id": str(move.id),
+                        "refund_total": max_amount,
+                    }
+                ],
+            }
+            line_items.append(list_item)
+        return_reason_text = html2plaintext(record.return_reason or "")
+        return_data = {
+            "order_id": record.sale_id.woo_bind_ids[0].external_id,
+            "amount": str(max_amount),
+            "line_items": line_items,
+            "api_refund": False,
+        }
+        if return_reason_text:
+            return_data["reason"] = return_reason_text
+        print(return_data, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;\n\n\n\n\n\n")
+        return return_data
 
     # @mapping
     # def quantity_and_amount(self, record):
     #     """Mapping for Quantity and Amount"""
-    #     sale_order_products = {
-    #         order_line.product_id for order_line in record.sale_id.order_line
-    #     }
-    #     already_process_grouped_product = []
-    #     returned_quantity_per_bom_product = (
-    #         {}
-    #     )  # Dictionary to store returned quantities for each BOM product
-    #     prev_product = None  # Variable to store the previous product
+    #     returned_quantity_per_bom_product = {}
+
     #     for move in record.move_ids:
-    #         if move.sale_line_id.product_id in already_process_grouped_product:
-    #             continue
-    #         print("heyerrrrrrrrrrrrrrrrrrrrrrrrrr ++++++++++++++++++++++++++++++++++")
-    #         if move.picking_id.sale_id.order_line:
-    #             sale_order_line = move.picking_id.sale_id.order_line[0]
-    #             # Check if the sale order line product is a BOM product
-    #             if sale_order_line.product_id.bom_ids:
-    #                 bom_product = sale_order_line.product_id
-    #                 boms, lines = bom_product.bom_ids[0].explode(
-    #                     bom_product, sale_order_line.product_uom_qty
-    #                 )
-    #                 print(boms, "BOMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
-    #                 print(lines, ";;;;;;;;; line line line ")
-    #                 # Find the BOM components for the sale order line product
-    #                 bom_components = bom_product.bom_ids[0].bom_line_ids
-    #                 for bom_line in bom_components:
-    #                     # Check if the returned move is for any of the BOM components
-    #                     if bom_line.product_id == move.product_id:
-    #                         bom_line_qty = bom_line.product_qty
-    #                         returned_qty = move.product_uom_qty / bom_line_qty
-    #                         returned_qty = math.ceil(returned_qty)
-    #                         returned_quantity_per_bom_product[
-    #                             bom_product
-    #                         ] = returned_qty
-    #     print(returned_quantity_per_bom_product, "???????")
+    #         if move.sale_line_id and move.sale_line_id.product_id.bom_ids:
+    #             sale_order_line = move.sale_line_id
+    #             bom_product = sale_order_line.product_id
+
+    #             # Check if the BOM has already been processed
+    #             if bom_product in returned_quantity_per_bom_product:
+    #                 continue
+
+    #             # Initialize values for the main BOM
+    #             max_returned_qty = 0
+    #             main_bom = None
+
+    #             # Iterate through the BOM lines
+    #             for bom_line in bom_product.bom_ids[0].bom_line_ids:
+    #                 # Check if the returned move is for any of the BOM components
+    #                 if bom_line.product_id == move.product_id:
+    #                     bom_line_qty = bom_line.product_qty
+    #                     returned_qty = move.product_uom_qty / bom_line_qty
+    #                     returned_qty = math.ceil(returned_qty)
+
+    #                     # Store the returned quantity for the BOM product
+    #                     returned_quantity_per_bom_product[bom_product] = returned_qty
+
+    #                     # Update values for the main BOM
+    #                     if returned_qty > max_returned_qty:
+    #                         max_returned_qty = returned_qty
+    #                         main_bom = bom_product
+
+    #             # Update the returned quantity for the main BOM
+    #             if main_bom:
+    #                 returned_quantity_per_bom_product[main_bom] = max_returned_qty
+
+    #     print(returned_quantity_per_bom_product, "Final Result")
+
+
+# ======================================================================================================
+
+# @mapping
+# def quantity_and_amount(self, record):
+#     """Mapping for Quantity and Amount"""
+#     sale_order_products = {
+#         order_line.product_id for order_line in record.sale_id.order_line
+#     }
+#     already_process_grouped_product = []
+#     returned_quantity_per_bom_product = (
+#         {}
+#     )  # Dictionary to store returned quantities for each BOM product
+#     prev_product = None  # Variable to store the previous product
+#     for move in record.move_ids:
+#         if move.sale_line_id.product_id in already_process_grouped_product:
+#             continue
+#         print("heyerrrrrrrrrrrrrrrrrrrrrrrrrr ++++++++++++++++++++++++++++++++++")
+#         if move.picking_id.sale_id.order_line:
+#             sale_order_line = move.picking_id.sale_id.order_line[0]
+#             # Check if the sale order line product is a BOM product
+#             if sale_order_line.product_id.bom_ids:
+#                 bom_product = sale_order_line.product_id
+#                 boms, lines = bom_product.bom_ids[0].explode(
+#                     bom_product, sale_order_line.product_uom_qty
+#                 )
+#                 print(boms, "BOMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
+#                 print(lines, ";;;;;;;;; line line line ")
+#                 # Find the BOM components for the sale order line product
+#                 bom_components = bom_product.bom_ids[0].bom_line_ids
+#                 for bom_line in bom_components:
+#                     # Check if the returned move is for any of the BOM components
+#                     if bom_line.product_id == move.product_id:
+#                         bom_line_qty = bom_line.product_qty
+#                         returned_qty = move.product_uom_qty / bom_line_qty
+#                         returned_qty = math.ceil(returned_qty)
+#                         returned_quantity_per_bom_product[
+#                             bom_product
+#                         ] = returned_qty
+#     print(returned_quantity_per_bom_product, "???????")
 
 
 # =========================================================================================
