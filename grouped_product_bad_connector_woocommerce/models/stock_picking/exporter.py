@@ -1,11 +1,8 @@
 import logging
-
-from odoo import _
-from odoo.tools import html2plaintext
+import math
 
 from odoo.addons.component.core import Component
 from odoo.addons.connector.components.mapper import mapping
-from odoo.addons.connector.exception import MappingError
 
 _logger = logging.getLogger(__name__)
 
@@ -16,37 +13,45 @@ class WooStockPickingRefundExporterMapper(Component):
     @mapping
     def quantity_and_amount(self, record):
         """Mapping for Quantity and Amount"""
-        line_items = []
-        total_amount = 0.00
         sale_order_products = {
             order_line.product_id for order_line in record.sale_id.order_line
         }
         already_process_grouped_product = []
-        returned_quantity_per_bom_product = {}  # Dictionary to store returned quantities for each BOM product
+        returned_quantity_per_bom_product = (
+            {}
+        )  # Dictionary to store returned quantities for each BOM product
         prev_product = None  # Variable to store the previous product
         for move in record.move_ids:
             if move.sale_line_id.product_id in already_process_grouped_product:
                 continue
-
+            print("heyerrrrrrrrrrrrrrrrrrrrrrrrrr ++++++++++++++++++++++++++++++++++")
             if move.picking_id.sale_id.order_line:
                 sale_order_line = move.picking_id.sale_id.order_line[0]
                 # Check if the sale order line product is a BOM product
                 if sale_order_line.product_id.bom_ids:
                     bom_product = sale_order_line.product_id
+                    boms, lines = bom_product.bom_ids[0].explode(
+                        bom_product, sale_order_line.product_uom_qty
+                    )
+                    print(boms, "BOMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
+                    print(lines, ";;;;;;;;; line line line ")
                     # Find the BOM components for the sale order line product
                     bom_components = bom_product.bom_ids[0].bom_line_ids
                     for bom_line in bom_components:
                         # Check if the returned move is for any of the BOM components
                         if bom_line.product_id == move.product_id:
-                            # Calculate the returned quantity for the main/BOM product based on the BOM line quantity
-                            returned_quantity = move.product_qty * bom_line.product_qty
-                            returned_quantity_per_bom_product.setdefault(bom_product, 0)
-                            returned_quantity_per_bom_product[bom_product] += returned_quantity
-                            break  # Once found, break the loop
-
-        # Now you have a dictionary returned_quantity_per_bom_product with returned quantities for each BOM product
-        print(returned_quantity_per_bom_product,"???????")
-
+                            bom_line_qty = bom_line.product_qty
+                            returned_qty = move.product_uom_qty / bom_line_qty
+                            returned_qty = math.ceil(returned_qty)
+                            # if bom_product in returned_quantity_per_bom_product:
+                            #     returned_quantity_per_bom_product[
+                            #         bom_product
+                            #     ] += returned_qty
+                            # else:
+                            returned_quantity_per_bom_product[
+                                bom_product
+                            ] = returned_qty
+        print(returned_quantity_per_bom_product, "???????")
 
     # @mapping
     # def quantity_and_amount(self, record):
