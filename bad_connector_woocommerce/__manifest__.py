@@ -44,6 +44,6 @@
     ],
     "images": ["static/description/banner.gif"],
     "external_dependencies": {
-        "python": ["woocommerce"],
+        "python": ["woocommerce", "vcrpy"],
     },
 }
