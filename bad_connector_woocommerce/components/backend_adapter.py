@@ -143,7 +143,7 @@ class WooCRUDAdapter(AbstractComponent):
     _inherit = ["base.backend.adapter", "connector.woo.base"]
     _usage = "backend.adapter"
 
-    def search(self, filters=None):
+    def search(self, filters=None, **kwargs):
         """
         Search records according to some criterias
         and returns a list of ids
@@ -154,28 +154,38 @@ class WooCRUDAdapter(AbstractComponent):
         """Returns the information of a record"""
         raise NotImplementedError
 
-    def search_read(self, filters=None):
+    def search_read(self, filters=None, **kwargs):
         """
         Search records according to some criterias
         and returns their information
         """
         raise NotImplementedError
 
-    def create(self, data):
+    def create(self, data, **kwargs):
         """Create a record on the external system"""
         raise NotImplementedError
 
-    def write(self, external_id, data):
+    def write(self, external_id, data, **kwargs):
         """Update records on the external system"""
         raise NotImplementedError
 
-    def delete(self, external_id):
+    def delete(self, external_id, **kwargs):
         """Delete a record on the external system"""
         raise NotImplementedError
 
     def _call(self, resource_path, arguments=None, http_method=None):
         """Method to initiate the connection"""
-        return self.work.woo_api.call(resource_path, arguments, http_method=http_method)
+        try:
+            woo_api = getattr(self.work, "woo_api", None)
+        except AttributeError:
+            raise AttributeError(
+                "You must provide a woo_api attribute with a "
+                "WooAPI instance to be able to use the "
+                "Backend Adapter."
+            ) from None
+        return woo_api.call(
+            resource_path=resource_path, arguments=arguments, http_method=http_method
+        )
 
 
 class GenericAdapter(AbstractComponent):
@@ -229,19 +239,19 @@ class GenericAdapter(AbstractComponent):
 
         return result
 
-    def read(self, external_id=None, attributes=None):
+    def read(self, external_id=None, attributes=None, **kwargs):
         """Method to get a data for specified record"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
-        result = self._call(resource_path, http_method="get")
+        result = self._call(resource_path=resource_path, http_method="get")
         result = result.get("data", [])
         return result
 
-    def create(self, data):
+    def create(self, data, **kwargs):
         """Creates the data in remote"""
-        result = self._call(self._woo_model, data, http_method="post")
+        result = self._call(self._woo_model, arguments=data, http_method="post")
         return result
 
-    def write(self, external_id, data):
+    def write(self, external_id, data, **kwargs):
         """Update records on the external system"""
         resource_path = "{}/{}".format(self._woo_model, external_id)
         if data.get("template_external_id", False):
@@ -249,5 +259,7 @@ class GenericAdapter(AbstractComponent):
                 self._woo_model, data.get("template_external_id"), external_id
             )
             data.pop("template_external_id")
-        result = self._call(resource_path, data, http_method="put")
+        result = self._call(
+            resource_path=resource_path, arguments=data, http_method="put"
+        )
         return result
