@@ -16,7 +16,7 @@
 * Add "Import Partners","Import Products","Import Product Templates","Import Product Attributes","Import Product Category", "Import Orders", "Sync Metadata", "Import Taxes", "Update Stock Inventory" and "Export Refunds" at backend level.
 * Required field to Import the Partners,Product Templates,Products,Product Attributes,Taxes,Product Tags,Product Category,Update Stock Inventory, Sale Orders and Export Sale Order Refunds are Location,Client Id,Client Secret,Product Category,Company and Warehouse.
 * Add Button of "GENERATE TOKEN" to generate the "Access Token".
-
+* Added multi-warehouse functionality to manages stock.
 
 **Author**
 **********
