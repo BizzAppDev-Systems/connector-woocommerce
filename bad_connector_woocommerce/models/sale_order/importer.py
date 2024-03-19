@@ -339,6 +339,17 @@ class WooSaleOrderImportMapper(Component):
             else {}
         )
 
+    @mapping
+    def warehouse_id(self, record):
+        """Mapping of warehouse"""
+        warehouse = self.backend_record.warehouse_id
+        if not warehouse:
+            raise MappingError(
+                _("Warehouse is not selected in WooCommerce backend : %s")
+                % self.backend_record.name
+            )
+        return {"warehouse_id": warehouse.id}
+
 
 class WooSaleOrderImporter(Component):
     _name = "woo.sale.order.importer"
