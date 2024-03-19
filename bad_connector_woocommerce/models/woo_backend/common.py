@@ -164,9 +164,9 @@ class WooBackend(models.Model):
     update_stock_inventory = fields.Boolean()
     warehouse_id = fields.Many2one(
         comodel_name="stock.warehouse",
-        string="Warehouse",
+        string="Default Warehouse",
         check_company=True,
-        help="Warehouse used to compute the " "stock quantities.",
+        help="Warehouse used Sale Order.",
     )
     product_stock_field_id = fields.Many2one(
         comodel_name="ir.model.fields",
@@ -187,6 +187,11 @@ class WooBackend(models.Model):
         string="Webhook Configurations",
         readonly=True,
         compute="_compute_webhook_config",
+    )
+    stock_inventory_warehouse_ids = fields.Many2many(
+        comodel_name="stock.warehouse",
+        string="Stock Inventory Warehouse",
+        help="Warehouse used to compute the stock quantities.",
     )
 
     @api.depends("test_mode", "test_access_token", "access_token")
