@@ -124,7 +124,7 @@ class WooProductProduct(models.Model):
     stock_management = fields.Boolean(readonly=True)
     woo_product_qty = fields.Float(
         string="Computed Quantity",
-        help="""Last computed quantity to send " "on WooCommerce.""",
+        help="""Last computed quantity to send on WooCommerce.""",
     )
     downloadable_product = fields.Boolean(readonly=True)
     woo_downloadable_product_ids = fields.One2many(
@@ -166,18 +166,24 @@ class WooProductProduct(models.Model):
             stock_field = backend.product_stock_field_id.name
         else:
             stock_field = "virtual_available"
-        location = backend.warehouse_id.lot_stock_id
+
         product_fields = ["woo_product_qty", stock_field]
         if read_fields:
             product_fields += read_fields
-        self_with_location = self.sudo().with_context(location=location.id)
-        for chunk_ids in utils.chunks(products.ids, backend.recompute_qty_step):
-            records = self_with_location.browse(chunk_ids)
-            for product in records:
-                new_qty = self._woo_qty(product, backend, location, stock_field)
-                if not new_qty != product["woo_product_qty"]:
-                    continue
-                product.woo_product_qty = new_qty
+        warehouse_product_qty = {}
+        warehouses = backend.stock_inventory_warehouse_ids
+        for warehouse in warehouses:
+            location = warehouse.lot_stock_id
+            self_with_location = self.sudo().with_context(location=location.id)
+            for chunk_ids in utils.chunks(products.ids, backend.recompute_qty_step):
+                records = self_with_location.browse(chunk_ids)
+                for product in records:
+                    new_qty = self._woo_qty(product, backend, location, stock_field)
+                    warehouse_product_qty.setdefault(product, 0)
+                    warehouse_product_qty[product] += new_qty
+        for product, total_qty in warehouse_product_qty.items():
+            if total_qty != product.woo_product_qty:
+                product.woo_product_qty = total_qty
 
     def _woo_qty(self, product, backend, location, stock_field):
         """
