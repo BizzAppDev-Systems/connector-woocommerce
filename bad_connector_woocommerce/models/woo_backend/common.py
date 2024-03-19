@@ -164,8 +164,9 @@ class WooBackend(models.Model):
     update_stock_inventory = fields.Boolean()
     warehouse_id = fields.Many2one(
         comodel_name="stock.warehouse",
-        string="Warehouse",
-        help="Warehouse used to compute the " "stock quantities.",
+        string="Default Warehouse",
+        check_company=True,
+        help="Warehouse used Sale Order.",
     )
     product_stock_field_id = fields.Many2one(
         comodel_name="ir.model.fields",
@@ -186,6 +187,11 @@ class WooBackend(models.Model):
         string="Webhook Configurations",
         readonly=True,
         compute="_compute_webhook_config",
+    )
+    stock_inventory_warehouse_ids = fields.Many2many(
+        comodel_name="stock.warehouse",
+        string="Stock Inventory Warehouse",
+        help="Warehouse used to compute the stock quantities.",
     )
     process_return_automatically = fields.Boolean(
         help="""When set to 'True', returns associated with the sale order will be
@@ -308,8 +314,9 @@ class WooBackend(models.Model):
 
     @api.onchange("company_id")
     def _onchange_company(self):
-        """Set sale team id False everytime company_id is changed"""
+        """Set sale team id and warehouse id False everytime company_id is changed"""
         self.sale_team_id = False
+        self.warehouse_id = False
 
     def get_filters(self, model=None):
         """New Method: Returns the filter"""

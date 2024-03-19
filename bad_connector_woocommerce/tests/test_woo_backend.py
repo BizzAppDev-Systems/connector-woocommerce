@@ -12,6 +12,9 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
         super().setUp()
         self.backend_record = self.env["woo.backend"]
         warehouse = self.env.ref("stock.warehouse0")
+        warehouse_1 = self.env["stock.warehouse"].create(
+            {"name": "Warehouse 1", "code": "WIL"}
+        )
         woo_status = self.env["woo.sale.status"].search(
             [("code", "=", "processing")], limit=1
         )
@@ -37,6 +40,9 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
                 "warehouse_id": warehouse.id,
                 "update_stock_inventory": True,
                 "test_access_token": "d4ea64d3-8f85-4955-be49-4aeb29151801",
+                "stock_inventory_warehouse_ids": [
+                    (6, 0, [warehouse.id, warehouse_1.id])
+                ],
             }
         )
         self.backend_data = self.env["woo.backend"].create(
@@ -62,6 +68,9 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
                 "update_stock_inventory": True,
                 "access_token": "d4ea64d3-8f85-4955-be49-4aeb29151801",
                 "woo_sale_status_ids": [(6, 0, [woo_status.id])],
+                "stock_inventory_warehouse_ids": [
+                    (6, 0, [warehouse.id, warehouse_1.id])
+                ],
             }
         )
         self.woocommerce_product_payload = {
