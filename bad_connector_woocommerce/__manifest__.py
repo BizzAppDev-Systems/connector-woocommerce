@@ -10,7 +10,7 @@
         "contacts",
         "sale_management",
         "delivery",
-        "sale_automatic_workflow",
+        "bad_sale_automatic_workflow",
     ],
     "license": "AGPL-3",
     "data": [
