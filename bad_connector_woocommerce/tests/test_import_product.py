@@ -24,6 +24,7 @@ class TestImportProduct(BaseWooTestCase):
         """Test Assertions for Product"""
         external_id = "50"
         quantity_to_add = 10
+        quantity_to_add_1 = 5
         with recorder.use_cassette("import_woo_product_product"):
             self.env["woo.product.product"].import_record(
                 external_id=external_id, backend=self.backend
@@ -114,16 +115,32 @@ class TestImportProduct(BaseWooTestCase):
                 {
                     "product_id": product2.id,
                     "inventory_quantity": quantity_to_add,
-                    "location_id": self.backend.warehouse_id.lot_stock_id.id,
+                    "location_id": self.backend.stock_inventory_warehouse_ids[
+                        0
+                    ].lot_stock_id.id,
                 }
             )
         )
         stock_quant.action_apply_inventory()
+        stock_quant_1 = (
+            self.env["stock.quant"]
+            .with_context(inventory_mode=True)
+            .create(
+                {
+                    "product_id": product2.id,
+                    "inventory_quantity": quantity_to_add_1,
+                    "location_id": self.backend.stock_inventory_warehouse_ids[
+                        1
+                    ].lot_stock_id.id,
+                }
+            )
+        )
+        stock_quant_1.action_apply_inventory()
         with recorder.use_cassette("export_stock_qty"):
             product2.update_stock_qty()
         self.assertEqual(
             product2.woo_bind_ids.woo_product_qty,
-            10,
+            15,
             "Product is Not Exported in WooCommerce.",
         )
 

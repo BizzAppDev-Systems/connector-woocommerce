@@ -17,6 +17,7 @@
 * Required field to Import the Partners,Product Templates,Products,Product Attributes,Taxes,Product Tags,Product Category,Update Stock Inventory, Sale Orders and Export Sale Order Refunds are Location,Client Id,Client Secret,Product Category,Company and Warehouse.
 * Add Button of "GENERATE TOKEN" to generate the "Access Token".
 * Multi company support.
+* Added multi-warehouse functionality to manages stock.
 
 **Author**
 **********
