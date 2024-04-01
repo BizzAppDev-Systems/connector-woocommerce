@@ -30,7 +30,7 @@ class StockPicking(models.Model):
         if all delivered quantities are not zero.
         """
         sale_order = self.sale_id
-        if any(line.qty_delivered != 0 for line in sale_order.order_line):
+        if any(line.qty_delivered > 0 for line in sale_order.order_line):
             return
         woo_order_status = self.env["woo.sale.status"].search(
             [("code", "=", "refunded")], limit=1

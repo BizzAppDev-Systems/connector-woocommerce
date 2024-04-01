@@ -59,7 +59,7 @@ class WooStockPickingRefundImporter(Component):
             return_lots = set(return_lots)
             if not return_lots.issubset(original_lots):
                 message = (
-                    "Lot differ from original delivery order so please verify and "
+                    "Lot differs from original delivery order so please verify and "
                     "validate manually for product: %s." % (product.name)
                 )
                 _logger.info(message)
@@ -77,7 +77,7 @@ class WooStockPickingRefundImporter(Component):
         moves = pickings.move_ids.filtered(
             lambda move: move.product_id.id == product_id
         )
-        remaining_moves = {}
+        to_return_moves = {}
         for move in moves:
             returned_qty = sum(
                 move.returned_move_ids.filtered(
@@ -87,19 +87,17 @@ class WooStockPickingRefundImporter(Component):
             remaining_qty = move.product_qty - returned_qty
             if remaining_qty <= 0:
                 continue
-            remaining_moves[move] = remaining_qty
-        else:
-            remaining_moves[move] = move.product_qty
-        to_return_moves = {}
-        for remaining_move, remaining_qty in remaining_moves.items():
-            if return_qty < remaining_qty:
-                to_return_moves[remaining_move] = return_qty
+            if return_qty <= remaining_qty:
+                to_return_moves[move] = return_qty
                 break
             else:
-                to_return_moves[remaining_move] = remaining_qty
+                to_return_moves[move] = remaining_qty
                 return_qty -= remaining_qty
-                continue
-        to_return_moves = {k: v for k, v in to_return_moves.items() if v != 0.0}
+        else:
+            # Add this condition to handle cases where the price_unit at the sale order
+            # level is 0
+            if not move.sale_line_id.price_unit:
+                to_return_moves[move] = move.product_qty
         return to_return_moves
 
     def _update_return_line(self, return_line, quantity, move_external_id):
@@ -236,7 +234,10 @@ class WooStockPickingRefundImporter(Component):
             picking_moves.append(picking_data)
         picking_bindings = self.env["woo.stock.picking.refund"]
         for picking in picking_moves:
-            (picking_returns, return_id,) = self._process_return_picking(
+            (
+                picking_returns,
+                return_id,
+            ) = self._process_return_picking(
                 picking,
             )
             data["odoo_id"] = return_id

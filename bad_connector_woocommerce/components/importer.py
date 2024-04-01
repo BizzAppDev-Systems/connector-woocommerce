@@ -278,8 +278,7 @@ class WooImporter(AbstractComponent):
         else:
             record = self._create_data(map_record)
             binding = self._create(record)
-        count = len(binding)
-        if count == 1:
+        if len(binding) == 1:
             self.binder.bind(self.external_id, binding)
         else:
             for index, binding_record in enumerate(binding):
