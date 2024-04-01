@@ -95,7 +95,7 @@ class WooStockPickingRefundImporter(Component):
                 return_qty -= remaining_qty
         else:
             # Add this condition to handle cases where the price_unit at the sale order
-            # level is 0
+            # line level is 0
             if not move.sale_line_id.price_unit:
                 to_return_moves[move] = move.product_qty
         return to_return_moves
