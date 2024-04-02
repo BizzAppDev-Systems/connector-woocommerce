@@ -127,3 +127,7 @@ class WooStockPickingRefundAdapter(Component):
         result_data = result.get("data", [])
         result_data["order_id"] = order_id
         return result_data
+
+    def write(self, external_id, data, **kwargs):
+        """Update records on the external system"""
+        raise NotImplementedError
