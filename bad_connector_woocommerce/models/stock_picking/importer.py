@@ -63,7 +63,7 @@ class WooStockPickingRefundImporter(Component):
                     "validate manually for product: %s." % (product.name)
                 )
                 _logger.info(message)
-                user_id = delivery_order.user_id or self.backend_record.activity_user_id
+                user_id = self.backend_record.activity_user_id or delivery_order.user_id
                 self.env["woo.backend"].create_activity(
                     record=picking_id,
                     message=message,
@@ -179,7 +179,7 @@ class WooStockPickingRefundImporter(Component):
         return_id, return_type = stock_return_picking._create_returns()
         return picking_returns, return_id
 
-    def _create(self, data):
+    def _create(self, data, **kwargs):
         """Create a refund for the WooCommerce stock picking in Odoo."""
         binder = self.binder_for(model="woo.sale.order")
         sale_order = binder.to_internal(self.remote_record.get("order_id"), unwrap=True)
