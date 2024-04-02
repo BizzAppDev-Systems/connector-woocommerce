@@ -129,5 +129,10 @@ class WooStockPickingRefundAdapter(Component):
         return result_data
 
     def write(self, external_id, data, **kwargs):
-        """Update records on the external system"""
+        """
+        Override Method: Overrides default behavior for updating refund records in
+        WooCommerce.This method intentionally remains unimplemented to avoid conflicts
+        during refund creation.
+        """
+        # pylint: disable=method-required-super
         raise NotImplementedError
