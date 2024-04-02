@@ -25,12 +25,13 @@ class TestImportProduct(BaseWooTestCase):
         external_id = "50"
         quantity_to_add = 10
         quantity_to_add_1 = 5
-        with recorder.use_cassette("import_woo_product_product"):
+        with recorder.use_cassette("import_woo_product_and_order"):
             self.env["woo.product.product"].import_record(
                 external_id=external_id, backend=self.backend
             )
         product1 = self.env["woo.product.product"].search(
-            [("external_id", "=", external_id)], limit=1
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)],
+            limit=1,
         )
         self.assertTrue(product1, "Woo Product is not imported!")
         self.assertEqual(
@@ -147,12 +148,13 @@ class TestImportProduct(BaseWooTestCase):
     def test_import_product_product_variant_type(self):
         """Test Assertions for Varaint type Product"""
         external_id = "162"
-        with recorder.use_cassette("import_woo_product_product"):
+        with recorder.use_cassette("import_woo_product_and_order"):
             self.env["woo.product.product"].import_record(
                 external_id=external_id, backend=self.backend
             )
         product1 = self.env["woo.product.product"].search(
-            [("external_id", "=", external_id)], limit=1
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)],
+            limit=1,
         )
         self.assertTrue(product1, "Woo Product is not imported!")
         self.assertEqual(
@@ -164,16 +166,17 @@ class TestImportProduct(BaseWooTestCase):
     def test_import_product_template(self):
         """Test Assertions for Product Template"""
         external_id = "130"
-        with recorder.use_cassette("import_woo_product_product"):
+        with recorder.use_cassette("import_woo_product_and_order"):
             self.env["woo.product.template"].import_record(
                 external_id=external_id, backend=self.backend
             )
         product1 = self.env["woo.product.template"].search(
-            [("external_id", "=", external_id)], limit=1
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)],
+            limit=1,
         )
         self.assertTrue(product1, "Woo Product is not imported!")
         product1.write({"sync_date": fields.Datetime.now()})
-        with recorder.use_cassette("import_woo_product_product"):
+        with recorder.use_cassette("import_woo_product_and_order"):
             self.env["woo.product.template"].import_record(
                 external_id=product1.external_id, backend=self.backend
             )
@@ -181,12 +184,13 @@ class TestImportProduct(BaseWooTestCase):
     def test_downloadable_product(self):
         """Test Assertions for Downloadable Product"""
         external_id = "90"
-        with recorder.use_cassette("import_woo_product_product"):
+        with recorder.use_cassette("import_woo_product_and_order"):
             self.env["woo.product.product"].import_record(
                 external_id=external_id, backend=self.backend
             )
         product1 = self.env["woo.product.product"].search(
-            [("external_id", "=", external_id)], limit=1
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)],
+            limit=1,
         )
         self.assertTrue(product1, "Woo Product is not imported!")
         self.assertEqual(

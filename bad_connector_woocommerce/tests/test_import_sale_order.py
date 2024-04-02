@@ -22,12 +22,12 @@ class TestImportSaleOrder(BaseWooTestCase):
         """Test Assertions for Sale order"""
         external_id = "71"
 
-        with recorder.use_cassette("import_woo_product_product"):
+        with recorder.use_cassette("import_woo_product_and_order"):
             self.env["woo.sale.order"].import_record(
                 external_id=external_id, backend=self.backend
             )
         sale_order1 = self.env["woo.sale.order"].search(
-            [("external_id", "=", external_id)]
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
         )
         self.assertEqual(len(sale_order1), 1)
 
@@ -85,11 +85,9 @@ class TestImportSaleOrder(BaseWooTestCase):
             "flat50",
             "Order's woo amount total is not matched with response!",
         )
-        sale_order_odoo = self.env["sale.order"].search(
-            [("name", "=", "WOO_71")], limit=1
-        )
-        sale_order_odoo.action_confirm()
-        delivery_order = sale_order_odoo.picking_ids
+        sale_order1 = sale_order1.odoo_id
+        sale_order1.action_confirm()
+        delivery_order = sale_order1.picking_ids
         self.assertTrue(delivery_order, "Delivery order not created for the sale order")
         tracking_reference = "TR12345"
         delivery_order.write({"carrier_tracking_ref": tracking_reference})
@@ -109,7 +107,7 @@ class TestImportSaleOrder(BaseWooTestCase):
             "Delivery order should be in 'done' state after validation",
         )
         with recorder.use_cassette("export_woo_status_and_ref"):
-            sale_order_odoo.export_delivery_status()
+            sale_order1.export_delivery_status()
         self.assertEqual(
             sale_order1.woo_order_status_id.code,
             "completed",

@@ -22,7 +22,7 @@ class TestImportGroupedProductRefund(BaseWooTestCase):
         """Test Assertions for Import refund"""
         external_id = "71"
 
-        with recorder.use_cassette("import_woo_product_product"):
+        with recorder.use_cassette("import_woo_product_and_order"):
             self.env["woo.sale.order"].import_record(
                 external_id=external_id, backend=self.backend
             )
@@ -45,11 +45,9 @@ class TestImportGroupedProductRefund(BaseWooTestCase):
             "processing",
             "Order's status is not matched with response!",
         )
-        sale_order_odoo = self.env["sale.order"].search(
-            [("name", "=", "WOO_71")], limit=1
-        )
-        sale_order_odoo.action_confirm()
-        delivery_order = sale_order_odoo.picking_ids
+        sale_order1 = sale_order1.odoo_id
+        sale_order1.action_confirm()
+        delivery_order = sale_order1.picking_ids
         self.assertTrue(delivery_order, "Delivery order not created for the sale order")
         delivery_order.move_ids[0].quantity_done = 1
         delivery_order.button_validate()
@@ -65,8 +63,8 @@ class TestImportGroupedProductRefund(BaseWooTestCase):
                 external_id="1481", backend=self.backend, **kwargs
             )
         self.assertEqual(
-            sale_order_odoo.woo_order_status_id.code,
+            sale_order1.woo_order_status_id.code,
             "refunded",
             "Sale Order is Not in 'Refunded' state in WooCommerce.",
         )
-        self.assertEqual(len(sale_order_odoo.picking_ids), 2)
+        self.assertEqual(len(sale_order1.picking_ids), 2)

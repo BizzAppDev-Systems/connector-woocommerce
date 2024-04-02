@@ -26,7 +26,9 @@ class TestImportCountry(BaseWooTestCase):
                 external_id=external_id, backend=self.backend
             )
         self.settings_model = self.env["woo.settings"]
-        settings1 = self.settings_model.search([("external_id", "=", external_id)])
+        settings1 = self.settings_model.search(
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
+        )
         self.assertEqual(len(settings1), 1)
         self.assertTrue(settings1, "Woo Country is not imported!")
         self.assertEqual(
@@ -56,7 +58,9 @@ class TestImportCountry(BaseWooTestCase):
                 external_id=external_id, backend=self.backend
             )
         self.settings_model = self.env["woo.settings"]
-        settings1 = self.settings_model.search([("external_id", "=", external_id)])
+        settings1 = self.settings_model.search(
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
+        )
         self.assertEqual(len(settings1), 1)
         self.assertTrue(settings1, "Woo Settings is not imported!")
         self.assertEqual(
@@ -86,7 +90,13 @@ class TestImportCountry(BaseWooTestCase):
                 external_id=external_id, backend=self.backend
             )
         self.settings_model = self.env["woo.settings"]
-        settings1 = self.settings_model.search([("external_id", "=", external_id)])
+        settings1 = self.settings_model.search(
+            [
+                ("external_id", "=", external_id),
+                ("backend_id", "=", self.backend.id),
+                ("backend_id", "=", self.backend.id),
+            ]
+        )
         self.assertEqual(len(settings1), 1)
 
     def test_import_currency(self):
@@ -97,7 +107,9 @@ class TestImportCountry(BaseWooTestCase):
                 external_id=external_id, backend=self.backend
             )
         self.settings_model = self.env["woo.settings"]
-        settings1 = self.settings_model.search([("external_id", "=", external_id)])
+        settings1 = self.settings_model.search(
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
+        )
         self.assertEqual(len(settings1), 1)
 
     def test_import_weight(self):
@@ -108,7 +120,9 @@ class TestImportCountry(BaseWooTestCase):
                 external_id=external_id, backend=self.backend
             )
         self.settings_model = self.env["woo.settings"]
-        settings1 = self.settings_model.search([("external_id", "=", external_id)])
+        settings1 = self.settings_model.search(
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
+        )
         self.assertEqual(len(settings1), 1)
 
     def test_import_dimension(self):
@@ -119,5 +133,7 @@ class TestImportCountry(BaseWooTestCase):
                 external_id=external_id, backend=self.backend
             )
         self.settings_model = self.env["woo.settings"]
-        settings1 = self.settings_model.search([("external_id", "=", external_id)])
+        settings1 = self.settings_model.search(
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
+        )
         self.assertEqual(len(settings1), 1)

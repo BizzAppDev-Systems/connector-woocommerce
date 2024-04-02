@@ -24,12 +24,12 @@ class TestImportRefund(BaseWooTestCase):
         """Test Assertions for Import refund"""
         external_id = "71"
 
-        with recorder.use_cassette("import_woo_product_product"):
+        with recorder.use_cassette("import_woo_product_and_order"):
             self.env["woo.sale.order"].import_record(
                 external_id=external_id, backend=self.backend
             )
         sale_order1 = self.env["woo.sale.order"].search(
-            [("external_id", "=", external_id)]
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
         )
         self.assertEqual(len(sale_order1), 1)
 
@@ -47,11 +47,9 @@ class TestImportRefund(BaseWooTestCase):
             "processing",
             "Order's status is not matched with response!",
         )
-        sale_order_odoo = self.env["sale.order"].search(
-            [("name", "=", "WOO_71")], limit=1
-        )
-        sale_order_odoo.action_confirm()
-        delivery_order = sale_order_odoo.picking_ids
+        sale_order1 = sale_order1.odoo_id
+        sale_order1.action_confirm()
+        delivery_order = sale_order1.picking_ids
         self.assertTrue(delivery_order, "Delivery order not created for the sale order")
         delivery_order.move_ids[0].quantity_done = 1
         backorder_wizard_dict = delivery_order.button_validate()
@@ -61,19 +59,19 @@ class TestImportRefund(BaseWooTestCase):
             )
         ).save()
         backorder_wizard.process()
-        sale_order_line = sale_order_odoo.order_line.filtered(
+        sale_order_line = sale_order1.order_line.filtered(
             lambda line: line.product_id == delivery_order.move_ids[0].product_id
         )
         sale_order_line.product_id.qty_available = 2
-        sale_order_odoo.picking_ids[0].move_ids[0].quantity_done = 2
-        sale_order_odoo.picking_ids[0].button_validate()
+        sale_order1.picking_ids[0].move_ids[0].quantity_done = 2
+        sale_order1.picking_ids[0].button_validate()
         self.assertEqual(
-            sale_order_odoo.picking_ids[0].state,
+            sale_order1.picking_ids[0].state,
             "done",
             "Picking state should be done!",
         )
         self.assertEqual(
-            sale_order_odoo.picking_ids[1].state,
+            sale_order1.picking_ids[1].state,
             "done",
             "Picking state should be done!",
         )
@@ -85,7 +83,7 @@ class TestImportRefund(BaseWooTestCase):
             self.env["woo.stock.picking.refund"].import_record(
                 external_id="1481", backend=self.backend, **kwargs
             )
-        return_picking = sale_order_odoo.picking_ids.filtered(
+        return_picking = sale_order1.picking_ids.filtered(
             lambda picking: picking.woo_return_bind_ids
         )
         for picking in return_picking:
@@ -93,8 +91,8 @@ class TestImportRefund(BaseWooTestCase):
                 move.quantity_done = move.product_uom_qty
             picking.button_validate()
         self.assertEqual(
-            sale_order_odoo.woo_order_status_id.code,
+            sale_order1.woo_order_status_id.code,
             "refunded",
             "Sale Order is Not in 'Refunded' state in WooCommerce.",
         )
-        self.assertEqual(len(sale_order_odoo.picking_ids), 4)
+        self.assertEqual(len(sale_order1.picking_ids), 4)

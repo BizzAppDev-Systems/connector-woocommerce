@@ -27,7 +27,7 @@ class TestImportProductCategory(BaseWooTestCase):
             )
         self.product_model = self.env["woo.product.category"]
         productcategory1 = self.product_model.search(
-            [("external_id", "=", external_id)]
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
         )
         self.assertEqual(len(productcategory1), 1)
         self.assertTrue(productcategory1, "Woo Product Category is not imported!")

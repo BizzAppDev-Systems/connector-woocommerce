@@ -271,8 +271,4 @@ class WooStockPickingRefundImporter(Component):
             if not self.backend_record.process_return_automatically:
                 continue
             bind.odoo_id.button_validate()
-        if self.remote_record.get("refund_order_status") != "refunded":
-            return res
-        self.env["stock.picking"]._update_order_status()
-
         return res
