@@ -22,12 +22,12 @@ class TestImportGroupedProductRefund(BaseWooTestCase):
         """Test Assertions for Import refund"""
         external_id = "71"
 
-        with recorder.use_cassette("import_woo_product_and_order"):
+        with recorder.use_cassette("import_woo_grouped_product_and_order"):
             self.env["woo.sale.order"].import_record(
                 external_id=external_id, backend=self.backend
             )
         sale_order1 = self.env["woo.sale.order"].search(
-            [("external_id", "=", external_id)]
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
         )
         self.assertEqual(len(sale_order1), 1)
 
