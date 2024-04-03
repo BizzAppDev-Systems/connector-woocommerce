@@ -94,7 +94,6 @@ class TestImportCountry(BaseWooTestCase):
             [
                 ("external_id", "=", external_id),
                 ("backend_id", "=", self.backend.id),
-                ("backend_id", "=", self.backend.id),
             ]
         )
         self.assertEqual(len(settings1), 1)
