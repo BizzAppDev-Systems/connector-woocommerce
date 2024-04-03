@@ -24,12 +24,12 @@ class TestAutoProcessReturn(BaseWooTestCase):
         """Test Assertions for Import refund"""
         external_id = "71"
 
-        with recorder.use_cassette("import_woo_product_product"):
+        with recorder.use_cassette("import_woo_product_and_order"):
             self.env["woo.sale.order"].import_record(
                 external_id=external_id, backend=self.backend
             )
         sale_order1 = self.env["woo.sale.order"].search(
-            [("external_id", "=", external_id)]
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
         )
         self.assertEqual(len(sale_order1), 1)
 
@@ -47,9 +47,7 @@ class TestAutoProcessReturn(BaseWooTestCase):
             "processing",
             "Order's status is not matched with response!",
         )
-        sale_order_odoo = self.env["sale.order"].search(
-            [("name", "=", "WOO_71")], limit=1
-        )
+        sale_order_odoo = sale_order1.odoo_id
         sale_order_odoo.action_confirm()
         delivery_order = sale_order_odoo.picking_ids
         self.assertTrue(delivery_order, "Delivery order not created for the sale order")

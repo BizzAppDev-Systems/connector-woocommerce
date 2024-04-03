@@ -26,7 +26,9 @@ class TestImportPaymentGateway(BaseWooTestCase):
                 external_id=external_id, backend=self.backend
             )
         self.payment_model = self.env["woo.payment.gateway"]
-        payment1 = self.payment_model.search([("external_id", "=", external_id)])
+        payment1 = self.payment_model.search(
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
+        )
         self.assertEqual(len(payment1), 1)
         self.assertTrue(payment1, "Woo Country is not imported!")
         self.assertEqual(

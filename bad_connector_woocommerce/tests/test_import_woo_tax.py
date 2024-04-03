@@ -34,7 +34,9 @@ class TestImportWooTax(BaseWooTestCase):
                 external_id=external_id, backend=self.backend
             )
         self.tax_model = self.env["woo.tax"]
-        tax1 = self.tax_model.search([("external_id", "=", external_id)])
+        tax1 = self.tax_model.search(
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
+        )
         self.assertEqual(len(tax1), 1)
         self.assertTrue(tax1, "WooCommerce Tax is not imported!")
         self.assertEqual(tax1.external_id, external_id, "External ID is different!!")

@@ -103,7 +103,7 @@ class WooStockPickingRefundAdapter(Component):
     _woo_key = "id"
     _woo_ext_id_key = "id"
 
-    def create(self, data):
+    def create(self, data, **kwargs):
         """Inherited: Inherited this method due to create the resource_path to export
         the refund
         """
@@ -124,3 +124,12 @@ class WooStockPickingRefundAdapter(Component):
         result_data = result.get("data", [])
         result_data["order_id"] = order_id
         return result_data
+
+    def write(self, external_id, data, **kwargs):
+        """
+        Override Method: Overrides default behavior for updating refund records in
+        WooCommerce.This method intentionally remains unimplemented to avoid conflicts
+        during refund creation.
+        """
+        # pylint: disable=method-required-super
+        raise NotImplementedError

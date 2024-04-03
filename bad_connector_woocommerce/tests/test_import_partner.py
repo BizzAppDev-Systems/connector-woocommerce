@@ -33,7 +33,9 @@ class TestImportPartner(BaseWooTestCase):
             limit=1,
         )
         self.partner_model = self.env["woo.res.partner"]
-        partner1 = self.partner_model.search([("external_id", "=", external_id)])
+        partner1 = self.partner_model.search(
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
+        )
         self.assertEqual(len(partner1), 1)
         self.assertTrue(partner1, "Woo Partner is not imported!")
         self.assertEqual(

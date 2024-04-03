@@ -26,7 +26,9 @@ class TestImportCountry(BaseWooTestCase):
                 external_id=external_id, backend=self.backend
             )
         self.country_model = self.env["woo.res.country"]
-        country1 = self.country_model.search([("external_id", "=", external_id)])
+        country1 = self.country_model.search(
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
+        )
         self.assertEqual(len(country1), 1)
         self.assertTrue(country1, "Woo Country is not imported!")
         self.assertEqual(
