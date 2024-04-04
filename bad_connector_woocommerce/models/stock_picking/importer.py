@@ -264,8 +264,15 @@ class WooStockPickingRefundImporter(Component):
                     lambda a: a.backend_id == self.backend_record
                 )
                 ext_id = int(woo_product_id.external_id)
-                if ext_id not in product_line_mapping:
+                if (
+                    move.quantity_done == move.product_uom_qty
+                    and ext_id not in product_line_mapping
+                ):
                     continue
+                elif ext_id not in product_line_mapping:
+                    raise ValidationError(
+                        _("External ID not found of Product: %s" % move.product_id.name)
+                    )
                 move.external_move = product_line_mapping[ext_id]
                 move.quantity_done = move.product_uom_qty
             if not self.backend_record.process_return_automatically:
