@@ -55,17 +55,20 @@ class WooStockPickingRefundImporter(Component):
         Inherit Method: inherit method to set external_move for grouped product.
         """
         line_items = self.remote_record.get("line_items")
-        product_id_map = {item["product_id"]: item["id"] for item in line_items}
+        product_line_mapping = {item["product_id"]: item["id"] for item in line_items}
         for move in binding.mapped("odoo_id.move_ids"):
             woo_product_id = move.product_id.woo_bind_ids.filtered(
                 lambda a: a.backend_id == self.backend_record
             )
-            if woo_product_id and int(woo_product_id.external_id) in product_id_map:
+            if (
+                woo_product_id
+                and int(woo_product_id.external_id) in product_line_mapping
+            ):
                 continue
             woo_product_id = move.sale_line_id.product_id.woo_bind_ids.filtered(
                 lambda a: a.backend_id == self.backend_record
             )
-            move.external_move = product_id_map[int(woo_product_id.external_id)]
+            move.external_move = product_line_mapping[int(woo_product_id.external_id)]
             move.quantity_done = move.product_uom_qty
         return super(WooStockPickingRefundImporter, self)._after_import(
             binding, **kwargs
