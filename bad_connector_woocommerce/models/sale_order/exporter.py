@@ -35,32 +35,30 @@ class WooSaleOrderExporterMapper(Component):
     @mapping
     def tracking_number(self, record):
         """Mapping for tracking number"""
-        tracking_number = False
+        tracking_numbers = []
         if not self.backend_record.tracking_info:
             return {}
         done_pickings = record.picking_ids.filtered(
-            lambda picking: picking.state == "done"
+            lambda picking: picking.picking_type_id.code == "outgoing"
+            and picking.state == "done"
+            and not picking.woo_return_bind_ids
+            and not picking.is_return_stock_picking
         )
         if not done_pickings:
             raise MappingError(_("No delivery orders in 'done' state."))
-        if (
-            self.backend_record.tracking_info
-            and not done_pickings[0].carrier_tracking_ref
-        ):
-            raise MappingError(
-                _("Tracking Reference not found in Delivery Order! %s")
-                % done_pickings[0].name
-            )
-        tracking_number = done_pickings[0].carrier_tracking_ref
+
+        for picking in done_pickings:
+            if not picking.carrier_tracking_ref:
+                raise MappingError(
+                    _("Tracking Reference not found in Delivery Order! %s")
+                    % picking.name
+                )
+            tracking_numbers.append({"tracking_number": picking.carrier_tracking_ref})
         return {
             "meta_data": [
                 {
                     "key": "_wc_shipment_tracking_items",
-                    "value": [
-                        {
-                            "tracking_number": tracking_number,
-                        }
-                    ],
+                    "value": tracking_numbers,
                 }
             ]
         }
@@ -71,7 +69,7 @@ class WooSaleOrderBatchExporter(Component):
     _inherit = "woo.exporter"
     _apply_on = ["woo.sale.order"]
 
-    def _after_export(self, binding):
+    def _after_export(self):
         """Import the transaction lines after checking WooCommerce order status."""
         woo_order_status = self.env["woo.sale.status"].search(
             [("code", "=", "completed"), ("is_final_status", "=", True)], limit=1
@@ -83,5 +81,18 @@ class WooSaleOrderBatchExporter(Component):
                     "available in Odoo or isn't marked as 'Final Status'."
                 )
             )
-        binding.write({"woo_order_status_id": woo_order_status.id})
-        binding.write({"woo_order_status": "completed"})
+        pickings = self.binding.odoo_id.picking_ids.filtered(
+            lambda p: p.picking_type_id.code == "outgoing"
+            and p.state not in ["done", "cancel"]
+        )
+        if pickings:
+            raise ValidationError(
+                _(
+                    "Not all pickings associated with sale order %s are in 'done' "
+                    "or 'cancel' state."
+                )
+                % self.binding.odoo_id.name
+            )
+        self.binding.write({"woo_order_status_id": woo_order_status.id})
+        self.binding.write({"woo_order_status": "completed"})
+        return super(WooSaleOrderBatchExporter, self)._after_export()

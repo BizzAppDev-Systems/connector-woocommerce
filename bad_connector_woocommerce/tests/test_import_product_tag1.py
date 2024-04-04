@@ -27,7 +27,9 @@ class TestImportProductTag1(BaseWooTestCase):
                 external_id=external_id, backend=self.backend
             )
         self.product_tag_model = self.env["woo.product.tag"]
-        producttag2 = self.product_tag_model.search([("external_id", "=", external_id)])
+        producttag2 = self.product_tag_model.search(
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
+        )
         self.assertEqual(len(producttag2), 1)
         self.assertTrue(producttag2, "Woo Product Tag is not imported!")
         self.assertEqual(

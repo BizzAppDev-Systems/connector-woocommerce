@@ -27,7 +27,7 @@ class TestImportProductAttributes(BaseWooTestCase):
             )
         self.product_model = self.env["woo.product.attribute"]
         productattribute1 = self.product_model.search(
-            [("external_id", "=", external_id)]
+            [("external_id", "=", external_id), ("backend_id", "=", self.backend.id)]
         )
         self.assertEqual(len(productattribute1), 1)
         self.assertTrue(productattribute1, "Woo Product Attribute is not imported!")

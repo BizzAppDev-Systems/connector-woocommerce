@@ -218,7 +218,7 @@ class WooSaleOrder(models.Model):
         based on delivery order state.
         """
         picking_ids = self.mapped("picking_ids").filtered(
-            lambda p: p.state in ["done", "cancel"]
+            lambda p: p.state == "done" and p.picking_type_id.code == "outgoing"
         )
         if not picking_ids:
             raise ValidationError(_("No delivery orders in 'done' state."))
@@ -245,7 +245,9 @@ class WooSaleOrder(models.Model):
                 job_options["description"] = self.backend_id.get_queue_job_description(
                     description, self._description
                 )
-            woo_model = woo_model.with_delay(**job_options or {})
+            woo_model = woo_model.with_company(self.backend_id.company_id).with_delay(
+                **job_options or {}
+            )
         for woo_order in self:
             if not self._context.get("execute_from_cron"):
                 woo_order.validate_delivery_orders_done()

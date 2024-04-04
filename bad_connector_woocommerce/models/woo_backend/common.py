@@ -3,7 +3,7 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 
-from odoo import api, fields, models
+from odoo import SUPERUSER_ID, _, api, fields, models
 
 from ...components.backend_adapter import WooAPI, WooLocation
 
@@ -193,6 +193,11 @@ class WooBackend(models.Model):
         string="Stock Inventory Warehouse",
         help="Warehouse used to compute the stock quantities.",
     )
+    process_return_automatically = fields.Boolean(
+        help="""When set to 'True', returns associated with the sale order will be
+        processed and validated automatically.""",
+    )
+    activity_user_id = fields.Many2one("res.users", string="Responsible User")
 
     @api.depends("test_mode", "test_access_token", "access_token")
     def _compute_webhook_config(self):
@@ -323,6 +328,24 @@ class WooBackend(models.Model):
         # model: In case we want to update the job options based on the model name
         return {}
 
+    @api.model
+    def create_activity(
+        self, record, message, activity_type=None, date=None, user=None
+    ):
+        """generic method to create activity in given `record`"""
+        if not record:
+            return
+        responsible_id = user and user.id or SUPERUSER_ID
+        date = date or fields.Date.today()
+        activity_type = activity_type or "mail.mail_activity_data_warning"
+        message = message or _("Something wrong. Please check!!!")
+        record.activity_schedule(
+            activity_type,
+            date,
+            note=message,
+            user_id=responsible_id,
+        )
+
     def get_additional_filter(self):
         """Add Filter"""
         return {"page": 1, "per_page": self.default_limit}
@@ -368,7 +391,9 @@ class WooBackend(models.Model):
                 )
             if priority or priority == 0:
                 job_options["priority"] = priority
-            binding_model = binding_model.with_delay(**job_options or {})
+            binding_model = binding_model.with_company(self.company_id).with_delay(
+                **job_options or {}
+            )
         if export:
             self._export_from_date(
                 binding_model,

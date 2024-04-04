@@ -83,12 +83,10 @@ class WooStockPickingRefundBatchExporter(Component):
     _apply_on = ["woo.stock.picking.refund"]
     _default_binding_field = "woo_return_bind_ids"
 
-    def _after_export(self, binding):
+    def _after_export(self):
         """Update the Woocommerce status as Refunded of sale order."""
-        if not binding.sale_id.is_fully_returned:
-            return super(WooStockPickingRefundBatchExporter, self)._after_export(
-                binding
-            )
+        if not self.binding.sale_id.is_fully_returned:
+            return super(WooStockPickingRefundBatchExporter, self)._after_export()
         woo_order_status = self.env["woo.sale.status"].search(
             [("code", "=", "refunded"), ("is_final_status", "=", False)], limit=1
         )
@@ -99,4 +97,4 @@ class WooStockPickingRefundBatchExporter(Component):
                     "available in Odoo."
                 )
             )
-        binding.sale_id.write({"woo_order_status_id": woo_order_status.id})
+        self.binding.sale_id.write({"woo_order_status_id": woo_order_status.id})

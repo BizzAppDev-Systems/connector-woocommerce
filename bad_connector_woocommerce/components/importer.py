@@ -252,7 +252,7 @@ class WooImporter(AbstractComponent):
             self.remote_record = data
         else:
             try:
-                self.remote_record = self._get_remote_data()
+                self.remote_record = self._get_remote_data(**kwargs)
             except IDMissingInBackend:
                 return _("Record does no longer exist in remote system")
 
@@ -278,7 +278,15 @@ class WooImporter(AbstractComponent):
         else:
             record = self._create_data(map_record)
             binding = self._create(record)
-        self.binder.bind(self.external_id, binding)
+        if len(binding) == 1:
+            self.binder.bind(self.external_id, binding)
+        else:
+            for index, binding_record in enumerate(binding):
+                if index == 0:
+                    binding_record.external_id = self.external_id
+                else:
+                    binding_record.external_id = f"{self.external_id}_{index}"
+                self.binder.bind(binding_record.external_id, binding_record)
         self._after_import(binding, **kwargs)
 
 
@@ -339,7 +347,7 @@ class WooBatchImporter(AbstractComponent):
                 job_options=job_options,
                 force=force,
                 data=record,
-                **kwargs
+                **kwargs,
             )
         filters["record_count"] += len(records)
         record_count = data.get("record_count", 0)
@@ -367,7 +375,9 @@ class WooBatchImporter(AbstractComponent):
             )
             job_options["description"] = description
         if not kwargs.get("no_delay"):
-            model = model.with_delay(**job_options or {})
+            model = model.with_company(self.backend_record.company_id).with_delay(
+                **job_options or {}
+            )
         if "identity_key" in job_options:
             job_options.pop("identity_key")
         model.import_batch(
@@ -375,7 +385,7 @@ class WooBatchImporter(AbstractComponent):
             force=force,
             filters=filters,
             job_options=job_options,
-            **kwargs
+            **kwargs,
         )
 
     def _import_record(
@@ -401,7 +411,7 @@ class WooDirectBatchImporter(AbstractComponent):
             external_id=external_id,
             data=data,
             force=force,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -424,11 +434,13 @@ class WooDelayedBatchImporter(AbstractComponent):
                 model=self.model._description,
             )
             job_options["description"] = description
-        delayable = self.model.with_delay(**job_options or {})
+        delayable = self.model.with_company(self.backend_record.company_id).with_delay(
+            **job_options or {}
+        )
         delayable.import_record(
             backend=self.backend_record,
             external_id=external_id,
             force=force,
             data=data,
-            **kwargs
+            **kwargs,
         )
