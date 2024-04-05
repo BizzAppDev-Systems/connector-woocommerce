@@ -269,7 +269,7 @@ class WooStockPickingRefundImporter(Component):
                 )
                 ext_id = int(woo_product_id.external_id)
                 if (
-                    move.quantity_done == move.product_uom_qty
+                    move.quantity == move.product_uom_qty
                     and ext_id not in product_line_mapping
                 ):
                     continue
