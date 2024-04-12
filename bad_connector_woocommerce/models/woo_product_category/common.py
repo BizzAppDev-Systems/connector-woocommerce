@@ -30,14 +30,9 @@ class WooProductCategory(models.Model):
     odoo_id = fields.Many2one(
         string="Product Category", comodel_name="product.category"
     )
-    woo_parent_id = fields.Many2one(
-        comodel_name="woo.product.category",
-        string="WooCommerce Parent Category",
-        ondelete="cascade",
-    )
     woo_child_ids = fields.One2many(
         comodel_name="woo.product.category",
-        inverse_name="woo_parent_id",
+        inverse_name="parent_id",
         string="WooCommerce Child Categories",
     )
 

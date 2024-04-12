@@ -38,6 +38,13 @@
                                 />
                             </group>
                         </page>
+                        <page
+                            string="Child Categories"
+                            name="child_categories"
+                            attrs="{'invisible': [('woo_child_ids', '=', [])]}"
+                        >
+                            <field name="woo_child_ids" nolabel="1" />
+                        </page>
                     </notebook>
                 </sheet>
             </form>
