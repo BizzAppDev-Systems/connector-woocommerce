@@ -50,3 +50,9 @@ class WooProductCategoryAdapter(Component):
     _apply_on = "woo.product.category"
     _woo_model = "products/categories"
     _woo_ext_id_key = "id"
+    _model_dependencies = {
+        (
+            "woo.product.category",
+            "parent_id",
+        )
+    }
