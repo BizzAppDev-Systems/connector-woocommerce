@@ -53,6 +53,6 @@ class WooProductCategoryAdapter(Component):
     _model_dependencies = {
         (
             "woo.product.category",
-            "parent_id",
+            "parent",
         )
     }
