@@ -395,58 +395,35 @@
                 </div>
             </div>
 
-            <div class="text-black mt-5 pb-3">
-                <div style="font-family: Inter, sans-serif; font-size: 20px;">
-                    <div class="mb-3 mx-auto text-center">
-                        <b>Common configurations for related Queue Job.</b>
-                    </div>
-                    <div class="mx-auto" style="width: 80%;">
-                        <p class="text-start">
-                            Queue Job in Odoo is a task line for background jobs. It helps manage tasks like processing data without slowing down the system.
-                        </p>
-                        <p class="text-start">
-                            So, Queue Job helps manage these tasks efficiently. It puts them in a line (queue) and processes them one by one when the system is ready, usually in the background. This way, your main system stays responsive, and the tasks get done without causing delays or interruptions.
-                        </p>
-                        <p class="text-start">
-                            The Connectors are dependent on the Job Queues, as the data import and export happens with the help of job queues.
-                        </p>
-                        <p class="text-start">
-                            To make sure Connectors work smoothly, we need to adjust some settings in our odoo directory.
-                        </p>
-                        <p class="text-start">
-                            <b>Here's what we need to do:</b>
-                        </p>
-                        1) Open the odoo.conf file. You can find it in the odoo (cloned repository) -> debian -> odoo.conf
-                        <br/><br/>
-                        2) Add the following configurations to the odoo.conf file, or update them if they already exist:
-                        <div class="pt-1 mx-auto">
-                            <pre class="rounded px-3" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
-                                <code class="language-text">
-[options]
-workers = 4
-server_wide_modules = web,queue_job
-[queue_job]
-channels = root:4:throttle=2</code>
-                            </pre>
-                        </div>
-                        3) When you start the Odoo server, remember to add the path to the odoo.conf file at the end of the command.
-                        <div class="pt-1 mx-auto">
-                            <pre class="rounded px-3" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
-                                <code class="language-text">
--c &lt;your odoo directory&gt;/debian/odoo.conf</code>
-                            </pre>
+            <div class="text-black mt-5 pb-3" style="font-family: Inter, sans-serif; font-size: 20px;">
+                <div class="mb-3 mx-auto text-center">
+                    <b>Common configurations for related Queue Job.</b>
+                </div>
+                <div class="mx-auto" style="width: 80%;">
+                    <p class="text-start">Queue job allows to postpone method calls executed asynchronously.</p>
+                    <p class="text-start">
+                        Jobs are executed in the background by a Jobrunner, in their own transaction.
+                    </p>
+                    <p class="text-start">
+                        To make sure Connectors work smoothly, we need to adjust some settings in our odoo directory.
+                    </p>
+                    <p class="text-start">
+                        <b>Here's what we need to do:</b>
+                    </p>
+                    <ol>
+                        <li>Open the <code class="text-black bg-light" style="font-size: 18px;">odoo.conf</code> file. You can find it in the cloned repository at <code class="text-black bg-light" style="font-size: 18px;">odoo/debian/odoo.conf</code>.</li>
+                        <li>Add the following configurations to the <code class="text-black bg-light" style="font-size: 18px;">odoo.conf</code> file, or update them if they already exist:
+                            <ul>
+                                <li>Add <code class="text-black bg-light" style="font-size: 18px;">queue_job</code> to the <code class="text-black bg-light" style="font-size: 18px;">server_wide_modules</code> under the <code class="text-black bg-light" style="font-size: 18px;">[options]</code> section.</li>
+                                <li>Add a channel for WooCommerce under the <code class="text-black bg-light" style="font-size: 18px;">[queue_job]</code> section.</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    <div class="col-12 mt-3">
+                        <div class="p-2 ps-4 mx-auto text-break" style="background-color: #5d5d59; color: #d6de23;">
+                            <div class="text-start fw-bolder fs-5">[options]<br/>server_wide_modules = web,queue_job<br/>[queue_job]<br/>channels = root:2,root.WooCommerce:2</div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="text-center">
-                <div class="h3 text-black" style="font-family: Inter, sans-serif; font-size: 20px;">
-                    Queue job channel will be created in the database.
-                </div>
-                <div class="pt-1 mx-auto mb-3" style="width: 80%;">
-                    <img class="img img-fluid rounded" style="border: 1px solid #000;" src="images/queue_job_channel.png" />
-                    <br />
                 </div>
             </div>
         </div>
