@@ -23,7 +23,7 @@
     </div>
 </section>
 
-<section class="container mt-5">
+<!-- <section class="container mt-5">
     <div class="col-md-8 col-12 py-3 mx-auto">
         <div class="h3 text-center text-black" style="font-family: Inter, sans-serif; font-size: 22px;">
             Confused about setting up? We're here to lend a hand! Reach out for <span class="px-2 rounded-pill" style="background-color: #d8df24;">FREE</span> setup and configuration.
@@ -36,7 +36,7 @@
             </h4>
         </div>
     </div>
-</section>
+</section> -->
 
 <section class="container mt-5" style="font-family: Inter, sans-serif;">
     <div class="text-center justify-content-center">
@@ -342,6 +342,54 @@
             <div class="text-black p-2 shadow fw-bolder" style="background-color:#d6df00;">
                 <h3 class="text-center p-2 mb-0 fw-bolder" style="font-size: 20px;">GET PERSONALIZED DEMO : <a href="mailto:contact@bizzappdev.com" class="text-decoration-none" style="color: #252524;">contact@bizzappdev.com</a>
                 </h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="px-2 my-5" style="font-family: Inter, sans-serif;">
+    <div class="position-relative">
+        <div class="shadow p-2 pb-4 bg-white rounded">
+            <div class="row mt-4 justify-content-center">
+                <div class="col-12 col-md-8">
+                    <div class="p-3 rounded-pill mx-auto" style="background-color: #d6de23; color: #252524; font-size: 18px;">
+                        <h3 class="fw-bolder text-center m-auto" style="color:#252524; font-size:24px;">
+                            Queue Job Configuration
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-black mt-5 pb-3" style="font-family: Inter, sans-serif; font-size: 20px;">
+                <div class="mb-3 mx-auto text-center">
+                    <b>Common configuration for related Queue Job.</b>
+                </div>
+                <div class="mx-auto" style="width: 80%;">
+                    <p class="text-start">Queue job allows to postpone method calls executed asynchronously.</p>
+                    <p class="text-start">
+                        Jobs are executed in the background by a Jobrunner, in their own transaction.
+                    </p>
+                    <p class="text-start">
+                        To make sure connectors work smoothly, we need to adjust some settings in our odoo directory.
+                    </p>
+                    <p class="text-start">
+                        <b>Here's what we need to do:</b>
+                    </p>
+                    <ol>
+                        <li>Open the <code class="text-black bg-light" style="font-size: 18px;">odoo.conf</code> file. You can find it in the cloned repository at <code class="text-black bg-light" style="font-size: 18px;">odoo/debian/odoo.conf</code>.</li>
+                        <li>Add the following configuration to the <code class="text-black bg-light" style="font-size: 18px;">odoo.conf</code> file, or update them if they already exist:
+                            <ul>
+                                <li>Add <code class="text-black bg-light" style="font-size: 18px;">queue_job</code> to the <code class="text-black bg-light" style="font-size: 18px;">server_wide_modules</code> under the <code class="text-black bg-light" style="font-size: 18px;">[options]</code> section.</li>
+                                <li>Add a channel for WooCommerce under the <code class="text-black bg-light" style="font-size: 18px;">[queue_job]</code> section.</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    <div class="col-12 mt-3">
+                        <div class="p-2 ps-4 mx-auto text-break" style="background-color: #5d5d59; color: #d6de23;">
+                            <div class="text-start fw-bolder fs-5">[options]<br/>server_wide_modules = web,queue_job<br/>[queue_job]<br/>channels = root:1,root.WooCommerce:1</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -802,20 +850,15 @@
     </div>
 </section>
 
-<section style="padding-top: 20px;">
+<section class="mb-4 pt-4" style="font-family: Inter, sans-serif;">
     <div class="text-center">
         <div style="color: #383835;">
             <b><h1>Bug Tracker</h1></b>
         </div>
     </div>
-</section>
-
-<section style="font-family: Inter, sans-serif;padding-bottom: 10px;">
-    <div>
-        <div class="h3 text-center">
-            <div style="color: #5d5d59;">
-                <b>Bugs are tracked on <u><a href="https://github.com/BizzAppDev-Systems/connector-woocommerce/issues" target="_blank">GitHub Issues</a></u>. In case of trouble, please check there if your issue has already been reported. If you spotted it first, help us to smash it by providing a detailed and welcomed feedback in below provided link.</b>
-            </div>
+    <div class="h3 text-center">
+        <div style="color: #5d5d59;">
+            <b>Bugs are tracked on <u><a href="https://github.com/BizzAppDev-Systems/connector-woocommerce/issues" target="_blank">GitHub Issues</a></u>. In case of trouble, please check there if your issue has already been reported. If you spotted it first, help us to smash it by providing a detailed and welcomed feedback in below provided link.</b>
         </div>
     </div>
 </section>
