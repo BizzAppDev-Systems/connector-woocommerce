@@ -12,6 +12,7 @@ class ResCountry(models.Model):
         string="WooCommerce Bindings",
         copy=False,
     )
+    #TODO test
 
 
 class WooResCountry(models.Model):
