@@ -439,6 +439,8 @@
                                         string="Products Configuration"
                                     >
                                         <field name="without_sku" />
+                                        <!-- Added new field -->
+                                        <field name="map_product_based_on_sku" />
                                         <field name="default_product_type" />
                                         <field name="product_categ_id" />
                                         <field
