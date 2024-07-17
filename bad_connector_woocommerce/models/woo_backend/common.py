@@ -211,9 +211,9 @@ class WooBackend(models.Model):
     activity_user_id = fields.Many2one("res.users", string="Responsible User")
     # Added new field
     map_product_based_on_sku = fields.Boolean(
-        help="""If this Boolean is set to True, the system will import products
-        that do not have an assigned SKU. Please enable this option if you want
-        to include products without SKU in the import process.""",
+        help="""If this boolean is set to True, the system will update products that
+        have a matching SKU with the default code. Please enable this option if you
+        want to update products with matching SKU during the import process.""",
     )
 
     @api.depends("test_mode", "test_access_token", "access_token")
