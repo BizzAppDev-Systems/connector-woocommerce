@@ -209,6 +209,12 @@ class WooBackend(models.Model):
     )
     process_return_automatically = fields.Boolean()
     activity_user_id = fields.Many2one("res.users", string="Responsible User")
+    # Added new field
+    map_product_based_on_sku = fields.Boolean(
+        help="""If this Boolean is set to True, the system will import products
+        that do not have an assigned SKU. Please enable this option if you want
+        to include products without SKU in the import process.""",
+    )
 
     @api.depends("test_mode", "test_access_token", "access_token")
     def _compute_webhook_config(self):

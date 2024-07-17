@@ -129,9 +129,20 @@ class WooProductProductImportMapper(Component):
         binder = self.binder_for("woo.product.template")
         template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
 
+        # Update the mapping of odoo_id based on selected boolean on backend and search
+        # variant based on the sku and default code.
+        backend = self.backend_record
+        if backend.map_product_based_on_sku:
+            # Search for an existing product.product by default_code (SKU)
+            sku = record.get("sku")
+            existing_product = self.env["product.product"].search(
+                [("default_code", "=", sku)], limit=1
+            )
+            if existing_product:
+                return {"odoo_id": existing_product.id}
+
         # Extract attributes from the WooCommerce product variant data
         attributes = record.get("attributes", [])
-
         # Search for product.template.attribute.value records
         search_domain = [
             ("product_tmpl_id", "=", template_id.id),
@@ -139,7 +150,6 @@ class WooProductProductImportMapper(Component):
             ("name", "in", [attr["option"] for attr in attributes]),
         ]
         combination = self.env["product.template.attribute.value"].search(search_domain)
-
         # Get the variation record
         matching_variant = template_id._get_variant_for_combination(combination)
         return {"odoo_id": matching_variant.id} if matching_variant else {}
