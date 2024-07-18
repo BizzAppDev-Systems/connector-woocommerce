@@ -125,10 +125,6 @@ class WooProductProductImportMapper(Component):
         if record.get("type") != "variation":
             return {}
 
-        # Find the co-responding template for variation
-        binder = self.binder_for("woo.product.template")
-        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
-
         # Update the mapping of odoo_id based on selected boolean on backend and search
         # variant based on the sku and default code.
         backend = self.backend_record
@@ -140,6 +136,10 @@ class WooProductProductImportMapper(Component):
             )
             if existing_product:
                 return {"odoo_id": existing_product.id}
+
+        # Find the co-responding template for variation
+        binder = self.binder_for("woo.product.template")
+        template_id = binder.to_internal(record.get("parent_id"), unwrap=True)
 
         # Extract attributes from the WooCommerce product variant data
         attributes = record.get("attributes", [])
