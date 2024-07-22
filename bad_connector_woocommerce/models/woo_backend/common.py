@@ -209,6 +209,12 @@ class WooBackend(models.Model):
     )
     process_return_automatically = fields.Boolean()
     activity_user_id = fields.Many2one("res.users", string="Responsible User")
+    map_product_based_on_sku = fields.Boolean(
+        help="""Enable this option to update products with matching SKUs. When set to
+        True, the system will automatically update products that have a matching SKU
+        with the default code during the import process. Use this feature to ensure
+        accurate product mapping based on SKUs.""",
+    )
 
     @api.depends("test_mode", "test_access_token", "access_token")
     def _compute_webhook_config(self):
