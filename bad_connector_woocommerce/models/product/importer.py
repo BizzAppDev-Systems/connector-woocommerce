@@ -3,7 +3,7 @@ import logging
 from odoo import _
 
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping, only_create
+from odoo.addons.connector.components.mapper import mapping
 from odoo.addons.connector.exception import MappingError
 
 from ...components import utils
@@ -118,13 +118,9 @@ class WooProductProductImportMapper(Component):
         ),
     ]
 
-    @only_create
     @mapping
     def odoo_id(self, record):
         """Mapping for odoo id"""
-        if record.get("type") != "variation":
-            return {}
-
         # Update the mapping of odoo_id based on selected boolean on backend and search
         # variant based on the sku and default code.
         backend = self.backend_record
@@ -136,6 +132,9 @@ class WooProductProductImportMapper(Component):
             )
             if existing_product:
                 return {"odoo_id": existing_product.id}
+
+        if record.get("type") != "variation":
+            return {}
 
         # Find the co-responding template for variation
         binder = self.binder_for("woo.product.template")

@@ -1,7 +1,7 @@
 import logging
 
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping, only_create
+from odoo.addons.connector.components.mapper import mapping
 
 # pylint: disable=W7950
 
@@ -23,7 +23,6 @@ class WooProductTemplateImportMapper(Component):
     _inherit = "woo.product.common.mapper"
     _apply_on = "woo.product.template"
 
-    @only_create
     @mapping
     def odoo_id(self, record):
         """Mapping for odoo id"""
