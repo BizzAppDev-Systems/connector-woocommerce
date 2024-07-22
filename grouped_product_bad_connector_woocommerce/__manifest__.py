@@ -1,6 +1,6 @@
 {
     "name": "Grouped Product Odoo Woocommerce Connector",
-    "version": "17.0.1.0.7",
+    "version": "17.0.1.0.8",
     "category": "Connector",
     "author": "BizzAppDev Systems Pvt. Ltd.",
     "website": "http://www.bizzappdev.com",
