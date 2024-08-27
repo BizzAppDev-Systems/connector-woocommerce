@@ -18,6 +18,7 @@ class ProductTemplate(models.Model):
     )
 
     variant_different = fields.Boolean()
+    default_code = fields.Char(compute=False, inverse=False)
 
 
 class WooProductTemplate(models.Model):
