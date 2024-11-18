@@ -1,7 +1,8 @@
 import logging
 from collections import defaultdict
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 from odoo.addons.component.core import Component
 from odoo.addons.component_event import skip_if
@@ -22,6 +23,11 @@ class ProductProduct(models.Model):
     )
     stock_manage = fields.Boolean(compute="_compute_stock_manage")
     backend_stock_manage = fields.Boolean(compute="_compute_backend_stock_manage")
+    backend_id = fields.Many2one(
+        comodel_name="woo.backend",
+        string="WooCommerce Backend",
+        ondelete="restrict",
+    )
 
     def update_stock_qty(self):
         """
@@ -30,6 +36,18 @@ class ProductProduct(models.Model):
         """
         for binding in self.woo_bind_ids:
             binding.recompute_woo_qty()
+
+    def export_product(self):
+        """Export product to Woocommerce"""
+        if not self.backend_id:
+            raise ValidationError(
+                _(
+                    "WooCommerce Backend is not set in Product %s."
+                    "Please set WooCommerce Backend"
+                )
+                % (self.name)
+            )
+        self.woo_bind_ids.export_product_test(backend=self.backend_id, record=self)
 
     @api.depends(
         "woo_bind_ids",
@@ -197,6 +215,12 @@ class WooProductProduct(models.Model):
 
         """
         return product[stock_field]
+
+    # def product_export(self):
+    #     # self.ensure_one()
+    #     # with self.backend_id.work_on(self._name) as work:
+    #     return self.with_delay().export_product()
+    # return res
 
 
 class WooProductProductAdapter(Component):

@@ -19,7 +19,17 @@
                         string="Update Stock Inventory"
                         attrs="{'invisible': ['|','|',('woo_bind_ids', '=', []),('stock_manage','=',False),('backend_stock_manage','=',False)]}"
                     />
+                    <button
+                        name="export_product"
+                        title="Export Product To Woocommerce."
+                        type="object"
+                        class="oe_highlight"
+                        string="Export Product"
+                    />
                 </header>
+            </xpath>
+            <xpath expr="//field[@name='default_code']" position="after">
+                <field name="backend_id" />
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page

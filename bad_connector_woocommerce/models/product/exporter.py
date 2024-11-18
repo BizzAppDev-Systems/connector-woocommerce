@@ -6,8 +6,8 @@ from odoo.addons.connector.components.mapper import mapping
 _logger = logging.getLogger(__name__)
 
 
-class WooProductProductExporterMapper(Component):
-    _name = "woo.product.product.export.mapper"
+class WooProductInventoryExporterMapper(Component):
+    _name = "woo.inventory.export.mapper"
     _inherit = "woo.export.mapper"
     _apply_on = "woo.product.product"
 
@@ -28,6 +28,7 @@ class WooProductProductExporterMapper(Component):
 
 
 class ProductInventoryExporter(Component):
-    _name = "woo.product.product.exporter"
+    _name = "woo.inventory.exporter"
     _inherit = "woo.exporter"
     _apply_on = ["woo.product.product"]
+    # _usage = "inventory.exporter"

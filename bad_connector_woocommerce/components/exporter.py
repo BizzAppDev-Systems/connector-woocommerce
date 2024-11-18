@@ -207,7 +207,6 @@ class WooExporter(AbstractComponent):
         # BAD-START To prevent empty bindings, create a binding here.
         if not self.binding:
             self.binding = self.create_get_binding()
-
         self.external_id = self.binder.to_external(self.binding)
 
         # prevent other jobs to export the same record

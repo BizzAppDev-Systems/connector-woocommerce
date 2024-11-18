@@ -344,7 +344,7 @@
         </record>
         <!--Stock Inventory Export Record related action queue job -->
         <record
-            id="job_function_woo_product_product_stock_export_record"
+            id="job_function_woo_stock_inventory_export_record"
             model="queue.job.function"
         >
             <field
@@ -426,6 +426,18 @@
                 ref="bad_connector_woocommerce.model_woo_stock_picking_refund"
             />
             <field name="method">import_record</field>
+            <field name="channel_id" ref="channel_woocommerce" />
+        </record>
+        <!--Product Product Export Record related action queue job -->
+        <record
+            id="job_function_woo_product_product_export_record"
+            model="queue.job.function"
+        >
+            <field
+                name="model_id"
+                ref="bad_connector_woocommerce.model_woo_product_product"
+            />
+            <field name="method">export_record</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
     </data>

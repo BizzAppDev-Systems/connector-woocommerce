@@ -67,3 +67,10 @@ class WooBinding(models.AbstractModel):
         with backend.work_on(self._name) as work:
             exporter = work.component(usage="record.exporter")
             return exporter.run(self, fields=fields, record=record, **kwargs)
+
+    def export_product_test(self, backend, record):
+        """Export Record To"""
+        self.ensure_one()
+        with backend.work_on(self._name) as work:
+            exporter = work.component(usage="product.exporter")
+            return exporter.run(self, record=record)
