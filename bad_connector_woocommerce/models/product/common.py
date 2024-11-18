@@ -39,6 +39,8 @@ class ProductProduct(models.Model):
 
     def product_export(self):
         """Export product to Woocommerce"""
+        model = self.env["woo.product.product"]
+        job_options = {}
         if not self.backend_id:
             raise ValidationError(
                 _(
@@ -47,7 +49,13 @@ class ProductProduct(models.Model):
                 )
                 % (self.name)
             )
-        self.woo_bind_ids.export_product(backend=self.backend_id, record=self)
+        description = self.backend_id.get_queue_job_description(
+            "Record Export Of",
+            model=model._description,
+        )
+        job_options["description"] = description
+        delayable = model.with_delay(**job_options or {})
+        delayable.export_product(backend=self.backend_id, record=self)
 
     @api.depends(
         "woo_bind_ids",
