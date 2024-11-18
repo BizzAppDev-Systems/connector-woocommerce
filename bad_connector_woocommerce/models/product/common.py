@@ -37,7 +37,7 @@ class ProductProduct(models.Model):
         for binding in self.woo_bind_ids:
             binding.recompute_woo_qty()
 
-    def export_product(self):
+    def product_export(self):
         """Export product to Woocommerce"""
         if not self.backend_id:
             raise ValidationError(
@@ -47,7 +47,7 @@ class ProductProduct(models.Model):
                 )
                 % (self.name)
             )
-        self.woo_bind_ids.export_product_test(backend=self.backend_id, record=self)
+        self.woo_bind_ids.export_product(backend=self.backend_id, record=self)
 
     @api.depends(
         "woo_bind_ids",
@@ -215,12 +215,6 @@ class WooProductProduct(models.Model):
 
         """
         return product[stock_field]
-
-    # def product_export(self):
-    #     # self.ensure_one()
-    #     # with self.backend_id.work_on(self._name) as work:
-    #     return self.with_delay().export_product()
-    # return res
 
 
 class WooProductProductAdapter(Component):

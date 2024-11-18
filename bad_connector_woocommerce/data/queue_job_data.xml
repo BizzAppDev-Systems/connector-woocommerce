@@ -437,7 +437,7 @@
                 name="model_id"
                 ref="bad_connector_woocommerce.model_woo_product_product"
             />
-            <field name="method">export_record</field>
+            <field name="method">export_product</field>
             <field name="channel_id" ref="channel_woocommerce" />
         </record>
     </data>
