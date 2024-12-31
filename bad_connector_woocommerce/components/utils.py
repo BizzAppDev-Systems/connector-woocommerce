@@ -1,6 +1,7 @@
 import base64
 import logging
-import urllib.request
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -8,9 +9,9 @@ logger = logging.getLogger(__name__)
 def fetch_image_data(image_url):
     """Fetch and encode an image from a URL as base64."""
     try:
-        response = urllib.request.urlopen(image_url)
-        if response.status == 200:
-            binary_data = response.read()
+        response = requests.get(image_url)
+        if response.status_code == 200:
+            binary_data = response._content
             return base64.b64encode(binary_data).decode("utf-8")
         else:
             return None
