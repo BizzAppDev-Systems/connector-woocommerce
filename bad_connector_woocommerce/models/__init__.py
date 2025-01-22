@@ -3,6 +3,7 @@ from . import woo_binding
 from . import queue_job
 from . import partner
 from . import product_common_mapper
+from . import product_common_exporter_mapper
 from . import product
 from . import product_attribute
 from . import product_attribute_value

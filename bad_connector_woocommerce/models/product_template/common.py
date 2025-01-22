@@ -1,6 +1,7 @@
 import logging
 
-from odoo import fields, models
+from odoo import _, fields, models
+from odoo.exceptions import ValidationError
 
 from odoo.addons.component.core import Component
 
@@ -19,6 +20,32 @@ class ProductTemplate(models.Model):
 
     variant_different = fields.Boolean()
     default_code = fields.Char(compute=False, inverse=False)
+    backend_id = fields.Many2one(
+        comodel_name="woo.backend",
+        string="WooCommerce Backend",
+        ondelete="restrict",
+    )
+    manage_stock_in_woocommerce = fields.Boolean(string="Manage Stock In WooCommerce ?")
+
+    def product_template_export(self):
+        """Export product template to Woocommerce"""
+        model = self.env["woo.product.template"]
+        job_options = {}
+        if not self.backend_id:
+            raise ValidationError(
+                _(
+                    "WooCommerce Backend is not set in Product %s."
+                    "Please set WooCommerce Backend"
+                )
+                % (self.name)
+            )
+        description = self.backend_id.get_queue_job_description(
+            prefix=model.export_record.__doc__ or "Record Export To",
+            model=model._description,
+        )
+        job_options["description"] = description
+        delayable = model.with_delay(**job_options or {})
+        delayable.export_record(backend=self.backend_id, record=self)
 
 
 class WooProductTemplate(models.Model):

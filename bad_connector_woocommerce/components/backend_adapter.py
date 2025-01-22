@@ -220,7 +220,14 @@ class GenericAdapter(AbstractComponent):
 
     def create(self, data, **kwargs):
         """Creates the data in remote"""
-        result = self._call(self._woo_model, arguments=data, http_method="post")
+        product_external_id = kwargs.pop("product_external_id", None)
+        if product_external_id:
+            resource_path = f"{self._woo_model}/{product_external_id}/variations"
+        else:
+            resource_path = self._woo_model
+        result = self._call(
+            resource_path=resource_path, arguments=data, http_method="post"
+        )
         return result
 
     def write(self, external_id, data, **kwargs):

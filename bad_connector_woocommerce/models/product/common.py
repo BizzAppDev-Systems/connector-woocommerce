@@ -1,7 +1,8 @@
 import logging
 from collections import defaultdict
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 from odoo.addons.component.core import Component
 from odoo.addons.component_event import skip_if
@@ -30,6 +31,26 @@ class ProductProduct(models.Model):
         """
         for binding in self.woo_bind_ids:
             binding.recompute_woo_qty()
+
+    def product_export(self):
+        """Export product to Woocommerce"""
+        model = self.env["woo.product.product"]
+        job_options = {}
+        if not self.backend_id:
+            raise ValidationError(
+                _(
+                    "WooCommerce Backend is not set in Product %s."
+                    "Please set WooCommerce Backend"
+                )
+                % (self.name)
+            )
+        description = self.backend_id.get_queue_job_description(
+            prefix=model.export_product.__doc__ or "Record Export To",
+            model=model._description,
+        )
+        job_options["description"] = description
+        delayable = model.with_delay(**job_options or {})
+        delayable.export_product(backend=self.backend_id, record=self)
 
     @api.depends(
         "woo_bind_ids",

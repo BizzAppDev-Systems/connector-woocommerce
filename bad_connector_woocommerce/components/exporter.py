@@ -191,6 +191,16 @@ class WooExporter(AbstractComponent):
                     binding_model=model,
                 )
 
+    def _map_data(self, **kwargs):
+        """Convert the external record to Odoo"""
+        return self.mapper.map_record(self.binding)
+
+    def _create(self, data, **kwargs):
+        """Create the External record"""
+        # special check on data before export
+        self._validate_create_data(data)
+        return self.backend_adapter.create(data, **kwargs)
+
     def _run(self, fields=None, **kwargs):
         """Flow of the synchronization, implemented in inherited classes"""
         if not self.external_id:
@@ -231,6 +241,7 @@ class WooExporter(AbstractComponent):
                 if self.backend_adapter._woo_ext_id_key not in res:
                     _logger.error("Error while exporting partner: %s", res)
                 else:
+                    self.binding = self.binding.with_context(connector_no_export=True)
                     self.external_id = res.get(self.backend_adapter._woo_ext_id_key)
                     self.response_data = res
             else:

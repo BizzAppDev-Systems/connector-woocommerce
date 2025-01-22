@@ -7,17 +7,31 @@
         <field name="inherit_id" ref="product.product_normal_form_view" />
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
-
-                    <field name="woo_bind_ids" invisible="1" />
-                    <field name="stock_manage" invisible="1" />
-                    <field name="backend_stock_manage" invisible="1" />
-                    <button
+                <field name="woo_bind_ids" invisible="1" />
+                <field name="stock_manage" invisible="1" />
+                <field name="backend_stock_manage" invisible="1" />
+                <button
                     name="update_stock_qty"
                     title="Update stock inventory To Woocommerce."
                     type="object"
                     class="oe_highlight"
                     string="Update Stock Inventory"
                     invisible="not woo_bind_ids or not stock_manage or not backend_stock_manage"
+                />
+                <button
+                    name="product_export"
+                    title="Export Product To Woocommerce."
+                    type="object"
+                    class="oe_highlight"
+                    string="Export Product"
+                    invisible="not woo_bind_ids"
+                />
+            </xpath>
+            <xpath expr="//field[@name='default_code']" position="after">
+                <field name="backend_id" />
+                <field
+                    name="manage_stock_in_woocommerce"
+                    invisible="detailed_type != 'product'"
                 />
             </xpath>
             <xpath expr="//notebook" position="inside">
