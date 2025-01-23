@@ -24,7 +24,7 @@
                     type="object"
                     class="oe_highlight"
                     string="Export Product"
-                    invisible="not woo_bind_ids"
+                    invisible="woo_bind_ids"
                 />
             </xpath>
             <xpath expr="//field[@name='default_code']" position="after">

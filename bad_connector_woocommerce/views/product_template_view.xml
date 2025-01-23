@@ -15,7 +15,7 @@
                         type="object"
                         class="oe_highlight"
                         string="Export Product Template"
-                        invisible="not woo_bind_ids"
+                        invisible="woo_bind_ids"
                     />
                 </header>
             </xpath>
