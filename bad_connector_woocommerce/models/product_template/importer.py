@@ -74,6 +74,8 @@ class WooProductTemplateImportMapper(Component):
         record = map_record.source
 
         for woo_attribute in record.get("attributes", []):
+            if not woo_attribute.get("variation"):
+                continue
             woo_attribute_id = woo_attribute.get("id", 0)
             woo_attribute_id = (
                 self._get_attribute_id_format(woo_attribute, record)
