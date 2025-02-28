@@ -122,6 +122,18 @@ class WooProductProductImportMapper(Component):
     @mapping
     def odoo_id(self, record):
         """Mapping for odoo id"""
+        # Update the mapping of odoo_id based on selected boolean on backend and search
+        # variant based on the sku and default code.
+        backend = self.backend_record
+        if backend.map_product_based_on_sku:
+            # Search for an existing product.product by default_code (SKU)
+            sku = record.get("sku")
+            existing_product = self.env["product.product"].search(
+                [("default_code", "=", sku)], limit=1
+            )
+            if existing_product:
+                return {"odoo_id": existing_product.id}
+
         if record.get("type") != "variation":
             return {}
 
