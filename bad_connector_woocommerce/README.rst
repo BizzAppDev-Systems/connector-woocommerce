@@ -42,6 +42,7 @@
 
 * Woo Backend:
     - Add configuration details such as the Location, version, Client Key, and Client Secret to sync with the database.
+    - Added a new boolean field on the backend named Map Product Based On SKU.
 
 * Partners Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
@@ -63,6 +64,7 @@
     - Added 'WooCommerce Product Image URL' which is located at Product Binding level, designed to store Other Product Images which will store in woo.product.image.url object instead of initial Image.
     - Added 'WooCommerce Downloadable Product' which is located at Product Binding level, designed to store Downloadable Product files which will store in woo.downloadable.product object also The downloadable product in odoo is imported as Service type.
     - By Clicking the "Import Products" button different product type such as Simple and Variable will get imported from woocommerce in odoo.
+    - If the 'Map Product Based On SKU' Boolean at the backend level is set to True, the system will update an existing product with a matching SKU to the default code instead of creating a new product.
 
 * Product Templates Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.
@@ -71,6 +73,7 @@
     - By Clicking the "Import Product Templates" button product type Variable will get imported from woocommerce in odoo.
     - When 'force_import_variable_products' boolean option is set to 'True', variable products can be imported from Woocommerce,irrespective of whether the data is up-to-date or not.
     - "Import Product Templates" follows same configurations as the "Import Products" functionality.
+    - If the 'Map Product Based On SKU' Boolean at the backend level is set to True, the system will update an existing product template with a matching SKU to the default code instead of creating a new product template.
 
 * Product Attributes Import:
     - Navigate to Woocommerce Backends by going to Connectors > WooCommerce > WooCommerce Backends.

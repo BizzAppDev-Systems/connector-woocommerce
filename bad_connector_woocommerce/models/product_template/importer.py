@@ -1,7 +1,7 @@
 import logging
 
 from odoo.addons.component.core import Component
-from odoo.addons.connector.components.mapper import mapping
+from odoo.addons.connector.components.mapper import mapping, only_create
 
 # pylint: disable=W7950
 
@@ -22,6 +22,21 @@ class WooProductTemplateImportMapper(Component):
     _name = "woo.product.template.import.mapper"
     _inherit = "woo.product.common.mapper"
     _apply_on = "woo.product.template"
+
+    @only_create
+    @mapping
+    def odoo_id(self, record):
+        """Mapping for odoo id"""
+        # Check if the backend boolean field is true
+        backend = self.backend_record
+        if not backend.map_product_based_on_sku:
+            return {}
+        # Search for an existing product.template by default_code (SKU)
+        sku = record.get("sku")
+        existing_template = self.env["product.template"].search(
+            [("default_code", "=", sku)], limit=1
+        )
+        return {"odoo_id": existing_template.id}
 
     @mapping
     def variant_different(self, record):
