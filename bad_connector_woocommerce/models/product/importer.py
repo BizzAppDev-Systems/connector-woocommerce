@@ -125,7 +125,7 @@ class WooProductProductImportMapper(Component):
         # Update the mapping of odoo_id based on selected boolean on backend and search
         # variant based on the sku and default code.
         backend = self.backend_record
-        if backend.map_product_based_on_sku:
+        if backend.map_product_based_on_sku and record.get("type") != "variation":
             # Search for an existing product.product by default_code (SKU)
             sku = record.get("sku")
             existing_product = self.env["product.product"].search(
@@ -154,7 +154,31 @@ class WooProductProductImportMapper(Component):
 
         # Get the variation record
         matching_variant = template_id._get_variant_for_combination(combination)
-        return {"odoo_id": matching_variant.id} if matching_variant else {}
+        if not matching_variant:
+            error_message = self._generate_mapping_error_message(record)
+            raise MappingError(error_message)
+        return {"odoo_id": matching_variant.id}
+
+    def _generate_mapping_error_message(self, record):
+        """Generates the error message for mapping."""
+        error_message = _(
+            """Variation is not properly configured for Product ID %s.
+        Please check the following cases:
+
+        1) Variation generation is incorrect in WooCommerce:
+           - Example: When creating a "Variable Product" in WooCommerce:
+             - First, add the "Color" attribute with the value "Red" and click "Generate Variations."
+             - Then, add the "Size" attribute with the value "M" and click "Generate Variations" again.
+             - When importing into Odoo, the variation generated first will cause an import failure due
+            to the multiple "Generate Variations" steps.
+
+        2) Two or more attributes contain the same option in WooCommerce:
+           - Example: If you assign duplicate options for a "Variable Product" in WooCommerce
+           (e.g., both "Color" and "Size" with 'Red'), the Odoo import will fail due to conflicting attributes.
+        """
+        ) % record.get("id")
+
+        return error_message
 
     @mapping
     def woo_product_name(self, record):
