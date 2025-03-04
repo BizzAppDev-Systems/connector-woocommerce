@@ -157,33 +157,58 @@ class WooProductProductImportMapper(Component):
         if not matching_variant:
             error_message = self._generate_mapping_error_message(record)
             raise MappingError(error_message)
+        if matching_variant.woo_bind_ids and matching_variant.woo_bind_ids[
+            0
+        ].external_id != record.get("id"):
+            error_message = self._generate_mapping_error_message(
+                record, matching_variant
+            )
+            raise MappingError(error_message)
         return {"odoo_id": matching_variant.id}
 
-    def _generate_mapping_error_message(self, record):
+    def _generate_mapping_error_message(self, record, matching_variant=None):
         """Generates the error message for mapping."""
-        error_message = (
-            _(
-                """Variation is not properly configured for Product ID %s.
-        Please check the following cases:
 
-        1) Variation generation is incorrect in WooCommerce:
-           - Example: When creating a "Variable Product" in WooCommerce:
-             - First, add the "Color" attribute with the value "Red" and click
-             "Generate Variations."
-             - Then, add the "Size" attribute with the value "M" and click "Generate "
-             "Variations" again.
-             - When importing into Odoo, the variation generated first will cause an "
-             "import failure due
-            to the multiple "Generate Variations" steps.
-
-        2) Two or more attributes contain the same option in WooCommerce:
-           - Example: If you assign duplicate options for a "Variable Product" in "
-           "WooCommerce (e.g., both "Color" and "Size" with 'Red'), the Odoo import "
-           "will fail due to conflicting attributes.
-        """
+        if matching_variant:
+            variation_names = (
+                matching_variant.product_template_variant_value_ids.mapped("name")
             )
-            % record.get("id")
-        )
+            variation_combination = ", ".join(variation_names)
+            error_message = (
+                _(
+                    """The product variation you are trying to import has already
+                been imported from WooCommerce. This error occurs because the
+                combination of the following attributes value: (%s) has already
+                been imported as a variation in Odoo and is associated with a different
+                external ID.\nPlease check if this variation has already been imported
+                previously."""
+                )
+                % variation_combination
+            )
+        else:
+            error_message = (
+                _(
+                    """Variation is not properly configured for Product ID %s.
+                Please check the following cases:
+
+                1) Variation generation is incorrect in WooCommerce:
+                    - Example: When creating a "Variable Product" in WooCommerce:
+                      - First, add the "Color" attribute with the value "Red" and click
+                      "Generate Variations."
+                      - Then, add the "Size" attribute with the value "M" and click
+                      "Generate Variations" again.
+                      - When importing into Odoo, the variation generated first will
+                      cause an import failure due to the multiple "Generate Variations"
+                      steps.
+
+                2) Two or more attributes contain the same option in WooCommerce:
+                    - Example: If you assign duplicate options for a "Variable Product"
+                    in WooCommerce (e.g., both "Color" and "Size" with 'Red'),
+                    the Odoo import will fail due to conflicting attributes.
+                """
+                )
+                % record.get("id")
+            )
 
         return error_message
 
