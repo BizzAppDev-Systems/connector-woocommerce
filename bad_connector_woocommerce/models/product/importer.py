@@ -161,22 +161,29 @@ class WooProductProductImportMapper(Component):
 
     def _generate_mapping_error_message(self, record):
         """Generates the error message for mapping."""
-        error_message = _(
-            """Variation is not properly configured for Product ID %s.
+        error_message = (
+            _(
+                """Variation is not properly configured for Product ID %s.
         Please check the following cases:
 
         1) Variation generation is incorrect in WooCommerce:
            - Example: When creating a "Variable Product" in WooCommerce:
-             - First, add the "Color" attribute with the value "Red" and click "Generate Variations."
-             - Then, add the "Size" attribute with the value "M" and click "Generate Variations" again.
-             - When importing into Odoo, the variation generated first will cause an import failure due
+             - First, add the "Color" attribute with the value "Red" and click
+             "Generate Variations."
+             - Then, add the "Size" attribute with the value "M" and click "Generate "
+             "Variations" again.
+             - When importing into Odoo, the variation generated first will cause an "
+             "import failure due
             to the multiple "Generate Variations" steps.
 
         2) Two or more attributes contain the same option in WooCommerce:
-           - Example: If you assign duplicate options for a "Variable Product" in WooCommerce
-           (e.g., both "Color" and "Size" with 'Red'), the Odoo import will fail due to conflicting attributes.
+           - Example: If you assign duplicate options for a "Variable Product" in "
+           "WooCommerce (e.g., both "Color" and "Size" with 'Red'), the Odoo import "
+           "will fail due to conflicting attributes.
         """
-        ) % record.get("id")
+            )
+            % record.get("id")
+        )
 
         return error_message
 
