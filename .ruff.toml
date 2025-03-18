@@ -6,25 +6,26 @@ fix = true
 extend-select = [
     "B",
     "C90",
+    "E501",  # line too long (default 88)
     "I",  # isort
     "UP",  # pyupgrade
 ]
+extend-safe-fixes = ["UP008"]
 exclude = ["setup/*"]
-ignore = ["UP008"]
 
 [format]
 exclude = ["setup/*"]
 
-[per-file-ignores]
+[lint.per-file-ignores]
 "__init__.py" = ["F401", "I001"]  # ignore unused and unsorted imports in __init__.py
 "__manifest__.py" = ["B018"]  # useless expression
 
-[isort]
+[lint.isort]
 section-order = ["future", "standard-library", "third-party", "odoo", "odoo-addons", "first-party", "local-folder"]
 
-[isort.sections]
+[lint.isort.sections]
 "odoo" = ["odoo"]
 "odoo-addons" = ["odoo.addons"]
 
-[mccabe]
+[lint.mccabe]
 max-complexity = 16
