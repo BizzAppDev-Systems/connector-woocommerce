@@ -18,9 +18,7 @@ class SaleOrder(models.Model):
         string="WooCommerce Bindings",
         copy=False,
     )
-    has_done_picking = fields.Boolean(
-        string="Has Done Picking", compute="_compute_has_done_picking", store=True
-    )
+    has_done_picking = fields.Boolean(compute="_compute_has_done_picking", store=True)
     woo_order_status_id = fields.Many2one(
         comodel_name="woo.sale.status",
         string="WooCommerce Order Status",
@@ -217,7 +215,7 @@ class WooSaleOrder(models.Model):
             if woo_order.backend_id.tracking_info and no_tracking_do:
                 do_names = ", ".join(no_tracking_do.mapped("name"))
                 raise ValidationError(
-                    _("Tracking Reference not found in Delivery Order! %s" % do_names)
+                    _(f"Tracking Reference not found in Delivery Order! {do_names}")
                 )
 
     def update_woo_order_fulfillment_status(self, job_options=None):

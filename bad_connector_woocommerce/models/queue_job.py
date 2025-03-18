@@ -28,10 +28,11 @@ class QueueJob(models.Model):
             if self.model_name == "woo.stock.picking.refund":
                 record |= self.env[self.model_name].search(
                     [
-                        ("external_id", "ilike", "%s_%%" % external_id),
+                        ("external_id", "ilike", f"{external_id}_%"),
                         ("backend_id", "=", backend.id),
-                    ],
+                    ]
                 )
+
         else:
             record = external_id
         if hasattr(record, "odoo_id"):
@@ -50,7 +51,7 @@ class QueueJob(models.Model):
             action.update(
                 {
                     "name": _("Related Records"),
-                    "view_mode": "tree,form",
+                    "view_mode": "list,form",
                     "domain": [("id", "in", record.ids)],
                 }
             )

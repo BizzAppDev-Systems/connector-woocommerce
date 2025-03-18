@@ -32,9 +32,7 @@ class WooBackend(models.Model):
         )
         return field
 
-    name = fields.Char(
-        string="Name", required=True, help="Enter the name of the WooCommerce backend."
-    )
+    name = fields.Char(required=True, help="Enter the name of the WooCommerce backend.")
     version = fields.Selection(
         selection=[("wc/v3", "V3")],
         default="wc/v3",
@@ -42,7 +40,6 @@ class WooBackend(models.Model):
         help="Select the WooCommerce API version you want to use.",
     )
     default_limit = fields.Integer(
-        string="Default Limit",
         default=10,
         help="Set the default limit for data imports.",
     )
@@ -65,12 +62,8 @@ class WooBackend(models.Model):
         string="Secret key(Live)",
         help="Enter the Secret Key for Live Mode (Password for Basic Authentication).",
     )
-    test_mode = fields.Boolean(
-        string="Test Mode", default=True, help="Toggle between Test and Live modes."
-    )
-    test_location = fields.Char(
-        string="Test Location", help="Enter the Test Location for WooCommerce."
-    )
+    test_mode = fields.Boolean(default=True, help="Toggle between Test and Live modes.")
+    test_location = fields.Char(help="Enter the Test Location for WooCommerce.")
     test_client_id = fields.Char(
         string="Client ID",
         help="Enter the Client ID for Test Mode (Username for Basic Authentication).",
@@ -138,7 +131,6 @@ class WooBackend(models.Model):
             ("service", "Service"),
             ("product", "Storable Product"),
         ],
-        string="Default Product Type",
         default="consu",
         required=True,
     )
@@ -664,7 +656,17 @@ class WooBackend(models.Model):
         """Domain to search WooCommerce product"""
         return [
             ("backend_id", "in", self.ids),
-            ("detailed_type", "=", "product"),
+            (
+                "type",
+                "=",
+                "consu",
+            ),  # T-9363 "detailed_type" renamed to "type" and "consu"
+            # for both(storable and consumable).
+            (
+                "is_storable",
+                "=",
+                True,
+            ),  # T-9363 "is_storable" (True for storable, False for consumable).
             ("stock_management", "=", True),
             ("backend_id.update_stock_inventory", "=", True),
         ]

@@ -41,10 +41,10 @@
                                 groups="connector.group_connector_manager"
                             >
                                 <field name="woo_bind_ids" nolabel="1" readonly="1">
-                                    <tree delete="false" edit="false" create="false">
+                                    <list delete="false" edit="false" create="false">
                                         <field name="backend_id" widget="selection" />
                                         <field name="external_id" />
-                                    </tree>
+                                    </list>
                                     <form
                                         string="WooCommerce Product Attribute Value"
                                         delete="false"
@@ -70,14 +70,14 @@
             </form>
         </field>
     </record>
-    <!-- Added Tree view for Product Attribute value -->
+    <!-- Added list view for Product Attribute value -->
     <record id="view_product_attribute_woo_value_tree" model="ir.ui.view">
         <field name="name">product.attribute.woo.value.tree</field>
         <field name="model">product.attribute.value</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
-            </tree>
+            </list>
         </field>
     </record>
     <!-- Added Search view for Product Attribute value-->
@@ -100,7 +100,7 @@
     <record id="action_product_attribute_woo_value_form" model="ir.actions.act_window">
         <field name="name">Attribute Value</field>
         <field name="res_model">product.attribute.value</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_product_attribute_woo_value_tree" />
         <field name="target">current</field>
     </record>

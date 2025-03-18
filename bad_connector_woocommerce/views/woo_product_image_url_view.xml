@@ -18,22 +18,22 @@
             </form>
         </field>
     </record>
-    <!-- Define the tree view -->
+    <!-- Define the list view -->
     <record id="view_woo_product_image_url_tree" model="ir.ui.view">
         <field name="name">woo.product.image.url.tree</field>
         <field name="model">woo.product.image.url</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="url" widget="url" />
-            </tree>
+            </list>
         </field>
     </record>
     <!-- Define the action for the menu item -->
     <record id="action_woo_product_image_url" model="ir.actions.act_window">
         <field name="name">Woo Product Image URL</field>
         <field name="res_model">woo.product.image.url</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_woo_product_image_url_tree" />
     </record>
 </odoo>

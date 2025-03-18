@@ -59,9 +59,10 @@ class WooStockPickingRefundImporter(Component):
             return_lots = set(return_lots)
             if not return_lots.issubset(original_lots):
                 message = (
-                    "Lot differs from original delivery order so please verify and "
-                    "validate manually for product: %s." % (product.name)
+                    f"Lot differs from original delivery order so please verify and "
+                    f"validate manually for product: {product.name}."
                 )
+
                 _logger.info(message)
                 user_id = self.backend_record.activity_user_id or delivery_order.user_id
                 self.env["woo.backend"].create_activity(
@@ -177,7 +178,7 @@ class WooStockPickingRefundImporter(Component):
         )
         picking_returns["return_reason"] = self.remote_record.get("reason")
         stock_return_picking = self.env["stock.return.picking"].create(picking_returns)
-        return_id, return_type = stock_return_picking._create_returns()
+        return_id = stock_return_picking._create_return()
         return picking_returns, return_id
 
     def _create(self, data, **kwargs):
@@ -187,10 +188,11 @@ class WooStockPickingRefundImporter(Component):
         if not sale_order:
             raise ValidationError(
                 _(
-                    "Sale order is missing for order_id: %s"
-                    % self.remote_record.get("order_id")
+                    "Sale order is missing for order_id: "
+                    f"{self.remote_record.get('order_id')}"
                 )
             )
+
         if not sale_order.picking_ids.filtered(lambda picking: picking.state == "done"):
             raise ValidationError(
                 _(
@@ -241,7 +243,8 @@ class WooStockPickingRefundImporter(Component):
             ) = self._process_return_picking(
                 picking,
             )
-            data["odoo_id"] = return_id
+            # Extracting the ID from return_id to store in the "odoo_id" field
+            data["odoo_id"] = return_id.id
             res = super()._create(data)
             picking_bindings |= res
             for product_id in picking.get("product_ids"):
@@ -273,8 +276,9 @@ class WooStockPickingRefundImporter(Component):
                     continue
                 elif ext_id not in product_line_mapping:
                     raise ValidationError(
-                        _("External ID not found of Product: %s" % move.product_id.name)
+                        _(f"External ID not found for Product: {move.product_id.name}")
                     )
+
                 move.external_move = product_line_mapping[ext_id]
                 move.quantity = move.product_uom_qty
             if not self.backend_record.process_return_automatically:

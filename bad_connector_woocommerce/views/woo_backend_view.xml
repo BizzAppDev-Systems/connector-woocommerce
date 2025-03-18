@@ -467,7 +467,7 @@
 
                                         <field
                                             name="default_carrier_product_id"
-                                            context="{'default_detailed_type': 'service'}"
+                                            context="{'default_type': 'service'}"
                                         />
                                         <field
                                             name="woo_sale_status_ids"
@@ -479,7 +479,7 @@
                                         <field name="default_shipping_method_id" />
                                         <field
                                             name="default_fee_product_id"
-                                            context="{'default_detailed_type': 'service'}"
+                                            context="{'default_type': 'service'}"
                                         />
                                         <field name="mark_completed" />
                                         <field
@@ -503,7 +503,7 @@
             </form>
         </field>
     </record>
-    <!-- Added tree view for Woo backend -->
+    <!-- Added list view for Woo backend -->
     <record id="view_woo_backend_tree" model="ir.ui.view">
         <field name="name">woo.backend.tree</field>
         <field name="model">woo.backend</field>
@@ -512,18 +512,18 @@
             eval="[(4, ref('connector.group_connector_manager'))]"
         />
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="location" />
                 <field name="test_location" />
-            </tree>
+            </list>
         </field>
     </record>
     <!-- Main Action view for Woo backend -->
     <record id="action_woo_backend" model="ir.actions.act_window">
         <field name="name">WooCommerce Backends</field>
         <field name="res_model">woo.backend</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_woo_backend_tree" />
     </record>
 </odoo>

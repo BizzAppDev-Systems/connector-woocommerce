@@ -34,22 +34,22 @@
             </form>
         </field>
     </record>
-    <!-- Define the tree view -->
+    <!-- Define the list view -->
     <record id="view_woo_tax_tree" model="ir.ui.view">
         <field name="name">woo.tax.tree</field>
         <field name="model">woo.tax</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="woo_amount" />
-            </tree>
+            </list>
         </field>
     </record>
     <!-- Define the action for the menu item -->
     <record id="action_woo_tax" model="ir.actions.act_window">
         <field name="name">WooCommerce Tax</field>
         <field name="res_model">woo.tax</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_woo_tax_tree" />
     </record>
 </odoo>

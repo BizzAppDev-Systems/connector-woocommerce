@@ -73,16 +73,31 @@ class ProductCommonImportMapper(Component):
 
     @only_create
     @mapping
-    def detailed_type(self, record):
-        """Mapping for detailed_type"""
+    def type(self, record):
+        """Mapping for type"""
         if self.is_product_type_variation(record):
             return {}
+
         if record.get("downloadable"):
-            return {"detailed_type": "service"}
+            return {"type": "service"}
+
+        if (
+            record.get("manage_stock")
+            or self.backend_record.default_product_type == "product"
+        ):
+            return {
+                "type": "consu",
+                "is_storable": True,
+            }
+
+        if self.backend_record.default_product_type == "consu":
+            return {
+                "type": "consu",
+                "is_storable": False,
+            }
+
         return {
-            "detailed_type": "product"
-            if record.get("manage_stock")
-            else self.backend_record.default_product_type
+            "type": "service",
         }
 
     @mapping

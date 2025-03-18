@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 class ProductAttributeValue(models.Model):
     _inherit = "product.attribute.value"
 
-    description = fields.Html(string="Description", translate=True)
+    description = fields.Html(translate=True)
     woo_bind_ids = fields.One2many(
         comodel_name="woo.product.attribute.value",
         inverse_name="odoo_id",

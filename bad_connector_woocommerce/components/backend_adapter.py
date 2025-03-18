@@ -119,7 +119,7 @@ class WooAPI:
             return result
         except (TimeoutError, OSError, socket.gaierror) as err:
             raise NetworkRetryableError(
-                "A network error caused the failure of the job: " "%s" % err
+                f"A network error caused the failure of the job: {err}"
             ) from err
         except urllib.error.HTTPError as err:
             if err.code in [502, 503, 504]:

@@ -55,7 +55,7 @@ class TestAutoProcessReturn(BaseWooTestCase):
         backorder_wizard_dict = delivery_order.button_validate()
         backorder_wizard = Form(
             self.env[backorder_wizard_dict["res_model"]].with_context(
-                backorder_wizard_dict["context"]
+                **backorder_wizard_dict["context"]
             )
         ).save()
         backorder_wizard.process()

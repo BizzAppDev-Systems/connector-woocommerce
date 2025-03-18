@@ -88,10 +88,11 @@ class TestImportProduct(BaseWooTestCase):
             "stock status is not matched with response",
         )
         self.assertEqual(
-            product1.detailed_type,
-            "product",
+            product1.type,
+            "consu",
             "Product Type is not matched with response",
         )
+        self.assertTrue(product1.is_storable, "The is_storable field should be True")
         self.assertTrue(
             product1.stock_management,
             "Stock Management is not matched with response",
@@ -101,11 +102,33 @@ class TestImportProduct(BaseWooTestCase):
             2000,
             "Product Quantity is not matched with response",
         )
-        self.assertEqual(
-            product1.detailed_type,
-            self.backend.default_product_type,
-            "Product Type is not matched with response.",
-        )
+        if self.backend.default_product_type == "product":
+            self.assertEqual(
+                product1.type,
+                "consu",
+                "Product Type should be 'consu' when default_product_type is 'product'",
+            )
+            self.assertTrue(
+                product1.is_storable,
+                "is_storable should be True when default_product_type is 'product'.",
+            )
+        elif self.backend.default_product_type == "consu":
+            self.assertEqual(
+                product1.type,
+                "consu",
+                "Product Type should be 'consu' when default_product_type is 'consu'.",
+            )
+            self.assertFalse(
+                product1.is_storable,
+                "is_storable should be False when default_product_type is 'consu'.",
+            )
+        else:
+            self.assertEqual(
+                product1.type,
+                self.backend.default_product_type,
+                "Product Type is not matched with response.",
+            )
+
         product2 = self.env["product.product"].search(
             [("woo_bind_ids.external_id", "=", external_id)], limit=1
         )
@@ -158,10 +181,11 @@ class TestImportProduct(BaseWooTestCase):
         )
         self.assertTrue(product1, "Woo Product is not imported!")
         self.assertEqual(
-            product1.detailed_type,
-            "product",
+            product1.type,
+            "consu",
             "Product Quantity is not matched with response",
         )
+        self.assertTrue(product1.is_storable, "The is_storable field should be True")
 
     def test_import_product_template(self):
         """Test Assertions for Product Template"""
@@ -194,7 +218,7 @@ class TestImportProduct(BaseWooTestCase):
         )
         self.assertTrue(product1, "Woo Product is not imported!")
         self.assertEqual(
-            product1.detailed_type,
+            product1.type,
             "service",
             "Product type is not matched with response",
         )

@@ -86,7 +86,7 @@
                 <field name="woo_payment_mode_id" invisible="not woo_bind_ids" />
                 <field name="woo_bind_ids" invisible="1" />
             </xpath>
-            <xpath expr="//field[@name='order_line']//tree" position="attributes">
+            <xpath expr="//field[@name='order_line']//list" position="attributes">
                 <attribute name="editable" />
             </xpath>
             <xpath expr="//field[@name='order_line']/form" position="inside">
@@ -98,10 +98,10 @@
                         groups="connector.group_connector_manager"
                     >
                         <field name="woo_bind_ids" nolabel="1" readonly="1">
-                            <tree delete="false" edit="false" create="false">
+                            <list delete="false" edit="false" create="false">
                                 <field name="backend_id" widget="selection" />
                                 <field name="external_id" />
-                            </tree>
+                            </list>
                             <form
                                 string="WooCommerce Sale Order Line"
                                 delete="false"
@@ -138,10 +138,10 @@
                     groups="connector.group_connector_manager"
                 >
                     <field name="woo_bind_ids" nolabel="1" readonly="1">
-                        <tree delete="false" edit="false" create="false">
+                        <list delete="false" edit="false" create="false">
                             <field name="backend_id" widget="selection" />
                             <field name="external_id" />
-                        </tree>
+                        </list>
                         <form
                             string="WooCommerce Order"
                             delete="false"

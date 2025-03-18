@@ -5,7 +5,6 @@ from odoo import _, fields
 
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.connector.exception import IDMissingInBackend
-from odoo.addons.queue_job.exception import NothingToDoJob
 from odoo.addons.queue_job.job import identity_exact
 
 _logger = logging.getLogger(__name__)
@@ -109,12 +108,13 @@ class WooImporter(AbstractComponent):
                 )
             try:
                 importer.run(external_id)
-            except NothingToDoJob:
+            except Exception:  # Handle specific exceptions if needed
                 _logger.info(
                     "Dependency import of %s(%s) has been ignored.",
                     binding_model._name,
                     external_id,
                 )
+                return
 
     def _import_dependencies(self, always=False, **kwargs):
         """
@@ -156,7 +156,10 @@ class WooImporter(AbstractComponent):
                 external_id = data.get("id")
                 if not external_id:
                     continue
-                lock_name = f"import({self.backend_record._name}, {self.backend_record.id}, {model}, {external_id})"
+                lock_name = (
+                    f"import({self.backend_record._name}, {self.backend_record.id}, "
+                    f"{model}, {external_id})"
+                )
                 self.advisory_lock_or_retry(lock_name)
 
         for dependency in self.backend_adapter._model_dependencies:
@@ -239,7 +242,10 @@ class WooImporter(AbstractComponent):
         :param external_id: identifier of the record on remote system
         """
         self.external_id = external_id
-        lock_name = f"import({self.backend_record._name}, {self.backend_record.id}, {self.work.model_name}, {external_id})"
+        lock_name = (
+            f"import({self.backend_record._name}, {self.backend_record.id}, "
+            f"{self.work.model_name}, {external_id})"
+        )
         if force:
             kwargs["force"] = force
         if data:

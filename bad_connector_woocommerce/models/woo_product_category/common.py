@@ -26,7 +26,7 @@ class WooProductCategory(models.Model):
         index=True,
         ondelete="cascade",
     )
-    description = fields.Html(string="Description", translate=True)
+    description = fields.Html(translate=True)
     odoo_id = fields.Many2one(
         string="Product Category", comodel_name="product.category"
     )

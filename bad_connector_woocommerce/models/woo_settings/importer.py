@@ -77,8 +77,8 @@ class WooSettingsImporter(Component):
             if not currency:
                 raise MappingError(
                     _(
-                        "'%s' currency not found, ensure that currency is active!!!"
-                        % binding.value
+                        f"'{binding.value}' currency not found, "
+                        "ensure that currency is active!!!"
                     )
                 )
             binding.backend_id.write({"currency_id": currency.id})

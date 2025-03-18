@@ -1,6 +1,6 @@
 {
     "name": "Odoo Woocommerce Connector",
-    "version": "17.0.1.0.10",
+    "version": "18.0.1.0.0",
     "category": "Connector",
     "author": "BizzAppDev Systems Pvt. Ltd.",
     "website": "http://www.bizzappdev.com",
@@ -10,7 +10,8 @@
         "contacts",
         "sale_management",
         "delivery",
-        "bad_sale_automatic_workflow",
+        "sale_automatic_workflow",  # T-9363 Removed "bad_sale_automatic_workflow" as
+        # its fixes are now merged into "sale_automatic_workflow".
         "stock_return_reason",
     ],
     "license": "AGPL-3",

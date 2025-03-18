@@ -108,8 +108,8 @@ class TestExportRefund(BaseWooTestCase):
         return_form.return_reason = "Defective Product"
         wizard = return_form.save()
         wizard.product_return_moves.write({"quantity": 1.0})
-        res = wizard.create_returns()
-        return01 = self.env["stock.picking"].browse(res["res_id"])
+        res = wizard._create_return()
+        return01 = self.env["stock.picking"].browse(res["id"])
         return01.move_ids.quantity = 1
         return01.button_validate()
         self.assertTrue(

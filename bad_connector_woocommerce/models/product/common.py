@@ -78,7 +78,6 @@ class WooProductProduct(models.Model):
             ("private", "Private"),
             ("publish", "Publish"),
         ],
-        string="Status",
         default="any",
     )
     tax_status = fields.Selection(
@@ -87,7 +86,6 @@ class WooProductProduct(models.Model):
             ("shipping", "Shipping"),
             ("none", "None"),
         ],
-        string="Tax Status",
         default="taxable",
     )
     stock_status = fields.Selection(
@@ -96,7 +94,6 @@ class WooProductProduct(models.Model):
             ("outofstock", "Out Of Stock"),
             ("onbackorder", "On Backorder"),
         ],
-        string="Stock Status",
         default="instock",
     )
     woo_attribute_ids = fields.Many2many(

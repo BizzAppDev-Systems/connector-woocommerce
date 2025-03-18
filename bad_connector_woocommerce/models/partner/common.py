@@ -20,7 +20,7 @@ class ResPartner(models.Model):
     )
     firstname = fields.Char(string="First Name")
     lastname = fields.Char(string="Last Name")
-    hash_key = fields.Char(string="Hash Key")
+    hash_key = fields.Char()
 
     def write(self, vals):
         """

@@ -24,22 +24,22 @@
             </form>
         </field>
     </record>
-    <!-- Define the tree view -->
+    <!-- Define the list view -->
     <record id="view_woo_settings_tree" model="ir.ui.view">
         <field name="name">woo.settings.tree</field>
         <field name="model">woo.settings</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="value" />
-            </tree>
+            </list>
         </field>
     </record>
     <!-- Define the action for the menu item -->
     <record id="action_woo_settings" model="ir.actions.act_window">
         <field name="name">WooCommerce Settings</field>
         <field name="res_model">woo.settings</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_woo_settings_tree" />
     </record>
 </odoo>
