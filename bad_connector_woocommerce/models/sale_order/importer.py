@@ -20,9 +20,7 @@ class WooSaleOrderBatchImporter(Component):
     def _import_record(self, external_id, job_options=None, data=None, **kwargs):
         """Delay the import of the records"""
         if not data.get("refunds", []):
-            return super(WooSaleOrderBatchImporter, self)._import_record(
-                external_id, **kwargs
-            )
+            return super()._import_record(external_id, **kwargs)
         refunds = data.get("refunds", [])
         if "description" not in kwargs:
             description = self.backend_record.get_queue_job_description(
@@ -167,7 +165,7 @@ class WooSaleOrderImportMapper(Component):
         if fee_lines:
             woo_order_line_ids += fee_lines
         values.update({"woo_order_line_ids": woo_order_line_ids})
-        return super(WooSaleOrderImportMapper, self).finalize(map_record, values)
+        return super().finalize(map_record, values)
 
     @mapping
     def name(self, record):
@@ -366,7 +364,7 @@ class WooSaleOrderImporter(Component):
         """Skipped Record which are already imported."""
         if self.binder.to_internal(self.external_id):
             return _("Already imported")
-        return super(WooSaleOrderImporter, self)._must_skip(**kwargs)
+        return super()._must_skip(**kwargs)
 
     def _import_dependencies(self, **kwargs):
         """
@@ -439,7 +437,7 @@ class WooSaleOrderImporter(Component):
                 self._import_dependency(
                     shipping_line["method_id"], "woo.delivery.carrier"
                 )
-        return super(WooSaleOrderImporter, self)._import_dependencies(**kwargs)
+        return super()._import_dependencies(**kwargs)
 
 
 # Sale Order Line

@@ -117,7 +117,7 @@ class WooAPI:
                 )
             result.raise_for_status()
             return result
-        except (OSError, socket.gaierror, socket.timeout) as err:
+        except (TimeoutError, OSError, socket.gaierror) as err:
             raise NetworkRetryableError(
                 "A network error caused the failure of the job: " "%s" % err
             ) from err

@@ -244,7 +244,7 @@ class WooProductProductImportMapper(Component):
 
     def finalize(self, map_record, values):
         """Unlink downloadable product that no longer exist"""
-        values = super(WooProductProductImportMapper, self).finalize(map_record, values)
+        values = super().finalize(map_record, values)
         product_ids = [
             value[2].get("external_id")
             for value in values.get("woo_downloadable_product_ids")
@@ -267,7 +267,7 @@ class WooProductProductImporter(Component):
         images from a remote record. If no image records are found in the remote record,
         it returns the result of the super class's '_after_import' method.
         """
-        result = super(WooProductProductImporter, self)._after_import(binding, **kwargs)
+        result = super()._after_import(binding, **kwargs)
         image_record = self.remote_record.get("images")
         if not image_record:
             return result

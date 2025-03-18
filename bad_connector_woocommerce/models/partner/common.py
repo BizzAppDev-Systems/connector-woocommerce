@@ -42,7 +42,7 @@ class ResPartner(models.Model):
         }:
             vals["hash_key"] = False
 
-        return super(ResPartner, self).write(vals)
+        return super().write(vals)
 
     def _prepare_child_partner_vals(self, data, address_type=None):
         """Prepare values for child_ids"""

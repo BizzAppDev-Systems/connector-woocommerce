@@ -31,7 +31,7 @@ class WooExporter(AbstractComponent):
     _default_binding_field = "woo_bind_ids"
 
     def __init__(self, work_context):
-        super(WooExporter, self).__init__(work_context)
+        super().__init__(work_context)
         self.binding = None
         self.external_id = None
         # save response, so that we can use it in after complete to import

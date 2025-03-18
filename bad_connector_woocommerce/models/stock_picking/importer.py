@@ -30,7 +30,7 @@ class WooStockPickingRefundImporter(Component):
         """Skipped Record which are already imported."""
         if self.binder.to_internal(self.external_id):
             return _("Already imported")
-        return super(WooStockPickingRefundImporter, self)._must_skip()
+        return super()._must_skip()
 
     def _get_remote_data(self, **kwargs):
         """Retrieve remote data related to an refunded order."""
@@ -242,7 +242,7 @@ class WooStockPickingRefundImporter(Component):
                 picking,
             )
             data["odoo_id"] = return_id
-            res = super(WooStockPickingRefundImporter, self)._create(data)
+            res = super()._create(data)
             picking_bindings |= res
             for product_id in picking.get("product_ids"):
                 picking = next(iter(picking))
@@ -256,9 +256,7 @@ class WooStockPickingRefundImporter(Component):
         'refunded' in the local system, if the delivered quantity of all order lines is
         not zero.
         """
-        res = super(WooStockPickingRefundImporter, self)._after_import(
-            binding, **kwargs
-        )
+        res = super()._after_import(binding, **kwargs)
 
         line_items = self.remote_record.get("line_items")
         product_line_mapping = {item["product_id"]: item["id"] for item in line_items}

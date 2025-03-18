@@ -19,7 +19,7 @@ class WooImporter(AbstractComponent):
     _usage = "record.importer"
 
     def __init__(self, work_context):
-        super(WooImporter, self).__init__(work_context)
+        super().__init__(work_context)
         self.binding = None
         self.external_id = None
         self.remote_record = None
@@ -156,12 +156,7 @@ class WooImporter(AbstractComponent):
                 external_id = data.get("id")
                 if not external_id:
                     continue
-                lock_name = "import({}, {}, {}, {})".format(
-                    self.backend_record._name,
-                    self.backend_record.id,
-                    model,
-                    external_id,
-                )
+                lock_name = f"import({self.backend_record._name}, {self.backend_record.id}, {model}, {external_id})"
                 self.advisory_lock_or_retry(lock_name)
 
         for dependency in self.backend_adapter._model_dependencies:
@@ -244,12 +239,7 @@ class WooImporter(AbstractComponent):
         :param external_id: identifier of the record on remote system
         """
         self.external_id = external_id
-        lock_name = "import({}, {}, {}, {})".format(
-            self.backend_record._name,
-            self.backend_record.id,
-            self.work.model_name,
-            external_id,
-        )
+        lock_name = f"import({self.backend_record._name}, {self.backend_record.id}, {self.work.model_name}, {external_id})"
         if force:
             kwargs["force"] = force
         if data:

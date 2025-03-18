@@ -7,11 +7,10 @@
         <field name="inherit_id" ref="product.product_normal_form_view" />
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
-
-                    <field name="woo_bind_ids" invisible="1" />
-                    <field name="stock_manage" invisible="1" />
-                    <field name="backend_stock_manage" invisible="1" />
-                    <button
+                <field name="woo_bind_ids" invisible="1" />
+                <field name="stock_manage" invisible="1" />
+                <field name="backend_stock_manage" invisible="1" />
+                <button
                     name="update_stock_qty"
                     title="Update stock inventory To Woocommerce."
                     type="object"

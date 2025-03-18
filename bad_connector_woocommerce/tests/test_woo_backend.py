@@ -449,8 +449,8 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
 
     def test_product_create_webhook(self):
         """Called webhook for Product"""
-        product_webhook_url = "/create_product/woo_webhook/{}".format(
-            self.backend.test_access_token
+        product_webhook_url = (
+            f"/create_product/woo_webhook/{self.backend.test_access_token}"
         )
         self.base_url = "http://{}:{}".format(
             common.HOST, odoo.tools.config["http_port"]
@@ -467,8 +467,8 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
 
     def test_order_create_webhook(self):
         """Called webhook for Order"""
-        order_webhook_url = "/create_order/woo_webhook/{}".format(
-            self.backend_data.access_token
+        order_webhook_url = (
+            f"/create_order/woo_webhook/{self.backend_data.access_token}"
         )
         self.base_url = "http://{}:{}".format(
             common.HOST, odoo.tools.config["http_port"]
@@ -488,8 +488,8 @@ class BaseWooTestCase(tests.HttpCase, TransactionComponentCase):
         Called webhook for Order with status present in woo_sale_status_ids but not
         same as response status
         """
-        order_webhook_url = "/create_order/woo_webhook/{}".format(
-            self.backend_data.access_token
+        order_webhook_url = (
+            f"/create_order/woo_webhook/{self.backend_data.access_token}"
         )
         self.base_url = "http://{}:{}".format(
             common.HOST, odoo.tools.config["http_port"]

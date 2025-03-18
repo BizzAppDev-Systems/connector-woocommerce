@@ -252,10 +252,10 @@ class WooBindingProductListener(Component):
         if inventory_fields:
             if "description" not in job_options:
                 description = record.export_record.__doc__
-                job_options[
-                    "description"
-                ] = record.backend_id.get_queue_job_description(
-                    description, record._description
+                job_options["description"] = (
+                    record.backend_id.get_queue_job_description(
+                        description, record._description
+                    )
                 )
             job_options["priority"] = 20
             record.with_company(record.backend_id.company_id).with_delay(

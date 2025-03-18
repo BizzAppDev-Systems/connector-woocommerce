@@ -45,4 +45,4 @@ class WooSettingsAdapter(Component):
         kwargs["_woo_default_weight"] = self._woo_default_weight
         kwargs["_woo_default_dimension"] = self._woo_default_dimension
 
-        return super(WooSettingsAdapter, self).search(filters, **kwargs)
+        return super().search(filters, **kwargs)

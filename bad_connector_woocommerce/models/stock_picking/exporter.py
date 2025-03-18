@@ -86,7 +86,7 @@ class WooStockPickingRefundBatchExporter(Component):
     def _after_export(self):
         """Update the Woocommerce status as Refunded of sale order."""
         if not self.binding.sale_id.is_fully_returned:
-            return super(WooStockPickingRefundBatchExporter, self)._after_export()
+            return super()._after_export()
         woo_order_status = self.env["woo.sale.status"].search(
             [("code", "=", "refunded"), ("is_final_status", "=", False)], limit=1
         )

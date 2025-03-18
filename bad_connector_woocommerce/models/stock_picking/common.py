@@ -47,7 +47,7 @@ class StockPicking(models.Model):
         Validate the stock selection and proceed to update the WooCommerce order
         status if the woo_return_bind_ids is present in the stock picking data.
         """
-        res = super(StockPicking, self).button_validate()
+        res = super().button_validate()
         return_picking = self.filtered(lambda picking: picking.woo_return_bind_ids)
         if return_picking:
             return_picking._update_order_status()
@@ -69,10 +69,10 @@ class StockPicking(models.Model):
         if "description" not in job_options:
             description = woo_model.export_record.__doc__
         for woo_binding in self.sale_id.woo_bind_ids:
-            job_options[
-                "description"
-            ] = woo_binding.backend_id.get_queue_job_description(
-                description, woo_model._description
+            job_options["description"] = (
+                woo_binding.backend_id.get_queue_job_description(
+                    description, woo_model._description
+                )
             )
             woo_model = woo_model.with_company(
                 woo_binding.backend_id.company_id
@@ -112,7 +112,7 @@ class WooStockPickingRefundAdapter(Component):
         resource_path = "{}/{}/refunds".format(self._woo_model, data["order_id"])
         data.pop("order_id")
         self._woo_model = resource_path
-        return super(WooStockPickingRefundAdapter, self).create(data)
+        return super().create(data)
 
     def read(self, external_id=None, attributes=None, **kwargs):
         """

@@ -13,9 +13,9 @@
                 <field name="external_move" optional="hide" />
             </xpath>
             <xpath expr="//header" position="inside">
-                    <field name="woo_return_bind_ids" invisible="1" />
-                    <field name="sale_woo_binding_ids" invisible="1" />
-                    <button
+                <field name="woo_return_bind_ids" invisible="1" />
+                <field name="sale_woo_binding_ids" invisible="1" />
+                <button
                     name="export_refund"
                     type="object"
                     class="oe_highlight"

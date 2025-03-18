@@ -303,7 +303,7 @@ class WooSaleOrderLine(models.Model):
             if not existing_record:
                 binding = self.env["woo.sale.order"].browse(value["woo_order_id"])
                 value["order_id"] = binding.odoo_id.id
-        return super(WooSaleOrderLine, self).create(vals)
+        return super().create(vals)
 
 
 class SaleOrderLine(models.Model):

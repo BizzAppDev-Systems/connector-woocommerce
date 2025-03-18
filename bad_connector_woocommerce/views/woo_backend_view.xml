@@ -37,10 +37,10 @@
                         >
                             <span style="font-size:20px;">
                                 <i
-                                    title="Tax Different"
-                                    class="fa fa-exclamation-triangle"
-                                    style="font-size:20px;"
-                                />
+                                title="Tax Different"
+                                class="fa fa-exclamation-triangle"
+                                style="font-size:20px;"
+                            />
                                 Warning:Enabling tax inclusion in WooCommerce may affect
                                 the total tax in Odoo, so it's advisable NOT to use tax
                                 inclusion in Odoo.

@@ -60,7 +60,7 @@ class WooSettingsImporter(Component):
 
     def _after_import(self, binding, **kwargs):
         """Inherit Method: inherit method to import remote child"""
-        result = super(WooSettingsImporter, self)._after_import(binding, **kwargs)
+        result = super()._after_import(binding, **kwargs)
         if binding.external_id == "woocommerce_prices_include_tax":
             include_tax = True if binding.value == "yes" else False
             binding.backend_id.write({"include_tax": include_tax})

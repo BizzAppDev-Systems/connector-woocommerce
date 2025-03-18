@@ -28,11 +28,10 @@
                             </div>
                         </div>
                     </div>
-               </app>
+                </app>
             </xpath>
         </field>
     </record>
-
 
     <!-- Added action to open connector setting -->
     <record id="action_connector_settings" model="ir.actions.act_window">

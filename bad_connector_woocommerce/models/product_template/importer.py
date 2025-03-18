@@ -109,7 +109,7 @@ class WooProductTemplateImportMapper(Component):
         """Override the finalize method to add attribute lines to the product."""
         attribute_lines = self._get_attribute_lines(map_record)
         values.update({"attribute_line_ids": attribute_lines})
-        return super(WooProductTemplateImportMapper, self).finalize(map_record, values)
+        return super().finalize(map_record, values)
 
 
 class WooProductTemplateImporter(Component):
@@ -121,9 +121,7 @@ class WooProductTemplateImporter(Component):
 
     def _after_import(self, binding, **kwargs):
         """Inherit Method: inherit method to import remote child products"""
-        result = super(WooProductTemplateImporter, self)._after_import(
-            binding, **kwargs
-        )
+        result = super()._after_import(binding, **kwargs)
         variant_ids = self.remote_record.get("variations")
         product_model = self.env["woo.product.product"]
         for variant_id in variant_ids:

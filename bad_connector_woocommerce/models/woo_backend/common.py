@@ -480,9 +480,7 @@ class WooBackend(models.Model):
         )
 
         with WooAPI(woo_location) as woo_api:
-            with super(WooBackend, self).work_on(
-                model_name, woo_api=woo_api, **kwargs
-            ) as work:
+            with super().work_on(model_name, woo_api=woo_api, **kwargs) as work:
                 yield work
 
     def import_partners(self):
