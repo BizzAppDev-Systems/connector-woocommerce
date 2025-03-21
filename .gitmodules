@@ -1,0 +1,4 @@
+[submodule ".generic_misc_modules"]
+	path = .generic_misc_modules
+	url = git@git.bizzappdev.com:bizzappdev/misc/generic_misc_modules.git
+	branch = 18.0
