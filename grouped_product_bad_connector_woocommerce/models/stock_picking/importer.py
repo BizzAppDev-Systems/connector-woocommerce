@@ -70,6 +70,4 @@ class WooStockPickingRefundImporter(Component):
             )
             move.external_move = product_line_mapping[int(woo_product_id.external_id)]
             move.quantity = move.product_uom_qty
-        return super(WooStockPickingRefundImporter, self)._after_import(
-            binding, **kwargs
-        )
+        return super()._after_import(binding, **kwargs)

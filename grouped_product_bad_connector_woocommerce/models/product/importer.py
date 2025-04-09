@@ -19,9 +19,7 @@ class WooProductProductMrpImporter(Component):
         This method is Inherits the default behavior of _after_import when importing
         grouped type products and creating it's BoM.
         """
-        result = super(WooProductProductMrpImporter, self)._after_import(
-            binding, **kwargs
-        )
+        result = super()._after_import(binding, **kwargs)
 
         if self.remote_record.get("type") == "grouped":
             self.env["mrp.bom"].make_bom(binding, env=self)
@@ -34,7 +32,7 @@ class WooProductProductMrpImporter(Component):
             return _(
                 "Skipped: Product Type is Variable for Product ID %s"
             ) % self.remote_record.get("id")
-        return super(WooProductProductMrpImporter, self)._must_skip(**kwargs)
+        return super()._must_skip(**kwargs)
 
     def _import_dependencies(self, **kwargs):
         """
@@ -55,4 +53,4 @@ class WooProductProductMrpImporter(Component):
             if product:
                 self._import_dependency(product, "woo.product.product")
 
-        return super(WooProductProductMrpImporter, self)._import_dependencies(**kwargs)
+        return super()._import_dependencies(**kwargs)
