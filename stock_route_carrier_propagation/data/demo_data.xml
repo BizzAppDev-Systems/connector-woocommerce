@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!-- Demo carrier -->
+    <record id="delivery_carrier_demo" model="delivery.carrier">
+        <field name="name">Demo Shipping Carrier</field>
+        <field name="fixed_price">10.0</field>
+        <field name="product_id" ref="product.product_product_1" />
+    </record>
+
+    <!-- Demo route with carrier -->
+    <record id="route_demo" model="stock.route">
+        <field name="name">Demo Route with Carrier</field>
+        <field name="carrier_id" ref="delivery_carrier_demo" />
+    </record>
+</odoo>
